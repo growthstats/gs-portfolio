@@ -6,19 +6,11 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import type { ComponentProps } from "react";
 import type { VariantProps } from "class-variance-authority";
 
-const allowedVariants = new Set<VariantProps<typeof buttonVariants>["variant"]>([
-  "default",
-  "ghost",
-  "glass",
-  "link",
-  "outline",
-  "secondary",
-  "destructive",
-]);
+const allowedVariants = new Set<VariantProps<typeof buttonVariants>["variant"]>(
+  ["default", "ghost", "link", "outline", "secondary", "destructive"]
+);
 
 export default function CTA({
-  _type,
-  _key,
   link,
   style,
   className,

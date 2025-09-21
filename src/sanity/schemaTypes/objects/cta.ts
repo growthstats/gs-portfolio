@@ -1,47 +1,46 @@
-import { defineField, defineType } from 'sanity'
-import { VscInspect } from 'react-icons/vsc'
-import resolveSlug from '@/sanity/lib/resolveSlug'
+import { defineField, defineType } from "sanity";
+import { VscInspect } from "react-icons/vsc";
+import resolveSlug from "@/sanity/lib/resolveSlug";
 
 export default defineType({
-	name: 'cta',
-	title: 'Call-to-action',
-	icon: VscInspect,
-	type: 'object',
-	fields: [
-		defineField({
-			name: 'link',
-			type: 'link',
-		}),
-		defineField({
-			name: 'style',
-			title: 'Button style',
-			type: 'string',
-			initialValue: 'default',
-			options: {
-				list: [
-					{ title: 'Primary', value: 'default' },
-					{ title: 'Secondary', value: 'secondary' },
-					{ title: 'Outline', value: 'outline' },
-					{ title: 'Ghost', value: 'ghost' },
-					{ title: 'Glass', value: 'glass' },
-					{ title: 'Link', value: 'link' },
-					{ title: 'Destructive', value: 'destructive' },
-				],
-			},
-		}),
-	],
-	preview: {
-		select: {
-			label: 'link.label',
-			_type: 'link.internal._type',
-			pageTitle: 'link.internal.title',
-			internal: 'link.internal.metadata.slug.current',
-			params: 'link.params',
-			external: 'link.external',
-		},
-		prepare: ({ label, pageTitle, ...props }) => ({
-			title: label || pageTitle,
-			subtitle: resolveSlug(props),
-		}),
-	},
-})
+  name: "cta",
+  title: "Call-to-action",
+  icon: VscInspect,
+  type: "object",
+  fields: [
+    defineField({
+      name: "link",
+      type: "link",
+    }),
+    defineField({
+      name: "style",
+      title: "Button style",
+      type: "string",
+      initialValue: "default",
+      options: {
+        list: [
+          { title: "Primary", value: "default" },
+          { title: "Secondary", value: "secondary" },
+          { title: "Outline", value: "outline" },
+          { title: "Ghost", value: "ghost" },
+          { title: "Link", value: "link" },
+          { title: "Destructive", value: "destructive" },
+        ],
+      },
+    }),
+  ],
+  preview: {
+    select: {
+      label: "link.label",
+      _type: "link.internal._type",
+      pageTitle: "link.internal.title",
+      internal: "link.internal.metadata.slug.current",
+      params: "link.params",
+      external: "link.external",
+    },
+    prepare: ({ label, pageTitle, ...props }) => ({
+      title: label || pageTitle,
+      subtitle: resolveSlug(props),
+    }),
+  },
+});
