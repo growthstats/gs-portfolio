@@ -1,7 +1,7 @@
-import { fetchSanityLive } from './fetch'
-import { groq } from 'next-sanity'
-import errors from '@/lib/errors'
-import { BLOG_DIR } from '@/lib/env'
+import { fetchSanityLive } from "./fetch";
+import { groq } from "next-sanity";
+import errors from "@/lib/errors";
+import { BLOG_DIR } from "@/lib/env";
 
 export const LINK_QUERY = groq`
 	...,
@@ -10,7 +10,7 @@ export const LINK_QUERY = groq`
 		title,
 		metadata
 	}
-`
+`;
 
 const NAVIGATION_QUERY = groq`
 	title,
@@ -19,26 +19,27 @@ const NAVIGATION_QUERY = groq`
 		link{ ${LINK_QUERY} },
 		links[]{ ${LINK_QUERY} }
 	}
-`
+`;
 
 export const IMAGE_QUERY = groq`
 	...,
 	'lqip': @.asset->metadata.lqip
-`
+`;
 
 const ASSET_IMG_QUERY = groq`
 	...,
 	image { ${IMAGE_QUERY} }
-`
+`;
 
 export const CTA_QUERY = groq`
 	...,
-	link{ ${LINK_QUERY} }
-`
+	link{ ${LINK_QUERY} },
+	style
+`;
 
 export const REPUTATION_QUERY = groq`
 	_type == 'reputation-block' => { reputation-> }
-`
+`;
 
 export const MODULES_QUERY = groq`
 	...,
@@ -127,7 +128,7 @@ export const MODULES_QUERY = groq`
 	},
 	_type == 'testimonial.featured' => { testimonial-> },
 	_type == 'testimonial-list' => { testimonials[]-> },
-`
+`;
 
 export const GLOBAL_MODULE_PATH_QUERY = groq`
 	string::startsWith($slug, path)
@@ -135,18 +136,18 @@ export const GLOBAL_MODULE_PATH_QUERY = groq`
 		defined(excludePaths) => count(excludePaths[string::startsWith($slug, @)]) == 0,
 		true
 	)
-`
+`;
 
 export const TRANSLATIONS_QUERY = groq`
 	'translations': *[_type == 'translation.metadata' && references(^._id)].translations[].value->{
 		'slug': metadata.slug.current,
 		language
 	}
-`
+`;
 
 export async function getSite() {
-	const site = await fetchSanityLive<Sanity.Site>({
-		query: groq`
+  const site = await fetchSanityLive<Sanity.Site>({
+    query: groq`
 			*[_type == 'site'][0]{
 				...,
 				ctas[]{ ${CTA_QUERY} },
@@ -156,16 +157,16 @@ export async function getSite() {
 				'ogimage': ogimage.asset->url
 			}
 		`,
-	})
+  });
 
-	if (!site) throw new Error(errors.missingSiteSettings)
+  if (!site) throw new Error(errors.missingSiteSettings);
 
-	return site
+  return site;
 }
 
 export async function getTranslations() {
-	return await fetchSanityLive<Sanity.Translation[]>({
-		query: groq`*[_type in ['page', 'blog.post'] && defined(language)]{
+  return await fetchSanityLive<Sanity.Translation[]>({
+    query: groq`*[_type in ['page', 'blog.post'] && defined(language)]{
 			'slug': '/' + select(
 				_type == 'blog.post' => '${BLOG_DIR}/' + metadata.slug.current,
 				metadata.slug.current != 'index' => metadata.slug.current,
@@ -183,5 +184,5 @@ export async function getTranslations() {
 				language
 			}
 		}`,
-	})
+  });
 }

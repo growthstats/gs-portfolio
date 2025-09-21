@@ -14,13 +14,18 @@ export default defineType({
 		}),
 		defineField({
 			name: 'style',
+			title: 'Button style',
 			type: 'string',
+			initialValue: 'default',
 			options: {
 				list: [
-					'action',
-					{ title: 'Outline', value: 'action-outline' },
-					'ghost',
-					'link',
+					{ title: 'Primary', value: 'default' },
+					{ title: 'Secondary', value: 'secondary' },
+					{ title: 'Outline', value: 'outline' },
+					{ title: 'Ghost', value: 'ghost' },
+					{ title: 'Glass', value: 'glass' },
+					{ title: 'Link', value: 'link' },
+					{ title: 'Destructive', value: 'destructive' },
 				],
 			},
 		}),
