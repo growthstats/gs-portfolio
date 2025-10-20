@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./fonts.css";
+@import "./typography.css";
 @import "tw-animate-css";
 
 @theme {
@@ -8,6 +9,27 @@
   --custom-shadow:
     rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
   --max-height-fold: calc(100svh - var(--header-height));
+  --font-size-display-hero: clamp(2.5rem, 5vw, 5rem);
+  --font-size-display-xl: clamp(2rem, 4vw, 3.5rem);
+  --font-size-h1: clamp(1.875rem, 3.2vw, 3rem);
+  --font-size-h2: clamp(1.5rem, 2.4vw, 2.25rem);
+  --font-size-h3: clamp(1.375rem, 1.8vw, 1.875rem);
+  --font-size-h4: clamp(1.25rem, 1.6vw, 1.5rem);
+  --font-size-h5: clamp(1.125rem, 1.4vw, 1.25rem);
+  --font-size-h6: clamp(1rem, 1.2vw, 1.125rem);
+  --leading-display-hero: 1.05;
+  --leading-display-xl: 1.1;
+  --leading-h1: 1.1;
+  --leading-h2: 1.2;
+  --leading-h3: 1.25;
+  --leading-h4: 1.3;
+  --leading-h5: 1.35;
+  --leading-h6: 1.4;
+  --leading-subtitle: 1.6;
+  --tracking-display-hero: -0.02em;
+  --tracking-display-xl: -0.01em;
+  --tracking-h1: -0.01em;
+  --tracking-eyebrow: 0.06em;
 }
 
 @custom-variant hover (&:hover);
@@ -137,27 +159,93 @@
 
 /* typography */
 
+@utility text-display-hero {
+  font-size: var(--font-size-display-hero);
+}
+@utility text-display-xl {
+  font-size: var(--font-size-display-xl);
+}
+@utility text-h1 {
+  font-size: var(--font-size-h1);
+}
+@utility text-h2 {
+  font-size: var(--font-size-h2);
+}
+@utility text-h3 {
+  font-size: var(--font-size-h3);
+}
+@utility text-h4 {
+  font-size: var(--font-size-h4);
+}
+@utility text-h5 {
+  font-size: var(--font-size-h5);
+}
+@utility text-h6 {
+  font-size: var(--font-size-h6);
+}
+
+@utility leading-display-hero {
+  line-height: var(--leading-display-hero);
+}
+@utility leading-display-xl {
+  line-height: var(--leading-display-xl);
+}
+@utility leading-h1 {
+  line-height: var(--leading-h1);
+}
+@utility leading-h2 {
+  line-height: var(--leading-h2);
+}
+@utility leading-h3 {
+  line-height: var(--leading-h3);
+}
+@utility leading-h4 {
+  line-height: var(--leading-h4);
+}
+@utility leading-h5 {
+  line-height: var(--leading-h5);
+}
+@utility leading-h6 {
+  line-height: var(--leading-h6);
+}
+@utility leading-subtitle {
+  line-height: var(--leading-subtitle);
+}
+
+@utility tracking-display-hero {
+  letter-spacing: var(--tracking-display-hero);
+}
+@utility tracking-display-xl {
+  letter-spacing: var(--tracking-display-xl);
+}
+@utility tracking-h1 {
+  letter-spacing: var(--tracking-h1);
+}
+@utility tracking-eyebrow {
+  letter-spacing: var(--tracking-eyebrow);
+}
+
 @utility h-base {
-  font-weight: bold;
+  @apply font-semibold;
 }
 
 @utility h1 {
-  @apply h-base text-4xl;
+  @apply h-base text-h1 leading-h1 tracking-h1;
 }
 @utility h2 {
-  @apply h-base text-3xl;
+  @apply h-base text-h2 leading-h2;
 }
 @utility h3 {
-  @apply h-base text-2xl;
+  @apply h-base text-h3 leading-h3;
 }
 @utility h4 {
-  @apply h-base text-xl;
+  @apply h-base text-h4 leading-h4;
 }
 @utility h5 {
-  @apply h-base text-lg;
+  @apply h-base text-h5 leading-h5;
 }
 @utility h6 {
-  @apply h-base;
+  @apply h-base text-h6 leading-h6;
 }
 
 @utility technical {

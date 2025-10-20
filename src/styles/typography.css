@@ -1,0 +1,23 @@
+@layer utilities {
+	.eyebrow {
+		@apply uppercase tracking-eyebrow text-sm font-semibold opacity-80;
+	}
+
+	.subtitle {
+		@apply text-base leading-subtitle md:text-lg md:leading-8 opacity-90;
+	}
+
+	.section-badge {
+		@apply inline-flex items-center gap-1 rounded-full border border-ink/20 bg-ink/5 px-2 py-0.5 text-xs font-medium tracking-wide transition-colors;
+	}
+
+	.text-balance {
+		text-wrap: balance;
+	}
+
+	@supports not (text-wrap: balance) {
+		.text-balance {
+			text-wrap: pretty;
+		}
+	}
+}
