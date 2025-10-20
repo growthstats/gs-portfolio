@@ -1,7 +1,3 @@
-import { VariantProps } from "class-variance-authority";
-
-import { buttonVariants } from "@/components/ui/button";
-
 import type { SanityAssetDocument, SanityDocument } from "next-sanity";
 
 declare global {
@@ -141,8 +137,17 @@ declare global {
     interface CTA {
       readonly _type?: "cta";
       _key?: string;
-      link?: Link;
-      style?: VariantProps<typeof buttonVariants>["variant"];
+      label?: string;
+      href?: string;
+      isExternal?: boolean;
+      icon?: string;
+      iconPosition?: "leading" | "trailing";
+      style?: "primary" | "secondary" | "tertiary" | "ghost";
+      ariaLabel?: string;
+      rel?: string;
+      target?: string;
+      disabled?: boolean;
+      link?: Link; // legacy support during migration
     }
 
     interface CustomHTML extends Module<"custom-html"> {
