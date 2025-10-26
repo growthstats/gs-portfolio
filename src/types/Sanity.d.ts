@@ -1,7 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { VariantProps } from "class-variance-authority";
 
 import { buttonVariants } from "@/components/ui/button";
 
+import type { PortableTextBlock } from "@portabletext/types";
 import type { SanityAssetDocument, SanityDocument } from "next-sanity";
 
 declare global {
@@ -199,13 +201,32 @@ declare global {
       noIndex: boolean;
     }
 
+    interface ModuleOptions {
+      hidden?: boolean;
+      uid?: string;
+    }
+
     interface Module<T = string> {
       _type: T;
       _key: string;
-      options?: {
-        hidden?: boolean;
-        uid?: string;
-      };
+      options?: ModuleOptions;
+    }
+
+    // modules
+
+    type PortableText = PortableTextBlock[];
+
+    type SectionChildModule = Module<"accordion-list"> & {
+      _type: "accordion-list";
+    };
+
+    interface SectionModule extends Module<"section"> {
+      headingBadge?: string;
+      icon?: string;
+      module?: SectionChildModule | null;
+      pretitle?: string;
+      subtitle?: string;
+      title: string;
     }
   }
 }

@@ -2,6 +2,7 @@ import { fetchSanityLive } from "./fetch";
 import { groq } from "next-sanity";
 import errors from "@/lib/errors";
 import { BLOG_DIR } from "@/lib/env";
+import { createSectionModuleQuery } from "@/sanity/queries/modules/section.groq";
 
 export const LINK_QUERY = groq`
 	...,
@@ -41,7 +42,7 @@ export const REPUTATION_QUERY = groq`
 	_type == 'reputation-block' => { reputation-> }
 `;
 
-export const MODULES_QUERY = groq`
+const MODULES_BASE_PROJECTION = `
 	...,
 	ctas[]{
 		...,
@@ -128,6 +129,13 @@ export const MODULES_QUERY = groq`
 	},
 	_type == 'testimonial.featured' => { testimonial-> },
 	_type == 'testimonial-list' => { testimonials[]-> },
+`;
+
+export const MODULES_QUERY = groq`
+	${MODULES_BASE_PROJECTION}
+	_type == 'section' => {
+		${createSectionModuleQuery(MODULES_BASE_PROJECTION)}
+	},
 `;
 
 export const GLOBAL_MODULE_PATH_QUERY = groq`
