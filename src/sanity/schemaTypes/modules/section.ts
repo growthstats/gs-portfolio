@@ -78,7 +78,7 @@ export default defineType({
         { type: "testimonial-list" },
         { type: "testimonial.featured" },
       ],
-      validation: (Rule) => Rule.required().min(1).max(1),
+      validation: (Rule) => Rule.required().min(1),
     }),
   ],
   preview: {

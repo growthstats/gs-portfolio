@@ -1,18 +1,22 @@
 import moduleProps from "@/lib/moduleProps";
 import { stegaClean } from "next-sanity";
-import type { ReactNode } from "react";
-import * as LucideIcons from "lucide-react";
+import { Sparkles } from "lucide-react";
+import dynamicIconImports from "lucide-react/dynamicIconImports";
+import Heading from "@/ui/Heading";
+import { Badge } from "@/components/ui/badge";
 import type { LucideIcon } from "lucide-react";
+import type { ReactNode } from "react";
 
-const FALLBACK_ICON: LucideIcon = LucideIcons.Sparkles;
+const FALLBACK_ICON: LucideIcon = Sparkles;
+const ICON_CACHE = new Map<string, Promise<LucideIcon>>();
 
 type SectionProps = {
   data: Sanity.SectionModule;
   dataSanity?: string;
-  renderModule?: (module: Sanity.SectionModule["module"]) => ReactNode;
+  renderModule?: (module: Sanity.Module, index: number) => ReactNode;
 };
 
-export default function Section({
+export default async function Section({
   data,
   dataSanity,
   renderModule,
@@ -21,49 +25,67 @@ export default function Section({
 
   const badge = sanitizeString(headingBadge);
   const iconName = sanitizeString(icon);
-  const IconComponent = iconName ? getIcon(iconName) : null;
+  const IconComponent = iconName ? await loadIcon(iconName) : null;
   const pretitle = sanitizeString(data.pretitle);
   const title = sanitizeString(data.title) ?? "";
   const subtitle = sanitizeString(data.subtitle);
 
-  const childModule = module && renderModule ? renderModule(module) : null;
+  const childModules = Array.isArray(module)
+    ? module.filter(isSanityModule)
+    : [];
+  const renderedChildren = renderModule
+    ? childModules
+        .map((child, index) => renderModule(child, index))
+        .filter(
+          (child): child is ReactNode => child !== null && child !== undefined
+        )
+    : [];
 
   return (
     <section {...moduleProps(data)} data-sanity={dataSanity}>
       <div className="section space-y-8">
         <header className="mx-auto flex w-full max-w-4xl flex-col items-center gap-4 text-center">
           {(IconComponent || badge) && (
-            <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.3em] text-accent">
+            <Badge
+              variant="outline"
+              className="gap-2 rounded-full px-4 py-1.5 text-sm font-semibold tracking-[0.1em] shadow-(--shadow-badge)"
+            >
               {IconComponent && (
-                <span className="inline-flex size-10 items-center justify-center rounded-full border border-current/20 bg-current/10 text-current">
-                  <IconComponent aria-hidden className="size-5" />
-                </span>
+                <IconComponent aria-hidden className="size-4" />
               )}
 
-              {badge && (
-                <span className="inline-flex items-center rounded-full bg-accent/10 px-4 py-1.5 tracking-[0.2em] text-accent">
-                  {badge}
-                </span>
-              )}
-            </div>
+              {badge}
+            </Badge>
           )}
 
-          <h2 className="flex flex-col gap-2 text-balance leading-tight">
-            {pretitle && (
-              <span className="text-xs font-semibold uppercase tracking-[0.4em] text-accent">
-                {pretitle}
-              </span>
-            )}
+          {pretitle && (
+            <Heading
+              as="p"
+              variant="h6"
+              className="text-xs uppercase tracking-[0.4em] text-accent"
+            >
+              {pretitle}
+            </Heading>
+          )}
 
-            <span className="text-h2 leading-h2">{title}</span>
-          </h2>
+          <Heading as="h2" variant="h2" balance className="leading-tight">
+            {title}
+          </Heading>
 
           {subtitle && (
-            <p className="max-w-prose text-sm text-ink/70">{subtitle}</p>
+            <Heading
+              as="p"
+              variant="h5"
+              className="max-w-prose text-sm font-normal text-ink/70"
+            >
+              {subtitle}
+            </Heading>
           )}
         </header>
 
-        {childModule && <div className="w-full">{childModule}</div>}
+        {renderedChildren.length > 0 && (
+          <div className="w-full space-y-8">{renderedChildren}</div>
+        )}
       </div>
     </section>
   );
@@ -75,15 +97,46 @@ function sanitizeString(value?: string | null) {
   return typeof cleaned === "string" ? cleaned.trim() : value.trim();
 }
 
-function getIcon(name: string): LucideIcon {
-  if (name in LucideIcons) {
-    const Icon = LucideIcons[name as keyof typeof LucideIcons];
-    if (isLucideIcon(Icon)) return Icon;
-  }
-
-  return FALLBACK_ICON;
-}
-
 function isLucideIcon(icon: unknown): icon is LucideIcon {
   return typeof icon === "function" && "displayName" in icon;
+}
+
+async function loadIcon(name: string): Promise<LucideIcon> {
+  const key = normalizeIconName(name);
+
+  const cached = ICON_CACHE.get(key);
+  if (cached) return cached;
+
+  const importIcon = (
+    dynamicIconImports as Record<string, () => Promise<{ default: LucideIcon }>>
+  )[key];
+
+  if (!importIcon) {
+    const fallback = Promise.resolve(FALLBACK_ICON);
+    ICON_CACHE.set(key, fallback);
+    return fallback;
+  }
+
+  const loader = importIcon()
+    .then((module) => {
+      const Icon = module.default;
+      return isLucideIcon(Icon) ? Icon : FALLBACK_ICON;
+    })
+    .catch(() => FALLBACK_ICON);
+
+  ICON_CACHE.set(key, loader);
+  return loader;
+}
+
+function normalizeIconName(value: string) {
+  return value
+    .replace(/\s+/g, "-")
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .replace(/([A-Z])([A-Z][a-z])/g, "$1-$2")
+    .toLowerCase();
+}
+
+function isSanityModule(value: unknown): value is Sanity.Module {
+  if (!value || typeof value !== "object") return false;
+  return "_type" in value;
 }

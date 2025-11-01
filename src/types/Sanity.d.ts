@@ -216,14 +216,12 @@ declare global {
 
     type PortableText = PortableTextBlock[];
 
-    type SectionChildModule = Module<"accordion-list"> & {
-      _type: "accordion-list";
-    };
+    type SectionChildModule = Module;
 
     interface SectionModule extends Module<"section"> {
       headingBadge?: string;
       icon?: string;
-      module?: SectionChildModule | null;
+      module?: (SectionChildModule | null)[] | null;
       pretitle?: string;
       subtitle?: string;
       title: string;

@@ -96,11 +96,8 @@ export default function Modules({
         <Section
           data={module as Sanity.SectionModule}
           dataSanity={dataAttribute}
-          renderModule={(child) =>
-            renderModule(
-              (child ?? null) as unknown as Sanity.Module,
-              `${path}.module[0]`
-            )
+          renderModule={(child, childIndex) =>
+            renderModule(child, `${path}.module[${childIndex}]`)
           }
           key={elementKey}
         />
