@@ -12,7 +12,7 @@ export default async function Menu() {
           case "link":
             return (
               <CTA
-                className="hover:link text-primary-foreground"
+                className="hover:link text-primary"
                 link={item}
                 key={key}
               />
@@ -25,7 +25,7 @@ export default async function Menu() {
                   <CTA
                     link={item.link}
                     style="link"
-                    className="text-primary-foreground"
+                    className="text-primary"
                   >
                     {stegaClean(item.link?.label) || item.link?.internal?.title}
                   </CTA>
@@ -35,7 +35,7 @@ export default async function Menu() {
                   {item.links?.map((link, key) => (
                     <li key={key}>
                       <CTA
-                        className="inline-block py-px hover:underline text-primary-foreground"
+                        className="inline-block py-px hover:underline text-primary"
                         link={link}
                         style="link"
                       />

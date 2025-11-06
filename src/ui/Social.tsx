@@ -10,6 +10,7 @@ import {
 	FaTiktok,
 	FaXTwitter,
 	FaYoutube,
+	FaTelegram,
 } from 'react-icons/fa6'
 import { IoIosLink } from 'react-icons/io'
 import type { ComponentProps } from 'react'
@@ -29,6 +30,7 @@ export default async function Social({ className }: ComponentProps<'div'>) {
 								className="px-2 py-1 group-has-[a:hover]:opacity-50 hover:!opacity-100"
 								link={item}
 								key={key}
+								style={"link"}
 							>
 								<Icon url={item.external} aria-label={item.label} />
 							</CTA>
@@ -48,7 +50,9 @@ function Icon({
 }: { url?: string } & React.ComponentProps<'svg'>) {
 	if (!url) return null
 
-	return url?.includes('bsky.app') ? (
+	return url?.includes('t.me') ? (
+		<FaTelegram {...props} />
+	) : url?.includes('bsky.app') ? (
 		<FaBluesky {...props} />
 	) : url?.includes('facebook.com') ? (
 		<FaFacebookF {...props} />
