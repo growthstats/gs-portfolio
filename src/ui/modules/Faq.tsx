@@ -104,7 +104,6 @@ export default function Faq({
             </div>
           )}
 
-
           {description && (
             <div className="text-gray-500 text-base leading-relaxed max-w-md mt-4">
               <PortableText value={description} />
@@ -125,10 +124,7 @@ export default function Faq({
                 layout
                 transition={{ duration: 0.32, ease: 'easeInOut' }}
                 className={clsx(
-                  'relative rounded-[20px] bg-white border border-gray-100 overflow-hidden',
-                  isOpen
-                    ? 'shadow-[0_10px_30px_rgba(0,0,0,0.09)]'
-                    : 'shadow-[0_6px_18px_rgba(0,0,0,0.06)]'
+                  'relative bg-white border border-gray-100 overflow-hidden transition-shadow duration-300 rounded-[20px] shadow-(--shadow-badge)'
                 )}
               >
                 <h3>
@@ -144,12 +140,13 @@ export default function Faq({
                     className={clsx(
                       'w-full flex items-center justify-between text-left px-6 py-5 text-base font-medium text-gray-800 transition-all duration-200 focus:outline-none',
                       'hover:bg-gray-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary/60',
-                      'rounded-[20px]'
+                      'rounded-[20px]',
+                      'relative z-10'
                     )}
                   >
                     <span className="pr-4 break-words">{item.question}</span>
 
-                    {/* Chevron Circle */}
+                    {/* Chevron Circle - updated to match pill shape */}
                     <motion.span
                       animate={{ rotate: isOpen ? 180 : 0 }}
                       transition={{ duration: 0.28 }}
@@ -191,7 +188,7 @@ export default function Faq({
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.34, ease: 'easeInOut' }}
-                      className="px-6 pb-6 pt-0 overflow-hidden"
+                      className="px-6 pb-6 pt-0 overflow-hidden rounded-b-[20px]"
                     >
                       <div className="text-gray-600 mt-2 leading-relaxed text-base">
                         <PortableText value={item.answer} />
