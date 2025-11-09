@@ -30,6 +30,7 @@ export default defineField({
 		{ type: 'tabbed-content' },
 		{ type: 'testimonial-list' },
 		{ type: 'testimonial.featured' },
+		{type: 'faq'}
 	],
 	options: {
 		insertMenu: {

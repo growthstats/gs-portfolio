@@ -20,6 +20,7 @@ import TabbedContent from "./TabbedContent";
 import TestimonialList from "./TestimonialList";
 import TestimonialFeatured from "./TestimonialFeatured";
 import Section from "./Section";
+import Faq from "./Faq";
 
 import dynamic from "next/dynamic";
 import type { ReactNode } from "react";
@@ -50,6 +51,7 @@ export const MODULE_MAP = {
   "tabbed-content": TabbedContent,
   "testimonial-list": TestimonialList,
   "testimonial.featured": TestimonialFeatured,
+  faq: Faq, // ✅ corrected key to lowercase "faq"
 } as const;
 
 export default function Modules({
@@ -100,6 +102,22 @@ export default function Modules({
             renderModule(child, `${path}.module[${childIndex}]`)
           }
           key={elementKey}
+        />
+      );
+    }
+
+    if (module._type === "faq") {
+      const faq = module as Sanity.FaqModule;
+      return (
+        <Faq
+          key={elementKey}
+          pretitle={faq.pretitle}
+          title={faq.title}
+          description={faq.description}
+          items={faq.items || []}
+          accessibleAccordion={faq.accessibleAccordion}
+          generateSchema={faq.generateSchema}
+          data-sanity={dataAttribute}
         />
       );
     }

@@ -129,6 +129,18 @@ const MODULES_BASE_PROJECTION = `
 	},
 	_type == 'testimonial.featured' => { testimonial-> },
 	_type == 'testimonial-list' => { testimonials[]-> },
+	_type == 'faq' => {
+		pretitle,
+		title,
+		description,
+		items[]{
+		  _key,
+		  question,
+		  answer
+		},
+		accessibleAccordion,
+		generateSchema
+	  },
 `;
 
 export const MODULES_QUERY = groq`
