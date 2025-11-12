@@ -51,7 +51,7 @@ export const MODULE_MAP = {
   "tabbed-content": TabbedContent,
   "testimonial-list": TestimonialList,
   "testimonial.featured": TestimonialFeatured,
-  faq: Faq, // ✅ corrected key to lowercase "faq"
+  faq: Faq,
 } as const;
 
 export default function Modules({

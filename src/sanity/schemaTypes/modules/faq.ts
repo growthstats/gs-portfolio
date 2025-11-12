@@ -1,8 +1,6 @@
-
 import { defineArrayMember, defineField, defineType } from 'sanity'
 import { MdQuestionAnswer } from 'react-icons/md'
 import { getBlockText } from 'sanitypress-utils'
-import { imageBlock } from '../fragments'
 
 export default defineType({
   name: 'faq',
@@ -63,13 +61,11 @@ export default defineType({
               type: 'array',
               of: [
                 { type: 'block' },
-                imageBlock,
                 defineArrayMember({
                   title: 'Code block',
                   type: 'code',
                   options: { withFilename: true },
                 }),
-                { type: 'custom-html' },
               ],
             }),
             defineField({
@@ -121,4 +117,3 @@ export default defineType({
     }),
   },
 })
-
