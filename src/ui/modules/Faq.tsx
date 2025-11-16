@@ -74,7 +74,7 @@ export default function Faq({
   items = [],
   accessibleAccordion = true,
   generateSchema = true,
-}: FaqProps) {
+}: Readonly<FaqProps>) {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   const schemaMarkup =
@@ -101,10 +101,7 @@ export default function Faq({
       : null
 
   return (
-    <section
-      className="bg-gradient-to-br from-gray-50 to-white py-8 md:py-24"
-      aria-label="Frequently Asked Questions"
-    >
+    <div className="py-8 md:py-24" aria-label="Frequently Asked Questions">
       {schemaMarkup && <script type="application/ld+json">{JSON.stringify(schemaMarkup)}</script>}
 
       <div className="container mx-auto grid max-w-6xl gap-2 px-4 md:grid-cols-2">
@@ -154,7 +151,7 @@ export default function Faq({
                   key={item._key || i}
                   value={String(i)}
                   className={clsx(
-                    'relative mb-4 overflow-hidden rounded-[20px] border border-gray-100 bg-white shadow-(--shadow-badge) transition-shadow duration-300',
+                    'relative mb-4 overflow-hidden rounded-[20px] shadow-(--shadow-badge) transition-shadow duration-300',
                   )}
                 >
                   <h3>
@@ -163,7 +160,7 @@ export default function Faq({
                       aria-controls={panelId}
                       className={clsx(
                         'flex w-full items-center justify-between px-6 py-5 text-left text-base font-medium text-gray-800 transition-all duration-200 focus:outline-none',
-                        'focus-visible:ring-primary/60 hover:bg-gray-50 focus-visible:ring-2 focus-visible:ring-offset-2',
+                        'focus-visible:ring-primary/60 hover:no-underline focus-visible:ring-2 focus-visible:ring-offset-2',
                         'rounded-[20px]',
                         'relative z-10',
                       )}
@@ -187,6 +184,6 @@ export default function Faq({
           </Accordion>
         </div>
       </div>
-    </section>
+    </div>
   )
 }
