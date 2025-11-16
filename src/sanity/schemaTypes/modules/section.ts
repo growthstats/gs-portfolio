@@ -41,7 +41,6 @@ export default defineType({
       name: 'title',
       type: 'string',
       group: 'content',
-      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'subtitle',
