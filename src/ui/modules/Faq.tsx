@@ -1,7 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import { PortableText } from 'next-sanity'
 import clsx from 'clsx'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -10,27 +9,40 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from '@/components/ui/accordion'
+import { PortableText } from 'next-sanity'
+import type {
+  PortableTextBlock,
+  PortableTextComponents,
+  PortableTextComponentProps,
+  PortableTextMarkComponentProps,
+} from 'next-sanity'
+import type { PortableTextLink, PortableTextSpan } from '@portabletext/types'
 
 type FAQItem = {
   _key: string
   question: string
-  answer: any[]
+  answer: PortableTextBlock[]
 }
 
 interface FaqProps {
   pretitle?: string
   title?: string
-  description?: any[]
+  description?: PortableTextBlock[]
   items?: FAQItem[]
   accessibleAccordion?: boolean
   generateSchema?: boolean
 }
 
+const isPortableTextSpan = (
+  child: PortableTextBlock['children'][number] | undefined,
+): child is PortableTextSpan =>
+  Boolean(child && typeof child === 'object' && child._type === 'span')
+
 // PortableText components override specifically for FAQ answers
-const portableComponents = {
+const portableComponents: PortableTextComponents = {
   marks: {
-    link: ({ children, value }: any) => {
-      const href = value?.href || '#'
+    link: ({ children, value }: PortableTextMarkComponentProps<PortableTextLink>) => {
+      const href = value?.href ?? '#'
       const isExternal = /^https?:\/\//i.test(href) && !href.startsWith('/')
       return (
         <a
@@ -45,10 +57,10 @@ const portableComponents = {
     },
   },
   types: {
-    code: ({ value }: any) => {
+    code: ({ value }: PortableTextComponentProps<Sanity.Code>) => {
       return (
-        <pre className="rounded-md border p-3 overflow-auto text-sm">
-          <code>{value?.code ?? value?.children ?? ''}</code>
+        <pre className="overflow-auto rounded-md border p-3 text-sm">
+          <code>{value?.code ?? ''}</code>
         </pre>
       )
     },
@@ -76,10 +88,10 @@ export default function Faq({
             acceptedAnswer: {
               '@type': 'Answer',
               text: (item.answer || [])
-                .map((block: any) =>
-                  (block.children || [])
-                    .map((c: any) => c?.text || '')
-                    .join(' ')
+                .map((block: PortableTextBlock) =>
+                  block.children
+                    .map((child) => (isPortableTextSpan(child) ? child.text : ''))
+                    .join(' '),
                 )
                 .join('\n')
                 .trim(),
@@ -90,39 +102,35 @@ export default function Faq({
 
   return (
     <section
-      className="py-8 md:py-24 bg-gradient-to-br from-gray-50 to-white"
+      className="bg-gradient-to-br from-gray-50 to-white py-8 md:py-24"
       aria-label="Frequently Asked Questions"
     >
-      {schemaMarkup && (
-        <script type="application/ld+json">
-          {JSON.stringify(schemaMarkup)}
-        </script>
-      )}
+      {schemaMarkup && <script type="application/ld+json">{JSON.stringify(schemaMarkup)}</script>}
 
-      <div className="container mx-auto px-4 max-w-6xl grid md:grid-cols-2 gap-2">
+      <div className="container mx-auto grid max-w-6xl gap-2 px-4 md:grid-cols-2">
         {/* Left Column: Text Content */}
         <div className="flex flex-col">
           {pretitle && (
             <Badge
               variant="outline"
-              className="gap-2 rounded-full px-4 py-1.5 text-xl font-semibold tracking-[0.1em] shadow-(--shadow-badge) mb-4"
+              className="mb-4 gap-2 rounded-full px-4 py-1.5 text-xl font-semibold tracking-[0.1em] shadow-(--shadow-badge)"
             >
-              <span className="w-3 h-3 bg-black rounded-full"></span>
+              <span className="h-3 w-3 rounded-full bg-black"></span>
               {pretitle}
             </Badge>
           )}
 
           {title && (
             <div>
-              <h2 className="relative text-4xl font-semibold text-gray-900 mb-4 leading-tight mt-4 mb-2 inline-block">
+              <h2 className="relative mt-4 mb-2 inline-block text-4xl leading-tight font-semibold text-gray-900">
                 {title}
-                <span className="absolute -bottom-[18px] left-1/2 w-[90%] h-[2px] -translate-x-1/2 bg-gradient-to-r from-transparent via-gray-500 to-transparent" />
+                <span className="absolute -bottom-[18px] left-1/2 h-[2px] w-[90%] -translate-x-1/2 bg-gradient-to-r from-transparent via-gray-500 to-transparent" />
               </h2>
             </div>
           )}
 
           {description && (
-            <div className="text-gray-500 text-base leading-relaxed max-w-md mt-4">
+            <div className="mt-4 max-w-md text-base leading-relaxed text-gray-500">
               <PortableText value={description} components={portableComponents} />
             </div>
           )}
@@ -133,10 +141,8 @@ export default function Faq({
           <Accordion
             type="single"
             collapsible
-            value={openIndex !== null ? String(openIndex) : undefined}
-            onValueChange={(val: string | undefined) =>
-              setOpenIndex(val ? Number(val) : null)
-            }
+            value={openIndex === null ? undefined : String(openIndex)}
+            onValueChange={(val: string | undefined) => setOpenIndex(val ? Number(val) : null)}
             aria-label={accessibleAccordion ? 'Frequently Asked Questions' : undefined}
           >
             {items.map((item, i) => {
@@ -148,7 +154,7 @@ export default function Faq({
                   key={item._key || i}
                   value={String(i)}
                   className={clsx(
-                    'relative bg-white border border-gray-100 overflow-hidden transition-shadow mb-4 duration-300 rounded-[20px] shadow-(--shadow-badge)'
+                    'relative mb-4 overflow-hidden rounded-[20px] border border-gray-100 bg-white shadow-(--shadow-badge) transition-shadow duration-300',
                   )}
                 >
                   <h3>
@@ -156,10 +162,10 @@ export default function Faq({
                       id={buttonId}
                       aria-controls={panelId}
                       className={clsx(
-                        'w-full flex items-center justify-between text-left px-6 py-5 text-base font-medium text-gray-800 transition-all duration-200 focus:outline-none',
-                        'hover:bg-gray-50 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary/60',
+                        'flex w-full items-center justify-between px-6 py-5 text-left text-base font-medium text-gray-800 transition-all duration-200 focus:outline-none',
+                        'focus-visible:ring-primary/60 hover:bg-gray-50 focus-visible:ring-2 focus-visible:ring-offset-2',
                         'rounded-[20px]',
-                        'relative z-10'
+                        'relative z-10',
                       )}
                     >
                       <span className="pr-4 break-words">{item.question}</span>
@@ -168,11 +174,10 @@ export default function Faq({
 
                   <AccordionContent
                     id={panelId}
-                    role="region"
                     aria-labelledby={buttonId}
-                    className="px-6 pb-6 pt-0 overflow-hidden rounded-b-[20px]"
+                    className="overflow-hidden rounded-b-[20px] px-6 pt-0 pb-6"
                   >
-                    <div className="text-gray-600 mt-2 leading-relaxed text-base">
+                    <div className="mt-2 text-base leading-relaxed text-gray-600">
                       <PortableText value={item.answer} components={portableComponents} />
                     </div>
                   </AccordionContent>
