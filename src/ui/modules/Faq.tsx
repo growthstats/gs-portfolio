@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import clsx from 'clsx'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -10,18 +10,21 @@ import {
   AccordionContent,
 } from '@/components/ui/accordion'
 import { PortableText } from 'next-sanity'
+import Script from 'next/script'
 import type {
   PortableTextBlock,
   PortableTextComponents,
   PortableTextComponentProps,
   PortableTextMarkComponentProps,
 } from 'next-sanity'
-import type { PortableTextLink, PortableTextSpan } from '@portabletext/types'
+import { toPlainText } from '@portabletext/toolkit'
+import type { PortableTextLink } from '@portabletext/types'
 
 type FAQItem = {
   _key: string
   question: string
   answer: PortableTextBlock[]
+  open?: boolean
 }
 
 interface FaqProps {
@@ -32,11 +35,6 @@ interface FaqProps {
   accessibleAccordion?: boolean
   generateSchema?: boolean
 }
-
-const isPortableTextSpan = (
-  child: PortableTextBlock['children'][number] | undefined,
-): child is PortableTextSpan =>
-  Boolean(child && typeof child === 'object' && child._type === 'span')
 
 // PortableText components override specifically for FAQ answers
 const portableComponents: PortableTextComponents = {
@@ -75,10 +73,21 @@ export default function Faq({
   accessibleAccordion = true,
   generateSchema = true,
 }: Readonly<FaqProps>) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const [openItemKey, setOpenItemKey] = useState<string | null>(
+    () => items.find((item) => item.open)?._key ?? null,
+  )
+
+  useEffect(() => {
+    setOpenItemKey((current) => {
+      if (current && items.some((item) => item._key === current)) {
+        return current
+      }
+      return items.find((item) => item.open)?._key ?? null
+    })
+  }, [items])
 
   const schemaMarkup =
-    generateSchema && items?.length
+    generateSchema && items.length
       ? {
           '@context': 'https://schema.org',
           '@type': 'FAQPage',
@@ -87,14 +96,7 @@ export default function Faq({
             name: item.question,
             acceptedAnswer: {
               '@type': 'Answer',
-              text: (item.answer || [])
-                .map((block: PortableTextBlock) =>
-                  block.children
-                    .map((child) => (isPortableTextSpan(child) ? child.text : ''))
-                    .join(' '),
-                )
-                .join('\n')
-                .trim(),
+              text: toPlainText(item.answer ?? []),
             },
           })),
         }
@@ -102,7 +104,15 @@ export default function Faq({
 
   return (
     <div className="py-8 md:py-24" aria-label="Frequently Asked Questions">
-      {schemaMarkup && <script type="application/ld+json">{JSON.stringify(schemaMarkup)}</script>}
+      {schemaMarkup && (
+        <Script
+          strategy="afterInteractive"
+          id={`faq-schema-${items[0]?._key ?? 'default'}`}
+          type="application/ld+json"
+        >
+          {JSON.stringify(schemaMarkup)}
+        </Script>
+      )}
 
       <div className="container mx-auto grid max-w-6xl gap-2 px-4 md:grid-cols-2">
         {/* Left Column: Text Content */}
@@ -138,18 +148,18 @@ export default function Faq({
           <Accordion
             type="single"
             collapsible
-            value={openIndex === null ? undefined : String(openIndex)}
-            onValueChange={(val: string | undefined) => setOpenIndex(val ? Number(val) : null)}
+            value={openItemKey ?? undefined}
+            onValueChange={(val: string | undefined) => setOpenItemKey(val ?? null)}
             aria-label={accessibleAccordion ? 'Frequently Asked Questions' : undefined}
           >
-            {items.map((item, i) => {
-              const panelId = `faq-panel-${i}`
-              const buttonId = `faq-button-${i}`
+            {items.map((item) => {
+              const panelId = `faq-panel-${item._key}`
+              const buttonId = `faq-button-${item._key}`
 
               return (
                 <AccordionItem
-                  key={item._key || i}
-                  value={String(i)}
+                  key={item._key}
+                  value={item._key}
                   className={clsx(
                     'relative mb-4 overflow-hidden rounded-[20px] shadow-(--shadow-badge) transition-shadow duration-300',
                   )}
