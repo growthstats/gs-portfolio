@@ -36,6 +36,7 @@ import callout from './modules/callout'
 import cardList from './modules/card-list'
 import creativeModule from './modules/creative'
 import customHtml from './modules/custom-html'
+import faq from './modules/faq'
 import flagList from './modules/flag-list'
 import hero from './modules/hero'
 import heroSaas from './modules/hero.saas'
@@ -54,56 +55,57 @@ import testimonialFeatured from './modules/testimonial.featured'
 import testimonialList from './modules/testimonial-list'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
-	// documents
-	site,
-	page,
-	globalModule,
-	blogPost,
-	blogCategory,
-	navigation,
+  // documents
+  site,
+  page,
+  globalModule,
+  blogPost,
+  blogCategory,
+  navigation,
 
-	// miscellaneous
-	announcement,
-	redirect,
-	logo,
-	person,
-	pricing,
-	reputation,
-	testimonial,
+  // miscellaneous
+  announcement,
+  redirect,
+  logo,
+  person,
+  pricing,
+  reputation,
+  testimonial,
 
-	// objects
-	cta,
-	icon,
-	img,
-	link,
-	linkList,
-	metadata,
-	moduleOptions,
+  // objects
+  cta,
+  icon,
+  img,
+  link,
+  linkList,
+  metadata,
+  moduleOptions,
 
-	// modules
-	accordionList,
-	blogFrontpage,
-	blogList,
-	blogPostContent,
-	breadcrumbs,
-	callout,
-	cardList,
-	creativeModule,
-	customHtml,
-	flagList,
-	hero,
-	heroSaas,
-	heroSplit,
-	logoList,
-	personList,
-	pricingList,
-	richtextModule,
-	scheduleModule,
-	searchModule,
-	section,
-	statList,
-	stepList,
-	tabbedContent,
-	testimonialFeatured,
-	testimonialList,
+  // modules
+  accordionList,
+  blogFrontpage,
+  blogList,
+  blogPostContent,
+  breadcrumbs,
+  callout,
+  cardList,
+  creativeModule,
+  customHtml,
+  faq,
+  flagList,
+  hero,
+  heroSaas,
+  heroSplit,
+  logoList,
+  personList,
+  pricingList,
+  richtextModule,
+  scheduleModule,
+  searchModule,
+  section,
+  statList,
+  stepList,
+  tabbedContent,
+  testimonialFeatured,
+  testimonialList,
 ]
