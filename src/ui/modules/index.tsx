@@ -25,6 +25,7 @@ import Faq from './Faq'
 import dynamic from 'next/dynamic'
 import type { ReactNode } from 'react'
 import { createDataAttribute } from 'next-sanity'
+import TeamPlaceholder from './TeamPlaceholder'
 
 export const MODULE_MAP = {
   'accordion-list': AccordionList,
@@ -52,6 +53,7 @@ export const MODULE_MAP = {
   'testimonial-list': TestimonialList,
   'testimonial.featured': TestimonialFeatured,
   faq: Faq,
+  'team.placeholder': TeamPlaceholder,
 } as const
 
 export default function Modules({
