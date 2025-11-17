@@ -1,26 +1,20 @@
-@import "tailwindcss";
-@import "./fonts.css";
-@import "./typography.css";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import './fonts.css';
+@import './typography.css';
+@import 'tw-animate-css';
 
 @theme {
   --color-canvas: #f5f5f5;
   --color-ink: #000;
-  --custom-shadow:
-    rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+  --custom-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
   --shadow-badge:
-    0px 0.7065919983928324px 0.7065919983928324px -0.5416666666666666px
-      rgba(0, 0, 0, 0.1),
-    0px 1.8065619053231785px 1.8065619053231785px -1.0833333333333333px
-      rgba(0, 0, 0, 0.09),
+    0px 0.7065919983928324px 0.7065919983928324px -0.5416666666666666px rgba(0, 0, 0, 0.1),
+    0px 1.8065619053231785px 1.8065619053231785px -1.0833333333333333px rgba(0, 0, 0, 0.09),
     0px 3.6217592146567767px 3.6217592146567767px -1.625px rgba(0, 0, 0, 0.09),
-    0px 6.8655999097303715px 6.8655999097303715px -2.1666666666666665px
-      rgba(0, 0, 0, 0.09),
-    0px 13.646761411524492px 13.646761411524492px -2.7083333333333335px
-      rgba(0, 0, 0, 0.08),
+    0px 6.8655999097303715px 6.8655999097303715px -2.1666666666666665px rgba(0, 0, 0, 0.09),
+    0px 13.646761411524492px 13.646761411524492px -2.7083333333333335px rgba(0, 0, 0, 0.08),
     0px 30px 30px -3.25px rgba(0, 0, 0, 0.05),
-    inset 0px 3px 1px 0px
-      var(--token-d4c0a0e6-8fba-45bc-8f6f-215e608cd0df, rgb(255, 255, 255));
+    inset 0px 3px 1px 0px var(--token-d4c0a0e6-8fba-45bc-8f6f-215e608cd0df, rgb(255, 255, 255));
   --max-height-fold: calc(100svh - var(--header-height));
   --font-size-display-hero: clamp(2.5rem, 5vw, 5rem);
   --font-size-display-xl: clamp(2rem, 4vw, 3.5rem);
@@ -30,6 +24,10 @@
   --font-size-h4: clamp(1.25rem, 1.6vw, 1.5rem);
   --font-size-h5: clamp(1.125rem, 1.4vw, 1.25rem);
   --font-size-h6: clamp(1rem, 1.2vw, 1.125rem);
+  --font-size-body-lg: 1.25rem; /* 20px */
+  --font-size-body: 1rem; /* 16px */
+  --font-size-body-sm: 0.875rem; /* 14px */
+  --font-size-body-xs: 0.75rem; /* 12px */
   --leading-display-hero: 1.05;
   --leading-display-xl: 1.1;
   --leading-h1: 1.1;
@@ -38,6 +36,10 @@
   --leading-h4: 1.3;
   --leading-h5: 1.35;
   --leading-h6: 1.4;
+  --leading-body-lg: 1.8;
+  --leading-body: 1.65;
+  --leading-body-sm: 1.5;
+  --leading-body-xs: 1.4;
   --leading-subtitle: 1.6;
   --tracking-display-hero: -0.02em;
   --tracking-display-xl: -0.01em;
@@ -82,11 +84,7 @@
   @keyframes target {
     0%,
     50% {
-      background-color: color-mix(
-        in oklab,
-        var(--color-amber-400) 50%,
-        transparent
-      );
+      background-color: color-mix(in oklab, var(--color-amber-400) 50%, transparent);
     }
   }
 
@@ -101,7 +99,7 @@
   }
 
   label,
-  input[type="submit"],
+  input[type='submit'],
   select,
   button,
   summary {
@@ -139,8 +137,8 @@
 @utility anim-fade {
   --x: 0;
   --y: 0;
-  animation: anim-fade-to var(--tw-duration, var(--default-transition-duration))
-    ease-in-out forwards;
+  animation: anim-fade-to var(--tw-duration, var(--default-transition-duration)) ease-in-out
+    forwards;
 }
 @utility anim-fade-to-l {
   @apply anim-fade;
@@ -196,6 +194,18 @@
 @utility text-h6 {
   font-size: var(--font-size-h6);
 }
+@utility text-body-lg {
+  font-size: var(--font-size-body-lg);
+}
+@utility text-body {
+  font-size: var(--font-size-body);
+}
+@utility text-body-sm {
+  font-size: var(--font-size-body-sm);
+}
+@utility text-body-xs {
+  font-size: var(--font-size-body-xs);
+}
 
 @utility leading-display-hero {
   line-height: var(--leading-display-hero);
@@ -220,6 +230,18 @@
 }
 @utility leading-h6 {
   line-height: var(--leading-h6);
+}
+@utility leading-body-lg {
+  line-height: var(--leading-body-lg);
+}
+@utility leading-body {
+  line-height: var(--leading-body);
+}
+@utility leading-body-sm {
+  line-height: var(--leading-body-sm);
+}
+@utility leading-body-xs {
+  line-height: var(--leading-body-xs);
 }
 @utility leading-subtitle {
   line-height: var(--leading-subtitle);
@@ -326,22 +348,17 @@
   -webkit-backdrop-filter: blur(5px);
 
   &::before {
-    content: "";
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      rgb(255 255 255 / 0.8),
-      transparent
-    );
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.8), transparent);
   }
 
   &::after {
-    content: "";
+    content: '';
     position: absolute;
     top: 0;
     left: 0;
@@ -383,12 +400,7 @@
 
 @utility overflow-fade-r {
   --offset: 4rem;
-  mask: linear-gradient(
-    to right,
-    black 50%,
-    black calc(100% - var(--offset)),
-    transparent
-  );
+  mask: linear-gradient(to right, black 50%, black calc(100% - var(--offset)), transparent);
 }
 
 /* layout */
@@ -507,7 +519,7 @@
     gap: 1em;
 
     &::after {
-      content: "+";
+      content: '+';
       display: inline-block;
       font-family: monospace;
       font-size: 1.5em;
@@ -519,7 +531,7 @@
   }
 
   &:open summary::after {
-    content: "-";
+    content: '-';
   }
 }
 
