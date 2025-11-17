@@ -9,6 +9,8 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from '@/components/ui/accordion'
+import Heading from '@/ui/Heading'
+import Text from '@/ui/Text'
 import { PortableText } from 'next-sanity'
 import Script from 'next/script'
 import type {
@@ -120,26 +122,32 @@ export default function Faq({
           {pretitle && (
             <Badge
               variant="outline"
-              className="mb-4 gap-2 rounded-full px-4 py-1.5 text-xl font-semibold tracking-[0.1em] shadow-(--shadow-badge)"
+              className="mb-4 gap-2 rounded-full px-4 py-1.5 shadow-(--shadow-badge)"
             >
               <span className="h-3 w-3 rounded-full bg-black"></span>
-              {pretitle}
+              <Text as="span" variant="eyebrow" className="text-ink">
+                {pretitle}
+              </Text>
             </Badge>
           )}
 
           {title && (
             <div>
-              <h2 className="relative mt-4 mb-2 inline-block text-4xl leading-tight font-semibold text-gray-900">
+              <Heading
+                as="h2"
+                variant="h2"
+                className="relative mt-4 mb-2 inline-block text-gray-900"
+              >
                 {title}
                 <span className="absolute -bottom-[18px] left-1/2 h-[2px] w-[90%] -translate-x-1/2 bg-gradient-to-r from-transparent via-gray-500 to-transparent" />
-              </h2>
+              </Heading>
             </div>
           )}
 
           {description && (
-            <div className="mt-4 max-w-md text-base leading-relaxed text-gray-500">
+            <Text as="p" variant="body" className="mt-4 max-w-md text-gray-500">
               <PortableText value={description} components={portableComponents} />
-            </div>
+            </Text>
           )}
         </div>
 
@@ -169,13 +177,15 @@ export default function Faq({
                       id={buttonId}
                       aria-controls={panelId}
                       className={clsx(
-                        'flex w-full items-center justify-between px-6 py-5 text-left text-base font-medium text-gray-800 transition-all duration-200 focus:outline-none',
+                        'flex w-full items-center justify-between px-6 py-5 text-left transition-all duration-200 focus:outline-none',
                         'focus-visible:ring-primary/60 hover:no-underline focus-visible:ring-2 focus-visible:ring-offset-2',
                         'rounded-[20px]',
                         'relative z-10',
                       )}
                     >
-                      <span className="pr-4 break-words">{item.question}</span>
+                      <Text as="span" variant="body" className="pr-4 break-words text-gray-800">
+                        {item.question}
+                      </Text>
                     </AccordionTrigger>
                   </h3>
 
@@ -184,9 +194,9 @@ export default function Faq({
                     aria-labelledby={buttonId}
                     className="overflow-hidden rounded-b-[20px] px-6 pt-0 pb-6"
                   >
-                    <div className="mt-2 text-base leading-relaxed text-gray-600">
+                    <Text as="p" variant="body" className="mt-2 text-gray-600">
                       <PortableText value={item.answer} components={portableComponents} />
-                    </div>
+                    </Text>
                   </AccordionContent>
                 </AccordionItem>
               )
