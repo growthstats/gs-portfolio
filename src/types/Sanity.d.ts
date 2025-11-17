@@ -226,6 +226,25 @@ declare global {
       subtitle?: string;
       title: string;
     }
+
+    type FaqItem = {
+      _key: string;
+      question: string;
+      answer: any[];
+      open?: boolean;
+    };
+  
+    interface FaqModule {
+      _type: "faq";
+      _key: string;
+      pretitle?: string;
+      title?: string;
+      description?: any[];
+      items: FaqItem[];
+      accessibleAccordion?: boolean;
+      generateSchema?: boolean;
+    }
+
   }
 }
 
