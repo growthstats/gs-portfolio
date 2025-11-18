@@ -79,7 +79,7 @@ interface FeatureCardsProps {
   className?: string
 }
 
-export default function TeamPlaceholders({
+export default function TeamPlaceholder({
   features = DEFAULT_FEATURES,
   className = '',
 }: FeatureCardsProps) {
@@ -101,11 +101,9 @@ export default function TeamPlaceholders({
                 </div>
               </div>
 
-              <h3 className="mt-2 text-center text-lg font-medium text-gray-900">{f.title}</h3>
+              <h3 className="subtitle mt-2 text-center">{f.title}</h3>
 
-              <p className="mt-3 max-w-[42ch] text-center text-sm leading-6 text-gray-600">
-                {f.description}
-              </p>
+              <p className="mt-3 text-center text-balance">{f.description}</p>
             </article>
           ))}
         </div>

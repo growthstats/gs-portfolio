@@ -17,6 +17,7 @@ import SearchModule from './SearchModule'
 import StatList from './StatList'
 import StepList from './StepList'
 import TabbedContent from './TabbedContent'
+import TeamPlaceholder from './TeamPlaceholder'
 import TestimonialList from './TestimonialList'
 import TestimonialFeatured from './TestimonialFeatured'
 import Section from './Section'
@@ -25,7 +26,6 @@ import Faq from './Faq'
 import dynamic from 'next/dynamic'
 import type { ReactNode } from 'react'
 import { createDataAttribute } from 'next-sanity'
-import TeamPlaceholder from './TeamPlaceholder'
 
 export const MODULE_MAP = {
   'accordion-list': AccordionList,
