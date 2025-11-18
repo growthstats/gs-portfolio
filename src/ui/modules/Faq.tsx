@@ -116,9 +116,9 @@ export default function Faq({
         </Script>
       )}
 
-      <div className="container mx-auto grid max-w-6xl gap-2 px-4 md:grid-cols-2">
+      <div className="container mx-auto grid max-w-6xl gap-4 px-4 md:grid-cols-2 md:gap-2">
         {/* Left Column: Text Content */}
-        <div className="flex flex-col">
+        <div className="flex flex-col items-center md:items-start">
           {pretitle && (
             <Badge
               variant="outline"
@@ -136,7 +136,7 @@ export default function Faq({
               <Heading
                 as="h2"
                 variant="h2"
-                className="relative mt-4 mb-2 inline-block text-gray-900"
+                className="relative mt-4 mb-2 inline-block text-center text-gray-900"
               >
                 {title}
                 <span className="absolute -bottom-[18px] left-1/2 h-[2px] w-[90%] -translate-x-1/2 bg-gradient-to-r from-transparent via-gray-500 to-transparent" />
@@ -145,7 +145,11 @@ export default function Faq({
           )}
 
           {description && (
-            <Text as="p" variant="body" className="mt-4 max-w-md text-gray-500">
+            <Text
+              as="p"
+              variant="body"
+              className="mt-4 max-w-md text-center text-gray-500 md:text-left"
+            >
               <PortableText value={description} components={portableComponents} />
             </Text>
           )}

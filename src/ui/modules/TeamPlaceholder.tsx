@@ -1,4 +1,6 @@
 import React from 'react'
+import Heading from '@/ui/Heading'
+import Text from '@/ui/Text'
 
 type Feature = {
   id: string
@@ -88,23 +90,25 @@ export default function TeamPlaceholder({
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-10">
           {features.map((f) => (
-            <article
+            <div
               key={f.id}
-              className="flex flex-col items-center overflow-visible rounded-3xl p-6 text-center shadow-(--shadow-badge) transition-shadow duration-300 hover:shadow-[0px_12px_40px_rgba(0,0,0,0.10)]"
+              className="flex flex-col items-center gap-2 overflow-visible rounded-3xl px-6 py-8 text-center shadow-(--shadow-badge) transition-shadow duration-300"
             >
-              <div>
-                <div
-                  className="flex h-20 w-20 items-center justify-center rounded-2xl shadow-(--shadow-badge)"
-                  aria-hidden
-                >
-                  <div className="m-2 p-1 text-black">{f.icon}</div>
-                </div>
+              <div
+                className="flex h-20 w-20 items-center justify-center rounded-2xl shadow-(--shadow-badge)"
+                aria-hidden
+              >
+                <div className="m-2 p-1 text-black">{f.icon}</div>
               </div>
 
-              <h3 className="subtitle mt-2 text-center">{f.title}</h3>
+              <Heading as="h3" variant="h5" className="mt-3 text-center">
+                {f.title}
+              </Heading>
 
-              <p className="mt-3 text-center text-balance">{f.description}</p>
-            </article>
+              <Text as="p" variant="body" className="text-center text-[#616060]">
+                {f.description}
+              </Text>
+            </div>
           ))}
         </div>
       </div>
