@@ -21,6 +21,7 @@ import TestimonialList from './TestimonialList'
 import TestimonialFeatured from './TestimonialFeatured'
 import Section from './Section'
 import Faq from './Faq'
+import ContactSimple from './ContactSimple'
 
 import dynamic from 'next/dynamic'
 import type { ReactNode } from 'react'
@@ -52,6 +53,7 @@ export const MODULE_MAP = {
   'testimonial-list': TestimonialList,
   'testimonial.featured': TestimonialFeatured,
   faq: Faq,
+  'contact.simple': ContactSimple,
 } as const
 
 export default function Modules({

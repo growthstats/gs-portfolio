@@ -105,7 +105,7 @@ export default function Faq({
       : null
 
   return (
-    <div className="py-8 md:py-24" aria-label="Frequently Asked Questions">
+    <div className="py-8" aria-label="Frequently Asked Questions">
       {schemaMarkup && (
         <Script
           strategy="afterInteractive"

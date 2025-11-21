@@ -77,6 +77,7 @@ export default defineType({
         { type: 'tabbed-content' },
         { type: 'testimonial-list' },
         { type: 'testimonial.featured' },
+        { type: 'contact.simple' },
       ],
       validation: (Rule) => Rule.required().min(1),
     }),
