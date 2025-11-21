@@ -72,19 +72,19 @@ export default function ContactSimple({ title, excerpt, ctas = [] }: Readonly<Co
 
       <div className="container mx-auto flex max-w-3xl flex-col items-center px-4 text-center">
         {title && (
-          <Heading as="h2" variant="h2" className="mb-2 inline-block text-gray-900">
+          <Heading as="h2" variant="h2" className="mb-1 inline-block text-gray-900">
             {title}
           </Heading>
         )}
 
         {excerpt && (
-          <Text as="p" variant="body" className="mx-auto mt-4 mb-4 max-w-xl text-gray-500">
+          <Text as="p" variant="body" className="mx-auto mt-1 mb-2 max-w-xl text-gray-500">
             <PortableText value={excerpt} />
           </Text>
         )}
 
         {ctas?.length > 0 && (
-          <div className="mt-2 flex flex-wrap items-center justify-center gap-4">
+          <div className="my-3 flex flex-wrap items-center justify-center gap-4">
             {ctas.map((cta) => (
               <CTA
                 className="rounded-full shadow-(--shadow-badge) max-sm:w-full"
