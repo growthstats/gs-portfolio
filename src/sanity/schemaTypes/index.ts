@@ -51,6 +51,7 @@ import section from './modules/section'
 import statList from './modules/stat-list'
 import stepList from './modules/step-list'
 import tabbedContent from './modules/tabbed-content'
+import teamPlaceholder from './modules/team.placeholder'
 import testimonialFeatured from './modules/testimonial.featured'
 import testimonialList from './modules/testimonial-list'
 
@@ -106,6 +107,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   statList,
   stepList,
   tabbedContent,
+  teamPlaceholder,
   testimonialFeatured,
   testimonialList,
 ]

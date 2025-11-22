@@ -17,6 +17,7 @@ import SearchModule from './SearchModule'
 import StatList from './StatList'
 import StepList from './StepList'
 import TabbedContent from './TabbedContent'
+import TeamPlaceholder from './TeamPlaceholder'
 import TestimonialList from './TestimonialList'
 import TestimonialFeatured from './TestimonialFeatured'
 import Section from './Section'
@@ -52,6 +53,7 @@ export const MODULE_MAP = {
   'testimonial-list': TestimonialList,
   'testimonial.featured': TestimonialFeatured,
   faq: Faq,
+  'team.placeholder': TeamPlaceholder,
 } as const
 
 export default function Modules({
