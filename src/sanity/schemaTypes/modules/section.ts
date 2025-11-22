@@ -78,6 +78,7 @@ export default defineType({
         { type: 'testimonial-list' },
         { type: 'testimonial.featured' },
         { type: 'contact.simple' },
+        { type: 'team.placeholder' },
       ],
       validation: (Rule) => Rule.required().min(1),
     }),
