@@ -79,42 +79,72 @@ function sanitizeString(value?: string | null) {
 }
 
 function isLucideIcon(icon: unknown): icon is LucideIcon {
-  return typeof icon === 'function' && 'displayName' in icon
+  if (!icon) return false
+  if (typeof icon === 'function') return true
+  return typeof icon === 'object' && 'render' in (icon as Record<string, unknown>)
 }
 
 async function loadIcon(name: string): Promise<LucideIcon> {
-  const key = normalizeIconName(name)
+  console.log('name: ', name)
+  const resolved = resolveIconImporter(name)
+  console.log('resolved: ', resolved)
+  const cacheKey = resolved?.key ?? name
 
-  const cached = ICON_CACHE.get(key)
+  const cached = ICON_CACHE.get(cacheKey)
   if (cached) return cached
 
-  const importIcon = (dynamicIconImports as Record<string, () => Promise<{ default: LucideIcon }>>)[
-    key
-  ]
-
-  if (!importIcon) {
+  if (!resolved) {
     const fallback = Promise.resolve(FALLBACK_ICON)
-    ICON_CACHE.set(key, fallback)
+    ICON_CACHE.set(cacheKey, fallback)
     return fallback
   }
 
-  const loader = importIcon()
+  const loader = resolved
+    .importer()
     .then((module) => {
       const Icon = module.default
+      console.log('Icon: ', Icon)
       return isLucideIcon(Icon) ? Icon : FALLBACK_ICON
     })
     .catch(() => FALLBACK_ICON)
 
-  ICON_CACHE.set(key, loader)
+  ICON_CACHE.set(cacheKey, loader)
   return loader
 }
 
-function normalizeIconName(value: string) {
-  return value
-    .replaceAll(/\s+/g, '-')
+function resolveIconImporter(name: string) {
+  const iconImports: Partial<Record<string, () => Promise<{ default: LucideIcon }>>> =
+    dynamicIconImports
+
+  const candidates = createIconCandidates(name)
+  for (const key of candidates) {
+    const importer = iconImports[key]
+    if (importer) {
+      return { key, importer }
+    }
+  }
+
+  return undefined
+}
+
+function createIconCandidates(value: string) {
+  const trimmed = value.trim()
+  const base = trimmed
+    .replace(/^lucide[-_:]/i, '')
+    .replace(/\.svg$/i, '')
+    .replace(/[-_ ]?icon$/i, '')
+
+  const slug = base
+    .replaceAll(/[\s_:/]+/g, '-')
     .replaceAll(/([a-z0-9])([A-Z])/g, '$1-$2')
     .replaceAll(/([A-Z])([A-Z][a-z])/g, '$1-$2')
+    .replaceAll(/-+/g, '-')
+    .replaceAll(/^-|-$/g, '')
     .toLowerCase()
+
+  return Array.from(
+    new Set([trimmed, trimmed.toLowerCase(), base, base.toLowerCase(), slug]),
+  ).filter(Boolean)
 }
 
 function isSanityModule(value: unknown): value is Sanity.Module {

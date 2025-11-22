@@ -1,5 +1,6 @@
 import { defineField, defineType } from 'sanity'
 import { VscLayout } from 'react-icons/vsc'
+import { LUCIDE_ICON_OPTIONS, OPTIONAL_LUCIDE_ICON_OPTIONS } from '../utils/lucideIconOptions'
 
 export default defineType({
   name: 'section',
@@ -23,13 +24,18 @@ export default defineType({
       name: 'icon',
       type: 'string',
       group: 'content',
-      description: 'Lucide icon name (e.g. Sparkles).',
+      description: 'Select a Lucide icon.',
+      initialValue: '',
+      options: {
+        list: OPTIONAL_LUCIDE_ICON_OPTIONS,
+        layout: 'dropdown',
+      },
       validation: (Rule) =>
         Rule.custom((value) => {
           if (!value) return true
-          return /^[A-Z][A-Za-z0-9]+$/.test(value)
+          return LUCIDE_ICON_OPTIONS.some((option) => option.value === value)
             ? true
-            : 'Use a valid Lucide icon name (e.g. Sparkles)'
+            : 'Select a valid Lucide icon'
         }),
     }),
     defineField({
