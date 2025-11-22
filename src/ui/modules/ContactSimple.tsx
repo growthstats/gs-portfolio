@@ -57,11 +57,13 @@ function CustomIcon() {
   )
 }
 
-export default function ContactSimple({
-  title,
-  excerpt,
-  ctas = [],
-}: Readonly<Sanity.ContactSimpleProps>) {
+interface ContactSimpleProps {
+  title?: string
+  excerpt?: PortableTextBlock[]
+  ctas?: Sanity.CTA[]
+}
+
+export default function ContactSimple({ title, excerpt, ctas = [] }: Readonly<ContactSimpleProps>) {
   return (
     <div className="relative py-8">
       <span className="absolute top-0 left-1/2 block h-[2px] w-[90%] -translate-x-1/2 bg-gradient-to-r from-transparent via-gray-500 to-transparent" />

@@ -234,18 +234,15 @@ declare global {
       open?: boolean
     }
 
-    interface FaqProps {
+    interface FaqModule {
+      _type: 'faq'
+      _key: string
       pretitle?: string
       title?: string
-      description?: PortableTextBlock[]
-      items?: FAQItem[]
+      description?: any[]
+      items: FaqItem[]
       accessibleAccordion?: boolean
       generateSchema?: boolean
-    }
-    interface ContactSimpleProps {
-      title?: string
-      excerpt?: PortableTextBlock[]
-      ctas?: Sanity.CTA[]
     }
   }
 }

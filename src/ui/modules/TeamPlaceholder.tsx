@@ -84,7 +84,7 @@ interface FeatureCardsProps {
 export default function TeamPlaceholder({
   features = DEFAULT_FEATURES,
   className = '',
-}: FeatureCardsProps) {
+}: Readonly<FeatureCardsProps>) {
   return (
     <div aria-label="Key features" className={`w-full px-4 py-2 sm:px-6 lg:px-10 ${className}`}>
       <div className="mx-auto max-w-7xl">

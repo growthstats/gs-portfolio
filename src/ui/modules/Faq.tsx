@@ -51,6 +51,15 @@ const portableComponents: PortableTextComponents = {
   },
 }
 
+interface FaqProps {
+  pretitle?: string
+  title?: string
+  description?: PortableTextBlock[]
+  items?: Sanity.FAQItem[]
+  accessibleAccordion?: boolean
+  generateSchema?: boolean
+}
+
 export default function Faq({
   pretitle,
   title,
@@ -58,7 +67,7 @@ export default function Faq({
   items = [],
   accessibleAccordion = true,
   generateSchema = true,
-}: Readonly<Sanity.FaqProps>) {
+}: Readonly<FaqProps>) {
   const [openItemKey, setOpenItemKey] = useState<string | null>(
     () => items.find((item) => item.open)?._key ?? null,
   )
