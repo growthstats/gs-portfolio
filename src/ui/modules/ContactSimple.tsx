@@ -7,12 +7,6 @@ import { PortableText } from 'next-sanity'
 import type { PortableTextBlock } from 'next-sanity'
 import CTA from '@/ui/CTA'
 
-interface ContactSimpleProps {
-  title?: string
-  excerpt?: PortableTextBlock[]
-  ctas?: Sanity.CTA[]
-}
-
 function CustomIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -63,9 +57,13 @@ function CustomIcon() {
   )
 }
 
-export default function ContactSimple({ title, excerpt, ctas = [] }: Readonly<ContactSimpleProps>) {
+export default function ContactSimple({
+  title,
+  excerpt,
+  ctas = [],
+}: Readonly<Sanity.ContactSimpleProps>) {
   return (
-    <section className="relative py-8">
+    <div className="relative py-8">
       <span className="absolute top-0 left-1/2 block h-[2px] w-[90%] -translate-x-1/2 bg-gradient-to-r from-transparent via-gray-500 to-transparent" />
 
       <div className="container mx-auto flex max-w-3xl flex-col items-center px-4 text-center">
@@ -99,6 +97,6 @@ export default function ContactSimple({ title, excerpt, ctas = [] }: Readonly<Co
       </div>
 
       <span className="absolute bottom-0 left-1/2 block h-[2px] w-[90%] -translate-x-1/2 bg-gradient-to-r from-transparent via-gray-500 to-transparent" />
-    </section>
+    </div>
   )
 }

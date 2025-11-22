@@ -91,6 +91,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   breadcrumbs,
   callout,
   cardList,
+  contactSimple,
   creativeModule,
   customHtml,
   faq,
@@ -111,5 +112,4 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   teamPlaceholder,
   testimonialFeatured,
   testimonialList,
-  contactSimple,
 ]

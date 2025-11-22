@@ -22,22 +22,6 @@ import type {
 import { toPlainText } from '@portabletext/toolkit'
 import type { PortableTextLink } from '@portabletext/types'
 
-type FAQItem = {
-  _key: string
-  question: string
-  answer: PortableTextBlock[]
-  open?: boolean
-}
-
-interface FaqProps {
-  pretitle?: string
-  title?: string
-  description?: PortableTextBlock[]
-  items?: FAQItem[]
-  accessibleAccordion?: boolean
-  generateSchema?: boolean
-}
-
 // PortableText components override specifically for FAQ answers
 const portableComponents: PortableTextComponents = {
   marks: {
@@ -74,7 +58,7 @@ export default function Faq({
   items = [],
   accessibleAccordion = true,
   generateSchema = true,
-}: Readonly<FaqProps>) {
+}: Readonly<Sanity.FaqProps>) {
   const [openItemKey, setOpenItemKey] = useState<string | null>(
     () => items.find((item) => item.open)?._key ?? null,
   )
