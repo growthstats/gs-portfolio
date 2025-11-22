@@ -22,22 +22,6 @@ import type {
 import { toPlainText } from '@portabletext/toolkit'
 import type { PortableTextLink } from '@portabletext/types'
 
-type FAQItem = {
-  _key: string
-  question: string
-  answer: PortableTextBlock[]
-  open?: boolean
-}
-
-interface FaqProps {
-  pretitle?: string
-  title?: string
-  description?: PortableTextBlock[]
-  items?: FAQItem[]
-  accessibleAccordion?: boolean
-  generateSchema?: boolean
-}
-
 // PortableText components override specifically for FAQ answers
 const portableComponents: PortableTextComponents = {
   marks: {
@@ -65,6 +49,15 @@ const portableComponents: PortableTextComponents = {
       )
     },
   },
+}
+
+interface FaqProps {
+  pretitle?: string
+  title?: string
+  description?: PortableTextBlock[]
+  items?: Sanity.FAQItem[]
+  accessibleAccordion?: boolean
+  generateSchema?: boolean
 }
 
 export default function Faq({
@@ -105,7 +98,7 @@ export default function Faq({
       : null
 
   return (
-    <div className="py-8 md:py-24" aria-label="Frequently Asked Questions">
+    <div className="py-8" aria-label="Frequently Asked Questions">
       {schemaMarkup && (
         <Script
           strategy="afterInteractive"

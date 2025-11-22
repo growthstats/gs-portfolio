@@ -65,6 +65,7 @@ export default defineType({
         { type: 'breadcrumbs' },
         { type: 'callout' },
         { type: 'card-list' },
+        { type: 'contact.simple' },
         { type: 'creative-module' },
         { type: 'custom-html' },
         { type: 'faq' },
