@@ -55,8 +55,8 @@ import tabbedContent from './modules/tabbed-content'
 import teamPlaceholder from './modules/team.placeholder'
 import testimonialFeatured from './modules/testimonial.featured'
 import testimonialList from './modules/testimonial-list'
-import JoinUsPlaceholder from './modules/join-us.placeholder'
-import AboutPlaceholder from './modules/about.placeholder'
+import joinUsPlaceholder from './modules/join-us.placeholder'
+import aboutPlaceholder from './modules/about.placeholder'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   // documents
@@ -86,7 +86,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   moduleOptions,
 
   // modules
-  AboutPlaceholder,
+  aboutPlaceholder,
   accordionList,
   blogFrontpage,
   blogList,
@@ -102,7 +102,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   hero,
   heroSaas,
   heroSplit,
-  JoinUsPlaceholder,
+  joinUsPlaceholder,
   logoList,
   personList,
   pricingList,

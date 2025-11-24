@@ -2,6 +2,7 @@ import React from 'react'
 import { Badge } from '@/components/ui/badge'
 import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
+import CTA from '@/ui/CTA'
 
 const JoinUsPlaceholder = () => {
   return (
@@ -38,9 +39,12 @@ const JoinUsPlaceholder = () => {
         </Text>
 
         {/* Bottom Button */}
-        <button className="mt-8 rounded-full px-8 py-3 font-medium shadow-(--shadow-badge)">
+        <CTA
+          style={'ghost'}
+          className="mt-8 rounded-full px-8 py-3 font-medium shadow-(--shadow-badge)"
+        >
           Book an Appointment
-        </button>
+        </CTA>
       </div>
     </div>
   )
