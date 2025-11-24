@@ -58,6 +58,7 @@ export default defineType({
       type: 'array',
       group: 'content',
       of: [
+        { type: 'about.placeholder' },
         { type: 'accordion-list' },
         { type: 'blog-frontpage' },
         { type: 'blog-list' },
@@ -73,6 +74,7 @@ export default defineType({
         { type: 'hero' },
         { type: 'hero.saas' },
         { type: 'hero.split' },
+        { type: 'join-us.placeholder' },
         { type: 'logo-list' },
         { type: 'person-list' },
         { type: 'pricing-list' },
