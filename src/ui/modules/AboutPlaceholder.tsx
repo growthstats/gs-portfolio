@@ -7,7 +7,7 @@ import Text from '@/ui/Text'
 
 const AboutPlaceholder = () => {
   return (
-    <div className="m-2 w-full py-4">
+    <div className="w-full py-4 md:m-2">
       {/* Outer grid: on lg it's two columns, on mobile it stacks */}
       <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-2">
         {/* ---------- DESKTOP IMAGE (left column only) ---------- */}
@@ -54,7 +54,7 @@ const AboutPlaceholder = () => {
               {/* ----- DESKTOP ONLY divider: keep as-is but hide on mobile ----- */}
               <span
                 aria-hidden="true"
-                className="absolute top-full left-1/2 mt-3 block hidden h-[2px] w-[75%] -translate-x-1/2 bg-gradient-to-r from-transparent via-gray-400 to-transparent md:left-0 md:translate-x-0 lg:block"
+                className="absolute top-full left-1/2 mt-3 hidden h-[2px] w-[75%] -translate-x-1/2 bg-gradient-to-r from-transparent via-gray-400 to-transparent md:left-0 md:translate-x-0 lg:block"
               />
             </div>
           </div>
