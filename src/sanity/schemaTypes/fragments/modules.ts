@@ -5,6 +5,7 @@ export default defineField({
   description: 'Page content',
   type: 'array',
   of: [
+    { type: 'about.placeholder' },
     { type: 'accordion-list' },
     { type: 'blog-frontpage' },
     { type: 'blog-list' },
@@ -19,6 +20,7 @@ export default defineField({
     { type: 'hero' },
     { type: 'hero.saas' },
     { type: 'hero.split' },
+    { type: 'join-us.placeholder' },
     { type: 'logo-list' },
     { type: 'person-list' },
     { type: 'pricing-list' },

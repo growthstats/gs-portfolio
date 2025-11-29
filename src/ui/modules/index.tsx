@@ -1,3 +1,4 @@
+import AboutPlaceholder from './AboutPlaceholder'
 import AccordionList from './AccordionList'
 import BlogFrontpage from './blog/BlogFrontpage'
 import BlogList from './blog/BlogList'
@@ -10,6 +11,7 @@ import FlagList from './FlagList'
 import Hero from './Hero'
 import HeroSplit from './HeroSplit'
 import HeroSaaS from './HeroSaaS'
+import JoinUsPlaceholder from './JoinUsPlaceholder'
 import LogoList from './LogoList'
 import RichtextModule from './RichtextModule'
 import ScheduleModule from './ScheduleModule'
@@ -29,6 +31,7 @@ import type { ReactNode } from 'react'
 import { createDataAttribute } from 'next-sanity'
 
 export const MODULE_MAP = {
+  'about.placeholder': AboutPlaceholder,
   'accordion-list': AccordionList,
   'blog-frontpage': BlogFrontpage,
   'blog-list': BlogList,
@@ -36,12 +39,15 @@ export const MODULE_MAP = {
   breadcrumbs: Breadcrumbs,
   callout: Callout,
   'card-list': CardList,
+  'contact.simple': ContactSimple,
   'creative-module': dynamic(() => import('./CreativeModule')),
   'custom-html': CustomHTML,
+  faq: Faq,
   'flag-list': FlagList,
   hero: Hero,
-  'hero.split': HeroSplit,
   'hero.saas': HeroSaaS,
+  'hero.split': HeroSplit,
+  'join-us.placeholder': JoinUsPlaceholder,
   'logo-list': LogoList,
   'person-list': dynamic(() => import('./PersonList')),
   'pricing-list': dynamic(() => import('./PricingList')),
@@ -53,8 +59,6 @@ export const MODULE_MAP = {
   'tabbed-content': TabbedContent,
   'testimonial-list': TestimonialList,
   'testimonial.featured': TestimonialFeatured,
-  faq: Faq,
-  'contact.simple': ContactSimple,
   'team.placeholder': TeamPlaceholder,
 } as const
 
