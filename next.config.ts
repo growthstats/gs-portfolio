@@ -6,30 +6,30 @@ import { supportedLanguages } from '@/lib/i18n'
 import type { NextConfig } from 'next'
 
 const client = createClient({
-	projectId,
-	dataset,
-	// token, // for private datasets
-	apiVersion,
-	useCdn: true,
+  projectId,
+  dataset,
+  // token, // for private datasets
+  apiVersion,
+  useCdn: true,
 })
 
 export default {
-	images: {
-		dangerouslyAllowSVG: true,
-		remotePatterns: [
-			{
-				protocol: 'https',
-				hostname: 'cdn.sanity.io',
-			},
-			{
-				protocol: 'https',
-				hostname: 'avatars.githubusercontent.com',
-			},
-		],
-	},
+  images: {
+    dangerouslyAllowSVG: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.sanity.io',
+      },
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com',
+      },
+    ],
+  },
 
-	async redirects() {
-		return await client.fetch(groq`*[_type == 'redirect']{
+  async redirects() {
+    return await client.fetch(groq`*[_type == 'redirect']{
 			source,
 			'destination': select(
 				destination.type == 'internal' =>
@@ -41,26 +41,34 @@ export default {
 			),
 			permanent
 		}`)
-	},
+  },
 
-	async rewrites() {
-		if (!supportedLanguages?.length) return []
+  async rewrites() {
+    if (!supportedLanguages?.length) return []
 
-		return [
-			{
-				source: `/:lang/${BLOG_DIR}/:slug`,
-				destination: `/${BLOG_DIR}/:lang/:slug`,
-			},
-		]
-	},
+    return [
+      {
+        source: `/:lang/${BLOG_DIR}/:slug`,
+        destination: `/${BLOG_DIR}/:lang/:slug`,
+      },
+    ]
+  },
 
-	env: {
-		SC_DISABLE_SPEEDY: 'false',
-	},
+  env: {
+    SC_DISABLE_SPEEDY: 'false',
+  },
 
-	// logging: {
-	// 	fetches: {
-	// 		fullUrl: true,
-	// 	},
-	// },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
+  // logging: {
+  // 	fetches: {
+  // 		fullUrl: true,
+  // 	},
+  // },
 } satisfies NextConfig

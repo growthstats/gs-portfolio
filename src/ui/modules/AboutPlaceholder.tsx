@@ -7,7 +7,7 @@ import Text from '@/ui/Text'
 
 const AboutPlaceholder = () => {
   return (
-    <div className="w-full py-4 md:m-2">
+    <div className="w-full py-4">
       {/* Outer grid: on lg it's two columns, on mobile it stacks */}
       <div className="mx-auto grid max-w-7xl gap-14 lg:grid-cols-2">
         {/* ---------- DESKTOP IMAGE (left column only) ---------- */}
