@@ -37,7 +37,7 @@ export default async function Section({ data, dataSanity, renderModule }: Readon
   return (
     <section {...moduleProps(data)} data-sanity={dataSanity}>
       <div className="section space-y-8">
-        <header className="mx-auto flex w-full max-w-4xl flex-col items-center gap-4 text-center">
+        <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-4 text-center">
           {(IconComponent || badge) && (
             <Badge
               variant="outline"
@@ -55,18 +55,20 @@ export default async function Section({ data, dataSanity, renderModule }: Readon
             </Text>
           )}
 
-          <Heading as="h2" variant="h2" balance className="leading-tight">
-            {title}
-          </Heading>
+          {title && (
+            <Heading as="h2" variant="h2" balance className="leading-tight">
+              {title}
+            </Heading>
+          )}
 
           {subtitle && (
             <Text as="p" variant="subtitle" className="text-ink/70 max-w-prose">
               {subtitle}
             </Text>
           )}
-        </header>
+        </div>
 
-        {renderedChildren.length > 0 && <div className="w-full space-y-8">{renderedChildren}</div>}
+        {renderedChildren.length > 0 && <div className="w-full space-y-12">{renderedChildren}</div>}
       </div>
     </section>
   )
