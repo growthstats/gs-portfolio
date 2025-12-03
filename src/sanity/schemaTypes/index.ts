@@ -57,6 +57,7 @@ import testimonialFeatured from './modules/testimonial.featured'
 import testimonialList from './modules/testimonial-list'
 import joinUsPlaceholder from './modules/join-us.placeholder'
 import aboutPlaceholder from './modules/about.placeholder'
+import serviceList from './modules/service-list'
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   // documents
@@ -110,6 +111,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   scheduleModule,
   searchModule,
   section,
+  serviceList,
   statList,
   stepList,
   tabbedContent,
