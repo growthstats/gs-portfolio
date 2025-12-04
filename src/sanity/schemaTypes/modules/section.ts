@@ -76,6 +76,7 @@ export default defineType({
         { type: 'hero.split' },
         { type: 'join-us.placeholder' },
         { type: 'logo-list' },
+        { type: 'project-list' },
         { type: 'person-list' },
         { type: 'pricing-list' },
         { type: 'richtext-module' },

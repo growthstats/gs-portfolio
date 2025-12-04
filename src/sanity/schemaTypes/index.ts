@@ -45,6 +45,7 @@ import heroSplit from './modules/hero.split'
 import logoList from './modules/logo-list'
 import personList from './modules/person-list'
 import pricingList from './modules/pricing-list'
+import projectList from './modules/project-list'
 import richtextModule from './modules/richtext-module'
 import scheduleModule from './modules/schedule-module'
 import searchModule from './modules/search-module'
@@ -106,6 +107,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   logoList,
   personList,
   pricingList,
+  projectList,
   richtextModule,
   scheduleModule,
   searchModule,

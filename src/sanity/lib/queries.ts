@@ -102,6 +102,13 @@ const MODULES_BASE_PROJECTION = `
 		}
 	},
 	_type == 'logo-list' => { logos[]-> },
+	_type == 'project-list' => {
+		projects[]{
+			...,
+			cta{ ${CTA_QUERY} },
+			asset{ ${IMAGE_QUERY} }
+		}
+	},
 	_type == 'person-list' => { people[]-> },
 	_type == 'pricing-list' => {
 		tiers[]->{

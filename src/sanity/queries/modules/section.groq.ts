@@ -15,6 +15,7 @@ export const SECTION_CHILD_MODULE_TYPES = [
 	'hero.saas',
 	'hero.split',
 	'logo-list',
+	'project-list',
 	'person-list',
 	'pricing-list',
 	'richtext-module',
