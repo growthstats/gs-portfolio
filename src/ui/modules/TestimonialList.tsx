@@ -13,7 +13,7 @@ export default function TestimonialList({
 }: Readonly<
   Partial<{
     pretitle: string
-    intro: any
+    intro: Sanity.PortableText
     testimonials: Sanity.Testimonial[]
     layout: 'grid' | 'carousel'
     layoutMobile: 'grid' | 'carousel'
@@ -27,7 +27,7 @@ export default function TestimonialList({
       {(pretitle || intro) && (
         <header className="richtext">
           <Pretitle>{pretitle}</Pretitle>
-          <PortableText value={intro} />
+          {intro && <PortableText value={intro ?? []} />}
         </header>
       )}
 
@@ -50,7 +50,7 @@ export default function TestimonialList({
               >
                 <blockquote className="flex flex-col items-center gap-4">
                   <div className="richtext text-balance">
-                    <PortableText value={testimonial.content} />
+                    {testimonial.content && <PortableText value={testimonial.content ?? []} />}
                   </div>
 
                   {testimonial.author && (

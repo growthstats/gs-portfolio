@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button'
 type ProjectCard = {
   _key?: string
   name?: string
-  description?: any
+  description?: Sanity.PortableText
   asset?: Sanity.Image
   cta?: Sanity.CTA
 }
@@ -27,7 +27,7 @@ export default function ProjectList({
 }: Partial<{
   pretitle: string
   title: string
-  intro: any
+  intro: Sanity.PortableText
   projects: ProjectCard[]
   initialProjects: number
 }> &
@@ -57,7 +57,7 @@ export default function ProjectList({
               {title}
             </Heading>
           )}
-          <PortableText value={intro} />
+          {intro && <PortableText value={intro ?? []} />}
         </header>
       )}
 
@@ -93,7 +93,7 @@ export default function ProjectList({
                 )}
                 {project.description && (
                   <div className="richtext text-muted-foreground grow text-sm">
-                    <PortableText value={project.description} />
+                    <PortableText value={project.description ?? []} />
                   </div>
                 )}
               </div>
