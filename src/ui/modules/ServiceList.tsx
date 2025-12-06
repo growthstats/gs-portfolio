@@ -4,265 +4,188 @@ import React from 'react'
 import Image from 'next/image'
 import clsx from 'clsx'
 import Heading from '@/ui/Heading'
-import Text from '@/ui/Text'
-import { Badge } from '@/components/ui/badge'
 import CTA from '@/ui/CTA'
 import { PortableText } from 'next-sanity'
-import type { PortableTextBlock } from 'next-sanity'
+import * as LucideIcons from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+import { urlFor } from '@/sanity/lib/image'
+import type { PortableTextBlock } from 'sanity'
 
-/* -------------------- TYPES -------------------- */
+/* ---------------- SANITY TYPES ---------------- */
 
 interface SanityImage {
-  asset?: {
+  _type: 'image'
+  asset: {
+    _ref?: string
     url?: string
   }
+  lqip?: string
 }
 
-interface CtaItem {
+type CTAStyle = 'default' | 'link' | 'destructive' | 'outline' | 'secondary' | 'ghost'
+
+interface SanityCTA {
+  _key: string
   label?: string
   href?: string
+  style?: CTAStyle | null
+  link?: {
+    _type: string
+    url?: string
+    label?: string
+    internal?: {
+      title?: string
+      metadata?: {
+        slug?: {
+          current?: string
+        }
+      }
+    }
+  }
 }
 
 interface ServiceItem {
   _key: string
   title?: string
-  pretitle?: string
   description?: PortableTextBlock[]
   keywords?: string[]
   image?: SanityImage
   icon?: string | null
-  ctas?: CtaItem[]
-  bookCallCta?: CtaItem
+  ctas?: SanityCTA[]
   accentIconSize?: number
   accentBg?: boolean
+  layout?: 'text-left' | 'text-right'
 }
 
 interface Props {
-  pretitle?: string
-  title?: string
-  description?: PortableTextBlock[]
   layout?: 'text-left' | 'text-right'
   services?: ServiceItem[]
 }
 
-/* -------------------- KEYWORD TICKER -------------------- */
+/* ---------------- COMPONENT ---------------- */
 
-function KeywordTicker({ keywords = [] }: { keywords?: string[] }) {
-  if (!keywords?.length) return null
-  const text = keywords.join(' • ')
-
+export default function ServiceList({ layout = 'text-left', services = [] }: Props) {
   return (
-    <div className="relative overflow-hidden rounded-full py-1">
-      <div className="ticker py-2 whitespace-nowrap will-change-transform" aria-hidden>
-        <span className="mr-8 inline-block">{text}</span>
-        <span className="mr-8 inline-block">{text}</span>
-        <span className="mr-8 inline-block">{text}</span>
-      </div>
+    <div className="w-full py-10">
+      <div className="mx-auto max-w-7xl space-y-12 px-4">
+        {services.map((s) => {
+          const effectiveLayout = s.layout ?? layout
+          const isTextRight = effectiveLayout === 'text-right'
 
-      <style jsx>{`
-        .ticker {
-          display: inline-block;
-          animation: marquee 18s linear infinite;
-        }
-        @keyframes marquee {
-          0% {
-            transform: translateX(0%);
-          }
-          100% {
-            transform: translateX(-33.333%);
-          }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .ticker {
-            animation: none;
-          }
-        }
-      `}</style>
-    </div>
-  )
-}
+          const IconComponent: LucideIcon | null =
+            s.icon && LucideIcons[s.icon as keyof typeof LucideIcons]
+              ? (LucideIcons[s.icon as keyof typeof LucideIcons] as LucideIcon)
+              : null
 
-/* -------------------- MAIN COMPONENT -------------------- */
+          /* Build Sanity image URL safely */
+          let imgUrl: string | null = null
+          if (s.image?.asset?._ref) {
+            imgUrl = urlFor(s.image.asset).width(400).height(400).url()
+          } else if (s.image?.asset?.url) {
+            imgUrl = s.image.asset.url
+          } else if (s.image?.lqip) {
+            imgUrl = s.image.lqip
+          }
 
-export default function ServiceList({
-  pretitle,
-  title,
-  description,
-  layout = 'text-left',
-  services = [],
-}: Props) {
-  return (
-    <div className="w-full py-8">
-      <div className="mx-auto max-w-7xl px-4">
-        {/* Header */}
-        <div className="mb-8 flex flex-col items-center md:items-start">
-          {pretitle && (
-            <Badge
-              variant="outline"
-              className="mb-4 gap-2 rounded-full px-4 py-1.5 shadow-(--shadow-badge)"
+          return (
+            <div
+              key={s._key}
+              className={clsx(
+                'w-full rounded-4xl p-4 shadow-(--shadow-badge)',
+                'flex flex-col gap-8 md:flex-row',
+                isTextRight ? 'md:flex-row-reverse' : 'md:flex-row',
+              )}
             >
-              <span className="h-3 w-3 rounded-full bg-black" />
-              <Text as="span" variant="eyebrow" className="text-ink">
-                {pretitle}
-              </Text>
-            </Badge>
-          )}
-
-          {title && (
-            <Heading as="h2" variant="h2" className="relative mb-2 text-gray-900">
-              {title}
-              <span className="absolute -bottom-[18px] left-1/2 h-[2px] w-[90%] -translate-x-1/2 bg-gradient-to-r from-transparent via-gray-400 to-transparent" />
-            </Heading>
-          )}
-
-          {description && (
-            <Text
-              as="p"
-              variant="body"
-              className="mt-4 max-w-2xl text-center text-gray-500 md:text-left"
-            >
-              <PortableText value={description} />
-            </Text>
-          )}
-        </div>
-
-        {/* Services grid */}
-        <div className="grid gap-8">
-          {services.map((s) => {
-            const reverse = layout === 'text-right'
-
-            return (
-              <div
-                key={s._key}
-                className="rounded-3xl bg-white/60 p-6 shadow-(--shadow-badge) backdrop-blur-sm transition-shadow duration-300"
-                aria-label={s.title}
-              >
-                <div
-                  className={clsx('grid items-center gap-6 md:grid-cols-2', {
-                    'md:grid-flow-col': true,
-                    'md:flex-row-reverse': reverse,
-                  })}
-                >
-                  {/* Image / Icon block */}
-                  <div className="relative flex items-center justify-center rounded-2xl p-6">
-                    <div
-                      className={clsx(
-                        'relative flex items-center justify-center overflow-hidden rounded-2xl bg-white p-6',
-                        'min-h-[220px] md:min-h-[260px]',
-                      )}
-                      aria-hidden
-                    >
-                      {/* Big accent circle */}
-                      <div
-                        className="absolute -inset-0 m-auto rounded-full opacity-90"
-                        style={{
-                          width: s.accentIconSize ?? 120,
-                          height: s.accentIconSize ?? 120,
-                          boxShadow:
-                            '0 18px 30px rgba(0,0,0,0.06), inset 0 10px 30px rgba(255,255,255,0.85)',
-                          background: s.accentBg
-                            ? 'radial-gradient(closest-side,#ffffff,#f1f1f1)'
-                            : 'transparent',
-                        }}
-                      />
-
-                      {/* Icon or Image */}
-                      {s.icon ? (
-                        <div className="relative z-10 h-20 w-20">
-                          <Image src={s.icon} alt={s.title || 'icon'} width={96} height={96} />
-                        </div>
-                      ) : s.image?.asset?.url ? (
-                        <div className="relative z-10 h-[160px] w-full max-w-[320px]">
-                          <Image
-                            src={s.image.asset.url}
-                            alt={s.title || 'service image'}
-                            width={s.accentIconSize ?? 180}
-                            height={s.accentIconSize ?? 180}
-                            className="object-contain"
-                          />
-                        </div>
-                      ) : (
-                        <div className="z-10 text-black/80">🔧</div>
-                      )}
-                    </div>
+              {/* ---------------- LEFT CONTENT ---------------- */}
+              <div className="flex flex-1 flex-col justify-between gap-4 p-10">
+                {/* Icon + Title */}
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center justify-center rounded-full p-3 shadow-(--shadow-badge)">
+                    {IconComponent ? (
+                      <IconComponent size={22} strokeWidth={2} />
+                    ) : (
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <circle cx="11" cy="11" r="7.2" stroke="black" strokeWidth="1.4" />
+                        <path
+                          d="M21 21L16.65 16.65"
+                          stroke="black"
+                          strokeWidth="1.8"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                    )}
                   </div>
 
-                  {/* Content block */}
-                  <div className="space-y-4">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-4">
-                          <div className="rounded-full border p-2">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                              <circle cx="11" cy="11" r="8" stroke="black" strokeWidth="1.2" />
-                              <path
-                                d="M21 21L16.65 16.65"
-                                stroke="black"
-                                strokeWidth="1.6"
-                                strokeLinecap="round"
-                              />
-                            </svg>
-                          </div>
-                          <Heading as="h3" variant="h4" className="text-xl">
-                            {s.title}
-                          </Heading>
-                        </div>
+                  <Heading as="h2" variant="h2">
+                    {s.title}
+                  </Heading>
+                </div>
 
-                        {s.pretitle && (
-                          <Text as="p" variant="eyebrow" className="mt-2 text-sm text-gray-500">
-                            {s.pretitle}
-                          </Text>
-                        )}
-                      </div>
+                {/* Description */}
+                <div className="max-w-xl leading-relaxed text-black">
+                  <PortableText value={s.description ?? []} />
+                </div>
 
-                      {/* Book a Call CTA */}
-                      {s.bookCallCta?.label && s.bookCallCta?.href && (
-                        <CTA
-                          href={s.bookCallCta.href}
-                          className="rounded-full shadow-(--shadow-badge)"
-                        >
-                          {s.bookCallCta.label}
-                        </CTA>
-                      )}
+                {/* Keywords */}
+                <div className="flex flex-wrap justify-center gap-3">
+                  {(s.keywords ?? []).map((k, i) => (
+                    <div
+                      key={i}
+                      className="rounded-full px-4 py-2 text-sm text-black shadow-(--shadow-badge)"
+                    >
+                      {k}
                     </div>
+                  ))}
+                </div>
+              </div>
 
-                    {s.description && (
-                      <Text as="p" variant="body" className="text-gray-600">
-                        <PortableText value={s.description} />
-                      </Text>
+              {/* ---------------- RIGHT IMAGE BLOCK ---------------- */}
+              <div className="flex flex-1 items-center justify-center rounded-4xl p-7 shadow-(--shadow-badge)">
+                <div className="flex h-full flex-col items-center justify-center">
+                  {/* Main card */}
+                  <div className="relative flex items-center justify-center rounded-4xl p-4 shadow-(--shadow-badge)">
+                    {imgUrl ? (
+                      <Image
+                        src={imgUrl}
+                        alt={s.title || ''}
+                        width={120}
+                        height={120}
+                        className="relative z-0 object-contain"
+                      />
+                    ) : (
+                      <div className="relative z-0 text-4xl opacity-60">⚙</div>
                     )}
+                  </div>
 
-                    {/* Keywords ticker */}
-                    <div className="mt-4">
-                      <KeywordTicker keywords={s.keywords} />
-                    </div>
+                  {/* CTA buttons below icon */}
+                  <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
+                    {(s.ctas ?? []).map((cta) => {
+                      const label = cta.label || cta.link?.label
+                      const slug = cta.link?.internal?.metadata?.slug?.current
+                      const href =
+                        cta.href ||
+                        cta.link?.url ||
+                        (slug ? (slug === 'index' ? '/' : `/${slug}`) : null)
 
-                    {/* Chips */}
-                    <div className="flex flex-wrap gap-3 pt-2">
-                      {(s.keywords ?? []).slice(0, 6).map((k, i) => (
-                        <div
-                          key={i}
-                          className="rounded-full bg-white px-4 py-2 text-sm font-medium shadow-(--shadow-badge)"
+                      if (!href || !label) return null
+
+                      return (
+                        <CTA
+                          key={cta._key}
+                          href={href}
+                          style={cta.style ?? 'ghost'}
+                          className="rounded-full px-8 py-3 font-medium shadow-(--shadow-badge)"
                         >
-                          {k}
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* CTAs */}
-                    <div className="mt-4 flex flex-wrap items-center gap-3">
-                      {(s.ctas ?? []).map((c, i) => (
-                        <CTA key={i} href={c.href} className="shadow-(--shadow-badge)">
-                          {c.label}
+                          {label}
                         </CTA>
-                      ))}
-                    </div>
+                      )
+                    })}
                   </div>
                 </div>
               </div>
-            )
-          })}
-        </div>
+            </div>
+          )
+        })}
       </div>
     </div>
   )

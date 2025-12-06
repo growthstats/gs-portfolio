@@ -14,35 +14,6 @@ export default defineType({
       type: 'module-options',
     }),
     defineField({
-      name: 'pretitle',
-      title: 'Pretitle',
-      type: 'string',
-    }),
-    defineField({
-      name: 'title',
-      title: 'Title',
-      type: 'string',
-    }),
-    defineField({
-      name: 'description',
-      title: 'Description',
-      type: 'array',
-      of: [{ type: 'block' }],
-    }),
-    defineField({
-      name: 'layout',
-      title: 'Layout Variant',
-      type: 'string',
-      options: {
-        list: [
-          { title: 'Text left — Icon right', value: 'text-left' },
-          { title: 'Text right — Icon left', value: 'text-right' },
-        ],
-        layout: 'radio',
-      },
-      initialValue: 'text-left',
-    }),
-    defineField({
       name: 'services',
       title: 'Services',
       type: 'array',
@@ -57,11 +28,6 @@ export default defineType({
               title: 'Title',
               type: 'string',
               validation: (Rule) => Rule.required(),
-            }),
-            defineField({
-              name: 'pretitle',
-              title: 'Pretitle (small label)',
-              type: 'string',
             }),
             defineField({
               name: 'description',
@@ -93,6 +59,19 @@ export default defineType({
               options: { hotspot: true, metadata: ['lqip'] },
             }),
             defineField({
+              name: 'layout',
+              title: 'Layout Variant',
+              type: 'string',
+              options: {
+                list: [
+                  { title: 'Text left — Icon right', value: 'text-left' },
+                  { title: 'Text right — Icon left', value: 'text-right' },
+                ],
+                layout: 'radio',
+              },
+              initialValue: 'text-left',
+            }),
+            defineField({
               name: 'keywords',
               title: 'Keywords / Tags',
               type: 'array',
@@ -106,11 +85,6 @@ export default defineType({
               title: 'CTAs',
               type: 'array',
               of: [{ type: 'cta' }],
-            }),
-            defineField({
-              name: 'bookCallCta',
-              title: 'Book a Call CTA',
-              type: 'cta',
             }),
             defineField({
               name: 'accentIconSize',

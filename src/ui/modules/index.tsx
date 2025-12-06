@@ -15,6 +15,7 @@ import JoinUsPlaceholder from './JoinUsPlaceholder'
 import LogoList from './LogoList'
 import RichtextModule from './RichtextModule'
 import ScheduleModule from './ScheduleModule'
+import ServiceList from './ServiceList'
 import SearchModule from './SearchModule'
 import StatList from './StatList'
 import StepList from './StepList'
@@ -54,6 +55,7 @@ export const MODULE_MAP = {
   'richtext-module': RichtextModule,
   'schedule-module': ScheduleModule,
   'search-module': SearchModule,
+  'service-list': ServiceList,
   'stat-list': StatList,
   'step-list': StepList,
   'tabbed-content': TabbedContent,

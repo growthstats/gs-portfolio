@@ -142,22 +142,17 @@ const MODULES_BASE_PROJECTION = `
 		generateSchema
 	  },
   _type == 'service-list' => {
-    pretitle,
-    title,
-    description,
-    layout,
-    services[]{
-      _key,
-      title,
-      pretitle,
-      description,
+	  services[]{
+		  _key,
+		  title,
+		  description,
+		  layout,
       keywords,
       accentIconSize,
       accentBg,
       icon,
       image{ ${IMAGE_QUERY} },
       ctas[]{ ${CTA_QUERY} },
-      bookCallCta{ ${CTA_QUERY} }
     }
   },
 `
