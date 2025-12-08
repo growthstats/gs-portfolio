@@ -26,6 +26,7 @@ import TestimonialFeatured from './TestimonialFeatured'
 import Section from './Section'
 import Faq from './Faq'
 import ContactSimple from './ContactSimple'
+import ServiceDetails from './ServiceDetails'
 
 import dynamic from 'next/dynamic'
 import type { ReactNode } from 'react'
@@ -56,6 +57,7 @@ export const MODULE_MAP = {
   'richtext-module': RichtextModule,
   'schedule-module': ScheduleModule,
   'search-module': SearchModule,
+  'service-details': ServiceDetails,
   'stat-list': StatList,
   'step-list': StepList,
   'tabbed-content': TabbedContent,

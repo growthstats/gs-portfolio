@@ -1,8 +1,8 @@
-import { fetchSanityLive } from "./fetch";
-import { groq } from "next-sanity";
-import errors from "@/lib/errors";
-import { BLOG_DIR } from "@/lib/env";
-import { createSectionModuleQuery } from "@/sanity/queries/modules/section.groq";
+import { fetchSanityLive } from './fetch'
+import { groq } from 'next-sanity'
+import errors from '@/lib/errors'
+import { BLOG_DIR } from '@/lib/env'
+import { createSectionModuleQuery } from '@/sanity/queries/modules/section.groq'
 
 export const LINK_QUERY = groq`
 	...,
@@ -11,7 +11,7 @@ export const LINK_QUERY = groq`
 		title,
 		metadata
 	}
-`;
+`
 
 const NAVIGATION_QUERY = groq`
 	title,
@@ -20,27 +20,27 @@ const NAVIGATION_QUERY = groq`
 		link{ ${LINK_QUERY} },
 		links[]{ ${LINK_QUERY} }
 	}
-`;
+`
 
 export const IMAGE_QUERY = groq`
 	...,
 	'lqip': @.asset->metadata.lqip
-`;
+`
 
 const ASSET_IMG_QUERY = groq`
 	...,
 	image { ${IMAGE_QUERY} }
-`;
+`
 
 export const CTA_QUERY = groq`
 	...,
 	link{ ${LINK_QUERY} },
 	style
-`;
+`
 
 export const REPUTATION_QUERY = groq`
 	_type == 'reputation-block' => { reputation-> }
-`;
+`
 
 const MODULES_BASE_PROJECTION = `
 	...,
@@ -128,6 +128,13 @@ const MODULES_BASE_PROJECTION = `
 			}
 		),
 	},
+	_type == 'service-details' => {
+		ctas{ ${CTA_QUERY} },
+		features[]{
+			...,
+			img{ ${IMAGE_QUERY} }
+		}
+	},
 	_type == 'tabbed-content' => {
 		tabs[]{
 			...,
@@ -148,14 +155,14 @@ const MODULES_BASE_PROJECTION = `
 		accessibleAccordion,
 		generateSchema
 	  },
-`;
+`
 
 export const MODULES_QUERY = groq`
 	${MODULES_BASE_PROJECTION}
 	_type == 'section' => {
 		${createSectionModuleQuery(MODULES_BASE_PROJECTION)}
 	},
-`;
+`
 
 export const GLOBAL_MODULE_PATH_QUERY = groq`
 	string::startsWith($slug, path)
@@ -163,14 +170,14 @@ export const GLOBAL_MODULE_PATH_QUERY = groq`
 		defined(excludePaths) => count(excludePaths[string::startsWith($slug, @)]) == 0,
 		true
 	)
-`;
+`
 
 export const TRANSLATIONS_QUERY = groq`
 	'translations': *[_type == 'translation.metadata' && references(^._id)].translations[].value->{
 		'slug': metadata.slug.current,
 		language
 	}
-`;
+`
 
 export async function getSite() {
   const site = await fetchSanityLive<Sanity.Site>({
@@ -184,11 +191,11 @@ export async function getSite() {
 				'ogimage': ogimage.asset->url
 			}
 		`,
-  });
+  })
 
-  if (!site) throw new Error(errors.missingSiteSettings);
+  if (!site) throw new Error(errors.missingSiteSettings)
 
-  return site;
+  return site
 }
 
 export async function getTranslations() {
@@ -211,5 +218,5 @@ export async function getTranslations() {
 				language
 			}
 		}`,
-  });
+  })
 }
