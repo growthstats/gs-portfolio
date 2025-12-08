@@ -6,10 +6,9 @@ import clsx from 'clsx'
 import Heading from '@/ui/Heading'
 import CTA from '@/ui/CTA'
 import { PortableText } from 'next-sanity'
-import * as LucideIcons from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
 import { urlFor } from '@/sanity/lib/image'
 import type { PortableTextBlock } from 'sanity'
+import { ICONS, type IconName } from '@/lib/icons'
 
 /* ---------------- SANITY TYPES ---------------- */
 
@@ -23,28 +22,6 @@ interface SanityImage {
   lqip?: string
 }
 
-type CTAStyle = 'default' | 'link' | 'destructive' | 'outline' | 'secondary' | 'ghost'
-
-interface SanityCTA {
-  _key: string
-  label?: string
-  href?: string
-  style?: CTAStyle | null
-  link?: {
-    _type: string
-    url?: string
-    label?: string
-    internal?: {
-      title?: string
-      metadata?: {
-        slug?: {
-          current?: string
-        }
-      }
-    }
-  }
-}
-
 interface ServiceItem {
   _key: string
   title?: string
@@ -52,7 +29,7 @@ interface ServiceItem {
   keywords?: string[]
   image?: SanityImage
   icon?: string | null
-  ctas?: SanityCTA[]
+  ctas?: Sanity.CTA[]
   accentIconSize?: number
   accentBg?: boolean
   layout?: 'text-left' | 'text-right'
@@ -85,10 +62,8 @@ export default function ServiceList({ layout = 'text-left', services = [] }: Pro
           const effectiveLayout = s.layout ?? layout
           const isTextRight = effectiveLayout === 'text-right'
 
-          const IconComponent: LucideIcon | null =
-            s.icon && LucideIcons[s.icon as keyof typeof LucideIcons]
-              ? (LucideIcons[s.icon as keyof typeof LucideIcons] as LucideIcon)
-              : null
+          const IconComponent =
+            s.icon && ICONS[s.icon as IconName] ? ICONS[s.icon as IconName] : null
 
           /* Build Sanity image URL safely */
           let imgUrl: string | null = null
@@ -173,12 +148,16 @@ export default function ServiceList({ layout = 'text-left', services = [] }: Pro
                   {/* CTA buttons below icon */}
                   <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
                     {(s.ctas ?? []).map((cta) => {
-                      const label = cta.label || cta.link?.label
-                      const slug = cta.link?.internal?.metadata?.slug?.current
+                      const label = cta.link?.label
+                      const internalSlug = cta.link?.internal?.metadata?.slug?.current
+
                       const href =
-                        cta.href ||
-                        cta.link?.url ||
-                        (slug ? (slug === 'index' ? '/' : `/${slug}`) : null)
+                        cta.link?.external ||
+                        (internalSlug
+                          ? internalSlug === 'index'
+                            ? '/'
+                            : `/${internalSlug}`
+                          : null)
 
                       if (!href || !label) return null
 
