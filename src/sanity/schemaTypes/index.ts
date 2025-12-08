@@ -49,6 +49,7 @@ import projectList from './modules/project-list'
 import richtextModule from './modules/richtext-module'
 import scheduleModule from './modules/schedule-module'
 import searchModule from './modules/search-module'
+import serviceDetails from './modules/service-details'
 import section from './modules/section'
 import statList from './modules/stat-list'
 import stepList from './modules/step-list'
@@ -112,6 +113,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   richtextModule,
   scheduleModule,
   searchModule,
+  serviceDetails,
   section,
   serviceList,
   statList,

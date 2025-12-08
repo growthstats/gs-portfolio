@@ -260,6 +260,20 @@ declare global {
       projects?: ProjectListItem[]
       initialProjects?: number
     }
+
+    interface ServiceFeature {
+      _key?: string
+      name?: string
+      description?: string
+      img?: Image
+    }
+
+    interface ServiceDetailsModule extends Module<'service-details'> {
+      title?: string
+      description?: string
+      ctas?: CTA
+      features?: ServiceFeature[]
+    }
   }
 }
 
