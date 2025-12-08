@@ -13,6 +13,7 @@ import type { PortableTextBlock } from 'sanity'
 
 /* ---------------- SANITY TYPES ---------------- */
 
+// TODO: This type can be centralized in types.d.ts, do this later
 interface SanityImage {
   _type: 'image'
   asset: {
