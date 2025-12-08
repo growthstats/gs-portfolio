@@ -13,6 +13,7 @@ import HeroSplit from './HeroSplit'
 import HeroSaaS from './HeroSaaS'
 import JoinUsPlaceholder from './JoinUsPlaceholder'
 import LogoList from './LogoList'
+import ProjectList from './ProjectList'
 import RichtextModule from './RichtextModule'
 import ScheduleModule from './ScheduleModule'
 import ServiceList from './ServiceList'
@@ -50,6 +51,7 @@ export const MODULE_MAP = {
   'hero.split': HeroSplit,
   'join-us.placeholder': JoinUsPlaceholder,
   'logo-list': LogoList,
+  'project-list': ProjectList,
   'person-list': dynamic(() => import('./PersonList')),
   'pricing-list': dynamic(() => import('./PricingList')),
   'richtext-module': RichtextModule,

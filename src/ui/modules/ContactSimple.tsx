@@ -10,7 +10,7 @@ import CTA from '@/ui/CTA'
 function CustomIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <g clip-path="url(#clip0_451_2834)">
+      <g clipPath="url(#clip0_451_2834)">
         <path
           d="M15.0556 20.3249C14.9671 20.6349 14.3914 20.9005 14.3914 20.9005C13.4615 21.1662 12.3545 20.7234 11.8232 20.1477L11.9562 19.9706C12.3104 19.4835 12.3989 18.9522 12.2662 18.4209L15.0556 20.3249Z"
           fill="black"
@@ -77,7 +77,7 @@ export default function ContactSimple({ title, excerpt, ctas = [] }: Readonly<Co
 
         {excerpt && (
           <Text as="p" variant="body" className="mx-auto mt-1 mb-2 max-w-xl text-gray-500">
-            <PortableText value={excerpt} />
+            <PortableText value={excerpt ?? []} />
           </Text>
         )}
 

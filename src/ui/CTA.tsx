@@ -12,13 +12,13 @@ const allowedVariants = new Set<VariantProps<typeof buttonVariants>["variant"]>(
 
 export default function CTA({
   link,
-  style,
+  style: ctaStyle,
   className,
   children,
   ...rest
-}: Sanity.CTA & ComponentProps<"a">) {
+}: Sanity.CTA & Omit<ComponentProps<"a">, "style">) {
   const cleanedStyle =
-    typeof style === "string" ? (stegaClean(style) ?? undefined) : undefined;
+    typeof ctaStyle === "string" ? (stegaClean(ctaStyle) ?? undefined) : undefined;
   const variant =
     cleanedStyle &&
     allowedVariants.has(

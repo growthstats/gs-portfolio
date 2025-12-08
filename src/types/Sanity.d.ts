@@ -244,6 +244,22 @@ declare global {
       accessibleAccordion?: boolean
       generateSchema?: boolean
     }
+
+    interface ProjectListItem {
+      _key?: string
+      name?: string
+      description?: PortableText
+      asset?: Image
+      cta?: CTA
+    }
+
+    interface ProjectListModule extends Module<'project-list'> {
+      pretitle?: string
+      title?: string
+      intro?: PortableText
+      projects?: ProjectListItem[]
+      initialProjects?: number
+    }
   }
 }
 

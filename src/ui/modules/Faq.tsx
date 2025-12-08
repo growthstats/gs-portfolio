@@ -143,7 +143,9 @@ export default function Faq({
               variant="body"
               className="mt-4 max-w-md text-center text-gray-500 md:text-left"
             >
-              <PortableText value={description} components={portableComponents} />
+              {description && (
+                <PortableText value={description ?? []} components={portableComponents} />
+              )}
             </Text>
           )}
         </div>
@@ -192,7 +194,9 @@ export default function Faq({
                     className="overflow-hidden rounded-b-[20px] px-6 pt-0 pb-6"
                   >
                     <Text as="p" variant="body" className="mt-2 text-gray-600">
-                      <PortableText value={item.answer} components={portableComponents} />
+                      {item.answer && (
+                        <PortableText value={item.answer ?? []} components={portableComponents} />
+                      )}
                     </Text>
                   </AccordionContent>
                 </AccordionItem>

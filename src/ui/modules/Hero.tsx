@@ -19,7 +19,7 @@ export default function Hero({
   ...props
 }: Partial<{
   pretitle: string
-  content: any
+  content: Sanity.PortableText
   ctas: Sanity.CTA[]
   assets: Sanity.Img[]
   textAlign: React.CSSProperties['textAlign']
