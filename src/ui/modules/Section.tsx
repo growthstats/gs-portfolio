@@ -86,7 +86,7 @@ function isLucideIcon(icon: unknown): icon is LucideIcon {
   return typeof icon === 'object' && 'render' in (icon as Record<string, unknown>)
 }
 
-async function loadIcon(name: string): Promise<LucideIcon> {
+export async function loadIcon(name: string): Promise<LucideIcon> {
   console.log('name: ', name)
   const resolved = resolveIconImporter(name)
   console.log('resolved: ', resolved)

@@ -105,8 +105,14 @@ export default defineType({
   ],
   preview: {
     select: {
-      title: 'title',
-      subtitle: 'pretitle',
+      services: 'services',
+    },
+    prepare({ services }) {
+      const count = services?.length || 0
+      return {
+        title: 'Service List',
+        subtitle: `${count} service${count === 1 ? '' : 's'}`,
+      }
     },
   },
 })
