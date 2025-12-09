@@ -162,8 +162,6 @@ const MODULES_BASE_PROJECTION = `
 		  description,
 		  layout,
       keywords,
-      accentIconSize,
-      accentBg,
       icon,
       image{ ${IMAGE_QUERY} },
       ctas[]{ ${CTA_QUERY} },

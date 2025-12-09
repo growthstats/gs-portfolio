@@ -86,18 +86,6 @@ export default defineType({
               type: 'array',
               of: [{ type: 'cta' }],
             }),
-            defineField({
-              name: 'accentIconSize',
-              title: 'Accent Icon Size (px)',
-              type: 'number',
-              initialValue: 120,
-            }),
-            defineField({
-              name: 'accentBg',
-              title: 'Accent background toggle',
-              type: 'boolean',
-              initialValue: true,
-            }),
           ],
         }),
       ],

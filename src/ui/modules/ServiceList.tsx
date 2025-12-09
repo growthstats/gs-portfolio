@@ -1,11 +1,13 @@
 import clsx from 'clsx'
-import Heading from '@/ui/Heading'
-import CTA from '@/ui/CTA'
 import { PortableText } from 'next-sanity'
+
+import CTA from '@/ui/CTA'
+import Heading from '@/ui/Heading'
+import { Img } from '@/ui/Img'
+import { loadIcon, sanitizeString } from '@/ui/modules/Section'
+
 import type { PortableTextBlock } from 'sanity'
 
-import { loadIcon } from '@/ui/modules/Section'
-import { Img } from '@/ui/Img'
 import type { LucideIcon } from 'lucide-react'
 
 /* ---------------- SANITY TYPES ---------------- */
@@ -18,8 +20,6 @@ interface ServiceItem {
   image?: Sanity.Image
   icon?: string | null
   ctas?: Sanity.CTA[]
-  accentIconSize?: number
-  accentBg?: boolean
   layout?: 'text-left' | 'text-right'
 }
 
@@ -28,15 +28,20 @@ interface Props {
   services?: ServiceItem[]
 }
 
-export default async function ServiceList({ layout = 'text-left', services = [] }: Props) {
+export default async function ServiceList({
+  layout = 'text-left',
+  services = [],
+}: Readonly<Props>) {
   // Properly typed icon map
   const iconMap: Record<string, LucideIcon | null> = {}
 
   await Promise.all(
     services.map(async (s) => {
       if (!s.icon) return
-      const icon = await loadIcon(s.icon.trim())
-      iconMap[s._key] = icon ?? null
+      const iconName = sanitizeString(s.icon)
+      const IconComponent = iconName ? await loadIcon(iconName) : null
+
+      iconMap[s._key] = IconComponent ?? null
     }),
   )
 
@@ -121,23 +126,13 @@ export default async function ServiceList({ layout = 'text-left', services = [] 
                   {/* CTA buttons */}
                   <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
                     {(s.ctas ?? []).map((cta) => {
-                      const label = cta.link?.label
-                      const slug = cta.link?.internal?.metadata?.slug?.current
-
-                      const href =
-                        cta.link?.external || (slug ? (slug === 'index' ? '/' : `/${slug}`) : null)
-
-                      if (!href || !label) return null
-
                       return (
                         <CTA
                           key={cta._key}
-                          href={href}
+                          link={cta.link}
                           style={cta.style ?? 'ghost'}
                           className="rounded-full px-8 py-3 font-medium shadow-(--shadow-badge)"
-                        >
-                          {label}
-                        </CTA>
+                        />
                       )
                     })}
                   </div>
