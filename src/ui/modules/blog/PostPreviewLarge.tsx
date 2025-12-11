@@ -6,56 +6,63 @@ import Categories from './Categories'
 import Authors from './Authors'
 
 export default function PostPreviewLarge({ post }: { post: Sanity.BlogPost }) {
-	if (!post) return null
+  if (!post) return null
 
-	return (
-		<div className="group relative isolate grid items-center gap-x-8 gap-y-4 md:grid-cols-2">
-			<figure className="max-md:full-bleed bg-ink/5 relative aspect-video overflow-hidden md:self-start">
-				<Img
-					className="aspect-video w-full object-cover transition-all group-hover:scale-105 group-hover:brightness-110"
-					image={post.metadata.image}
-					width={800}
-					alt={post.metadata.title}
-					loading="eager"
-				/>
+  return (
+    <Link href={resolveUrl(post, { base: false })} className="group block">
+      <article className="relative overflow-hidden rounded-3xl bg-white shadow-(--shadow-badge) transition-all hover:shadow-lg">
+        {/* IMAGE */}
+        <div className="relative aspect-video overflow-hidden rounded-3xl">
+          <Img
+            className="size-full object-cover transition-all group-hover:scale-105 group-hover:brightness-110"
+            image={post.metadata.image}
+            width={1600}
+            alt={post.metadata.title}
+            loading="eager"
+          />
 
-				{post.featured && (
-					<span className="action absolute top-0 right-4 rounded-t-none py-1 text-xs shadow-md">
-						Featured
-					</span>
-				)}
-			</figure>
+          {/* DARK GRADIENT OVERLAY */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
 
-			<div className="mx-auto max-w-lg space-y-4">
-				<div className="h2 md:h1">
-					<Link
-						className="group-hover:underline"
-						href={resolveUrl(post, { base: false })}
-					>
-						<span className="absolute inset-0" />
-						{post.metadata.title}
-					</Link>
-				</div>
+          {/* TOP RIGHT DATE */}
+          <div className="absolute top-4 right-4 flex items-center gap-2">
+            <span className="flex items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-xs shadow backdrop-blur-sm">
+              <Date value={post.publishDate} />
+            </span>
+          </div>
 
-				<p className="line-clamp-4 max-md:text-sm">
-					{post.metadata.description}
-				</p>
+          {/* TOP LEFT FEATURED BADGE */}
+          {post.featured && (
+            <span className="absolute top-4 left-4 rounded-full bg-amber-400/90 px-3 py-1 text-[11px] font-semibold tracking-wide uppercase shadow">
+              ⭐ Featured
+            </span>
+          )}
 
-				<div className="flex flex-wrap gap-x-4">
-					<Date value={post.publishDate} />
-					<Categories
-						className="flex flex-wrap gap-x-2"
-						categories={post.categories}
-					/>
-				</div>
+          {/* BOTTOM CONTENT */}
+          <div className="absolute bottom-0 left-0 w-full px-6 pt-10 pb-6 text-white">
+            <h2 className="text-3xl leading-tight font-bold drop-shadow-md">
+              {post.metadata.title}
+            </h2>
 
-				{post.authors?.length && (
-					<Authors
-						className="flex flex-wrap items-center gap-4"
-						authors={post.authors}
-					/>
-				)}
-			</div>
-		</div>
-	)
+            <p className="mt-2 max-w-2xl text-white/90 drop-shadow-sm">
+              {post.metadata.description}
+            </p>
+
+            {/* CATEGORY TAGS */}
+            <div className="mt-4 flex flex-wrap items-center gap-3">
+              <Categories
+                categories={post.categories}
+                className="rounded-lg !text-white shadow-(--shadow-badge)"
+              />
+            </div>
+
+            {/* AUTHORS */}
+            {post.authors?.length > 0 && (
+              <Authors authors={post.authors} className="mt-3 flex items-center gap-4 text-white" />
+            )}
+          </div>
+        </div>
+      </article>
+    </Link>
+  )
 }
