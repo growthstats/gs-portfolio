@@ -38,27 +38,28 @@ export default function PostPreviewLarge({ post }: { post: Sanity.BlogPost }) {
             </span>
           )}
 
-          {/* BOTTOM CONTENT */}
-          <div className="absolute bottom-0 left-0 w-full px-6 pt-10 pb-6 text-white">
-            <h2 className="text-3xl leading-tight font-bold drop-shadow-md">
+          {/* BOTTOM CONTENT*/}
+          <div className="absolute inset-x-0 bottom-0 flex flex-col px-4 pt-12 pb-4 text-white sm:px-6 sm:pb-6">
+            <h2 className="text-xl leading-tight font-bold drop-shadow-md sm:text-3xl">
               {post.metadata.title}
             </h2>
 
-            <p className="mt-2 max-w-2xl text-white/90 drop-shadow-sm">
+            <p className="mt-2 line-clamp-3 max-w-full text-sm text-white/90 drop-shadow-sm sm:text-base">
               {post.metadata.description}
             </p>
 
-            {/* CATEGORY TAGS */}
-            <div className="mt-4 flex flex-wrap items-center gap-3">
+            <div className="mt-3 flex flex-wrap items-center gap-2 sm:gap-3">
               <Categories
                 categories={post.categories}
                 className="rounded-lg !text-white shadow-(--shadow-badge)"
               />
             </div>
 
-            {/* AUTHORS */}
             {post.authors?.length > 0 && (
-              <Authors authors={post.authors} className="mt-3 flex items-center gap-4 text-white" />
+              <Authors
+                authors={post.authors}
+                className="mt-3 flex items-center gap-3 text-white sm:gap-4"
+              />
             )}
           </div>
         </div>
