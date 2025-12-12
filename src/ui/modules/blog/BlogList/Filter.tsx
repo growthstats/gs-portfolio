@@ -1,10 +1,10 @@
-// src/ui/modules/blog/BlogList/Filter.tsx
 'use client'
 
 import { useBlogFilters } from '../store'
 import { usePageState } from '@/lib/usePagination'
 import Category from '../Category'
 import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 
 export default function Filter({
   label,
@@ -19,16 +19,15 @@ export default function Filter({
   const isActive = category === value
 
   return (
-    <button
+    <Button
       type="button"
+      variant={isActive ? 'default' : 'outline'}
+      size="sm"
       aria-pressed={isActive}
       className={cn(
-        'inline-flex min-w-max items-center gap-2 rounded-3xl px-3 py-1 transition select-none',
-        'shadow-[var(--shadow-badge)]',
-        isActive
-          ? 'bg-gray-900 text-white shadow-none'
-          : 'border border-transparent bg-transparent hover:border-neutral-200',
-        'flex-shrink-0',
+        'min-w-max flex-shrink-0 rounded-3xl',
+        '!h-auto px-3 py-1',
+        isActive && 'bg-gray-900 text-white shadow-none',
       )}
       onClick={() => {
         setCategory(value)
@@ -36,6 +35,6 @@ export default function Filter({
       }}
     >
       <Category label={label} />
-    </button>
+    </Button>
   )
 }
