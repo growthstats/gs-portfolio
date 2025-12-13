@@ -269,9 +269,6 @@ declare global {
     }
 
     interface ServiceDetailsModule extends Module<'service-details'> {
-      title?: string
-      description?: string
-      ctas?: CTA
       features?: ServiceFeature[]
     }
   }
