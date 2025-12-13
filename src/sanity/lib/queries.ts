@@ -129,7 +129,6 @@ const MODULES_BASE_PROJECTION = `
 		),
 	},
 	_type == 'service-details' => {
-		ctas{ ${CTA_QUERY} },
 		features[]{
 			...,
 			img{ ${IMAGE_QUERY} }
