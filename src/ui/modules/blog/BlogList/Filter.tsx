@@ -4,31 +4,33 @@ import { useBlogFilters } from '../store'
 import { usePageState } from '@/lib/usePagination'
 import Category from '../Category'
 import { cn } from '@/lib/utils'
-import css from './FilterList.module.css'
+import { Button } from '@/components/ui/button'
 
 export default function Filter({
-	label,
-	value = 'All',
-}: {
-	label: string
-	value?: 'All' | string
-}) {
-	const { category, setCategory } = useBlogFilters()
-	const { setPage } = usePageState()
+  label,
+  value = 'All',
+}: Readonly<{
+  label: string
+  value?: 'All' | string
+}>) {
+  const { category, setCategory } = useBlogFilters()
+  const { setPage } = usePageState()
 
-	return (
-		<button
-			className={cn(
-				css.filter,
-				'!py-1',
-				category === value ? 'action' : 'ghost border border-transparent',
-			)}
-			onClick={() => {
-				setCategory(value)
-				setPage(1)
-			}}
-		>
-			<Category label={label} />
-		</button>
-	)
+  const isActive = category === value
+
+  return (
+    <Button
+      type="button"
+      variant={isActive ? 'default' : 'outline'}
+      size="sm"
+      aria-pressed={isActive}
+      className={cn('min-w-max flex-shrink-0 rounded-3xl', '!h-auto px-3 py-1 shadow-none')}
+      onClick={() => {
+        setCategory(value)
+        setPage(1)
+      }}
+    >
+      <Category label={label} />
+    </Button>
+  )
 }

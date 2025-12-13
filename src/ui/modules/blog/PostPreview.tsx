@@ -1,70 +1,80 @@
-import { Img } from '@/ui/Img'
 import Link from 'next/link'
+
 import resolveUrl from '@/lib/resolveUrl'
-import Authors from './Authors'
-import Date from '@/ui/Date'
-import Categories from './Categories'
 import { cn } from '@/lib/utils'
+import Date from '@/ui/Date'
+import { Img } from '@/ui/Img'
+import Heading from '@/ui/Heading'
+import Category from './Category'
+import Authors from './Authors'
 
 export default function PostPreview({
-	post,
-	skeleton,
-}: {
-	post?: Sanity.BlogPost
-	skeleton?: boolean
-}) {
-	if (!post && !skeleton) return null
+  post,
+  skeleton,
+}: Readonly<{
+  post?: Sanity.BlogPost
+  skeleton?: boolean
+}>) {
+  if (!post && !skeleton) return null
 
-	return (
-		<div className="group relative isolate flex h-full flex-col space-y-2">
-			<figure className="bg-ink/3 relative aspect-video overflow-hidden">
-				<Img
-					className="aspect-video w-full object-cover transition-all group-hover:scale-105 group-hover:brightness-110"
-					image={post?.metadata.image}
-					width={700}
-					alt={post?.metadata.title}
-				/>
+  const primaryCategory = post?.categories?.[0]
 
-				{post?.featured && (
-					<span className="action absolute top-0 right-4 rounded-t-none py-1 text-xs shadow-md">
-						Featured
-					</span>
-				)}
-			</figure>
+  return (
+    <figure
+      className={cn(
+        'group flex h-full flex-col overflow-hidden rounded-2xl p-3 shadow-(--shadow-card)',
+      )}
+      aria-hidden={skeleton ? true : undefined}
+    >
+      {/* IMAGE CONTAINER */}
+      <div className="relative">
+        <Img
+          className="aspect-video w-full rounded-2xl object-cover shadow-(--shadow-card) transition-all group-hover:scale-105 group-hover:brightness-110"
+          image={post?.metadata.image}
+          width={520}
+          alt={post?.metadata.title}
+        />
 
-			<div className={cn('h4', skeleton && 'skeleton-2')}>
-				<Link
-					className="group-hover:underline"
-					href={resolveUrl(post, { base: false })}
-				>
-					<span className="absolute inset-0" />
-					{post?.metadata.title}
-				</Link>
-			</div>
+        {/* Subtle top-right darkening for contrast */}
+        <div
+          className="pointer-events-none absolute inset-0 rounded-2xl"
+          aria-hidden="true"
+          style={{
+            background:
+              'radial-gradient(circle at 100% 0%, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0) 32%)',
+          }}
+        />
 
-			<div className="grow">
-				<p className="line-clamp-3 text-sm empty:h-[3lh]">
-					{post?.metadata.description}
-				</p>
-			</div>
+        {/* CATEGORY PILL */}
+        <div className="absolute top-3 right-3 z-10">
+          {primaryCategory ? (
+            <span className="inline-flex items-center gap-2 rounded-full bg-white/95 px-3 py-1 text-xs font-medium shadow shadow-black/25">
+              <Category value={primaryCategory} linked />
+            </span>
+          ) : skeleton ? (
+            <span className="skeleton-2 inline-block h-6 w-20 rounded-full" />
+          ) : null}
+        </div>
+      </div>
 
-			{(post?.authors?.length || skeleton) && (
-				<Authors
-					className="flex flex-wrap items-center gap-4 text-sm"
-					authors={post?.authors}
-					skeleton={skeleton}
-				/>
-			)}
+      {/* META ROW */}
+      <div className="text-ink/80 mt-4 flex items-center justify-between gap-4 text-sm">
+        <Authors authors={post?.authors} skeleton={skeleton} className="flex items-center gap-2" />
+        <div className="text-right">
+          {skeleton ? (
+            <span className="skeleton-2 inline-block h-4 w-16 rounded-full" />
+          ) : (
+            <Date value={post?.publishDate} />
+          )}
+        </div>
+      </div>
 
-			<hr />
-
-			<div className="empty:skeleton flex flex-wrap gap-x-4 text-sm">
-				<Date value={post?.publishDate} />
-				<Categories
-					className="flex flex-wrap gap-x-2"
-					categories={post?.categories}
-				/>
-			</div>
-		</div>
-	)
+      {/* TITLE */}
+      <Heading as="h3" variant="h4" className={cn('mt-4 rounded-lg', skeleton && 'skeleton-2')}>
+        <Link className="m-1 block p-1" href={resolveUrl(post, { base: false })}>
+          {post?.metadata.title}
+        </Link>
+      </Heading>
+    </figure>
+  )
 }
