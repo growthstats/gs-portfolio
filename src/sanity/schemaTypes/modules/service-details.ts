@@ -7,31 +7,8 @@ export default defineType({
   title: 'Service Details',
   icon: LuServer,
   type: 'object',
-  description:
-    'Detailed information about a specific service, including its title, description, call-to-actions, and features.',
+  description: 'Feature list for a specific service page.',
   fields: [
-    defineField({
-      name: 'title',
-      type: 'string',
-      title: 'Service Title',
-      description: 'The name of the service being detailed.',
-      validation: (Rule) => Rule.required().error('A title is required for the service.'),
-    }),
-    defineField({
-      name: 'description',
-      type: 'text',
-      title: 'Service Description',
-      description: 'A short summary or description of the service.',
-      rows: 3,
-      validation: (Rule) => Rule.required().error('A description is required for the service.'),
-    }),
-    defineField({
-      name: 'ctas',
-      title: 'Call-to-action',
-      type: 'cta',
-      description: 'CTA button or link that prompt user interaction.',
-    }),
-
     defineField({
       name: 'features',
       title: 'Features',
@@ -119,14 +96,14 @@ export default defineType({
   ],
   preview: {
     select: {
-      title: 'title',
-      subtitle: 'description',
+      title: 'features.0.name',
+      subtitle: 'features.0.description',
       media: 'features.0.img',
     },
     prepare({ title, subtitle, media }) {
       return {
-        title: title || 'No title provided',
-        subtitle: subtitle || 'No description available',
+        title: title || 'Service details',
+        subtitle: subtitle || 'Feature list',
         media: media || IoIosImage,
       }
     },

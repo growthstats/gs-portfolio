@@ -16,6 +16,7 @@ import LogoList from './LogoList'
 import ProjectList from './ProjectList'
 import RichtextModule from './RichtextModule'
 import ScheduleModule from './ScheduleModule'
+import ServiceList from './ServiceList'
 import SearchModule from './SearchModule'
 import StatList from './StatList'
 import StepList from './StepList'
@@ -57,6 +58,7 @@ export const MODULE_MAP = {
   'richtext-module': RichtextModule,
   'schedule-module': ScheduleModule,
   'search-module': SearchModule,
+  'service-list': ServiceList,
   'service-details': ServiceDetails,
   'stat-list': StatList,
   'step-list': StepList,

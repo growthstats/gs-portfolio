@@ -74,7 +74,7 @@ export default async function Section({ data, dataSanity, renderModule }: Readon
   )
 }
 
-function sanitizeString(value?: string | null) {
+export function sanitizeString(value?: string | null) {
   if (!value) return undefined
   const cleaned = stegaClean(value)
   return typeof cleaned === 'string' ? cleaned.trim() : value.trim()
@@ -86,10 +86,8 @@ function isLucideIcon(icon: unknown): icon is LucideIcon {
   return typeof icon === 'object' && 'render' in (icon as Record<string, unknown>)
 }
 
-async function loadIcon(name: string): Promise<LucideIcon> {
-  console.log('name: ', name)
+export async function loadIcon(name: string): Promise<LucideIcon> {
   const resolved = resolveIconImporter(name)
-  console.log('resolved: ', resolved)
   const cacheKey = resolved?.key ?? name
 
   const cached = ICON_CACHE.get(cacheKey)
@@ -105,7 +103,7 @@ async function loadIcon(name: string): Promise<LucideIcon> {
     .importer()
     .then((module) => {
       const Icon = module.default
-      console.log('Icon: ', Icon)
+
       return isLucideIcon(Icon) ? Icon : FALLBACK_ICON
     })
     .catch(() => FALLBACK_ICON)

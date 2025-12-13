@@ -129,7 +129,6 @@ const MODULES_BASE_PROJECTION = `
 		),
 	},
 	_type == 'service-details' => {
-		ctas{ ${CTA_QUERY} },
 		features[]{
 			...,
 			img{ ${IMAGE_QUERY} }
@@ -155,6 +154,18 @@ const MODULES_BASE_PROJECTION = `
 		accessibleAccordion,
 		generateSchema
 	  },
+  _type == 'service-list' => {
+	  services[]{
+		  _key,
+		  title,
+		  description,
+		  layout,
+      keywords,
+      icon,
+      image{ ${IMAGE_QUERY} },
+      ctas[]{ ${CTA_QUERY} },
+    }
+  },
 `
 
 export const MODULES_QUERY = groq`

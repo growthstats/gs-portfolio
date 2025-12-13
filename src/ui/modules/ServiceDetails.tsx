@@ -1,40 +1,25 @@
 import moduleProps from '@/lib/moduleProps'
-import CTAList from '@/ui/CTAList'
 import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
 import { Img } from '@/ui/Img'
 
 export default function ServiceDetails({
-  title,
-  description,
-  ctas,
   features,
   ...props
 }: Partial<Sanity.ServiceDetailsModule> & Sanity.Module) {
-  const ctaList = ctas ? [{ ...ctas, _key: ctas._key ?? 'service-cta' }] : undefined
-  const hasFeatures = !!features?.length
+  if (!features?.length) return null
 
   return (
-    <section className="section space-y-12" {...moduleProps(props)}>
-      <div className="from-ink/5 space-y-5 rounded-[28px] bg-gradient-to-br via-white to-amber-50/80 p-8">
-        <Heading as="h2" variant="h1" className="text-balance">
-          {title}
-        </Heading>
-        {description && (
-          <Text variant="body-lg" muted className="text-ink/75 whitespace-pre-line">
-            {description}
-          </Text>
-        )}
-        <CTAList ctas={ctaList} className="pt-2" />
-      </div>
+    <section className="section space-y-10" {...moduleProps(props)}>
+      <Heading as="h2" variant="h1" className="text-center text-balance">
+        Our Features
+      </Heading>
 
-      {hasFeatures && (
-        <div className="grid gap-8 md:grid-cols-2">
-          {features?.map((feature, index) => (
-            <FeatureCard feature={feature} key={feature?._key ?? index} />
-          ))}
-        </div>
-      )}
+      <div className="grid gap-8 md:grid-cols-2">
+        {features.map((feature, index) => (
+          <FeatureCard feature={feature} key={feature?._key ?? index} />
+        ))}
+      </div>
     </section>
   )
 }
@@ -45,34 +30,42 @@ function FeatureCard({ feature }: Readonly<{ feature?: Sanity.ServiceFeature }>)
   const { name, description, img } = feature
 
   return (
-    <article className="border-ink/5 via-ink/3 ring-ink/5 overflow-hidden rounded-3xl border bg-gradient-to-br from-white to-amber-50/60 p-6 shadow-sm ring-1 backdrop-blur-sm md:p-8">
-      <div className="grid gap-6 md:grid-cols-[1.05fr,0.95fr] md:items-center">
-        <div className="space-y-4">
-          <Heading as="h3" variant="h3" className="text-balance">
-            {name || 'Untitled feature'}
-          </Heading>
-
-          {description && (
-            <Text muted className="text-ink/75 whitespace-pre-line">
-              {description}
-            </Text>
+    <article className="flex flex-col items-center overflow-hidden rounded-3xl p-6 text-center shadow-(--shadow-badge)">
+      <div className="relative -mt-10 mb-4 flex items-center justify-center">
+        <div className="mt-8 flex items-center justify-center rounded-2xl p-6 shadow-(--shadow-badge)">
+          {img ? (
+            <div className="h-full w-full">
+              <Img
+                image={img}
+                width={150}
+                height={150}
+                className="h-full w-full object-contain"
+                alt={name || 'feature'}
+              />
+            </div>
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-3xl">🔧</div>
           )}
         </div>
-
-        {img && (
-          <div className="bg-ink/5 relative isolate aspect-video overflow-hidden rounded-2xl shadow-[var(--shadow-card)]">
-            <Img image={img} className="size-full object-cover" />
-            {img.caption && (
-              <Text
-                variant="technical"
-                className="text-canvas absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent px-4 pt-8 pb-3"
-              >
-                {img.caption}
-              </Text>
-            )}
-          </div>
-        )}
       </div>
+
+      <Heading as="h3" variant="h3" className="mt-1 text-balance">
+        {name || 'Untitled feature'}
+      </Heading>
+
+      {description && (
+        <div className="mt-4 max-w-[36rem]">
+          <Text muted className="text-ink/75 whitespace-pre-line">
+            {description}
+          </Text>
+        </div>
+      )}
+
+      {img?.caption && (
+        <Text variant="technical" className="text-canvas mt-4 block w-full px-3 text-sm">
+          {img.caption}
+        </Text>
+      )}
     </article>
   )
 }
