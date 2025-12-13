@@ -179,7 +179,7 @@ export default function Faq({
                         'flex w-full items-center justify-between px-6 py-5 text-left transition-all duration-200 focus:outline-none',
                         'focus-visible:ring-primary/60 hover:no-underline focus-visible:ring-2 focus-visible:ring-offset-2',
                         'rounded-[20px]',
-                        'relative z-10',
+                        'relative z-0',
                       )}
                     >
                       <Text as="span" variant="body" className="pr-4 break-words text-gray-800">

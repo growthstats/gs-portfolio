@@ -155,6 +155,18 @@ const MODULES_BASE_PROJECTION = `
 		accessibleAccordion,
 		generateSchema
 	  },
+  _type == 'service-list' => {
+	  services[]{
+		  _key,
+		  title,
+		  description,
+		  layout,
+      keywords,
+      icon,
+      image{ ${IMAGE_QUERY} },
+      ctas[]{ ${CTA_QUERY} },
+    }
+  },
 `
 
 export const MODULES_QUERY = groq`
