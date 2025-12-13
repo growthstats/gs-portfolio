@@ -21,6 +21,7 @@ export const SECTION_CHILD_MODULE_TYPES = [
 	'richtext-module',
 	'schedule-module',
 	'search-module',
+  'service-list',
 	'stat-list',
 	'step-list',
 	'tabbed-content',
@@ -29,7 +30,7 @@ export const SECTION_CHILD_MODULE_TYPES = [
 ] as const
 
 export const createSectionModuleQuery = (childProjection: string) =>
-	groq`
+  groq`
 	...,
 	"module": module[]{
 		...select(

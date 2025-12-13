@@ -82,6 +82,7 @@ export default defineType({
         { type: 'richtext-module' },
         { type: 'schedule-module' },
         { type: 'search-module' },
+        { type: 'service-list' },
         { type: 'stat-list' },
         { type: 'step-list' },
         { type: 'tabbed-content' },

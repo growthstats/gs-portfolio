@@ -28,6 +28,7 @@ export default defineField({
     { type: 'schedule-module' },
     { type: 'section' },
     { type: 'search-module' },
+    { type: 'service-list' },
     { type: 'service-details' },
     { type: 'stat-list' },
     { type: 'step-list' },
