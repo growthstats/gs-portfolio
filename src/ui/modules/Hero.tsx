@@ -39,8 +39,6 @@ export default function Hero({
   const textAlign = stegaClean(ta)
   const alignItems = stegaClean(ai)
   const pullUnderHeader = Boolean(stegaClean(overlayHeader))
-  console.log('overlayHeader: ', overlayHeader)
-  console.log('pullUnderHeader: ', pullUnderHeader)
 
   return (
     <section
