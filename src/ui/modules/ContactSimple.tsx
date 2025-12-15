@@ -5,6 +5,7 @@ import Heading from '@/ui/Heading'
 import { PortableText } from 'next-sanity'
 import type { PortableTextBlock } from 'next-sanity'
 import CTA from '@/ui/CTA'
+import Text from '@/ui/Text'
 
 function CustomIcon() {
   return (
@@ -81,7 +82,7 @@ export default function ContactSimple({ title, excerpt, ctas = [] }: Readonly<Co
             className="mx-auto mt-1 mb-2 max-w-xl text-gray-500 [&_p]:mb-2"
           >
             <PortableText value={excerpt ?? []} />
-          </div>
+          </Text>
         )}
 
         {ctas?.length > 0 && (

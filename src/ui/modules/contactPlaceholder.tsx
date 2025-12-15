@@ -2,10 +2,11 @@ import { Mail, Phone } from 'lucide-react'
 import Social from '@/ui/Social'
 import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
+import ContactForm from './contactPlaceholderForm'
 
 export default function ContactPlaceholder() {
   return (
-    <section className="w-full space-y-20 py-20">
+    <div className="section w-full space-y-20 py-20">
       {/* =====================================================
           SECTION 1: CONTACT INFO + MAP
       ===================================================== */}
@@ -14,7 +15,7 @@ export default function ContactPlaceholder() {
           Contact Us
         </Heading>
 
-        <div className="rounded-3xl shadow-(--shadow-badge)">
+        <div className="rounded-3xl shadow-(--shadow-card)">
           {/* Map */}
           <div className="overflow-hidden rounded-t-2xl px-2 pt-2 md:px-8 md:pt-8">
             <iframe
@@ -80,65 +81,15 @@ export default function ContactPlaceholder() {
       {/* =====================================================
           SECTION 2: GET IN TOUCH FORM
       ===================================================== */}
-      <div className="mx-auto max-w-3xl md:px-4">
+      <div className="mx-auto max-w-5xl md:px-4">
         <Heading as="h2" variant="h2" className="mb-8 text-center">
           Get in Touch
         </Heading>
 
         <div className="md:px-8 md:pb-8">
-          <form className="space-y-6">
-            {/* Name + Phone */}
-            <div className="grid gap-6 md:grid-cols-2">
-              <div>
-                <label className="mb-2 block text-sm font-medium">Name</label>
-                <input
-                  type="text"
-                  placeholder="Enter Your name"
-                  className="w-full rounded-md px-4 py-2 text-sm shadow-(--shadow-badge) outline-none focus:border-neutral-400"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-sm font-medium">Phone Number</label>
-                <input
-                  type="tel"
-                  placeholder="+91 XXXX XXXXX"
-                  className="w-full rounded-md px-4 py-2 text-sm shadow-(--shadow-badge) outline-none focus:border-neutral-400"
-                />
-              </div>
-            </div>
-
-            {/* Email */}
-            <div>
-              <label className="mb-2 block text-sm font-medium">Email</label>
-              <input
-                type="email"
-                placeholder="example@gmail.com"
-                className="w-full rounded-md px-4 py-2 text-sm shadow-(--shadow-badge) outline-none focus:border-neutral-400"
-              />
-            </div>
-
-            {/* Message */}
-            <div>
-              <label className="mb-2 block text-sm font-medium">Message</label>
-              <textarea
-                rows={4}
-                className="w-full resize-none rounded-md px-4 py-2 text-sm shadow-(--shadow-badge) outline-none focus:border-neutral-400"
-              />
-            </div>
-
-            {/* Submit */}
-            <div className="pt-4 text-center">
-              <button
-                type="submit"
-                className="inline-flex w-full max-w-xs items-center justify-center rounded-md bg-black px-6 py-2.5 text-sm font-medium text-white transition hover:bg-black/90"
-              >
-                Submit
-              </button>
-            </div>
-          </form>
+          <ContactForm />
         </div>
       </div>
-    </section>
+    </div>
   )
 }
