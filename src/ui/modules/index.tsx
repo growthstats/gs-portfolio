@@ -6,6 +6,8 @@ import BlogPostContent from './blog/PostContent'
 import Breadcrumbs from './Breadcrumbs'
 import Callout from './Callout'
 import CardList from './CardList'
+import ContactSimple from './ContactSimple'
+import contactPlaceholder from './contactPlaceholder'
 import CustomHTML from './CustomHTML'
 import FlagList from './FlagList'
 import Hero from './Hero'
@@ -26,7 +28,6 @@ import TestimonialList from './TestimonialList'
 import TestimonialFeatured from './TestimonialFeatured'
 import Section from './Section'
 import Faq from './Faq'
-import ContactSimple from './ContactSimple'
 import ServiceDetails from './ServiceDetails'
 
 import dynamic from 'next/dynamic'
@@ -42,6 +43,7 @@ export const MODULE_MAP = {
   breadcrumbs: Breadcrumbs,
   callout: Callout,
   'card-list': CardList,
+  'contact.placeholder': contactPlaceholder,
   'contact.simple': ContactSimple,
   'creative-module': dynamic(() => import('./CreativeModule')),
   'custom-html': CustomHTML,

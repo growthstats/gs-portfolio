@@ -78,7 +78,15 @@ const MODULES_BASE_PROJECTION = `
 		},
 		assets[]{
 			...,
-			_type == 'img' => { ${ASSET_IMG_QUERY} }
+			_type == 'img' => { ${ASSET_IMG_QUERY} },
+			_type == 'video' => {
+				'url': file.asset->url,
+				'mimeType': file.asset->mimeType,
+				autoplay,
+				loop,
+				muted,
+				poster{ ${ASSET_IMG_QUERY} }
+			}
 		}
 	},
 	_type == 'hero.saas' => {
@@ -88,7 +96,15 @@ const MODULES_BASE_PROJECTION = `
 		},
 		assets[]{
 			...,
-			_type == 'img' => { ${ASSET_IMG_QUERY} }
+			_type == 'img' => { ${ASSET_IMG_QUERY} },
+			_type == 'video' => {
+				'url': file.asset->url,
+				'mimeType': file.asset->mimeType,
+				autoplay,
+				loop,
+				muted,
+				poster{ ${ASSET_IMG_QUERY} }
+			}
 		}
 	},
 	_type == 'hero.split' => {
@@ -98,7 +114,15 @@ const MODULES_BASE_PROJECTION = `
 		},
 		assets[]{
 			...,
-			_type == 'img' => { ${ASSET_IMG_QUERY} }
+			_type == 'img' => { ${ASSET_IMG_QUERY} },
+			_type == 'video' => {
+				'url': file.asset->url,
+				'mimeType': file.asset->mimeType,
+				autoplay,
+				loop,
+				muted,
+				poster{ ${ASSET_IMG_QUERY} }
+			}
 		}
 	},
 	_type == 'logo-list' => { logos[]-> },
