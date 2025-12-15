@@ -76,7 +76,11 @@ export default function ContactSimple({ title, excerpt, ctas = [] }: Readonly<Co
         )}
 
         {excerpt && (
-          <Text as="p" variant="body" className="mx-auto mt-1 mb-2 max-w-xl text-gray-500">
+          <Text
+            as="div"
+            variant="body"
+            className="mx-auto mt-1 mb-2 max-w-xl text-gray-500 [&_p]:mb-2"
+          >
             <PortableText value={excerpt ?? []} />
           </Text>
         )}
