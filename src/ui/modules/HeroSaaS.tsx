@@ -7,6 +7,7 @@ import Reputation from '@/ui/Reputation'
 import CTAList from '@/ui/CTAList'
 import { ResponsiveImg } from '@/ui/Img'
 import { cn } from '@/lib/utils'
+import { urlFor } from '@/sanity/lib/image'
 
 export default function HeroSaaS({
   pretitle,
@@ -19,7 +20,7 @@ export default function HeroSaaS({
   pretitle: string
   content: Sanity.PortableText
   ctas: Sanity.CTA[]
-  assets: Sanity.Img[]
+  assets: Array<Sanity.Img | Sanity.HeroVideo>
   assetFaded?: boolean
 }> &
   Sanity.Module) {
@@ -64,6 +65,27 @@ export default function HeroSaaS({
                 draggable={false}
               />
             )
+          case 'video': {
+            const video = asset
+            const poster = video.poster?.image
+              ? urlFor(video.poster.image).width(2400).url()
+              : undefined
+            return (
+              <video
+                className={cn(
+                  'anim-fade-to-t block w-full rounded-2xl [animation-duration:1s]',
+                  assetFaded && '[mask:linear-gradient(to_top,transparent,#000_50%)]',
+                )}
+                autoPlay={video.autoplay ?? true}
+                loop={video.loop ?? true}
+                muted={video.muted ?? true}
+                playsInline
+                poster={poster}
+              >
+                <source src={video.url} type={video.mimeType || 'video/mp4'} />
+              </video>
+            )
+          }
           default:
             return null
         }

@@ -8,12 +8,14 @@ import Reputation from '@/ui/Reputation'
 import { cn } from '@/lib/utils'
 import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
+import { urlFor } from '@/sanity/lib/image'
 
 export default function Hero({
   pretitle,
   content,
   ctas,
   assets,
+  overlayHeader,
   textAlign: ta = 'center',
   alignItems: ai,
   ...props
@@ -21,25 +23,41 @@ export default function Hero({
   pretitle: string
   content: Sanity.PortableText
   ctas: Sanity.CTA[]
-  assets: Sanity.Img[]
+  assets: Array<Sanity.Img | Sanity.HeroVideo>
+  overlayHeader?: boolean
   textAlign: React.CSSProperties['textAlign']
   alignItems: React.CSSProperties['alignItems']
 }> &
   Sanity.Module) {
-  const hasImage = !!assets?.[0]
   const asset = assets?.[0]
+  const isImage = asset?._type === 'img'
+  const isVideo = asset?._type === 'video' && !!asset?.url
+  const hasVisual = isImage || isVideo
+  const videoPoster = isVideo && asset.poster?.image ? asset.poster?.image : undefined
+  const videoPosterUrl = videoPoster ? urlFor(videoPoster).width(2400).url() : undefined
 
   const textAlign = stegaClean(ta)
   const alignItems = stegaClean(ai)
+  const pullUnderHeader = Boolean(stegaClean(overlayHeader))
+  console.log('overlayHeader: ', overlayHeader)
+  console.log('pullUnderHeader: ', pullUnderHeader)
 
   return (
     <section
       className={cn(
-        hasImage && 'bg-ink text-canvas grid overflow-hidden *:col-span-full *:row-span-full',
+        hasVisual && 'bg-ink text-canvas grid overflow-hidden *:col-span-full *:row-span-full',
       )}
+      style={
+        pullUnderHeader
+          ? {
+              marginTop: 'calc(var(--header-height) * -2)',
+              paddingTop: 'calc(var(--header-height) * 1)',
+            }
+          : undefined
+      }
       {...moduleProps(props)}
     >
-      {hasImage && (
+      {isImage && asset && (
         <ResponsiveImg
           img={asset}
           className="max-h-fold size-full object-cover"
@@ -47,13 +65,26 @@ export default function Hero({
           draggable={false}
         />
       )}
+      {isVideo && (
+        <video
+          className="max-h-fold size-full object-cover"
+          autoPlay={asset.autoplay ?? true}
+          loop={asset.loop ?? true}
+          muted={asset.muted ?? true}
+          playsInline
+          poster={videoPosterUrl}
+        >
+          <source src={asset.url} type={asset.mimeType || 'video/mp4'} />
+          Your browser does not support the video tag.
+        </video>
+      )}
 
       {content && (
         <div className="section flex w-full flex-col text-balance">
           <div
             className={cn(
               'richtext headings:text-balance relative isolate max-w-2xl',
-              hasImage && 'text-shadow',
+              isImage && 'text-shadow',
               {
                 'mb-8': alignItems === 'start',
                 'my-auto': alignItems === 'center',
@@ -65,7 +96,7 @@ export default function Hero({
             )}
             style={{ textAlign }}
           >
-            <Pretitle className={cn(hasImage && 'text-canvas/70')}>{pretitle}</Pretitle>
+            <Pretitle className={cn(isImage && 'text-canvas/70')}>{pretitle}</Pretitle>
 
             <PortableText
               value={content}
@@ -82,14 +113,14 @@ export default function Hero({
                     style === 'h6'
                   ) {
                     return (
-                      <Heading as={style} variant={style} className={cn(hasImage && 'text-canvas')}>
+                      <Heading as={style} variant={style} className={cn(isImage && 'text-canvas')}>
                         {children}
                       </Heading>
                     )
                   }
 
                   return (
-                    <Text as="p" variant="body" className={cn(hasImage && 'text-canvas/90')}>
+                    <Text as="p" variant="body" className={cn(isImage && 'text-canvas/90')}>
                       {children}
                     </Text>
                   )
@@ -98,7 +129,7 @@ export default function Hero({
                   'custom-html': ({ value }) => <CustomHTML {...value} />,
                   'reputation-block': ({ value }) => (
                     <Reputation
-                      className={cn('!mt-4', hasImage && '[&_strong]:text-amber-400', {
+                      className={cn('!mt-4', isImage && '[&_strong]:text-amber-400', {
                         'justify-start': ['left', 'start'].includes(textAlign),
                         'justify-center': textAlign === 'center',
                         'justify-end': ['right', 'end'].includes(textAlign),

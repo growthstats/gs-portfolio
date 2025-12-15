@@ -171,6 +171,15 @@ declare global {
       alt?: string
       loading?: 'lazy' | 'eager'
     }
+    interface HeroVideo {
+      readonly _type: 'video'
+      url?: string
+      mimeType?: string
+      poster?: Img
+      autoplay?: boolean
+      loop?: boolean
+      muted?: boolean
+    }
 
     interface Image extends SanityAssetDocument {
       alt: string

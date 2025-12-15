@@ -18,7 +18,7 @@ export default function HeroSplit({
     pretitle: string
     content: Sanity.PortableText
     ctas: Sanity.CTA[]
-    assets: Array<Sanity.Img | Sanity.Code | Sanity.CustomHTML>
+    assets: Array<Sanity.Img | Sanity.HeroVideo | Sanity.Code | Sanity.CustomHTML>
     assetOnRight: boolean
     assetBelowContent: boolean
   }>
