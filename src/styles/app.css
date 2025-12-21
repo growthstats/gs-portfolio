@@ -315,7 +315,7 @@
 }
 
 @utility text-gradient {
-  @apply from-accent-foreground/3 to-accent-foreground bg-linear-to-br bg-clip-text text-transparent;
+  @apply from-accent/50 to-accent bg-linear-to-br bg-clip-text text-transparent;
 }
 
 /* ctas, links */

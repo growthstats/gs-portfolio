@@ -42,10 +42,17 @@ const JoinUsPlaceholder = () => {
         {/* Bottom Button */}
         <CTA
           style={'ghost'}
-          className="mt-8 rounded-full px-8 py-3 font-medium shadow-(--shadow-badge)"
-        >
-          Book an Appointment
-        </CTA>
+          className="mt-8 px-8 py-3 font-medium shadow-(--shadow-badge)"
+          link={{
+            _type: 'link',
+            label: 'Book an Appointment',
+            type: 'internal',
+            internal: {
+              _type: 'page',
+              metadata: { slug: { current: 'contact' } },
+            } as unknown as Sanity.Page,
+          }}
+        />
       </div>
     </div>
   )
