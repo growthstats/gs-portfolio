@@ -10,8 +10,6 @@ import type { PortableTextBlock } from 'sanity'
 
 import type { LucideIcon } from 'lucide-react'
 
-/* ---------------- SANITY TYPES ---------------- */
-
 interface ServiceItem {
   _key: string
   title?: string
@@ -109,19 +107,17 @@ export default async function ServiceList({
               {/* ---------------- RIGHT IMAGE BLOCK ---------------- */}
               <div className="flex flex-1 items-center justify-center rounded-4xl p-7 shadow-(--shadow-badge)">
                 <div className="flex h-full flex-col items-center justify-center">
-                  <div className="relative flex items-center justify-center rounded-4xl p-4 shadow-(--shadow-badge)">
-                    {s.image ? (
-                      <Img
-                        image={s.image}
-                        width={200}
-                        height={200}
-                        className="relative z-0 rounded-xl object-contain"
-                        alt={s.title || 'Service image'}
-                      />
-                    ) : (
-                      <div className="relative z-0 text-4xl opacity-60">⚙</div>
-                    )}
-                  </div>
+                  {s.image ? (
+                    <Img
+                      image={s.image}
+                      width={200}
+                      height={200}
+                      className="relative z-0 rounded-xl object-contain"
+                      alt={s.title || 'Service image'}
+                    />
+                  ) : (
+                    <div className="relative z-0 text-4xl opacity-60">⚙</div>
+                  )}
 
                   {/* CTA buttons */}
                   <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
@@ -131,7 +127,7 @@ export default async function ServiceList({
                           key={cta._key}
                           link={cta.link}
                           style={cta.style ?? 'ghost'}
-                          className="rounded-full px-8 py-3 font-medium shadow-(--shadow-badge)"
+                          className="px-8 py-3 font-medium shadow-(--shadow-badge)"
                         />
                       )
                     })}

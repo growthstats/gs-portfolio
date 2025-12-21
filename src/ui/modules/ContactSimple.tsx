@@ -89,7 +89,7 @@ export default function ContactSimple({ title, excerpt, ctas = [] }: Readonly<Co
           <div className="my-3 flex flex-wrap items-center justify-center gap-4">
             {ctas.map((cta) => (
               <CTA
-                className="rounded-full shadow-(--shadow-badge) max-sm:w-full"
+                className="shadow-(--shadow-badge) max-sm:w-full"
                 {...cta}
                 style={cta?.style ?? 'default'}
                 key={cta?._key}

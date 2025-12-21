@@ -13,7 +13,7 @@ export default function Content({
   children,
 }: { value: Sanity.PortableText } & React.ComponentProps<'div'>) {
   return (
-    <div className={cn('richtext mx-auto w-full space-y-6 [&>:first-child]:!mt-0', className)}>
+    <div className={cn('richtext mx-auto w-full [&>:first-child]:!mt-0', className)}>
       <PortableText
         value={value}
         components={{
