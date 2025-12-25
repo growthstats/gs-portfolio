@@ -17,9 +17,9 @@ export default async function Header() {
     <Wrapper
       className="glass-panel bg-canvas/20 max-md:header-open:shadow-lg sticky top-0 z-10 border-b-2 border-white/30 md:py-2"
       style={{
-        backdropFilter: 'blur(16px) saturate(140%)',
-        WebkitBackdropFilter: 'blur(16px) saturate(140%)',
-        backgroundColor: 'rgba(255,255,255,0.7)',
+        backdropFilter: 'blur(6px) saturate(140%)',
+        WebkitBackdropFilter: 'blur(6px) saturate(140%)',
+        backgroundColor: 'rgba(255,255,255,0)',
       }}
     >
       <div className={cn(css.header, 'mx-auto grid max-w-screen-xl items-center gap-x-6 p-4')}>
