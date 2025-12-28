@@ -92,7 +92,7 @@ export default function TeamPlaceholder({
           {features.map((f) => (
             <div
               key={f.id}
-              className="flex flex-col items-center gap-2 overflow-visible rounded-3xl px-6 py-8 text-center shadow-(--shadow-badge) transition-shadow duration-300"
+              className="flex flex-col items-center gap-2 overflow-visible rounded-3xl px-6 py-8 text-center shadow-(--shadow-card) transition-shadow duration-300"
             >
               <div
                 className="flex h-20 w-20 items-center justify-center rounded-2xl shadow-(--shadow-badge)"

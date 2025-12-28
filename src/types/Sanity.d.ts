@@ -260,12 +260,10 @@ declare global {
       description?: PortableText
       asset?: Image
       cta?: CTA
+      ctaEnabled?: boolean
     }
 
     interface ProjectListModule extends Module<'project-list'> {
-      pretitle?: string
-      title?: string
-      intro?: PortableText
       projects?: ProjectListItem[]
       initialProjects?: number
     }

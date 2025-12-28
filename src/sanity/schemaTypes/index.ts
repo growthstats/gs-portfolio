@@ -34,6 +34,7 @@ import blogPostContent from './modules/blog-post-content'
 import breadcrumbs from './modules/breadcrumbs'
 import callout from './modules/callout'
 import cardList from './modules/card-list'
+import brandHeroPlaceholder from './modules/brand-hero.placeholder'
 import creativeModule from './modules/creative'
 import customHtml from './modules/custom-html'
 import faq from './modules/faq'
@@ -96,6 +97,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   blogList,
   blogPostContent,
   breadcrumbs,
+  brandHeroPlaceholder,
   callout,
   cardList,
   contactPlaceholder,
