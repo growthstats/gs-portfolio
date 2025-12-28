@@ -64,6 +64,7 @@ export default defineType({
         { type: 'blog-list' },
         { type: 'blog-post-content' },
         { type: 'breadcrumbs' },
+        { type: 'brand-hero.placeholder' },
         { type: 'callout' },
         { type: 'card-list' },
         { type: 'contact.placeholder' },

@@ -424,6 +424,28 @@
   mask: linear-gradient(to right, black 50%, black calc(100% - var(--offset)), transparent);
 }
 
+/* simple float animation */
+@keyframes float-updown {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@utility animate-float-updown-slow {
+  animation: float-updown 6s ease-in-out infinite;
+}
+
+@utility animate-float-updown-slow-delayed {
+  animation: float-updown 6s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
 /* layout */
 
 @utility section {

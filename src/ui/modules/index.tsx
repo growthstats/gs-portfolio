@@ -8,6 +8,7 @@ import Callout from './Callout'
 import CardList from './CardList'
 import ContactSimple from './ContactSimple'
 import contactPlaceholder from './contactPlaceholder'
+import BrandHeroPlaceholder from './BrandHeroPlaceholder'
 import CustomHTML from './CustomHTML'
 import FlagList from './FlagList'
 import Hero from './Hero'
@@ -43,6 +44,7 @@ export const MODULE_MAP = {
   breadcrumbs: Breadcrumbs,
   callout: Callout,
   'card-list': CardList,
+  'brand-hero.placeholder': BrandHeroPlaceholder,
   'contact.placeholder': contactPlaceholder,
   'contact.simple': ContactSimple,
   'creative-module': dynamic(() => import('./CreativeModule')),

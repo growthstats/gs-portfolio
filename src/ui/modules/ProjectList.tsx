@@ -3,7 +3,6 @@
 import { useMemo, useState } from 'react'
 import { PortableText, stegaClean } from 'next-sanity'
 import moduleProps from '@/lib/moduleProps'
-import Pretitle from '@/ui/Pretitle'
 import Heading from '@/ui/Heading'
 import { Img } from '@/ui/Img'
 import CTA from '@/ui/CTA'
@@ -15,19 +14,14 @@ type ProjectCard = {
   description?: Sanity.PortableText
   asset?: Sanity.Image
   cta?: Sanity.CTA
+  ctaEnabled?: boolean
 }
 
 export default function ProjectList({
-  pretitle,
-  title,
-  intro,
   projects,
   initialProjects = 3,
   ...props
 }: Partial<{
-  pretitle: string
-  title: string
-  intro: Sanity.PortableText
   projects: ProjectCard[]
   initialProjects: number
 }> &
@@ -44,23 +38,7 @@ export default function ProjectList({
   const hasMore = (projects?.length || 0) > visibleByDefault
 
   return (
-    <section className="section space-y-10" {...moduleProps(props)}>
-      {(pretitle || title || intro) && (
-        <header className="richtext mx-auto max-w-3xl space-y-3 text-center text-balance">
-          <Pretitle>{pretitle}</Pretitle>
-          {title && (
-            <Heading
-              as="h2"
-              variant="h2"
-              // className="text-3xl font-semibold md:text-4xl"
-            >
-              {title}
-            </Heading>
-          )}
-          {intro && <PortableText value={intro ?? []} />}
-        </header>
-      )}
-
+    <div className="section space-y-10" {...moduleProps(props)}>
       <div className="grid auto-rows-fr gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {visibleProjects?.map((project, index) => {
           if (!project) return null
@@ -68,11 +46,11 @@ export default function ProjectList({
 
           return (
             <article
-              className="border-ink/10 flex h-full flex-col gap-4 rounded-2xl border bg-white/60 p-6 shadow-sm backdrop-blur-sm"
+              className="flex h-full flex-col items-center gap-4 overflow-hidden rounded-3xl px-6 py-8 text-center shadow-(--shadow-card) transition-shadow duration-300"
               key={key}
             >
               {project.asset && (
-                <figure className="border-ink/5 overflow-hidden rounded-lg border">
+                <figure className="border-ink/5 w-full overflow-hidden rounded-2xl border">
                   <Img
                     className="aspect-video w-full object-cover"
                     image={project.asset}
@@ -83,11 +61,7 @@ export default function ProjectList({
 
               <div className="flex grow flex-col gap-3">
                 {project.name && (
-                  <Heading
-                    as="h3"
-                    variant="h4"
-                    // className="text-lg leading-tight text-balance"
-                  >
+                  <Heading as="h3" variant="h4">
                     {project.name}
                   </Heading>
                 )}
@@ -98,7 +72,7 @@ export default function ProjectList({
                 )}
               </div>
 
-              {project.cta && (
+              {project.ctaEnabled && project.cta && (
                 <div className="pt-2">
                   <CTA {...project.cta} />
                 </div>
@@ -115,6 +89,6 @@ export default function ProjectList({
           </Button>
         </div>
       )}
-    </section>
+    </div>
   )
 }
