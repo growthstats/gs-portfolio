@@ -13,6 +13,7 @@ export default defineField({
     { type: 'breadcrumbs' },
     { type: 'callout' },
     { type: 'card-list' },
+    { type: 'contact.simple' },
     { type: 'brand-hero.placeholder' },
     { type: 'contact.placeholder' },
     { type: 'creative-module' },
