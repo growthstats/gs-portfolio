@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 const VARIANT_STYLES = {
   'display-hero': 'text-display-hero leading-display-hero tracking-display-hero font-bold',
   'display-xl': 'text-display-xl leading-display-xl tracking-display-xl font-semibold',
+  'display-xxl': 'text-display-xxl leading-display-xxl tracking-display-xxl font-bold',
   h1: 'text-h1 leading-h1 tracking-h1 font-semibold',
   h2: 'text-h2 leading-h2 font-semibold',
   h3: 'text-h3 leading-h3 font-semibold',
@@ -31,7 +32,7 @@ export default function Heading({
   children,
   balance,
 }: Readonly<HeadingProps>) {
-  const shouldBalance = balance ?? ['display-hero', 'display-xl'].includes(variant)
+  const shouldBalance = balance ?? ['display-hero', 'display-xl', 'display-xxl'].includes(variant)
 
   const classes = cn(VARIANT_STYLES[variant], shouldBalance && 'text-balance', className)
 

@@ -44,6 +44,7 @@ import flagList from './modules/flag-list'
 import hero from './modules/hero'
 import heroSaas from './modules/hero.saas'
 import heroSplit from './modules/hero.split'
+import letsTalkPlaceholder from './modules/lets-talk-placeholder'
 import logoList from './modules/logo-list'
 import personList from './modules/person-list'
 import pricingList from './modules/pricing-list'
@@ -110,6 +111,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   heroSaas,
   heroSplit,
   joinUsPlaceholder,
+  letsTalkPlaceholder,
   logoList,
   personList,
   pricingList,

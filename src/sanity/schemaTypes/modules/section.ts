@@ -77,6 +77,7 @@ export default defineType({
         { type: 'hero.saas' },
         { type: 'hero.split' },
         { type: 'join-us.placeholder' },
+        { type: 'lets-talk-placeholder' },
         { type: 'logo-list' },
         { type: 'project-list' },
         { type: 'person-list' },

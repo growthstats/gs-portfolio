@@ -24,6 +24,7 @@ export default defineField({
     { type: 'hero.saas' },
     { type: 'hero.split' },
     { type: 'join-us.placeholder' },
+    { type: 'lets-talk-placeholder' },
     { type: 'logo-list' },
     { type: 'person-list' },
     { type: 'pricing-list' },
