@@ -43,7 +43,7 @@ export default function Hero({
   return (
     <section
       className={cn(
-        hasVisual && 'bg-ink text-canvas grid overflow-hidden *:col-span-full *:row-span-full',
+        hasVisual && 'bg-ink grid overflow-hidden text-black *:col-span-full *:row-span-full',
       )}
       style={
         pullUnderHeader
@@ -94,7 +94,7 @@ export default function Hero({
             )}
             style={{ textAlign }}
           >
-            <Pretitle className={cn(isImage && 'text-canvas/70')}>{pretitle}</Pretitle>
+            <Pretitle className={cn(isImage && 'text-black')}>{pretitle}</Pretitle>
 
             <PortableText
               value={content}
@@ -111,14 +111,14 @@ export default function Hero({
                     style === 'h6'
                   ) {
                     return (
-                      <Heading as={style} variant={style} className={cn(isImage && 'text-canvas')}>
+                      <Heading as={style} variant={style} className={cn(isImage && 'text-black')}>
                         {children}
                       </Heading>
                     )
                   }
 
                   return (
-                    <Text as="p" variant="body" className={cn(isImage && 'text-canvas/90')}>
+                    <Text as="p" variant="body" className={cn(isImage && 'text-black')}>
                       {children}
                     </Text>
                   )
