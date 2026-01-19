@@ -14,9 +14,9 @@ export default function BrandHeroPlaceholder({ ...props }: Readonly<Sanity.Modul
             <span>Deserves</span>
           </Heading>
           <Text muted>
-            We believe that every business deserves a website that truly represents them and their
-            unique brand. We&apos;ll work closely with you to understand your business and create a
-            website that not only looks great, but also delivers results.
+            We design digital experiences that reflect your brand, monitor promotions, design
+            standout visuals, and deliver content, branding, and marketing to elevate your business
+            online.
           </Text>
           <CTA
             style={'secondary'}

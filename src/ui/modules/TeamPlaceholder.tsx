@@ -13,7 +13,8 @@ const DEFAULT_FEATURES: Feature[] = [
   {
     id: 'expertise',
     title: 'Expertise',
-    description: 'Our Team consist of highly skilled professionals of the digital landscape',
+    description:
+      'Our skilled team brings together expertise, creativity, and technological mastery to accelerate business growth online',
     icon: (
       <svg
         width="50"
@@ -39,7 +40,7 @@ const DEFAULT_FEATURES: Feature[] = [
     id: 'client-centric',
     title: 'Client-Centric Approach',
     description:
-      'We prioritize our clients and their unique needs. We listen to your ideas & challenges',
+      'We prioritize our clients by delivering customized strategies designed to meet unique goals, challenges, and opportunities',
     icon: (
       <svg
         width="50"
@@ -58,7 +59,8 @@ const DEFAULT_FEATURES: Feature[] = [
   {
     id: 'results',
     title: 'Result Driven Solutions',
-    description: 'Our primary focus is on delivering results. We combine technical expertise.',
+    description:
+      'We focus on measurable outcomes, combining innovation, technical excellence, and strategic insight to drive enduring development',
     icon: (
       <svg
         width="50"
