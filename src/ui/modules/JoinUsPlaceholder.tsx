@@ -25,9 +25,7 @@ const JoinUsPlaceholder = () => {
           className="max-w-3xl text-3xl leading-snug font-semibold sm:text-4xl lg:text-5xl"
         >
           {/* TODO: Check SEO Implications of breaking sentence */}
-          <span className="bg-gradient-to-b from-[#8A8A8A] via-[#8A8A8A] to-black bg-clip-text text-transparent">
-            Each Project we Undertake
-          </span>
+          <span className="bg-clip-text">Each Project we Undertake</span>
           <br />
 
           <span className="text-black">is a Unique Opportunity.</span>
