@@ -49,3 +49,6 @@ studio/.env.development
 
 # Cache
 .eslintcache
+
+# backups
+*.tar.gz

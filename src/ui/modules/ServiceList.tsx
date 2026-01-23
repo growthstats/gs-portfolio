@@ -1,5 +1,4 @@
 import clsx from 'clsx'
-import { PortableText } from 'next-sanity'
 
 import CTA from '@/ui/CTA'
 import Heading from '@/ui/Heading'
@@ -9,6 +8,7 @@ import { loadIcon, sanitizeString } from '@/ui/modules/Section'
 import type { PortableTextBlock } from 'sanity'
 
 import type { LucideIcon } from 'lucide-react'
+import PortableText from '@/ui/PortableText'
 
 interface ServiceItem {
   _key: string

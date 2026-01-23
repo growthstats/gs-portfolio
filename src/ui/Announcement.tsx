@@ -1,8 +1,9 @@
 import { fetchSanityLive } from '@/sanity/lib/fetch'
-import { groq, PortableText } from 'next-sanity'
+import { groq } from 'next-sanity'
 import { LINK_QUERY } from '@/sanity/lib/queries'
 import Scheduler from './Scheduler'
 import CTA from '@/ui/CTA'
+import PortableText from '@/ui/PortableText'
 
 export default async function Announcement() {
   const announcements = await fetchSanityLive<(Sanity.Announcement & Sanity.Module)[]>({

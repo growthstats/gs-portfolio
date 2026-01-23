@@ -1,4 +1,4 @@
-import { groq, PortableText, stegaClean } from 'next-sanity'
+import { groq, stegaClean } from 'next-sanity'
 import { cookies } from 'next/headers'
 import { Suspense } from 'react'
 
@@ -12,6 +12,7 @@ import Pretitle from '@/ui/Pretitle'
 
 import PostPreview from '../PostPreview'
 import List from './List'
+import PortableText from '@/ui/PortableText'
 
 export default async function BlogList({
   pretitle,

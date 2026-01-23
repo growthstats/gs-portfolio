@@ -23,6 +23,7 @@ export type HeadingProps = {
   className?: string
   children: ReactNode
   balance?: boolean
+  id?: string
 }
 
 export default function Heading({
@@ -31,10 +32,15 @@ export default function Heading({
   className,
   children,
   balance,
+  id,
 }: Readonly<HeadingProps>) {
   const shouldBalance = balance ?? ['display-hero', 'display-xl', 'display-xxl'].includes(variant)
 
   const classes = cn(VARIANT_STYLES[variant], shouldBalance && 'text-balance', className)
 
-  return <Tag className={classes}>{children}</Tag>
+  return (
+    <Tag id={id} className={classes}>
+      {children}
+    </Tag>
+  )
 }

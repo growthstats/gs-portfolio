@@ -1,6 +1,6 @@
-import { PortableText } from 'next-sanity'
 import { VscQuote, VscSurroundWith } from 'react-icons/vsc'
 import { Img } from '@/ui/Img'
+import PortableText from '@/ui/PortableText'
 
 export default function TestimonialFeatured({
   testimonial,

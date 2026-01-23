@@ -2,9 +2,9 @@ import { getSite } from '@/sanity/lib/queries'
 import Navigation from './Navigation'
 import Social from '@/ui/Social'
 import LanguageSwitcher from '@/ui/LanguageSwitcher'
-import { PortableText } from 'next-sanity'
 import Link from 'next/link'
 import { Img } from '@/ui/Img'
+import PortableText from '@/ui/PortableText'
 
 export default async function Footer() {
   const { title, blurb, logo, copyright, footerMenu } = await getSite()

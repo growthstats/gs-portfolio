@@ -146,7 +146,7 @@ const MODULES_BASE_PROJECTION = `
 			_type == 'image' => { ${IMAGE_QUERY} }
 		},
 		'headings': select(
-			tableOfContents => content[style in ['h2', 'h3', 'h4', 'h5', 'h6']]{
+			tableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{
 				style,
 				'text': pt::text(@)
 			}

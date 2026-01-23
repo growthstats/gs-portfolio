@@ -1,6 +1,7 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 import { MdQuestionAnswer } from 'react-icons/md'
 import { getBlockText } from 'sanitypress-utils'
+import { richTextBlock } from '../fragments'
 
 export default defineType({
   name: 'faq',
@@ -35,7 +36,7 @@ export default defineType({
       name: 'description',
       title: 'Description',
       type: 'array',
-      of: [{ type: 'block' }],
+      of: [richTextBlock],
       group: 'content',
     }),
     defineField({
@@ -60,7 +61,7 @@ export default defineType({
               title: 'Answer',
               type: 'array',
               of: [
-                { type: 'block' },
+                richTextBlock,
                 defineArrayMember({
                   title: 'Code block',
                   type: 'code',
@@ -93,8 +94,7 @@ export default defineType({
       title: 'Accessible accordion',
       type: 'boolean',
       initialValue: true,
-      description:
-        'Enable ARIA attributes and single-tab focus pattern (recommended).',
+      description: 'Enable ARIA attributes and single-tab focus pattern (recommended).',
       group: 'options',
     }),
     defineField({

@@ -1,10 +1,11 @@
 import Pretitle from '@/ui/Pretitle'
-import { PortableText, stegaClean } from 'next-sanity'
+import { stegaClean } from 'next-sanity'
 import { Suspense } from 'react'
 import SearchForm from './SearchForm'
 import type { SearchScope } from './store'
 import CTAList from '@/ui/CTAList'
 import moduleProps from '@/lib/moduleProps'
+import PortableText from '@/ui/PortableText'
 
 export default function SearchModule({
   pretitle,

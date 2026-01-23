@@ -1,6 +1,7 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 import { TbLayoutGridAdd } from 'react-icons/tb'
 import { count } from '@/lib/utils'
+import { richTextBlock } from '../fragments'
 
 export default defineType({
   name: 'project-list',
@@ -31,7 +32,7 @@ export default defineType({
             defineField({
               name: 'description',
               type: 'array',
-              of: [{ type: 'block' }],
+              of: [richTextBlock],
             }),
             defineField({
               name: 'asset',

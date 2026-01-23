@@ -1,6 +1,7 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 import { RiServiceLine } from 'react-icons/ri'
 import { OPTIONAL_LUCIDE_ICON_OPTIONS } from '../utils/lucideIconOptions'
+import { richTextBlock } from '../fragments'
 
 export default defineType({
   name: 'service-list',
@@ -33,7 +34,7 @@ export default defineType({
               name: 'description',
               title: 'Description',
               type: 'array',
-              of: [{ type: 'block' }],
+              of: [richTextBlock],
             }),
             defineField({
               name: 'icon',

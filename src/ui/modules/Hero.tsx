@@ -1,6 +1,7 @@
 import moduleProps from '@/lib/moduleProps'
 import { ResponsiveImg } from '@/ui/Img'
-import { PortableText, stegaClean } from 'next-sanity'
+import { stegaClean } from 'next-sanity'
+import PortableText from '@/ui/PortableText'
 import CTAList from '@/ui/CTAList'
 import Pretitle from '@/ui/Pretitle'
 import CustomHTML from './CustomHTML'
@@ -8,6 +9,7 @@ import Reputation from '@/ui/Reputation'
 import { cn } from '@/lib/utils'
 import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
+import { getHeadingConfig } from '@/ui/portableTextHeading'
 import { urlFor } from '@/sanity/lib/image'
 
 export default function Hero({
@@ -100,18 +102,15 @@ export default function Hero({
               value={content}
               components={{
                 block: ({ children, value }) => {
-                  const style = value?.style
+                  const headingConfig = getHeadingConfig(value?.style)
 
-                  if (
-                    style === 'h1' ||
-                    style === 'h2' ||
-                    style === 'h3' ||
-                    style === 'h4' ||
-                    style === 'h5' ||
-                    style === 'h6'
-                  ) {
+                  if (headingConfig) {
                     return (
-                      <Heading as={style} variant={style} className={cn(isImage && 'text-black')}>
+                      <Heading
+                        as={headingConfig.as}
+                        variant={headingConfig.variant}
+                        className={cn(isImage && 'text-black')}
+                      >
                         {children}
                       </Heading>
                     )
