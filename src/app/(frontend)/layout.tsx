@@ -6,7 +6,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import Announcement from '@/ui/Announcement'
 import Footer from '@/ui/footer'
 import Header from '@/ui/header'
-// import { GoogleTagManager } from '@next/third-parties/google'
+import { GoogleAnalytics } from '@next/third-parties/google'
 import Root from '@/ui/Root'
 import SkipToContent from '@/ui/SkipToContent'
 import VisualEditingControls from '@/ui/VisualEditingControls'
@@ -14,6 +14,8 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const gaId = process.env.NEXT_PUBLIC_GA_ID
+
   return (
     <Root>
       {/* <GoogleTagManager gtmId="" /> */}
@@ -34,6 +36,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
         <Analytics />
         <SpeedInsights />
+        {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
       </body>
     </Root>
   )

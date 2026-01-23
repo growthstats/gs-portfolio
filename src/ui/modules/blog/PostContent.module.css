@@ -8,6 +8,22 @@
       grid-column: content;
     }
   }
+
+  & :is(h1, h2, h3, h4, h5, h6) {
+    color: #000;
+    background-image: none;
+    background-clip: border-box;
+    -webkit-background-clip: border-box;
+    -webkit-text-fill-color: currentColor;
+  }
+
+  & :is(h1, h2, h3, h4, h5, h6) strong {
+    color: inherit;
+    background-image: none;
+    background-clip: border-box;
+    -webkit-background-clip: border-box;
+    -webkit-text-fill-color: currentColor;
+  }
 }
 
 /* article header .headerImg::before {
