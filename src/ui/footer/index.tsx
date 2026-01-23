@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { Img } from '@/ui/Img'
 
 export default async function Footer() {
-  const { title, blurb, logo, copyright } = await getSite()
+  const { title, blurb, logo, copyright, footerMenu } = await getSite()
 
   const logoImage = logo?.image?.light || logo?.image?.default
 
@@ -34,7 +34,7 @@ export default async function Footer() {
           <LanguageSwitcher className="mt-4 max-w-max" />
         </div>
 
-        <Navigation />
+        <Navigation footerMenu={footerMenu} />
       </div>
 
       {copyright && (
