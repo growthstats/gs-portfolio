@@ -1,11 +1,12 @@
 import moduleProps from '@/lib/moduleProps'
-import { PortableText, stegaClean } from 'next-sanity'
+import { stegaClean } from 'next-sanity'
 import CTAsSubModule, { type CTAsSubModuleType } from './CTAsSubModule'
 import CustomHTMLSubmodule, { type CustomHTMLSubmoduleType } from './CustomHTMLSubmodule'
 import Icon, { getPixels } from '@/ui/Icon'
 import ImageSubModule, { type ImageSubModuleType } from './ImageSubModule'
 import RichtextSubModule, { type RichtextSubModuleType } from './RichtextSubModule'
 import { cn } from '@/lib/utils'
+import PortableText from '@/ui/PortableText'
 
 export default function CreativeModule({
   intro,

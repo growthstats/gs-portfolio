@@ -2,10 +2,10 @@
 
 import React from 'react'
 import Heading from '@/ui/Heading'
-import { PortableText } from 'next-sanity'
 import type { PortableTextBlock } from 'next-sanity'
 import CTA from '@/ui/CTA'
 import Text from '@/ui/Text'
+import PortableText from '@/ui/PortableText'
 
 function CustomIcon() {
   return (

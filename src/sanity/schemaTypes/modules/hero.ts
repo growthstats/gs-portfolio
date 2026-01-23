@@ -3,6 +3,7 @@ import { TfiLayoutCtaCenter } from 'react-icons/tfi'
 import { reputationBlock } from '../misc/reputation'
 import { alignItems, textAlign } from 'sanitypress-utils'
 import { getBlockText } from 'sanitypress-utils'
+import { richTextBlock } from '../fragments'
 
 export default defineType({
   name: 'hero',
@@ -29,7 +30,7 @@ export default defineType({
     defineField({
       name: 'content',
       type: 'array',
-      of: [{ type: 'block' }, { type: 'custom-html' }, reputationBlock],
+      of: [richTextBlock, { type: 'custom-html' }, reputationBlock],
       group: 'content',
     }),
     defineField({

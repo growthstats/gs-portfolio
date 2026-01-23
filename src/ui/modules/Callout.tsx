@@ -1,7 +1,7 @@
-import { PortableText } from 'next-sanity'
 import CTAList from '@/ui/CTAList'
 import Code from './RichtextModule/Code'
 import Reputation from '@/ui/Reputation'
+import PortableText from '@/ui/PortableText'
 
 export default function Callout({
   content,

@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
-import { PortableText } from 'next-sanity'
 import { VscInfo, VscLightbulb, VscReport, VscWarning } from 'react-icons/vsc'
+import PortableText from '@/ui/PortableText'
 
 export default function Admonition({
   value,

@@ -1,12 +1,13 @@
 'use client'
 
 import { useMemo, useState } from 'react'
-import { PortableText, stegaClean } from 'next-sanity'
+import { stegaClean } from 'next-sanity'
 import moduleProps from '@/lib/moduleProps'
 import Heading from '@/ui/Heading'
 import { Img } from '@/ui/Img'
 import CTA from '@/ui/CTA'
 import { Button } from '@/components/ui/button'
+import PortableText from '@/ui/PortableText'
 
 type ProjectCard = {
   _key?: string

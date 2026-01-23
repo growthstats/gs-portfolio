@@ -1,6 +1,7 @@
 import { defineField, defineType } from 'sanity'
 import { TfiEmail } from 'react-icons/tfi'
 import { getBlockText } from 'sanitypress-utils'
+import { richTextBlock } from '../fragments'
 
 export default defineType({
   name: 'contact.simple',
@@ -29,7 +30,7 @@ export default defineType({
       name: 'excerpt',
       title: 'Excerpt',
       type: 'array',
-      of: [{ type: 'block' }],
+      of: [richTextBlock],
       group: 'content',
     }),
 

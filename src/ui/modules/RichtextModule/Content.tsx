@@ -1,11 +1,27 @@
-import { PortableText } from 'next-sanity'
+import PortableText from '@/ui/PortableText'
 import AnchoredHeading from './AnchoredHeading'
 import { cn } from '@/lib/utils'
+import { HEADING_STYLE_MAP } from '@/ui/portableTextHeading'
+import type {
+  PortableTextBlock,
+  PortableTextComponentProps,
+  PortableTextComponents,
+} from 'next-sanity'
 
 import Image from './Image'
 import Code from './Code'
 import Admonition from './Admonition'
 import CustomHTML from '@/ui/modules/CustomHTML'
+
+type BlockProps = PortableTextComponentProps<PortableTextBlock>
+type BlockComponent = (props: BlockProps) => JSX.Element
+
+const anchoredHeadingBlocks = Object.fromEntries(
+  Object.entries(HEADING_STYLE_MAP).map(([style, config]) => [
+    style,
+    (node: BlockProps) => <AnchoredHeading as={config.as} variant={config.variant} {...node} />,
+  ]),
+) as Record<string, BlockComponent>
 
 export default function Content({
   value,
@@ -17,13 +33,7 @@ export default function Content({
       <PortableText
         value={value}
         components={{
-          block: {
-            h2: (node) => <AnchoredHeading as="h2" {...node} />,
-            h3: (node) => <AnchoredHeading as="h3" {...node} />,
-            h4: (node) => <AnchoredHeading as="h4" {...node} />,
-            h5: (node) => <AnchoredHeading as="h5" {...node} />,
-            h6: (node) => <AnchoredHeading as="h6" {...node} />,
-          },
+          block: anchoredHeadingBlocks as PortableTextComponents['block'],
           types: {
             image: Image,
             admonition: Admonition,

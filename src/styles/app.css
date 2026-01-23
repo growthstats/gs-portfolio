@@ -473,27 +473,27 @@
     @apply text-gradient;
   }
 
-  & h1 {
+  & h1:not([class]) {
     @apply h1;
   }
 
-  & h2 {
+  & h2:not([class]) {
     @apply h2;
   }
 
-  & h3 {
+  & h3:not([class]) {
     @apply h3;
   }
 
-  & h4 {
+  & h4:not([class]) {
     @apply h4;
   }
 
-  & h5 {
+  & h5:not([class]) {
     @apply h5;
   }
 
-  & h6 {
+  & h6:not([class]) {
     @apply h6;
   }
 

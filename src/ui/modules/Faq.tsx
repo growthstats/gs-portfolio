@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/accordion'
 import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
-import { PortableText } from 'next-sanity'
 import Script from 'next/script'
 import type {
   PortableTextBlock,
@@ -21,6 +20,7 @@ import type {
 } from 'next-sanity'
 import { toPlainText } from '@portabletext/toolkit'
 import type { PortableTextLink } from '@portabletext/types'
+import PortableText from '@/ui/PortableText'
 
 // PortableText components override specifically for FAQ answers
 const portableComponents: PortableTextComponents = {

@@ -1,6 +1,5 @@
 import moduleProps from '@/lib/moduleProps'
 import Pretitle from '@/ui/Pretitle'
-import { PortableText } from 'next-sanity'
 import Code from './RichtextModule/Code'
 import CustomHTML from './CustomHTML'
 import Reputation from '@/ui/Reputation'
@@ -8,6 +7,7 @@ import CTAList from '@/ui/CTAList'
 import { ResponsiveImg } from '@/ui/Img'
 import { cn } from '@/lib/utils'
 import { urlFor } from '@/sanity/lib/image'
+import PortableText from '@/ui/PortableText'
 
 export default function HeroSaaS({
   pretitle,

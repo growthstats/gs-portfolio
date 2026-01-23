@@ -1,9 +1,10 @@
 import moduleProps from '@/lib/moduleProps'
 import Pretitle from '@/ui/Pretitle'
-import { PortableText, stegaClean } from 'next-sanity'
+import { stegaClean } from 'next-sanity'
 import CTAList from '@/ui/CTAList'
 import { Img } from '@/ui/Img'
 import { cn } from '@/lib/utils'
+import PortableText from '@/ui/PortableText'
 
 export default function CardList({
   pretitle,
