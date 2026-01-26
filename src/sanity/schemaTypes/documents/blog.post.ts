@@ -10,6 +10,12 @@ export default defineType({
   groups: [{ name: 'content', default: true }, { name: 'options' }, { name: 'metadata' }],
   fields: [
     defineField({
+      name: 'title',
+      type: 'string',
+      validation: (Rule) => Rule.required(),
+      group: 'content',
+    }),
+    defineField({
       name: 'body',
       type: 'array',
       of: [
@@ -82,13 +88,14 @@ export default defineType({
   preview: {
     select: {
       featured: 'featured',
-      title: 'metadata.title',
+      title: 'title',
+      metaTitle: 'metadata.title',
       publishDate: 'publishDate',
       language: 'language',
       image: 'metadata.image',
     },
-    prepare: ({ featured, title, publishDate, image, language }) => ({
-      title: [featured && '★', title].filter(Boolean).join(' '),
+    prepare: ({ featured, title, metaTitle, publishDate, image, language }) => ({
+      title: [featured && '★', title || metaTitle].filter(Boolean).join(' '),
       subtitle: [language && `[${language}] `, publishDate].filter(Boolean).join(''),
       media: image,
     }),
@@ -101,7 +108,7 @@ export default defineType({
     },
     {
       title: 'Title',
-      name: 'metadata.title',
+      name: 'title',
       by: [{ field: 'title', direction: 'asc' }],
     },
   ],

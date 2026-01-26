@@ -18,6 +18,7 @@ export default function PostPreview({
   if (!post && !skeleton) return null
 
   const primaryCategory = post?.categories?.[0]
+  const displayTitle = post?.title || post?.metadata.title
 
   return (
     <figure
@@ -32,7 +33,7 @@ export default function PostPreview({
           className="aspect-video w-full rounded-2xl object-cover shadow-(--shadow-card) transition-all group-hover:scale-105 group-hover:brightness-110"
           image={post?.metadata.image}
           width={520}
-          alt={post?.metadata.title}
+          alt={displayTitle}
         />
 
         {/* Subtle top-right darkening for contrast */}
@@ -72,7 +73,7 @@ export default function PostPreview({
       {/* TITLE */}
       <Heading as="h3" variant="h4" className={cn('mt-4 rounded-lg', skeleton && 'skeleton-2')}>
         <Link className="m-1 block p-1" href={resolveUrl(post, { base: false })}>
-          {post?.metadata.title}
+          {displayTitle}
         </Link>
       </Heading>
     </figure>

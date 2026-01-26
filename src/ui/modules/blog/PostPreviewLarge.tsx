@@ -10,6 +10,7 @@ import Categories from './Categories'
 
 export default function PostPreviewLarge({ post }: Readonly<{ post: Sanity.BlogPost }>) {
   if (!post) return null
+  const displayTitle = post.title || post.metadata.title
 
   return (
     <div className="group relative isolate overflow-hidden rounded-2xl p-4 shadow-(--shadow-card) md:p-5">
@@ -19,7 +20,7 @@ export default function PostPreviewLarge({ post }: Readonly<{ post: Sanity.BlogP
             className="aspect-video w-full object-cover transition-all group-hover:scale-105 group-hover:brightness-110"
             image={post.metadata.image}
             width={800}
-            alt={post.metadata.title}
+            alt={displayTitle}
             loading="eager"
           />
 
@@ -34,7 +35,7 @@ export default function PostPreviewLarge({ post }: Readonly<{ post: Sanity.BlogP
           <Heading as="h2" variant="h2" className="md:h1">
             <Link href={resolveUrl(post, { base: false })}>
               <span className="absolute inset-0" />
-              {post.metadata.title}
+              {displayTitle}
             </Link>
           </Heading>
 
