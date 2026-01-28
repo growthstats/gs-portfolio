@@ -8,6 +8,8 @@ import Content from '@/ui/modules/RichtextModule/Content'
 import { cn } from '@/lib/utils'
 import css from './PostContent.module.css'
 import { Img } from '@/ui/Img'
+import Social from '@/ui/Social'
+import { BASE_URL, BLOG_DIR } from '@/lib/env'
 
 export default function PostContent({
   post,
@@ -17,6 +19,10 @@ export default function PostContent({
 
   const showTOC = !post.hideTableOfContents || !!post.headings?.length
   const displayTitle = post.title || post.metadata.title
+  const postSlug = post.metadata?.slug?.current
+  const blogPath = postSlug ? `/${BLOG_DIR}/${postSlug}` : ''
+  const localizedPath = post.language ? `/${post.language}${blogPath}` : blogPath
+  const shareUrl = localizedPath ? `${BASE_URL}${localizedPath}` : BASE_URL
 
   return (
     <article {...moduleProps(props)}>
@@ -28,13 +34,17 @@ export default function PostContent({
           <ReadTime value={post.readTime} />
         </div>
 
-        {!!post.authors?.length && (
-          <Authors
-            className="flex flex-wrap items-center justify-center gap-4"
-            authors={post.authors}
-            linked
-          />
-        )}
+        <div className="mx-auto flex max-w-[710px] justify-between">
+          {!!post.authors?.length && (
+            <Authors
+              className="flex flex-wrap items-center justify-center gap-4"
+              authors={post.authors}
+              linked
+            />
+          )}
+
+          <Social className="justify-center gap-2" shareUrl={shareUrl} shareText={displayTitle} />
+        </div>
 
         {/* Image container */}
         <figure className={cn(css.headerImg, 'relative mx-auto max-w-[710px] rounded-xl')}>
