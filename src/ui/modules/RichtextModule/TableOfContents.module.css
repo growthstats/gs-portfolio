@@ -1,5 +1,20 @@
 @media (width >= 64rem) {
-	.inView:not(.inView ~ .inView) {
-		border-inline-start: 4px solid var(--color-accent);
-	}
+  .item {
+    color: rgba(0, 0, 0, 0.9);
+    opacity: 0.8;
+    transition:
+      color 0.2s ease,
+      opacity 0.2s ease;
+  }
+
+  .item a {
+    color: inherit;
+  }
+
+  .inView:not(.inView ~ .inView) {
+    color: rgb(0, 0, 0);
+    opacity: 1;
+    font-weight: 500;
+    border-inline-start: 4px solid var(--color-accent);
+  }
 }
