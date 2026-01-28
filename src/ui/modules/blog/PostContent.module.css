@@ -1,4 +1,8 @@
 .body {
+  line-height: 1.8;
+  font-size: 18px;
+  text-rendering: optimizeSpeed;
+
   @media (width >= 48rem) {
     grid-template-columns:
       [bleed-start] 1fr [content-start] min(100%, 80ch)
@@ -7,6 +11,56 @@
     & > * {
       grid-column: content;
     }
+  }
+
+  & > * + * {
+    margin-top: 1.1rem;
+  }
+
+  & p {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  & figure,
+  p,
+  ul {
+    margin-bottom: 1.3rem;
+  }
+
+  & :is(h1, h2, h3, h4, h5, h6) {
+    margin-top: 2.25rem;
+    margin-bottom: 0.6rem;
+  }
+
+  & :is(h1, h2, h3, h4, h5, h6):first-child {
+    margin-top: 0;
+  }
+
+  & ul,
+  ol {
+    margin-top: 0;
+    padding-inline-start: 40px;
+  }
+
+  & li {
+    line-height: 32px;
+  }
+
+  & blockquote {
+    margin: 1.75rem 0;
+  }
+
+  & img {
+    margin: 1.75rem 0;
+  }
+
+  & figure {
+    margin: 2rem 0;
+  }
+
+  & hr {
+    margin: 2.5rem 0;
   }
 
   & :is(h1, h2, h3, h4, h5, h6) {
