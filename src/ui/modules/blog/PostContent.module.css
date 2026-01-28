@@ -35,13 +35,3 @@
     font-weight: inherit;
   }
 }
-
-/* article header .headerImg::before {
-  content: '';
-  position: absolute;
-  left: -100vw;
-  right: -100vw;
-  bottom: 0;
-  height: 50%;
-  background-color: #fff;
-} */
