@@ -189,6 +189,7 @@ declare global {
 
     interface Link {
       readonly _type: 'link'
+      _key: string
       label: string
       type: 'internal' | 'external'
       internal?: Page | BlogPost

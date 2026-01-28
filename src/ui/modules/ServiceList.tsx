@@ -111,7 +111,7 @@ export default async function ServiceList({
                     image={s.image}
                     width={200}
                     height={200}
-                    className="relative z-0 rounded-xl object-contain"
+                    className="relative z-0 rounded-xl object-contain max-md:h-[100px] max-md:w-[100px]"
                     alt={s.title || 'Service image'}
                   />
                 ) : (

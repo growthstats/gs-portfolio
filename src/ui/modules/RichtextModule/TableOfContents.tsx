@@ -7,12 +7,12 @@ import css from './TableOfContents.module.css'
 
 export default function TableOfContents({
   headings,
-}: {
+}: Readonly<{
   headings?: {
     text: string
     style: string
   }[]
-}) {
+}>) {
   useEffect(() => {
     if (typeof document === 'undefined') return
 
@@ -54,7 +54,7 @@ export default function TableOfContents({
       <ol className="anim-fade-to-b mt-2 leading-tight">
         {headings?.map(({ text, style }, key) => (
           <li
-            className="border-ink/10 border-s transition-all"
+            className={cn('border-ink/10 border-s transition-all', css.item)}
             data-toc-item={slug(text)}
             key={key}
           >
