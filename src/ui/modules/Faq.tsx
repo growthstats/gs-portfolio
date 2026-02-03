@@ -68,8 +68,12 @@ export default function Faq({
   accessibleAccordion = true,
   generateSchema = true,
 }: Readonly<FaqProps>) {
+  const safeItems = items.filter((item): item is Sanity.FAQItem =>
+    Boolean(item?._key && item?.question),
+  )
+
   const [openItemKey, setOpenItemKey] = useState<string | null>(
-    () => items.find((item) => item.open)?._key ?? null,
+    () => safeItems.find((item) => item.open)?._key ?? null,
   )
 
   useEffect(() => {
@@ -79,14 +83,14 @@ export default function Faq({
       }
       return items.find((item) => item.open)?._key ?? null
     })
-  }, [items])
+  }, [safeItems])
 
   const schemaMarkup =
-    generateSchema && items.length
+    generateSchema && safeItems.length
       ? {
           '@context': 'https://schema.org',
           '@type': 'FAQPage',
-          mainEntity: items.map((item) => ({
+          mainEntity: safeItems.map((item) => ({
             '@type': 'Question',
             name: item.question,
             acceptedAnswer: {
@@ -102,7 +106,7 @@ export default function Faq({
       {schemaMarkup && (
         <Script
           strategy="afterInteractive"
-          id={`faq-schema-${items[0]?._key ?? 'default'}`}
+          id={`faq-schema-${safeItems[0]?._key ?? 'default'}`}
           type="application/ld+json"
         >
           {JSON.stringify(schemaMarkup)}
@@ -159,7 +163,7 @@ export default function Faq({
             onValueChange={(val: string | undefined) => setOpenItemKey(val ?? null)}
             aria-label={accessibleAccordion ? 'Frequently Asked Questions' : undefined}
           >
-            {items.map((item) => {
+            {safeItems.map((item) => {
               const panelId = `faq-panel-${item._key}`
               const buttonId = `faq-button-${item._key}`
 
