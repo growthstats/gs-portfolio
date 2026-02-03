@@ -28,12 +28,13 @@ function FeatureCard({ feature }: Readonly<{ feature?: Sanity.ServiceFeature }>)
   if (!feature) return null
 
   const { name, description, img } = feature
+  const hasImage = Boolean(img?.asset)
 
   return (
     <article className="flex flex-col items-center overflow-hidden rounded-3xl p-6 text-center shadow-(--shadow-badge)">
       <div className="relative -mt-10 mb-4 flex items-center justify-center">
         <div className="mt-8 flex items-center justify-center rounded-2xl p-6 shadow-(--shadow-badge)">
-          {img ? (
+          {hasImage ? (
             <div className="h-full w-full">
               <Img
                 image={img}
