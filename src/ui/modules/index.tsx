@@ -31,9 +31,10 @@ import TestimonialFeatured from './TestimonialFeatured'
 import Section from './Section'
 import Faq from './Faq'
 import ServiceDetails from './ServiceDetails'
+import ModuleGuard from './ModuleGuard'
 
 import dynamic from 'next/dynamic'
-import type { ReactNode } from 'react'
+import type { ReactNode, ComponentType } from 'react'
 import { createDataAttribute } from 'next-sanity'
 
 export const MODULE_MAP = {
@@ -118,16 +119,19 @@ export default function Modules({
       )
     }
 
-    const Component = MODULE_MAP[module._type as keyof typeof MODULE_MAP]
+    const Component = MODULE_MAP[module._type as keyof typeof MODULE_MAP] as ComponentType<
+      Record<string, unknown>
+    >
     if (!Component) return null
 
+    if (process.env.VERCEL) {
+      console.info(`[modules] render ${module._type} ${module._key ?? ''} ${path}`)
+    }
+
     return (
-      <Component
-        {...module}
-        {...getAdditionalProps(module)}
-        data-sanity={dataAttribute}
-        key={elementKey}
-      />
+      <ModuleGuard moduleKey={module._key} moduleType={module._type} path={path} key={elementKey}>
+        <Component {...module} {...getAdditionalProps(module)} data-sanity={dataAttribute} />
+      </ModuleGuard>
     )
   }
 
