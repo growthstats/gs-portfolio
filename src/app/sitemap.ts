@@ -1,12 +1,14 @@
 import { fetchSanityLive } from '@/sanity/lib/fetch'
 import { groq } from 'next-sanity'
 import { DEFAULT_LANG } from '@/lib/i18n'
-import { BLOG_DIR } from '@/lib/env'
+import { BASE_URL, BLOG_DIR } from '@/lib/env'
 import type { MetadataRoute } from 'next'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-	const data = await fetchSanityLive<Record<string, MetadataRoute.Sitemap>>({
-		query: groq`{
+  const baseUrl = BASE_URL.endsWith('/') ? BASE_URL : `${BASE_URL}/`
+
+  const data = await fetchSanityLive<Record<string, MetadataRoute.Sitemap>>({
+    query: groq`{
 			'pages': *[
 				_type == 'page' &&
 				!(metadata.slug.current in ['404']) &&
@@ -37,11 +39,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 				'priority': 0.4
 			}
 		}`,
-		params: {
-			baseUrl: process.env.NEXT_PUBLIC_BASE_URL + '/',
-			defaultLang: DEFAULT_LANG,
-		},
-	})
+    params: {
+      baseUrl,
+      defaultLang: DEFAULT_LANG,
+    },
+  })
 
-	return Object.values(data).flat()
+  return Object.values(data).flat()
 }

@@ -1,6 +1,15 @@
 import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
 import type { ComponentProps } from 'react'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Typography Demo',
+  robots: {
+    index: false,
+    follow: false,
+  },
+}
 
 const VARIANTS: Array<{
   variant: ComponentProps<typeof Heading>['variant']

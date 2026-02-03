@@ -54,6 +54,19 @@ export default {
     ]
   },
 
+  async headers() {
+    return [
+      {
+        source: '/manifest.webmanifest',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex' }],
+      },
+      {
+        source: `/${BLOG_DIR}/rss.xml`,
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex' }],
+      },
+    ]
+  },
+
   env: {
     SC_DISABLE_SPEEDY: 'false',
   },

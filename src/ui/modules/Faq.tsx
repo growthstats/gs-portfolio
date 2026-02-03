@@ -109,9 +109,9 @@ export default function Faq({
         </Script>
       )}
 
-      <div className="container mx-auto grid max-w-6xl gap-4 px-4 md:grid-cols-2 md:gap-2">
+      <div className="container mx-auto grid max-w-4xl gap-4 px-4 md:grid-cols-1 md:gap-8">
         {/* Left Column: Text Content */}
-        <div className="flex flex-col items-center md:items-start">
+        <div className="flex flex-col items-center md:items-center">
           {pretitle && (
             <Badge
               variant="outline"
