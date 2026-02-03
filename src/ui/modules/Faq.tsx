@@ -68,6 +68,7 @@ export default function Faq({
   accessibleAccordion = true,
   generateSchema = true,
 }: Readonly<FaqProps>) {
+  const descriptionBlocks = Array.isArray(description) ? description : []
   const safeItems = items.filter((item): item is Sanity.FAQItem =>
     Boolean(item?._key && item?.question),
   )
@@ -78,10 +79,10 @@ export default function Faq({
 
   useEffect(() => {
     setOpenItemKey((current) => {
-      if (current && items.some((item) => item._key === current)) {
+      if (current && safeItems.some((item) => item._key === current)) {
         return current
       }
-      return items.find((item) => item.open)?._key ?? null
+      return safeItems.find((item) => item.open)?._key ?? null
     })
   }, [safeItems])
 
@@ -95,7 +96,7 @@ export default function Faq({
             name: item.question,
             acceptedAnswer: {
               '@type': 'Answer',
-              text: toPlainText(item.answer ?? []),
+              text: toPlainText(Array.isArray(item.answer) ? item.answer : []),
             },
           })),
         }
@@ -141,15 +142,13 @@ export default function Faq({
             </div>
           )}
 
-          {description && (
+          {descriptionBlocks.length > 0 && (
             <Text
               as="p"
               variant="body"
               className="mt-4 max-w-md text-center text-gray-500 md:text-left"
             >
-              {description && (
-                <PortableText value={description ?? []} components={portableComponents} />
-              )}
+              <PortableText value={descriptionBlocks} components={portableComponents} />
             </Text>
           )}
         </div>
@@ -198,9 +197,10 @@ export default function Faq({
                     className="overflow-hidden rounded-b-[20px] px-6 pt-0 pb-6"
                   >
                     <Text as="p" variant="body" className="mt-2 text-gray-600">
-                      {item.answer && (
-                        <PortableText value={item.answer ?? []} components={portableComponents} />
-                      )}
+                      <PortableText
+                        value={Array.isArray(item.answer) ? item.answer : []}
+                        components={portableComponents}
+                      />
                     </Text>
                   </AccordionContent>
                 </AccordionItem>
