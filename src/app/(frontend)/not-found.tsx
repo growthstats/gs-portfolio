@@ -2,20 +2,40 @@ import Modules from '@/ui/modules'
 import { fetchSanityLive } from '@/sanity/lib/fetch'
 import { groq } from 'next-sanity'
 import { MODULES_QUERY } from '@/sanity/lib/queries'
+import processMetadata from '@/lib/processMetadata'
+import type { Metadata } from 'next'
 
 export default async function NotFound() {
-	const page = await get404()
-	if (!page) return <h1 className="section text-center text-5xl">404</h1>
-	return <Modules modules={page?.modules} />
+  const page = await get404()
+  if (!page) return <h1 className="section text-center text-5xl">404</h1>
+  return <Modules modules={page?.modules} />
 }
 
-export async function generateMetadata() {
-	return (await get404())?.metadata
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await get404()
+
+  if (!page) {
+    return {
+      title: '404',
+      robots: {
+        index: false,
+        follow: false,
+      },
+    }
+  }
+
+  return processMetadata({
+    ...page,
+    metadata: {
+      ...page.metadata,
+      noIndex: true,
+    },
+  })
 }
 
 async function get404() {
-	return await fetchSanityLive<Sanity.Page>({
-		query: groq`*[_type == 'page' && metadata.slug.current == '404'][0]{
+  return await fetchSanityLive<Sanity.Page>({
+    query: groq`*[_type == 'page' && metadata.slug.current == '404'][0]{
 			...,
 			'modules': (
 				// global modules (before)
@@ -26,5 +46,5 @@ async function get404() {
 				+ *[_type == 'global-module' && path == '*'].after[]{ ${MODULES_QUERY} }
 			)
 		}`,
-	})
+  })
 }
