@@ -7,108 +7,122 @@ import type { ComponentProps } from 'react'
 
 type ImgProps = { alt?: string } & Omit<ImageProps, 'src' | 'alt'>
 
-export function Img({
-	image,
-	width: w,
-	height: h,
-	...props
-}: { image?: Sanity.Image } & ImgProps) {
-	if (!image?.asset) return null
+export function Img({ image, width: w, height: h, ...props }: { image?: Sanity.Image } & ImgProps) {
+  if (!image?.asset) return null
 
-	const { src, width, height } = generateSrc(image, w, h)
+  const generated = safeGenerateSrc(image, w, h)
+  if (!generated) return null
+  const { src, width, height } = generated
 
-	const loading = stegaClean(image.loading)
+  const loading = stegaClean(image.loading)
 
-	return (
-		<NextImage
-			src={src}
-			width={width}
-			height={height}
-			alt={props.alt || image.alt || ''}
-			loading={loading}
-			priority={loading === 'eager'}
-			placeholder={image.lqip ? 'blur' : undefined}
-			blurDataURL={image.lqip}
-			{...props}
-		/>
-	)
+  return (
+    <NextImage
+      src={src}
+      width={width}
+      height={height}
+      alt={props.alt || image.alt || ''}
+      loading={loading}
+      priority={loading === 'eager'}
+      placeholder={image.lqip ? 'blur' : undefined}
+      blurDataURL={image.lqip}
+      {...props}
+    />
+  )
 }
 
 export function Source({
-	image,
-	media = '(width < 48rem)',
-	width: w,
-	height: h,
-	...props
+  image,
+  media = '(width < 48rem)',
+  width: w,
+  height: h,
+  ...props
 }: {
-	image?: Sanity.Image
+  image?: Sanity.Image
 } & ComponentProps<'source'>) {
-	if (!image?.asset) return null
+  if (!image?.asset) return null
 
-	const { src, width, height } = generateSrc(image, w, h)
-	const { props: imageProps } = getImageProps({ src, width, height, alt: '' })
+  const generated = safeGenerateSrc(image, w, h)
+  if (!generated) return null
+  const { src, width, height } = generated
+  const { props: imageProps } = getImageProps({ src, width, height, alt: '' })
 
-	if (stegaClean(image.loading) === 'eager') {
-		preload(imageProps.src, { as: 'image' })
-	}
+  if (stegaClean(image.loading) === 'eager') {
+    preload(imageProps.src, { as: 'image' })
+  }
 
-	return (
-		<source
-			srcSet={imageProps.srcSet}
-			width={imageProps.width}
-			height={imageProps.height}
-			media={media}
-			{...props}
-		/>
-	)
+  return (
+    <source
+      srcSet={imageProps.srcSet}
+      width={imageProps.width}
+      height={imageProps.height}
+      media={media}
+      {...props}
+    />
+  )
 }
 
 export function ResponsiveImg({
-	img,
-	pictureProps,
-	...props
+  img,
+  pictureProps,
+  ...props
 }: {
-	img?: Sanity.Img
-	pictureProps?: ComponentProps<'picture'>
+  img?: Sanity.Img
+  pictureProps?: ComponentProps<'picture'>
 } & ImgProps) {
-	if (!img) return null
+  if (!img) return null
 
-	const { responsive, ...imgProps } = img
+  const { responsive, ...imgProps } = img
 
-	return (
-		<picture {...pictureProps}>
-			{responsive?.map((r, key) => <Source {...r} key={key} />)}
-			<Img {...imgProps} {...props} />
-		</picture>
-	)
+  return (
+    <picture {...pictureProps}>
+      {responsive?.map((r, key) => (
+        <Source {...r} key={key} />
+      ))}
+      <Img {...imgProps} {...props} />
+    </picture>
+  )
 }
 
 function generateSrc(
-	image: Sanity.Image,
-	w?: number | `${number}` | string,
-	h?: number | `${number}` | string,
+  image: Sanity.Image,
+  w?: number | `${number}` | string,
+  h?: number | `${number}` | string,
 ) {
-	const { width: w_orig, height: h_orig } = getImageDimensions(image)
+  const { width: w_orig, height: h_orig } = getImageDimensions(image)
 
-	const w_calc = !!w // if width is provided
-		? Number(w)
-		: // if height is provided, calculate width
-			!!h && Math.floor((Number(h) * w_orig) / h_orig)
+  const w_calc = !!w // if width is provided
+    ? Number(w)
+    : // if height is provided, calculate width
+      !!h && Math.floor((Number(h) * w_orig) / h_orig)
 
-	const h_calc = !!h // if height is provided
-		? Number(h)
-		: // if width is provided, calculate height
-			!!w && Math.floor((Number(w) * h_orig) / w_orig)
+  const h_calc = !!h // if height is provided
+    ? Number(h)
+    : // if width is provided, calculate height
+      !!w && Math.floor((Number(w) * h_orig) / w_orig)
 
-	return {
-		src: urlFor(image)
-			.withOptions({
-				width: !!w ? Number(w) : undefined,
-				height: !!h ? Number(h) : undefined,
-				auto: 'format',
-			})
-			.url(),
-		width: w_calc || w_orig,
-		height: h_calc || h_orig,
-	}
+  return {
+    src: urlFor(image)
+      .withOptions({
+        width: !!w ? Number(w) : undefined,
+        height: !!h ? Number(h) : undefined,
+        auto: 'format',
+      })
+      .url(),
+    width: w_calc || w_orig,
+    height: h_calc || h_orig,
+  }
+}
+
+function safeGenerateSrc(
+  image: Sanity.Image,
+  w?: number | `${number}` | string,
+  h?: number | `${number}` | string,
+) {
+  try {
+    return generateSrc(image, w, h)
+  } catch (error) {
+    console.error('[Img] failed to generate image src', error)
+    return null
+  }
 }
