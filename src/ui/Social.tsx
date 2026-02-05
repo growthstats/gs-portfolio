@@ -29,7 +29,10 @@ export default async function Social({ className, shareUrl, shareText }: SocialP
   return (
     <nav className={cn('group flex flex-wrap items-center', className)}>
       {social.items.map((item) => {
-        console.log('item: ', item)
+        const isInstagram = item._type === 'link' && item.external?.includes('instagram.com')
+
+        if (shareUrl && isInstagram) return null
+
         const shareHref =
           shareUrl && item._type === 'link'
             ? getShareUrl(item.external, shareUrl, shareText)
