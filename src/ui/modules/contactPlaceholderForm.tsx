@@ -1,27 +1,24 @@
 'use client'
 
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { Button } from '@/components/ui/button'
-
-const formSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  phone: z.string().min(6, 'Phone number is required'),
-  email: z.string().email('Enter a valid email'),
-  message: z.string().min(1, 'Message is required'),
-})
-
-type FormValues = z.infer<typeof formSchema>
+import { contactFormSchema, type ContactFormValues } from '@/lib/contactForm'
 
 export default function ContactForm() {
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: 'success' | 'error'
+    message: string
+  } | null>(null)
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<FormValues>({
-    resolver: zodResolver(formSchema),
+  } = useForm<ContactFormValues>({
+    resolver: zodResolver(contactFormSchema),
     defaultValues: {
       name: '',
       phone: '',
@@ -30,9 +27,35 @@ export default function ContactForm() {
     },
   })
 
-  const onSubmit = (values: FormValues) => {
-    console.log('Contact form submitted', values)
-    reset()
+  const onSubmit = async (values: ContactFormValues) => {
+    setSubmitStatus(null)
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        body: JSON.stringify(values),
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error(`Form submission failed with status ${response.status}`)
+      }
+
+      setSubmitStatus({
+        type: 'success',
+        message: 'Form submitted successfully!',
+      })
+      reset()
+    } catch (error) {
+      console.error('Form submission error:', error)
+      setSubmitStatus({
+        type: 'error',
+        message: 'Error submitting the form. Please try again.',
+      })
+    }
   }
 
   return (
@@ -106,6 +129,15 @@ export default function ContactForm() {
         >
           {isSubmitting ? 'Submitting…' : 'Submit'}
         </Button>
+
+        {submitStatus && (
+          <p
+            className={`mt-3 text-sm ${submitStatus.type === 'success' ? 'text-green-700' : 'text-red-600'}`}
+            role="status"
+          >
+            {submitStatus.message}
+          </p>
+        )}
       </div>
     </form>
   )
