@@ -109,9 +109,9 @@ export default function Faq({
         </Script>
       )}
 
-      <div className="container mx-auto grid max-w-6xl gap-4 px-4 md:grid-cols-2 md:gap-2">
+      <div className="container mx-auto max-w-6xl space-y-8 px-4">
         {/* Left Column: Text Content */}
-        <div className="flex flex-col items-center md:items-start">
+        <div className="flex w-full flex-col items-center">
           {pretitle && (
             <Badge
               variant="outline"
@@ -151,7 +151,7 @@ export default function Faq({
         </div>
 
         {/* Right Column: shadcn Accordion (single, collapsible) */}
-        <div className="space-y-4">
+        <div className="mx-auto w-full max-w-4xl space-y-4">
           <Accordion
             type="single"
             collapsible
