@@ -92,12 +92,6 @@ const AboutPlaceholder = () => {
             Landin is here to ensure your success with expert guidance and collaborative teamwork.
           </Text>
 
-          {/* ---------- Stars + Rating (should appear before the mobile divider) ---------- */}
-          <div className="flex items-center gap-3 pt-4">
-            <div className="flex text-xl text-black">★ ★ ★ ★ ★</div>
-          </div>
-          <div className="text-sm font-semibold text-[#848484]">200+ Clients Rated</div>
-
           {/* ---------- MOBILE DIVIDER (6th place) ---------- */}
           {/* visible only on mobile; hidden on lg so desktop divider remains unchanged */}
           <span

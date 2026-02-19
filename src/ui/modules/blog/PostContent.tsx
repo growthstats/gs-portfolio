@@ -64,7 +64,7 @@ export default function PostContent({
           </aside>
         )}
 
-        <Content value={post.body} className={cn(css.body, 'grid max-w-screen-lg')}>
+        <Content value={post.body} className={cn(css.body, 'ml-0 grid max-w-[780px]')}>
           <hr />
         </Content>
       </div>

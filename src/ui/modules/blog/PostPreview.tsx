@@ -36,16 +36,6 @@ export default function PostPreview({
           alt={displayTitle}
         />
 
-        {/* Subtle top-right darkening for contrast */}
-        <div
-          className="pointer-events-none absolute inset-0 rounded-2xl"
-          aria-hidden="true"
-          style={{
-            background:
-              'radial-gradient(circle at 100% 0%, rgba(0,0,0,0.28) 0%, rgba(0,0,0,0) 32%)',
-          }}
-        />
-
         {/* CATEGORY PILL */}
         <div className="absolute top-3 right-3 z-10">
           {primaryCategory ? (
