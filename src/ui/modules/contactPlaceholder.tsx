@@ -8,6 +8,19 @@ export default function ContactPlaceholder() {
   return (
     <div className="section w-full space-y-20 py-20">
       {/* =====================================================
+          SECTION 2: GET IN TOUCH FORM
+      ===================================================== */}
+      <div className="mx-auto max-w-5xl md:px-4">
+        <Heading as="h2" variant="h2" className="mb-8 text-center">
+          Get in Touch
+        </Heading>
+
+        <div className="md:px-8 md:pb-8">
+          <ContactForm />
+        </div>
+      </div>
+
+      {/* =====================================================
           SECTION 1: CONTACT INFO + MAP
       ===================================================== */}
       <div className="mx-auto max-w-6xl md:px-4">
@@ -75,19 +88,6 @@ export default function ContactPlaceholder() {
               <Social className="mb-auto -ml-2" />
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* =====================================================
-          SECTION 2: GET IN TOUCH FORM
-      ===================================================== */}
-      <div className="mx-auto max-w-5xl md:px-4">
-        <Heading as="h2" variant="h2" className="mb-8 text-center">
-          Get in Touch
-        </Heading>
-
-        <div className="md:px-8 md:pb-8">
-          <ContactForm />
         </div>
       </div>
     </div>

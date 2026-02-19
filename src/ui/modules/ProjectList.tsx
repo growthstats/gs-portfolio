@@ -16,6 +16,7 @@ type ProjectCard = {
   asset?: Sanity.Image
   cta?: Sanity.CTA
   ctaEnabled?: boolean
+  ctas?: Sanity.CTA[]
 }
 
 export default function ProjectList({
@@ -58,6 +59,14 @@ export default function ProjectList({
                     width={640}
                   />
                 </figure>
+              )}
+
+              {project.ctas && project.ctas.length > 0 && (
+                <div className="flex flex-wrap items-center justify-center gap-2">
+                  {project.ctas.map((cta, i) => (
+                    <CTA key={i} {...cta} className="text-xs" />
+                  ))}
+                </div>
               )}
 
               <div className="flex grow flex-col gap-3">

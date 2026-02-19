@@ -64,8 +64,14 @@ export default defineType({
               hidden: ({ parent }) => !parent?.ctaEnabled,
             }),
             defineField({
+              name: 'ctas',
+              title: 'Service CTAs',
+              type: 'array',
+              of: [{ type: 'cta' }],
+            }),
+            defineField({
               name: 'ctaEnabled',
-              title: 'Enable CTA',
+              title: 'Enable main CTA',
               type: 'boolean',
               initialValue: false,
             }),

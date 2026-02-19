@@ -141,7 +141,7 @@ export default function Faq({
             <Text
               as="p"
               variant="body"
-              className="mt-4 max-w-md text-center text-gray-500 md:text-left"
+              className="mt-4 max-w-[45rem] text-center text-gray-500 md:text-left"
             >
               {description && (
                 <PortableText value={description ?? []} components={portableComponents} />
