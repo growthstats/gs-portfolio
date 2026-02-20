@@ -96,7 +96,7 @@ export default function Hero({
             )}
             style={{ textAlign }}
           >
-            <Pretitle className={cn(isImage && 'text-black')}>{pretitle}</Pretitle>
+            <Pretitle className={cn(isImage && 'text-white')}>{pretitle}</Pretitle>
 
             <PortableText
               value={content}
@@ -109,7 +109,7 @@ export default function Hero({
                       <Heading
                         as={headingConfig.as}
                         variant={headingConfig.variant}
-                        className={cn(isImage && 'text-black')}
+                        className={cn(isImage && 'text-white')}
                       >
                         {children}
                       </Heading>
@@ -117,7 +117,7 @@ export default function Hero({
                   }
 
                   return (
-                    <Text as="p" variant="body" className={cn(isImage && 'text-black')}>
+                    <Text as="p" variant="body" className={cn(isImage && 'text-white')}>
                       {children}
                     </Text>
                   )
