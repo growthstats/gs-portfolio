@@ -13,7 +13,7 @@ export default function BrandHeroPlaceholder({ ...props }: Readonly<Sanity.Modul
             <span>Your Brand</span>
             <span>Deserves</span>
           </Heading>
-          <Text muted>
+          <Text>
             We design digital experiences that reflect your brand, monitor promotions, design
             standout visuals, and deliver content, branding, and marketing to elevate your business
             online.
@@ -21,6 +21,7 @@ export default function BrandHeroPlaceholder({ ...props }: Readonly<Sanity.Modul
           <CTA
             style={'secondary'}
             link={{
+              _key: 'brand-hero-placeholder-cta',
               _type: 'link',
               label: `Let's Work Together`,
               type: 'internal',

@@ -107,7 +107,7 @@ export default function TeamPlaceholder({
                 {f.title}
               </Heading>
 
-              <Text as="p" variant="body" className="text-center text-[#616060]">
+              <Text as="p" variant="body" className="text-ink/80 text-center">
                 {f.description}
               </Text>
             </div>

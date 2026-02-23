@@ -56,6 +56,11 @@ export default defineType({
       group: 'content',
     }),
     defineField({
+      name: 'faq',
+      type: 'faq',
+      group: 'content',
+    }),
+    defineField({
       name: 'publishDate',
       type: 'date',
       validation: (Rule) => Rule.required(),

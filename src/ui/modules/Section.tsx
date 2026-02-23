@@ -62,7 +62,7 @@ export default async function Section({ data, dataSanity, renderModule }: Readon
           )}
 
           {subtitle && (
-            <Text as="p" variant="subtitle" className="text-ink/70 max-w-prose">
+            <Text as="p" variant="subtitle" className="text-ink/80 max-w-prose">
               {subtitle}
             </Text>
           )}

@@ -32,7 +32,7 @@ const JoinUsPlaceholder = () => {
         </Heading>
 
         {/* Description */}
-        <Text as="p" variant="body" className="mt-4 max-w-xl text-[#616060]">
+        <Text as="p" variant="body" className="text-ink/80 mt-4 max-w-xl">
           Ready to take the next step? Join us now and start transforming your vision into reality
           with expert support.
         </Text>
@@ -42,6 +42,7 @@ const JoinUsPlaceholder = () => {
           style={'ghost'}
           className="mt-8 px-8 py-3 font-medium shadow-(--shadow-badge)"
           link={{
+            _key: '1',
             _type: 'link',
             label: 'Book an Appointment',
             type: 'internal',

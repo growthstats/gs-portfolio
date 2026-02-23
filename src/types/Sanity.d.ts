@@ -70,6 +70,7 @@ declare global {
       featured: boolean
       hideTableOfContents: boolean
       publishDate: string
+      faq?: FaqModule
     }
 
     interface BlogCategory extends SanityDocument {

@@ -76,7 +76,7 @@ export default function ProjectList({
                   </Heading>
                 )}
                 {project.description && (
-                  <div className="richtext text-muted-foreground grow text-sm">
+                  <div className="richtext text-ink/80 grow text-sm">
                     <PortableText value={project.description ?? []} />
                   </div>
                 )}

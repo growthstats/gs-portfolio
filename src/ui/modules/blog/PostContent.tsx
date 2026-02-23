@@ -10,11 +10,12 @@ import css from './PostContent.module.css'
 import { Img } from '@/ui/Img'
 import Social from '@/ui/Social'
 import { BASE_URL, BLOG_DIR } from '@/lib/env'
+import Faq from '@/ui/modules/Faq'
 
 export default function PostContent({
   post,
   ...props
-}: { post?: Sanity.BlogPost } & Sanity.Module) {
+}: { post?: Sanity.BlogPost & { faq?: Sanity.FaqModule } } & Sanity.Module) {
   if (!post) return null
 
   const showTOC = !post.hideTableOfContents || !!post.headings?.length
@@ -64,9 +65,13 @@ export default function PostContent({
           </aside>
         )}
 
-        <Content value={post.body} className={cn(css.body, 'ml-0 grid max-w-[780px]')}>
-          <hr />
-        </Content>
+        <div className="space-y-12">
+          <Content value={post.body} className={cn(css.body, 'ml-0 grid max-w-[780px]')}>
+            <hr />
+          </Content>
+
+          {post.faq && <Faq {...post.faq} />}
+        </div>
       </div>
     </article>
   )
