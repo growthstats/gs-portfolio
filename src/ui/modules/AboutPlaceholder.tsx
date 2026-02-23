@@ -76,20 +76,21 @@ const AboutPlaceholder = () => {
 
           {/* ---------- Rest of the content (appears after the image on mobile) ---------- */}
           <Heading as="h3" variant="h3" className="mt-6 text-xl font-semibold text-gray-800">
-            Your Success, Our Priority
+            Your Growth, Our Mission
           </Heading>
 
-          <Text as="p" variant="body" className="leading-relaxed text-[#848484]">
-            At Growthstats, we believe in empowering our clients to achieve their goals. Our team
-            works closely with you.
+          <Text as="p" variant="body" className="text-ink/80 leading-relaxed">
+            We focus on driving measurable success. Our team partners with you to unlock
+            opportunities and achieve lasting impact.
           </Text>
 
           <Heading as="h3" variant="h3" className="mt-4 text-xl font-semibold text-gray-800">
-            Partners You Can Rely On
+            Success Through Partnership
           </Heading>
 
-          <Text as="p" variant="body" className="leading-relaxed text-[#848484]">
-            Landin is here to ensure your success with expert guidance and collaborative teamwork.
+          <Text as="p" variant="body" className="text-ink/80 leading-relaxed">
+            Our priority is your growth. By combining guidance, innovation, and teamwork, we help
+            you achieve digital excellence.
           </Text>
 
           {/* ---------- MOBILE DIVIDER (6th place) ---------- */}

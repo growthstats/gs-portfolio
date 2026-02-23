@@ -64,16 +64,16 @@ export default function ContactPlaceholder() {
                 General Inquiries
               </Heading>
 
-              <div className="text-ink/70 flex items-center gap-3">
+              <div className="text-ink/80 flex items-center gap-3">
                 <Mail className="size-4" />
                 <a href="mailto:info@growthstats.io" className="text-body hover:underline">
                   info@growthstats.io
                 </a>
               </div>
 
-              <div className="text-ink/70 mt-2 flex items-center gap-3">
+              <div className="text-ink/80 mt-2 flex items-center gap-3">
                 <Phone className="size-4" />
-                <a href="tel:+919156409994 text-body" className="hover:underline">
+                <a href="tel:+919156409994" className="hover:underline">
                   +91 91564 09994
                 </a>
               </div>

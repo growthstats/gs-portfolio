@@ -55,7 +55,7 @@ function FeatureCard({ feature }: Readonly<{ feature?: Sanity.ServiceFeature }>)
 
       {description && (
         <div className="mt-4 max-w-[36rem]">
-          <Text muted className="text-ink/75 whitespace-pre-line">
+          <Text muted className="text-ink/80 whitespace-pre-line">
             {description}
           </Text>
         </div>
