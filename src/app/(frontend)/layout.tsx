@@ -6,7 +6,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import Announcement from '@/ui/Announcement'
 import Footer from '@/ui/footer'
 import Header from '@/ui/header'
-import { GoogleAnalytics } from '@next/third-parties/google'
+import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
 import Root from '@/ui/Root'
 import SkipToContent from '@/ui/SkipToContent'
 import VisualEditingControls from '@/ui/VisualEditingControls'
@@ -18,8 +18,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
 
   return (
     <Root>
-      {/* <GoogleTagManager gtmId="" /> */}
       <body className="bg-canvas text-ink antialiased">
+        <GoogleTagManager gtmId="GTM-T652B5TL" />
         <NextTopLoader />
 
         <NuqsAdapter>
