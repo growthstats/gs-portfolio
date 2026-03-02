@@ -1,4 +1,3 @@
-import { Fragment } from 'react'
 import CTA from '@/ui/CTA'
 import { stegaClean } from 'next-sanity'
 
@@ -21,18 +20,14 @@ export default async function Breadcrumbs({
         itemType="https://schema.org/BreadcrumbList"
       >
         {crumbs?.map((crumb, key) => (
-          <Fragment key={key}>
-            <Crumb link={crumb} position={key + 1} />
-
-            {(key < crumbs.length - 1 || !hideCurrent) && (
-              <li className="text-ink/20" role="presentation">
-                /
-              </li>
-            )}
-          </Fragment>
+          <Crumb key={key} link={crumb} position={key + 1} withSeparator={key > 0} />
         ))}
 
-        <Crumb position={(crumbs?.length || 0) + 2} hidden={hideCurrent}>
+        <Crumb
+          position={(crumbs?.length || 0) + 1}
+          hidden={hideCurrent}
+          withSeparator={(crumbs?.length || 0) > 0}
+        >
           {currentPage?.title || currentPage?.metadata.title}
         </Crumb>
       </ol>
@@ -45,10 +40,12 @@ function Crumb({
   position,
   children,
   hidden,
+  withSeparator,
 }: {
   link?: Omit<Sanity.Link, '_type'>
   position: number
   hide?: boolean
+  withSeparator?: boolean
 } & React.ComponentProps<'li'>) {
   const content = (
     <>
@@ -61,11 +58,17 @@ function Crumb({
 
   return (
     <li
-      className="line-clamp-1"
+      className="line-clamp-1 flex items-center"
       itemProp="itemListElement"
       itemScope
       itemType="https://schema.org/ListItem"
     >
+      {withSeparator && (
+        <span className="text-ink/20 mx-2 shrink-0" aria-hidden="true">
+          /
+        </span>
+      )}
+
       {link ? (
         <CTA
           className="hover:underline"
