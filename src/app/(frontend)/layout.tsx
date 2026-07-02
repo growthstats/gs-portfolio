@@ -8,6 +8,8 @@ import Footer from '@/ui/footer'
 import Header from '@/ui/header'
 import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
 import Root from '@/ui/Root'
+import OrganizationSchema from '@/ui/OrganizationSchema'
+import LocalBusinessSchema from '@/ui/LocalBusinessSchema'
 import SkipToContent from '@/ui/SkipToContent'
 import VisualEditingControls from '@/ui/VisualEditingControls'
 import { Analytics } from '@vercel/analytics/react'
@@ -20,6 +22,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <Root>
       <body className="bg-canvas text-ink antialiased">
         <GoogleTagManager gtmId="GTM-T652B5TL" />
+        <OrganizationSchema />
+        <LocalBusinessSchema />
         <NextTopLoader />
 
         <NuqsAdapter>
