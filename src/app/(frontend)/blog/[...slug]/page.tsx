@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import Modules from '@/ui/modules'
+import BlogPostSchema from '@/ui/BlogPostSchema'
 import processMetadata from '@/lib/processMetadata'
 import { client } from '@/sanity/lib/client'
 import { fetchSanityLive } from '@/sanity/lib/fetch'
@@ -12,7 +13,12 @@ import errors from '@/lib/errors'
 export default async function Page({ params }: Props) {
   const post = await getPost(await params)
   if (!post) notFound()
-  return <Modules modules={post.modules} post={post} />
+  return (
+    <>
+      <BlogPostSchema post={post} />
+      <Modules modules={post.modules} post={post} />
+    </>
+  )
 }
 
 export async function generateMetadata({ params }: Props) {
