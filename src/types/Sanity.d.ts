@@ -24,6 +24,23 @@ declare global {
       headerMenu?: Navigation
       footerMenu?: Navigation
       social?: Navigation
+      // business (structured data)
+      localBusiness?: {
+        telephone?: string
+        email?: string
+        priceRange?: string
+        streetAddress?: string
+        addressLocality?: string
+        addressRegion?: string
+        postalCode?: string
+        addressCountry?: string
+        geo?: { latitude?: number; longitude?: number }
+        openingHours?: {
+          days?: string[]
+          opens?: string
+          closes?: string
+        }[]
+      }
     }
 
     interface Navigation extends SanityDocument {
