@@ -27,6 +27,14 @@ export default defineType({
       group: 'content',
     }),
     defineField({
+      name: 'ctas',
+      title: 'Call-to-action(s)',
+      description: 'e.g. a button linking to the full blog page',
+      type: 'array',
+      of: [{ type: 'cta' }],
+      group: 'content',
+    }),
+    defineField({
       name: 'layout',
       type: 'string',
       options: {
