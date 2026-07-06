@@ -9,6 +9,8 @@ import { fetchSanityLive } from '@/sanity/lib/fetch'
 import { IMAGE_QUERY } from '@/sanity/lib/queries'
 import FilterList from '@/ui/modules/blog/BlogList/FilterList'
 import Pretitle from '@/ui/Pretitle'
+import CTAList from '@/ui/CTAList'
+import BlogListSchema from '@/ui/BlogListSchema'
 
 import PostPreview from '../PostPreview'
 import List from './List'
@@ -17,6 +19,7 @@ import PortableText from '@/ui/PortableText'
 export default async function BlogList({
   pretitle,
   intro,
+  ctas,
   layout,
   limit,
   showFeaturedPostsFirst,
@@ -26,6 +29,7 @@ export default async function BlogList({
 }: Partial<{
   pretitle: string
   intro: Sanity.PortableText
+  ctas: Sanity.CTA[]
   layout: 'grid' | 'carousel'
   limit: number
   showFeaturedPostsFirst: boolean
@@ -71,6 +75,8 @@ export default async function BlogList({
 
   return (
     <section className="section space-y-8" {...moduleProps(props)}>
+      <BlogListSchema posts={posts} />
+
       {intro && (
         <header className="richtext">
           <Pretitle>{pretitle}</Pretitle>
@@ -93,6 +99,8 @@ export default async function BlogList({
       >
         <List posts={posts} className={listClassName} />
       </Suspense>
+
+      {!!ctas?.length && <CTAList ctas={ctas} className="justify-center" />}
     </section>
   )
 }

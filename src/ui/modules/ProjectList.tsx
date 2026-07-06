@@ -94,7 +94,7 @@ export default function ProjectList({
 
       {hasMore && (
         <div className="flex justify-center">
-          <Button variant="ghost" onClick={() => setShowAll((state) => !state)}>
+          <Button variant="default" onClick={() => setShowAll((state) => !state)}>
             {showAll ? 'Show less' : 'Show more'}
           </Button>
         </div>
