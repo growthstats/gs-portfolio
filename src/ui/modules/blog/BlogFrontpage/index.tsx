@@ -11,6 +11,7 @@ import PostPreview from '../PostPreview'
 import PostPreviewLarge from '../PostPreviewLarge'
 import Paginated from './Paginated'
 import sortFeaturedPosts from './sortFeaturedPosts'
+import BlogListSchema from '@/ui/BlogListSchema'
 
 export default async function BlogFrontpage({
   mainPost,
@@ -52,6 +53,8 @@ export default async function BlogFrontpage({
 
   return (
     <section className="section space-y-8">
+      <BlogListSchema posts={posts} />
+
       <PostPreviewLarge post={firstPost} />
 
       <hr />

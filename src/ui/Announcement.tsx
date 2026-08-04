@@ -21,7 +21,7 @@ export default async function Announcement() {
         <Scheduler start={start} end={end} key={_id}>
           <aside
             id="announcement"
-            className="bg-accent text-canvas flex items-center justify-center gap-x-4 p-2 text-center text-balance max-md:text-sm md:gap-x-6"
+            className="bg-accent text-canvas flex flex-col items-center justify-center gap-2 p-2 text-center text-balance max-md:text-sm md:flex-row md:gap-x-6"
           >
             <div className="anim-fade-to-r [&_a]:link">
               {content && <PortableText value={content ?? []} />}
