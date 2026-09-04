@@ -1,9 +1,10 @@
-import Pretitle from '@/ui/Pretitle'
 import { stegaClean } from 'next-sanity'
-import { Img } from '@/ui/Img'
-import { VscSurroundWith } from 'react-icons/vsc'
+import { VscQuote, VscSurroundWith } from 'react-icons/vsc'
 import { cn } from '@/lib/utils'
+import moduleProps from '@/lib/moduleProps'
+import { Img } from '@/ui/Img'
 import PortableText from '@/ui/PortableText'
+import Pretitle from '@/ui/Pretitle'
 
 export default function TestimonialList({
   pretitle,
@@ -11,22 +12,22 @@ export default function TestimonialList({
   testimonials,
   layout: l,
   layoutMobile: lm,
-}: Readonly<
-  Partial<{
-    pretitle: string
-    intro: Sanity.PortableText
-    testimonials: Sanity.Testimonial[]
-    layout: 'grid' | 'carousel'
-    layoutMobile: 'grid' | 'carousel'
-  }>
->) {
+  ...props
+}: Partial<{
+  pretitle: string
+  intro: Sanity.PortableText
+  testimonials: Sanity.Testimonial[]
+  layout: 'grid' | 'carousel'
+  layoutMobile: 'grid' | 'carousel'
+}> &
+  Sanity.Module) {
   const layout = stegaClean(l)
   const layoutMobile = stegaClean(lm)
 
   return (
-    <section className="section space-y-8 text-center">
+    <div className="section space-y-10" {...moduleProps(props)}>
       {(pretitle || intro) && (
-        <header className="richtext">
+        <header className="richtext mx-auto max-w-4xl text-center">
           <Pretitle>{pretitle}</Pretitle>
           {intro && <PortableText value={intro ?? []} />}
         </header>
@@ -34,10 +35,10 @@ export default function TestimonialList({
 
       <div
         className={cn(
-          'gap-8',
+          'gap-6',
           layout === 'carousel'
-            ? 'carousel max-md:full-bleed md:overflow-fade-r pb-4 max-md:px-4'
-            : 'grid sm:grid-cols-[repeat(auto-fill,minmax(300px,1fr))]',
+            ? 'carousel max-md:full-bleed md:overflow-fade-r pb-4 [--size:340px] max-md:px-4'
+            : 'grid sm:grid-cols-2 lg:grid-cols-3',
           layoutMobile === 'carousel' &&
             'max-md:carousel max-md:full-bleed max-md:px-4 max-md:pb-4',
         )}
@@ -45,57 +46,59 @@ export default function TestimonialList({
         {testimonials?.map(
           (testimonial, key) =>
             testimonial && (
-              <article
-                className="border-ink/10 grid basis-[min(450px,70vw)]! place-content-center rounded border p-4"
+              <figure
+                className="flex h-full flex-col gap-5 rounded-3xl px-6 py-8 shadow-(--shadow-card)"
                 key={key}
               >
-                <blockquote className="flex flex-col items-center gap-4">
-                  <div className="richtext text-balance">
-                    {testimonial.content && <PortableText value={testimonial.content ?? []} />}
-                  </div>
+                <VscQuote aria-hidden className="text-accent/60 shrink-0 text-2xl" />
 
-                  {testimonial.author && (
-                    <div className="inline-flex max-w-[25ch] items-center gap-2">
-                      <Img
-                        className="size-[40px] shrink-0 rounded-full object-cover"
-                        image={testimonial.author.image}
-                        width={80}
-                        alt={
-                          [testimonial.author.name, testimonial.author.title]
-                            .filter(Boolean)
-                            .join(', ') || 'Author'
-                        }
-                      />
-
-                      <dl className="text-start">
-                        <dt className="flex flex-wrap items-center gap-1">
-                          {testimonial.author.name}
-
-                          {testimonial.source && (
-                            <cite>
-                              <a
-                                className="text-ink/50"
-                                href={testimonial.source}
-                                target="_blank"
-                                title="Source"
-                              >
-                                <VscSurroundWith />
-                              </a>
-                            </cite>
-                          )}
-                        </dt>
-
-                        {testimonial.author.title && (
-                          <dd className="text-xs text-balance">{testimonial.author.title}</dd>
-                        )}
-                      </dl>
-                    </div>
-                  )}
+                <blockquote className="richtext text-ink/80 text-body-sm grow text-balance">
+                  {testimonial.content && <PortableText value={testimonial.content ?? []} />}
                 </blockquote>
-              </article>
+
+                {testimonial.author && (
+                  <figcaption className="flex items-center gap-3">
+                    <Img
+                      className="size-10 shrink-0 rounded-full object-cover"
+                      image={testimonial.author.image}
+                      width={80}
+                      alt={
+                        [testimonial.author.name, testimonial.author.title]
+                          .filter(Boolean)
+                          .join(', ') || 'Author'
+                      }
+                    />
+
+                    <dl className="min-w-0 text-start">
+                      <dt className="flex flex-wrap items-center gap-1 font-medium">
+                        {testimonial.author.name}
+
+                        {testimonial.source && (
+                          <cite>
+                            <a
+                              className="text-ink/50 hover:text-accent"
+                              href={testimonial.source}
+                              target="_blank"
+                              title="Source"
+                            >
+                              <VscSurroundWith />
+                            </a>
+                          </cite>
+                        )}
+                      </dt>
+
+                      {testimonial.author.title && (
+                        <dd className="text-ink/60 text-body-xs text-balance">
+                          {testimonial.author.title}
+                        </dd>
+                      )}
+                    </dl>
+                  </figcaption>
+                )}
+              </figure>
             ),
         )}
       </div>
-    </section>
+    </div>
   )
 }
