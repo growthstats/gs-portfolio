@@ -44,9 +44,11 @@ export default function TestimonialFeatured({
                       className="text-ink/50 hover:text-accent"
                       href={testimonial.source}
                       target="_blank"
+                      rel="noopener noreferrer"
                       title="Source"
+                      aria-label={`Source of testimonial${author?.name ? ` by ${author.name}` : ''}`}
                     >
-                      <VscSurroundWith />
+                      <VscSurroundWith aria-hidden />
                     </a>
                   </cite>
                 )}

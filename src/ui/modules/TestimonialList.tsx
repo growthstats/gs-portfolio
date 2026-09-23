@@ -37,10 +37,9 @@ export default function TestimonialList({
         className={cn(
           'gap-6',
           layout === 'carousel'
-            ? 'carousel max-md:full-bleed md:overflow-fade-r pb-4 [--size:340px] max-md:px-4'
+            ? 'carousel max-md:full-bleed md:overflow-fade-r p-4 [--size:340px] md:-mx-4'
             : 'grid sm:grid-cols-2 lg:grid-cols-3',
-          layoutMobile === 'carousel' &&
-            'max-md:carousel max-md:full-bleed max-md:px-4 max-md:pb-4',
+          layoutMobile === 'carousel' && 'max-md:carousel max-md:full-bleed max-md:p-4',
         )}
       >
         {testimonials?.map(
@@ -58,16 +57,27 @@ export default function TestimonialList({
 
                 {testimonial.author && (
                   <figcaption className="flex items-center gap-3">
-                    <Img
-                      className="size-10 shrink-0 rounded-full object-cover"
-                      image={testimonial.author.image}
-                      width={80}
-                      alt={
-                        [testimonial.author.name, testimonial.author.title]
-                          .filter(Boolean)
-                          .join(', ') || 'Author'
-                      }
-                    />
+                    {testimonial.author.image?.asset ? (
+                      <Img
+                        className="size-10 shrink-0 rounded-full object-cover"
+                        image={testimonial.author.image}
+                        width={80}
+                        alt={
+                          [testimonial.author.name, testimonial.author.title]
+                            .filter(Boolean)
+                            .join(', ') || 'Author'
+                        }
+                      />
+                    ) : (
+                      testimonial.author.name && (
+                        <span
+                          aria-hidden
+                          className="bg-ink/5 text-ink/70 flex size-10 shrink-0 items-center justify-center rounded-full font-medium"
+                        >
+                          {stegaClean(testimonial.author.name).trim().charAt(0).toUpperCase()}
+                        </span>
+                      )
+                    )}
 
                     <dl className="min-w-0 text-start">
                       <dt className="flex flex-wrap items-center gap-1 font-medium">
@@ -79,9 +89,11 @@ export default function TestimonialList({
                               className="text-ink/50 hover:text-accent"
                               href={testimonial.source}
                               target="_blank"
+                              rel="noopener noreferrer"
                               title="Source"
+                              aria-label={`Source of testimonial by ${testimonial.author.name}`}
                             >
-                              <VscSurroundWith />
+                              <VscSurroundWith aria-hidden />
                             </a>
                           </cite>
                         )}
