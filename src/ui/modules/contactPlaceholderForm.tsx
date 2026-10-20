@@ -1,12 +1,13 @@
 'use client'
 
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
-import { contactFormSchema, type ContactFormValues } from '@/lib/contactForm'
+import { contactFormSchema, HONEYPOT_FIELD, type ContactFormValues } from '@/lib/contactForm'
 
 export default function ContactForm() {
+  const honeypotRef = useRef<HTMLInputElement>(null)
   const [submitStatus, setSubmitStatus] = useState<{
     type: 'success' | 'error'
     message: string
@@ -33,7 +34,7 @@ export default function ContactForm() {
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
-        body: JSON.stringify(values),
+        body: JSON.stringify({ ...values, [HONEYPOT_FIELD]: honeypotRef.current?.value }),
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -60,6 +61,17 @@ export default function ContactForm() {
 
   return (
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)} noValidate>
+      {/* Honeypot: hidden from people and assistive tech, filled by naive bots */}
+      <input
+        ref={honeypotRef}
+        type="text"
+        name={HONEYPOT_FIELD}
+        tabIndex={-1}
+        autoComplete="off"
+        aria-hidden="true"
+        className="absolute -left-[9999px] h-px w-px opacity-0"
+      />
+
       <div className="grid gap-6 md:grid-cols-2">
         <div>
           <label className="mb-2 block text-sm font-medium" htmlFor="contact-name">
