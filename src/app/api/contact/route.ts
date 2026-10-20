@@ -2,12 +2,13 @@ import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import { contactFormSchema, HONEYPOT_FIELD, type ContactFormValues } from '@/lib/contactForm'
 
-const { RESEND_API_KEY, CONTACT_FROM_EMAIL, CONTACT_TO_EMAIL } = process.env
+const { RESEND_API_KEY, CONTACT_FROM_EMAIL, CONTACT_TO_EMAIL, CONTACT_APPS_SCRIPT_URL } =
+  process.env
 
 export async function POST(request: Request) {
-  if (!RESEND_API_KEY || !CONTACT_FROM_EMAIL || !CONTACT_TO_EMAIL) {
+  if (!RESEND_API_KEY || !CONTACT_FROM_EMAIL || !CONTACT_TO_EMAIL || !CONTACT_APPS_SCRIPT_URL) {
     console.error(
-      'Contact endpoint is missing RESEND_API_KEY, CONTACT_FROM_EMAIL or CONTACT_TO_EMAIL',
+      'Contact endpoint is missing RESEND_API_KEY, CONTACT_FROM_EMAIL, CONTACT_TO_EMAIL or CONTACT_APPS_SCRIPT_URL',
     )
     return NextResponse.json({ error: 'Contact endpoint is not configured.' }, { status: 500 })
   }
@@ -29,13 +30,42 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Invalid form data.' }, { status: 400 })
   }
 
-  // Email is the only record of the lead, so a failed send must surface to the visitor.
-  const sent = await notifyTeam(parsed.data, getSourcePath(request))
-  if (!sent) {
+  const lead = parsed.data
+  const sourcePath = getSourcePath(request)
+
+  const [logged, notified] = await Promise.all([
+    logToSheet(lead, sourcePath),
+    notifyTeam(lead, sourcePath),
+  ])
+
+  // The lead is safe as long as one channel captured it.
+  if (!logged && !notified) {
     return NextResponse.json({ error: 'Unable to submit form.' }, { status: 502 })
   }
 
   return NextResponse.json({ ok: true }, { status: 200 })
+}
+
+/** Appends the lead to the Google Sheet via the Apps Script web app (see docs/contact-form.md). */
+async function logToSheet(lead: ContactFormValues, sourcePath: string | null) {
+  try {
+    const response = await fetch(CONTACT_APPS_SCRIPT_URL!, {
+      method: 'POST',
+      headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...lead, sourcePath }),
+    })
+
+    // Apps Script answers 200 even when the script throws, so trust only its `ok` flag.
+    const result = await response.json().catch(() => null)
+    if (!response.ok || result?.ok !== true) {
+      throw new Error(`Apps Script responded ${response.status}: ${JSON.stringify(result)}`)
+    }
+
+    return true
+  } catch (error) {
+    console.error('Contact: failed to log lead to Google Sheet', error)
+    return false
+  }
 }
 
 async function notifyTeam(lead: ContactFormValues, sourcePath: string | null) {
