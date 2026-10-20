@@ -1,6 +1,6 @@
 import { structureTool } from 'sanity/structure'
 import { singleton, group, directory } from 'sanitypress-utils'
-import { VscFiles, VscMail, VscServerProcess } from 'react-icons/vsc'
+import { VscFiles, VscServerProcess } from 'react-icons/vsc'
 
 export const structure = structureTool({
   structure: (S) =>
@@ -22,17 +22,6 @@ export const structure = structureTool({
 
         S.documentTypeListItem('blog.post').title('Blog posts'),
         S.documentTypeListItem('blog.category').title('Blog categories'),
-        S.divider(),
-
-        S.listItem()
-          .title('Contact submissions')
-          .icon(VscMail)
-          .child(
-            S.documentTypeList('contact.submission')
-              .title('Contact submissions')
-              .defaultOrdering([{ field: 'submittedAt', direction: 'desc' }])
-              .initialValueTemplates([]),
-          ),
         S.divider(),
 
         S.documentTypeListItem('navigation'),
