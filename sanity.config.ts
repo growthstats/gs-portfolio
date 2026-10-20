@@ -15,6 +15,8 @@ import { schemaTypes } from './src/sanity/schemaTypes'
 import resolveUrl from '@/lib/resolveUrl'
 
 const singletonTypes = new Set('site')
+// created only by POST /api/contact, never from the Studio
+const apiCreatedTypes = new Set(['contact.submission'])
 
 export default defineConfig({
   title: 'GrowthStats CMS',
@@ -41,7 +43,10 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
-    templates: (templates) => templates.filter(({ schemaType }) => !singletonTypes.has(schemaType)),
+    templates: (templates) =>
+      templates.filter(
+        ({ schemaType }) => !singletonTypes.has(schemaType) && !apiCreatedTypes.has(schemaType),
+      ),
   },
   document: {
     productionUrl: async (prev, { document }) => {
@@ -56,6 +61,10 @@ export default defineConfig({
         return input.filter(
           ({ action }) => action && ['publish', 'discardChanges', 'restore'].includes(action),
         )
+      }
+
+      if (apiCreatedTypes.has(schemaType)) {
+        return input.filter(({ action }) => action !== 'duplicate')
       }
 
       return input

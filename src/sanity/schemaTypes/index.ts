@@ -8,6 +8,7 @@ import blogPost from './documents/blog.post'
 import blogCategory from './documents/blog.category'
 import navigation from './documents/navigation'
 import redirect from './documents/redirect'
+import contactSubmission from './documents/contact.submission'
 
 // miscellaneous
 import announcement from './misc/announcement'
@@ -72,6 +73,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   blogPost,
   blogCategory,
   navigation,
+  contactSubmission,
 
   // miscellaneous
   announcement,
