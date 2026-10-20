@@ -28,11 +28,11 @@ Use a separate Resend key (or a test recipient) and a copy of the sheet locally,
 
 The sheet only stores leads; email goes through Resend. The script must **not** send mail itself, or every lead is emailed twice.
 
-1. In the leads sheet, set row 1 headers: `timestamp`, `name`, `email`, `phone`, `message`, `sourcePath`.
+1. In the "GS Website Leads" sheet (`Leads` tab, Apps Script project of the same name), set row 1 headers: `timestamp`, `name`, `email`, `phone`, `message`, `sourcePath`.
 2. `Extensions` → `Apps Script`, and replace the code with:
 
    ```javascript
-   const SHEET_NAME = 'Sheet1'
+   const SHEET_NAME = 'Leads'
 
    function doPost(e) {
      try {
