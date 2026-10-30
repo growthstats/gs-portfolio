@@ -33,7 +33,7 @@ export default function ContactPlaceholder() {
           <div className="overflow-hidden rounded-t-2xl px-2 pt-2 md:px-8 md:pt-8">
             <iframe
               title="Google Map"
-              src="https://www.google.com/maps?q=Ganesh%20Nagar%20Ghorpadi%20Pune&output=embed"
+              src="https://www.google.com/maps?q=Growth%20Stats%2C%20Citadel%20Commercial%20Complex%2C%20Pune%20411001&output=embed"
               className="h-[220px] w-full rounded-2xl"
               loading="lazy"
             />
@@ -48,13 +48,11 @@ export default function ContactPlaceholder() {
               </Heading>
               {/* TODO: Check SEO Implications of breaking sentence */}
               <Text as="p" variant="body">
-                B.T Kawade Road, Sai Sulochana,
+                1st Floor,
                 <br />
-                opposite to shirke company,
+                Citadel Commercial Complex,
                 <br />
-                Ganesh Nagar, Ghorpadi, Pune.
-                <br />
-                Maharashtra 411036
+                Pune, Maharashtra 411001
               </Text>
             </div>
 
