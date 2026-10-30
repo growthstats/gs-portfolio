@@ -3,7 +3,7 @@
 `ContactForm` (`src/ui/modules/contactPlaceholderForm.tsx`) posts to `POST /api/contact`, which:
 
 1. Validates the payload with `contactFormSchema` (`src/lib/contactForm.ts`).
-2. Drops bot submissions that fill the hidden `website` honeypot field (responds `200` so bots don't adapt).
+2. Drops bot submissions that fill the hidden `fax` honeypot field (responds `200` so bots don't adapt).
 3. In parallel:
    - **Logs** the lead to the Google Sheet through an Apps Script web app (`CONTACT_APPS_SCRIPT_URL`).
    - **Emails** the team through [Resend](https://resend.com), with `Reply-To` set to the visitor's address.
@@ -28,7 +28,7 @@ Use a separate Resend key (or a test recipient) and a copy of the sheet locally,
 
 The sheet only stores leads; email goes through Resend. The script must **not** send mail itself, or every lead is emailed twice.
 
-1. In the "GS Website Leads" sheet (`Leads` tab, Apps Script project of the same name), set row 1 headers: `timestamp`, `name`, `email`, `phone`, `message`, `sourcePath`.
+1. In the "GS Website Leads" sheet (`Leads` tab, Apps Script project of the same name), set row 1 headers: `timestamp`, `name`, `email`, `phone`, `message`, `sourcePath`, `website`.
 2. `Extensions` → `Apps Script`, and replace the code with:
 
    ```javascript
@@ -45,6 +45,7 @@ The sheet only stores leads; email goes through Resend. The script must **not** 
          asText(data.phone),
          asText(data.message),
          asText(data.sourcePath),
+         asText(data.website),
        ])
        return json({ ok: true })
      } catch (error) {
@@ -102,4 +103,4 @@ Separate from Resend, but it affects whether `info@growthstats.io` mail is deliv
 1. Submit the form on `/contact`.
 2. Confirm the email arrives at `CONTACT_TO_EMAIL`, and that replying goes to the visitor.
 3. Check the send in the Resend dashboard (Emails) shows `delivered`.
-4. Confirm a new row in the sheet, including `sourcePath`, and that no second email arrived from Apps Script.
+4. Confirm a new row in the sheet, including `sourcePath` and `website`, and that no second email arrived from Apps Script.
