@@ -40,16 +40,23 @@ The sheet only stores leads; email goes through Resend. The script must **not** 
        const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME)
        sheet.appendRow([
          new Date().toISOString(),
-         data.name || '',
-         data.email || '',
-         data.phone || '',
-         data.message || '',
-         data.sourcePath || '',
+         asText(data.name),
+         asText(data.email),
+         asText(data.phone),
+         asText(data.message),
+         asText(data.sourcePath),
        ])
        return json({ ok: true })
      } catch (error) {
        return json({ ok: false, error: String(error) })
      }
+   }
+
+   // Sheets treats values starting with = + - @ as formulas: phone numbers like +91… show #ERROR!,
+   // and visitor input like =IMPORTXML(…) would run. A leading apostrophe stores them as plain text.
+   function asText(value) {
+     const text = String(value || '')
+     return /^[=+\-@]/.test(text) ? "'" + text : text
    }
 
    function json(body) {
@@ -61,6 +68,8 @@ The sheet only stores leads; email goes through Resend. The script must **not** 
 
 3. Deploy as a web app — Execute as: **Me**, Who has access: **Anyone**.
    To update an existing deployment without changing its URL, use `Deploy` → `Manage deployments` → edit → **Version: New version**.
+
+`asText` matters: without it, phone numbers like `+91 …` were stored as formulas (`#ERROR!`), and form input starting with `=` would be evaluated in the sheet.
 
 Apps Script answers HTTP `200` even when the script fails, so the route treats the call as successful only when the body is `{ "ok": true }`.
 
