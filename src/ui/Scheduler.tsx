@@ -2,30 +2,29 @@
 
 import { useEffect, useState } from 'react'
 
+export function isActiveAt(now: Date, start?: string, end?: string) {
+  return (!start || new Date(start) < now) && (!end || new Date(end) > now)
+}
+
 export default function Scheduler({
-	start,
-	end,
-	children,
+  start,
+  end,
+  children,
 }: Partial<{
-	start: string
-	end: string
-	children: React.ReactNode
+  start: string
+  end: string
+  children: React.ReactNode
 }>) {
-	if (!start && !end) return children
+  const [isActive, setIsActive] = useState(() => isActiveAt(new Date(), start, end))
 
-	function checkActive() {
-		const now = new Date()
-		return (!start || new Date(start) < now) && (!end || new Date(end) > now)
-	}
+  useEffect(() => {
+    if (!start && !end) return
 
-	const [isActive, setIsActive] = useState(checkActive())
+    const interval = setInterval(() => setIsActive(isActiveAt(new Date(), start, end)), 1000) // check every second
+    return () => clearInterval(interval)
+  }, [start, end])
 
-	useEffect(() => {
-		const interval = setInterval(() => setIsActive(checkActive()), 1000) // check every second
-		return () => clearInterval(interval)
-	}, [])
+  if (!isActive) return null
 
-	if (!isActive) return null
-
-	return children
+  return children
 }
