@@ -1,13 +1,6 @@
-import { supportedLanguages } from '@/lib/i18n'
-import { getTranslations } from '@/sanity/lib/queries'
-import Switcher from './Switcher'
 import type { ComponentProps } from 'react'
 
-export default async function LanguageSwitcher(props: ComponentProps<'label'>) {
-	if (supportedLanguages.length < 2) return null
+// Hidden until the path-based switcher lands (#67).
+const LanguageSwitcher: (props: ComponentProps<'label'>) => null = () => null
 
-	const translations = await getTranslations()
-	if (!translations) return null
-
-	return <Switcher translations={translations} {...props} />
-}
+export default LanguageSwitcher
