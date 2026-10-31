@@ -1,13 +1,43 @@
-import { structureTool } from 'sanity/structure'
-import { singleton, group, directory } from 'sanitypress-utils'
+import { structureTool, type StructureBuilder } from 'sanity/structure'
+import { group, directory } from 'sanitypress-utils'
 import { VscFiles, VscServerProcess } from 'react-icons/vsc'
+import { DEFAULT_LANGUAGE, supportedLanguages } from '@/lib/languages'
+
+/** One `site` singleton per language: `site` for English, `site-<lang>` for the rest (ADR 0002). */
+const siteSettings = (S: StructureBuilder) =>
+  S.listItem()
+    .id('site-settings')
+    .title('Site settings')
+    .icon(VscServerProcess)
+    .child(
+      S.list()
+        .title('Site settings')
+        .items(
+          supportedLanguages.map(({ id: language, title }) => {
+            const documentId = language === DEFAULT_LANGUAGE ? 'site' : `site-${language}`
+
+            return S.listItem()
+              .id(documentId)
+              .title(title)
+              .icon(VscServerProcess)
+              .child(
+                S.editor()
+                  .id(documentId)
+                  .title(`Site settings (${title})`)
+                  .schemaType('site')
+                  .documentId(documentId)
+                  .initialValueTemplate(`site-${language}`),
+              )
+          }),
+        ),
+    )
 
 export const structure = structureTool({
   structure: (S) =>
     S.list()
       .title('Content')
       .items([
-        singleton(S, 'site', 'Site settings').icon(VscServerProcess),
+        siteSettings(S),
         S.divider(),
 
         S.documentTypeListItem('page').title('All pages').icon(VscFiles),

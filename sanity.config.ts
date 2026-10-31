@@ -9,12 +9,13 @@ import { icon, infoWidget } from 'sanitypress-utils'
 import { dashboardTool, projectInfoWidget, projectUsersWidget } from '@sanity/dashboard'
 import { visionTool } from '@sanity/vision'
 import { codeInput } from '@sanity/code-input'
-import { supportedLanguages } from '@/lib/i18n'
+import { supportedLanguages } from '@/lib/languages'
 import { documentInternationalization } from '@sanity/document-internationalization'
 import { schemaTypes } from './src/sanity/schemaTypes'
+import { translatableTypes } from './src/sanity/schemaTypes/utils/language'
 import resolveUrl from '@/lib/resolveUrl'
 
-const singletonTypes = new Set('site')
+const singletonTypes = new Set(['site'])
 
 export default defineConfig({
   title: 'GrowthStats CMS',
@@ -35,15 +36,27 @@ export default defineConfig({
     codeInput(),
     documentInternationalization({
       supportedLanguages,
-      schemaTypes: ['page', 'blog.post'],
+      schemaTypes: translatableTypes,
     }),
   ],
 
   schema: {
     types: schemaTypes,
-    templates: (templates) => templates.filter(({ schemaType }) => !singletonTypes.has(schemaType)),
   },
   document: {
+    // Singletons are opened from the desk only, never from a "create" menu. Their templates
+    // (`site-en`, `site-de`, ...) stay registered so the desk can set the language.
+    newDocumentOptions: (prev) =>
+      prev.filter(
+        ({ templateId }) =>
+          ![...singletonTypes].some(
+            (type) => templateId === type || templateId.startsWith(`${type}-`),
+          ),
+      ),
+
+    // The Translations menu would create a German `site` with a random ID; `site-de` comes from the desk instead.
+    unstable_languageFilter: (prev, { schemaType }) => (singletonTypes.has(schemaType) ? [] : prev),
+
     productionUrl: async (prev, { document }) => {
       if (['page', 'blog.post'].includes(document?._type)) {
         return resolveUrl(document as Sanity.PageBase, { base: true })
