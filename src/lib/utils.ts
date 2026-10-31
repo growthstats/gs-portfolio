@@ -35,7 +35,7 @@ export function count(arr: Array<unknown> | number, singular: string = 'item', p
   return `${num || 0} ${num === 1 ? singular : plural || singular + 's'}`
 }
 
-export function debounce<T extends (...args: unknown[]) => void>(
+export function debounce<T extends (...args: never[]) => void>(
   func: T,
   delay: number = 1000,
 ): (...args: Parameters<T>) => void {

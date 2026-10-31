@@ -35,7 +35,7 @@ export default function SearchForm({
           type="search"
           placeholder={scope !== 'all' ? `Search ${scope === 'path' ? 'pages' : scope}` : 'Search'}
           defaultValue={query}
-          onChange={debounce((e) =>
+          onChange={debounce((e: React.ChangeEvent<HTMLInputElement>) =>
             handleSearch({
               query: e.target.value,
               scope,

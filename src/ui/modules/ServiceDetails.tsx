@@ -6,7 +6,7 @@ import { Img } from '@/ui/Img'
 export default function ServiceDetails({
   features,
   ...props
-}: Partial<Sanity.ServiceDetailsModule> & Sanity.Module) {
+}: Partial<Omit<Sanity.ServiceDetailsModule, '_type'>> & Sanity.Module) {
   if (!features?.length) return null
 
   return (

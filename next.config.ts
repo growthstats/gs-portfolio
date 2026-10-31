@@ -90,14 +90,6 @@ export default {
     SC_DISABLE_SPEEDY: 'false',
   },
 
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-
   // logging: {
   // 	fetches: {
   // 		fullUrl: true,
