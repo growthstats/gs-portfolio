@@ -1,6 +1,6 @@
 'use client'
 
-import useLang from '@/lib/getLang'
+import useLang from '@/lib/useLang'
 import type { ComponentProps } from 'react'
 
 export default function Root(props: ComponentProps<'html'>) {

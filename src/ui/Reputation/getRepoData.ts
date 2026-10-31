@@ -33,13 +33,11 @@ export async function getRepoData(reputation?: Sanity.Reputation) {
         .catch(() => ({ data: [] }))
 
       // the endpoint returns stargazer objects (with `user`) when asked for timestamps
-      const users = data.map((item) => ('user' in item ? item.user : item))
-      avatars = [
-        ...users.flatMap((user) =>
-          user ? [{ avatar_url: user.avatar_url, login: user.login }] : [],
-        ),
-        ...avatars,
-      ]
+      const pageAvatars = data.flatMap((item) => {
+        const user = 'user' in item ? item.user : item
+        return user ? [{ avatar_url: user.avatar_url, login: user.login }] : []
+      })
+      avatars = [...pageAvatars, ...avatars]
       page--
     }
 

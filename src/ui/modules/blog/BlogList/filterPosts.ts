@@ -1,18 +1,12 @@
+import type { useBlogFilters } from '../store'
+
 export function filterPosts(
   posts: Sanity.BlogPost[],
-  { category, author }: { category: string; author: string | null },
+  { category, author }: Pick<ReturnType<typeof useBlogFilters>, 'category' | 'author'>,
 ) {
-  return posts.filter((post) => {
-    if (category !== 'All' && author)
-      return (
-        post.authors?.some(({ slug }) => slug?.current === author) &&
-        post.categories?.some(({ slug }) => slug?.current === category)
-      )
-
-    if (category !== 'All') return post.categories?.some(({ slug }) => slug?.current === category)
-
-    if (author) return post.authors?.some(({ slug }) => slug?.current === author)
-
-    return true
-  })
+  return posts.filter(
+    (post) =>
+      (category === 'All' || post.categories?.some(({ slug }) => slug?.current === category)) &&
+      (!author || post.authors?.some(({ slug }) => slug?.current === author)),
+  )
 }

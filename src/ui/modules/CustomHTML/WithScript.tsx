@@ -15,8 +15,6 @@ export default function WithScript({
   const [firstRender, setFirstRender] = useState(true)
 
   useEffect(() => {
-    if (!code) return
-
     if (firstRender) {
       setFirstRender(false)
     } else {
@@ -24,8 +22,6 @@ export default function WithScript({
       ref.current?.appendChild(parsed)
     }
   }, [ref.current, code])
-
-  if (!code) return null
 
   return <section ref={ref} className={className} {...moduleProps(props)} />
 }
