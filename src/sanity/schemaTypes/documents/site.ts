@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { languageField, withLanguage } from '../utils/language'
 
 export default defineType({
   name: 'site',
@@ -168,10 +169,13 @@ export default defineType({
         }),
       ],
     }),
+    languageField,
   ],
   preview: {
-    prepare: () => ({
+    select: { language: 'language' },
+    prepare: ({ language }) => ({
       title: 'Site settings',
+      subtitle: withLanguage(language),
     }),
   },
 })
