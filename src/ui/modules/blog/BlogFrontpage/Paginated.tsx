@@ -1,7 +1,8 @@
 'use client'
 
 import { usePagination } from '@/lib/usePagination'
-import List, { filterPosts } from '../BlogList/List'
+import List from '../BlogList/List'
+import { filterPosts } from '../BlogList/filterPosts'
 import { useBlogFilters } from '../store'
 
 export default function Paginated({
