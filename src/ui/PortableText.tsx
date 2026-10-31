@@ -9,7 +9,7 @@ import Heading from '@/ui/Heading'
 import { HEADING_STYLE_MAP, type HeadingStyle } from '@/ui/portableTextHeading'
 
 type BlockProps = PortableTextComponentProps<PortableTextBlock>
-type BlockComponent = (props: BlockProps) => JSX.Element
+type BlockComponent = (props: BlockProps) => React.JSX.Element
 
 const headingBlockComponents = Object.fromEntries(
   Object.entries(HEADING_STYLE_MAP).map(([style, config]) => [

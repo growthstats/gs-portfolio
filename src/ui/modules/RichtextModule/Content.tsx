@@ -14,7 +14,7 @@ import Admonition from './Admonition'
 import CustomHTML from '@/ui/modules/CustomHTML'
 
 type BlockProps = PortableTextComponentProps<PortableTextBlock>
-type BlockComponent = (props: BlockProps) => JSX.Element
+type BlockComponent = (props: BlockProps) => React.JSX.Element
 
 const anchoredHeadingBlocks = Object.fromEntries(
   Object.entries(HEADING_STYLE_MAP).map(([style, config]) => [

@@ -33,7 +33,7 @@ import Faq from './Faq'
 import ServiceDetails from './ServiceDetails'
 
 import dynamic from 'next/dynamic'
-import type { ReactNode } from 'react'
+import type { ComponentType, ReactNode } from 'react'
 import { createDataAttribute } from 'next-sanity'
 
 export const MODULE_MAP = {
@@ -118,7 +118,11 @@ export default function Modules({
       )
     }
 
-    const Component = MODULE_MAP[module._type as keyof typeof MODULE_MAP]
+    // Each component types its own module's props, and `_type` picks the matching one at runtime,
+    // so TypeScript can't tie `module` to the looked-up component.
+    const Component = MODULE_MAP[module._type as keyof typeof MODULE_MAP] as
+      | ComponentType<Record<string, unknown>>
+      | undefined
     if (!Component) return null
 
     return (
