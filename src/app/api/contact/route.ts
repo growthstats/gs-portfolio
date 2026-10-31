@@ -81,16 +81,18 @@ async function notifyTeam(lead: ContactFormValues, sourcePath: string | null) {
         `Name: ${lead.name}`,
         `Email: ${lead.email}`,
         `Phone: ${lead.phone}`,
+        lead.website && `Website: ${lead.website}`,
         sourcePath && `Submitted from: ${sourcePath}`,
         '',
         lead.message,
       ]
-        .filter((line) => line !== null)
+        .filter((line) => typeof line === 'string')
         .join('\n'),
       html: `
         <p><strong>Name:</strong> ${escapeHtml(lead.name)}</p>
         <p><strong>Email:</strong> ${escapeHtml(lead.email)}</p>
         <p><strong>Phone:</strong> ${escapeHtml(lead.phone)}</p>
+        ${lead.website ? `<p><strong>Website:</strong> ${escapeHtml(lead.website)}</p>` : ''}
         ${sourcePath ? `<p><strong>Submitted from:</strong> ${escapeHtml(sourcePath)}</p>` : ''}
         <p><strong>Message:</strong><br>${escapeHtml(lead.message).replace(/\n/g, '<br>')}</p>
       `,
