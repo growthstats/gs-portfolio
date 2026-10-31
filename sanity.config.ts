@@ -17,6 +17,15 @@ import resolveUrl from '@/lib/resolveUrl'
 
 const singletonTypes = new Set(['site'])
 
+// Every template of a singleton, including the plugin's per-language ones.
+const singletonTemplateIds = new Set(
+  [...singletonTypes].flatMap((type) => [
+    type,
+    `${type}-parameterized`,
+    ...supportedLanguages.map(({ id }) => `${type}-${id}`),
+  ]),
+)
+
 export default defineConfig({
   title: 'GrowthStats CMS',
   icon,
@@ -47,12 +56,7 @@ export default defineConfig({
     // Singletons are opened from the desk only, never from a "create" menu. Their templates
     // (`site-en`, `site-de`, ...) stay registered so the desk can set the language.
     newDocumentOptions: (prev) =>
-      prev.filter(
-        ({ templateId }) =>
-          ![...singletonTypes].some(
-            (type) => templateId === type || templateId.startsWith(`${type}-`),
-          ),
-      ),
+      prev.filter(({ templateId }) => !singletonTemplateIds.has(templateId)),
 
     // The Translations menu would create a German `site` with a random ID; `site-de` comes from the desk instead.
     unstable_languageFilter: (prev, { schemaType }) => (singletonTypes.has(schemaType) ? [] : prev),

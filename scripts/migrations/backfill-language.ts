@@ -38,19 +38,20 @@ const client = createClient({
 
 type Doc = { _id: string; _type: string; _rev: string }
 
+const MISSING = `*[_type in $types && !defined(language)]`
+const params = { types: translatableTypes }
+
 const kind = ({ _id }: Doc) =>
   _id.startsWith('drafts.') ? 'draft' : _id.startsWith('versions.') ? 'version' : 'published'
 
 async function main() {
-  const docs = await client.fetch<Doc[]>(
-    `*[_type in $types && !defined(language)]{ _id, _type, _rev } | order(_type, _id)`,
-    { types: translatableTypes },
-  )
+  const docs = await client.fetch<Doc[]>(`${MISSING}{ _id, _type, _rev }`, params)
 
   const counts: Record<string, Record<string, number>> = {}
   for (const doc of docs) {
-    counts[doc._type] ??= {}
-    counts[doc._type][kind(doc)] = (counts[doc._type][kind(doc)] ?? 0) + 1
+    const byKind = (counts[doc._type] ??= {})
+    const k = kind(doc)
+    byKind[k] = (byKind[k] ?? 0) + 1
   }
 
   console.log(`${projectId}/${dataset}: ${docs.length} documents without a language`)
@@ -73,9 +74,7 @@ async function main() {
     console.log(`Patched ${Math.min(i + BATCH, docs.length)}/${docs.length}`)
   }
 
-  const left = await client.fetch<number>(`count(*[_type in $types && !defined(language)])`, {
-    types: translatableTypes,
-  })
+  const left = await client.fetch<number>(`count(${MISSING})`, params)
   console.log(`Done. Documents still without a language: ${left}`)
 }
 

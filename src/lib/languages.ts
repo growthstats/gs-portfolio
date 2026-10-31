@@ -12,3 +12,8 @@ export const supportedLanguages: Language[] = [
 ]
 
 export const DEFAULT_LANGUAGE = 'en'
+
+/** Site settings singleton per language: `site` for English, `site-<lang>` for the rest (ADR 0002). */
+export function siteDocumentId(language: string) {
+  return language === DEFAULT_LANGUAGE ? 'site' : `site-${language}`
+}

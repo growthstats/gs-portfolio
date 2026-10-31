@@ -1,9 +1,9 @@
 import { structureTool, type StructureBuilder } from 'sanity/structure'
 import { group, directory } from 'sanitypress-utils'
 import { VscFiles, VscServerProcess } from 'react-icons/vsc'
-import { DEFAULT_LANGUAGE, supportedLanguages } from '@/lib/languages'
+import { siteDocumentId, supportedLanguages } from '@/lib/languages'
 
-/** One `site` singleton per language: `site` for English, `site-<lang>` for the rest (ADR 0002). */
+/** One site settings singleton per language. */
 const siteSettings = (S: StructureBuilder) =>
   S.listItem()
     .id('site-settings')
@@ -14,7 +14,7 @@ const siteSettings = (S: StructureBuilder) =>
         .title('Site settings')
         .items(
           supportedLanguages.map(({ id: language, title }) => {
-            const documentId = language === DEFAULT_LANGUAGE ? 'site' : `site-${language}`
+            const documentId = siteDocumentId(language)
 
             return S.listItem()
               .id(documentId)

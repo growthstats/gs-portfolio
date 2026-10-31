@@ -26,21 +26,9 @@ export function withLanguage(language: string | undefined, subtitle?: string) {
 }
 
 /**
- * GROQ that is true when no other document of the same type and language uses
- * the slug. Documents written before the backfill count as the default language.
- */
-export function slugIsUniqueQuery(slugPath: string) {
-  return `!defined(*[
-		_type == $type &&
-		!sanity::versionOf($published) &&
-		${slugPath} == $slug &&
-		coalesce(language, $defaultLanguage) == $language
-	][0]._id)`
-}
-
-/**
  * Slug uniqueness per type and language, so a German translation can keep
- * the English slug. Replaces Sanity's default per-type check.
+ * the English slug. Replaces Sanity's default per-type check. Documents written
+ * before the backfill count as the default language.
  */
 export const isUniquePerLanguage: SlugIsUniqueValidator = (slug, { document, path, getClient }) => {
   if (!document || !path) throw new Error('Slug validation needs `document` and `path`.')
@@ -51,7 +39,12 @@ export const isUniquePerLanguage: SlugIsUniqueValidator = (slug, { document, pat
   return getClient({ apiVersion: '2025-02-19' })
     .withConfig({ perspective: 'raw' })
     .fetch(
-      slugIsUniqueQuery(slugPath),
+      `!defined(*[
+        _type == $type &&
+        !sanity::versionOf($published) &&
+        ${slugPath} == $slug &&
+        coalesce(language, $defaultLanguage) == $language
+      ][0]._id)`,
       {
         type: document._type,
         published: getPublishedId(document._id),
