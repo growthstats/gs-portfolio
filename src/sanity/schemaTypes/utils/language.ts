@@ -1,4 +1,9 @@
-import { defineField, getPublishedId, type SlugIsUniqueValidator } from 'sanity'
+import {
+  defineField,
+  getPublishedId,
+  type ReferenceFilterResolver,
+  type SlugIsUniqueValidator,
+} from 'sanity'
 import { DEFAULT_LANGUAGE } from '@/lib/languages'
 
 /** Document types with a translation per language (ADR 0002). */
@@ -18,6 +23,15 @@ export const languageField = defineField({
   type: 'string',
   readOnly: true,
   hidden: true,
+})
+
+/** Reference filter: only documents in the referencing document's language. */
+export const sameLanguage: ReferenceFilterResolver = ({ document }) => ({
+  filter: 'coalesce(language, $defaultLanguage) == $language',
+  params: {
+    language: (document.language as string | undefined) ?? DEFAULT_LANGUAGE,
+    defaultLanguage: DEFAULT_LANGUAGE,
+  },
 })
 
 /** Prefixes a preview subtitle with a `[lang]` badge. */

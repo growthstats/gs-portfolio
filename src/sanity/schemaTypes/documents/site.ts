@@ -1,5 +1,5 @@
 import { defineField, defineType } from 'sanity'
-import { languageField, withLanguage } from '../utils/language'
+import { languageField, sameLanguage, withLanguage } from '../utils/language'
 
 export default defineType({
   name: 'site',
@@ -60,18 +60,21 @@ export default defineType({
       name: 'headerMenu',
       type: 'reference',
       to: [{ type: 'navigation' }],
+      options: { filter: sameLanguage },
       group: 'navigation',
     }),
     defineField({
       name: 'footerMenu',
       type: 'reference',
       to: [{ type: 'navigation' }],
+      options: { filter: sameLanguage },
       group: 'navigation',
     }),
     defineField({
       name: 'social',
       type: 'reference',
       to: [{ type: 'navigation' }],
+      options: { filter: sameLanguage },
       group: 'navigation',
     }),
     defineField({

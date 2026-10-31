@@ -9,8 +9,8 @@
  * Run on the Node version in `.nvmrc`; `sanity exec` fails on newer majors.
  *
  * Project and dataset come from NEXT_PUBLIC_SANITY_PROJECT_ID / _DATASET, writes
- * use SANITY_API_WRITE_TOKEN (all read from `.env`). Idempotent: each patch only
- * applies to the revision it was planned against, and a second run finds nothing.
+ * use SANITY_API_WRITE_TOKEN for reads and writes (all from `.env`). Idempotent: `setIfMissing` never
+ * overwrites a language or an editor's concurrent change, and a second run finds nothing.
  */
 import { existsSync } from 'node:fs'
 import { createClient } from 'next-sanity'
@@ -25,7 +25,8 @@ const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET
 const token = process.env.SANITY_API_WRITE_TOKEN
 
 if (!projectId || !dataset) throw new Error('Missing NEXT_PUBLIC_SANITY_PROJECT_ID or _DATASET')
-if (!token && !dryRun) throw new Error('Missing SANITY_API_WRITE_TOKEN')
+// Also needed for the dry run: without a token, drafts are invisible and the counts come out short.
+if (!token) throw new Error('Missing SANITY_API_WRITE_TOKEN')
 
 const client = createClient({
   projectId,
@@ -36,7 +37,7 @@ const client = createClient({
   useCdn: false,
 })
 
-type Doc = { _id: string; _type: string; _rev: string }
+type Doc = { _id: string; _type: string }
 
 const MISSING = `*[_type in $types && !defined(language)]`
 const params = { types: translatableTypes }
@@ -45,7 +46,7 @@ const kind = ({ _id }: Doc) =>
   _id.startsWith('drafts.') ? 'draft' : _id.startsWith('versions.') ? 'version' : 'published'
 
 async function main() {
-  const docs = await client.fetch<Doc[]>(`${MISSING}{ _id, _type, _rev }`, params)
+  const docs = await client.fetch<Doc[]>(`${MISSING}{ _id, _type }`, params)
 
   const counts: Record<string, Record<string, number>> = {}
   for (const doc of docs) {
@@ -67,8 +68,8 @@ async function main() {
   const BATCH = 100
   for (let i = 0; i < docs.length; i += BATCH) {
     const tx = client.transaction()
-    for (const { _id, _rev } of docs.slice(i, i + BATCH)) {
-      tx.patch(_id, (patch) => patch.ifRevisionId(_rev).set({ language: DEFAULT_LANGUAGE }))
+    for (const { _id } of docs.slice(i, i + BATCH)) {
+      tx.patch(_id, (patch) => patch.setIfMissing({ language: DEFAULT_LANGUAGE }))
     }
     await tx.commit({ visibility: 'async' })
     console.log(`Patched ${Math.min(i + BATCH, docs.length)}/${docs.length}`)

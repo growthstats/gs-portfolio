@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
-import type { SlugValidationContext } from 'sanity'
-import { isUniquePerLanguage, withLanguage } from './language'
+import type { ReferenceFilterResolverContext, SlugValidationContext } from 'sanity'
+import { isUniquePerLanguage, sameLanguage, withLanguage } from './language'
 
 function validate(document: Record<string, unknown>, path = ['metadata', 'slug']) {
   const fetch = vi.fn().mockResolvedValue(true)
@@ -56,5 +56,20 @@ describe('withLanguage', () => {
 
   it('shows the badge alone without a subtitle', () => {
     expect(withLanguage('en')).toBe('[en]')
+  })
+})
+
+describe('sameLanguage', () => {
+  const resolve = (document: Record<string, unknown>) =>
+    sameLanguage({ document } as unknown as ReferenceFilterResolverContext)
+
+  it("limits references to the document's language", () => {
+    expect(resolve({ _id: 'site-de', language: 'de' })).toMatchObject({
+      params: { language: 'de' },
+    })
+  })
+
+  it('treats a document without a language as English', () => {
+    expect(resolve({ _id: 'site' })).toMatchObject({ params: { language: 'en' } })
   })
 })
