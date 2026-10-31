@@ -1,22 +1,24 @@
-const SUPPORTED_LANGUAGE_IDS = ['en', 'de'] as const
+const LANGUAGES = [
+  { id: 'en', title: 'English' },
+  { id: 'de', title: 'Deutsch' },
+] as const
 
-export type Lang = (typeof SUPPORTED_LANGUAGE_IDS)[number]
+export type Lang = (typeof LANGUAGES)[number]['id']
 
 export const DEFAULT_LANG: Lang = 'en'
 
 /** Every language the code can render. Sanity's translation plugin reads this list too. */
-export const supportedLanguages: { id: Lang; title: string }[] = [
-  { id: 'en', title: 'English' },
-  { id: 'de', title: 'Deutsch' },
-]
+export const supportedLanguages: { id: Lang; title: string }[] = [...LANGUAGES]
 
-export const languages: string[] = [...SUPPORTED_LANGUAGE_IDS]
+const supportedIds = supportedLanguages.map(({ id }) => id)
+
+export const languages: string[] = supportedIds
 
 /** @deprecated The blog modules still read this cookie; #65 replaces it with the route's `lang`. */
 export const langCookieName = `sanitypress-${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}-lang`
 
 export function isSupportedLanguage(value: unknown): value is Lang {
-  return SUPPORTED_LANGUAGE_IDS.includes(value as Lang)
+  return supportedIds.includes(value as Lang)
 }
 
 /**
@@ -25,7 +27,7 @@ export function isSupportedLanguage(value: unknown): value is Lang {
  */
 export function parseEnabledLanguages(value = ''): Lang[] {
   const requested = value.split(',').map((code) => code.trim().toLowerCase())
-  return SUPPORTED_LANGUAGE_IDS.filter((lang) => lang === DEFAULT_LANG || requested.includes(lang))
+  return supportedIds.filter((lang) => lang === DEFAULT_LANG || requested.includes(lang))
 }
 
 export const enabledLanguages = parseEnabledLanguages(process.env.NEXT_PUBLIC_ENABLED_LANGUAGES)

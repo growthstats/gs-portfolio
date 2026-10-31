@@ -13,7 +13,9 @@ export default function middleware(request: NextRequest) {
   // English has one URL, the unprefixed one.
   if (lang === DEFAULT_LANG) return NextResponse.redirect(new URL(path + search, request.url), 308)
 
-  if (!isEnabledLanguage(lang)) return new NextResponse(null, { status: 404 })
+  // A supported but disabled language: serve the site's 404 page.
+  if (!isEnabledLanguage(lang))
+    return NextResponse.rewrite(new URL(`/${DEFAULT_LANG}/404`, request.url), { status: 404 })
 
   return NextResponse.next()
 }

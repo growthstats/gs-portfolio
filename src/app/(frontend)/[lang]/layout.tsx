@@ -13,7 +13,8 @@ import SkipToContent from '@/ui/SkipToContent'
 import VisualEditingControls from '@/ui/VisualEditingControls'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-import { enabledLanguages } from '@/lib/i18n'
+import { notFound } from 'next/navigation'
+import { enabledLanguages, isEnabledLanguage } from '@/lib/i18n'
 
 export function generateStaticParams() {
   return enabledLanguages.map((lang) => ({ lang }))
@@ -27,6 +28,8 @@ export default async function RootLayout({
   params: Promise<{ lang: string }>
 }) {
   const { lang } = await params
+  // Middleware already 404s disabled prefixes; this catches paths it skips, like `/foo.php`.
+  if (!isEnabledLanguage(lang)) notFound()
   const gaId = process.env.NEXT_PUBLIC_GA_ID
 
   return (
