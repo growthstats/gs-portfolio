@@ -78,16 +78,17 @@ Do not rely on a Vercel preview; previews are off for feature branches.
 
 ## 10. Merge
 
-1. Once every check is green and the PR is mergeable, merge with `gh pr merge <pr> --merge`.
-   - Never pass `--auto`; in this repo it merges instantly.
+1. Once every check is green and the PR is mergeable, merge with `scripts/agent/merge-pr.sh <pr>`.
+   - It is the only merge command allowed without a prompt. It refuses a PR that doesn't target `develop`, isn't mergeable or has a check that isn't green, and merges only the commit the checks ran on.
+   - Don't call `gh pr merge` yourself, and never pass `--auto`; in this repo it merges instantly.
    - Never merge into `main`. Releases are done by a human.
 2. Confirm the issue closed. If it didn't, close it with a comment linking the PR.
 
 ## 11. Log
 
-1. Record the end time and work out the duration from the start time recorded in step 2.
-2. Run the `log-work` skill for this session. The entry must include the issue and PR links and a line `Time: <duration> (<start> → <end> UTC)`.
-3. Comment the duration on the issue.
+1. Run `node scripts/agent/active-time.mjs --since <start time from step 2>`. It reads this session's transcript and prints the active time (hours spent waiting for a human don't count) and the wall-clock time.
+2. Run the `log-work` skill for this session. The entry must include the issue and PR links and a line `Time: <active> active, <wall> wall-clock (<start> → <end> UTC)`.
+3. Comment the same `Time:` line on the issue.
 4. Clean up: stop the dev server and leave the worktree for the app to archive.
 
 ## Stop and report
