@@ -18,6 +18,7 @@ export default function Scheduler({
   const [isActive, setIsActive] = useState(() => isActiveAt(new Date(), start, end))
 
   useEffect(() => {
+    setIsActive(isActiveAt(new Date(), start, end))
     if (!start && !end) return
 
     const interval = setInterval(() => setIsActive(isActiveAt(new Date(), start, end)), 1000) // check every second
