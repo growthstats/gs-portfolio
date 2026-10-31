@@ -24,6 +24,7 @@ export default function ContactForm() {
       name: '',
       phone: '',
       email: '',
+      website: '',
       message: '',
     },
   })
@@ -104,19 +105,38 @@ export default function ContactForm() {
         </div>
       </div>
 
-      <div>
-        <label className="mb-2 block text-sm font-medium" htmlFor="contact-email">
-          Email
-        </label>
-        <input
-          id="contact-email"
-          type="email"
-          placeholder="example@gmail.com"
-          className="input w-full rounded-md px-4 py-2 text-sm shadow-(--shadow-card) focus:border-neutral-400"
-          aria-invalid={!!errors.email}
-          {...register('email')}
-        />
-        {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>}
+      <div className="grid gap-6 md:grid-cols-2">
+        <div>
+          <label className="mb-2 block text-sm font-medium" htmlFor="contact-email">
+            Email
+          </label>
+          <input
+            id="contact-email"
+            type="email"
+            placeholder="example@gmail.com"
+            className="input w-full rounded-md px-4 py-2 text-sm shadow-(--shadow-card) focus:border-neutral-400"
+            aria-invalid={!!errors.email}
+            {...register('email')}
+          />
+          {errors.email && <p className="mt-1 text-xs text-red-600">{errors.email.message}</p>}
+        </div>
+
+        <div>
+          <label className="mb-2 block text-sm font-medium" htmlFor="contact-website">
+            Website <span className="font-normal text-neutral-500">(optional)</span>
+          </label>
+          <input
+            id="contact-website"
+            type="text"
+            inputMode="url"
+            autoComplete="url"
+            placeholder="yourcompany.com"
+            className="input w-full rounded-md px-4 py-2 text-sm shadow-(--shadow-card) focus:border-neutral-400"
+            aria-invalid={!!errors.website}
+            {...register('website')}
+          />
+          {errors.website && <p className="mt-1 text-xs text-red-600">{errors.website.message}</p>}
+        </div>
       </div>
 
       <div>

@@ -1,0 +1,5 @@
+{
+  "permissions": {
+    "allow": ["Bash(scripts/agent/merge-pr.sh *)", "Bash(./scripts/agent/merge-pr.sh *)"]
+  }
+}

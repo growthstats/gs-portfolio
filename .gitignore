@@ -52,3 +52,7 @@ studio/.env.development
 
 # backups
 *.tar.gz
+# Claude Code: per-machine and per-worktree files
+.claude/settings.local.json
+.claude/launch.json
+.claude/worktrees/

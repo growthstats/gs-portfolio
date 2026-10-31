@@ -1,7 +1,9 @@
 'use client'
 
 import { usePagination } from '@/lib/usePagination'
-import List, { filterPosts } from '../BlogList/List'
+import List from '../BlogList/List'
+import { filterPosts } from '../BlogList/filterPosts'
+import { useBlogFilters } from '../store'
 
 export default function Paginated({
   posts,
@@ -10,8 +12,9 @@ export default function Paginated({
   posts: Sanity.BlogPost[]
   itemsPerPage?: number
 }) {
+  const filters = useBlogFilters()
   const { paginatedItems, Pagination } = usePagination({
-    items: filterPosts(posts),
+    items: filterPosts(posts, filters),
     itemsPerPage,
   })
 

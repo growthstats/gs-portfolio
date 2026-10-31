@@ -14,7 +14,9 @@ const compat = new FlatCompat({
 
 export default defineConfig([
   {
+    ignores: [".claude/**", ".next/**"],
+  },
+  {
     extends: compat.extends("next/core-web-vitals", "next/typescript"),
-    ignores: [".next/**", "node_modules"],
   },
 ]);
