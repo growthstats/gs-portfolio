@@ -86,9 +86,9 @@ Do not rely on a Vercel preview; previews are off for feature branches.
 
 ## 11. Log
 
-1. Record the end time and work out the duration from the start time recorded in step 2.
-2. Run the `log-work` skill for this session. The entry must include the issue and PR links and a line `Time: <duration> (<start> → <end> UTC)`.
-3. Comment the duration on the issue.
+1. Run `node scripts/agent/active-time.mjs --since <start time from step 2>`. It reads this session's transcript and prints the active time (hours spent waiting for a human don't count) and the wall-clock time.
+2. Run the `log-work` skill for this session. The entry must include the issue and PR links and a line `Time: <active> active, <wall> wall-clock (<start> → <end> UTC)`.
+3. Comment the same `Time:` line on the issue.
 4. Clean up: stop the dev server and leave the worktree for the app to archive.
 
 ## Stop and report
