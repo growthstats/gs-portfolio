@@ -10,13 +10,13 @@ export const supportedLanguages: { id: Lang; title: string }[] = [
   { id: 'de', title: 'Deutsch' },
 ]
 
-export const languages: Lang[] = supportedLanguages.map(({ id }) => id)
+export const languages: string[] = [...SUPPORTED_LANGUAGE_IDS]
 
 /** @deprecated The blog modules still read this cookie; #65 replaces it with the route's `lang`. */
 export const langCookieName = `sanitypress-${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}-lang`
 
 export function isSupportedLanguage(value: unknown): value is Lang {
-  return languages.includes(value as Lang)
+  return SUPPORTED_LANGUAGE_IDS.includes(value as Lang)
 }
 
 /**
@@ -25,7 +25,7 @@ export function isSupportedLanguage(value: unknown): value is Lang {
  */
 export function parseEnabledLanguages(value = ''): Lang[] {
   const requested = value.split(',').map((code) => code.trim().toLowerCase())
-  return languages.filter((lang) => lang === DEFAULT_LANG || requested.includes(lang))
+  return SUPPORTED_LANGUAGE_IDS.filter((lang) => lang === DEFAULT_LANG || requested.includes(lang))
 }
 
 export const enabledLanguages = parseEnabledLanguages(process.env.NEXT_PUBLIC_ENABLED_LANGUAGES)
