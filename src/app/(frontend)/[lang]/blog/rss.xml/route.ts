@@ -5,7 +5,11 @@ import resolveUrl from '@/lib/resolveUrl'
 import { Feed } from 'feed'
 import { escapeHTML, toHTML } from '@portabletext/to-html'
 import { urlFor } from '@/sanity/lib/image'
-import { DEFAULT_LANG } from '@/lib/i18n'
+import { DEFAULT_LANG, enabledLanguages } from '@/lib/i18n'
+
+export function generateStaticParams() {
+  return enabledLanguages.map((lang) => ({ lang }))
+}
 
 export async function GET() {
   const { blog, posts, copyright } = await fetchSanityLive<{

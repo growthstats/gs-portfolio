@@ -7,19 +7,30 @@ import Announcement from '@/ui/Announcement'
 import Footer from '@/ui/footer'
 import Header from '@/ui/header'
 import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
-import Root from '@/ui/Root'
 import OrganizationSchema from '@/ui/OrganizationSchema'
 import LocalBusinessSchema from '@/ui/LocalBusinessSchema'
 import SkipToContent from '@/ui/SkipToContent'
 import VisualEditingControls from '@/ui/VisualEditingControls'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import { enabledLanguages } from '@/lib/i18n'
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export function generateStaticParams() {
+  return enabledLanguages.map((lang) => ({ lang }))
+}
+
+export default async function RootLayout({
+  children,
+  params,
+}: {
+  children: React.ReactNode
+  params: Promise<{ lang: string }>
+}) {
+  const { lang } = await params
   const gaId = process.env.NEXT_PUBLIC_GA_ID
 
   return (
-    <Root>
+    <html lang={lang}>
       <body className="bg-canvas text-ink antialiased">
         <GoogleTagManager gtmId="GTM-T652B5TL" />
         <OrganizationSchema />
@@ -42,6 +53,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <SpeedInsights />
         {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
       </body>
-    </Root>
+    </html>
   )
 }
