@@ -1,4 +1,5 @@
 import { defineField, defineType } from 'sanity'
+import { languageField, sameLanguage, withLanguage } from '../utils/language'
 
 export default defineType({
   name: 'site',
@@ -59,18 +60,21 @@ export default defineType({
       name: 'headerMenu',
       type: 'reference',
       to: [{ type: 'navigation' }],
+      options: { filter: sameLanguage },
       group: 'navigation',
     }),
     defineField({
       name: 'footerMenu',
       type: 'reference',
       to: [{ type: 'navigation' }],
+      options: { filter: sameLanguage },
       group: 'navigation',
     }),
     defineField({
       name: 'social',
       type: 'reference',
       to: [{ type: 'navigation' }],
+      options: { filter: sameLanguage },
       group: 'navigation',
     }),
     defineField({
@@ -168,10 +172,13 @@ export default defineType({
         }),
       ],
     }),
+    languageField,
   ],
   preview: {
-    prepare: () => ({
+    select: { language: 'language' },
+    prepare: ({ language }) => ({
       title: 'Site settings',
+      subtitle: withLanguage(language),
     }),
   },
 })

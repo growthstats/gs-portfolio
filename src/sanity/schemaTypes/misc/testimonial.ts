@@ -2,6 +2,7 @@ import { defineField, defineType } from 'sanity'
 import { GrBlockQuote } from 'react-icons/gr'
 import { getBlockText } from 'sanitypress-utils'
 import { richTextBlock } from '../fragments'
+import { languageField, withLanguage } from '../utils/language'
 
 export default defineType({
   name: 'testimonial',
@@ -39,15 +40,17 @@ export default defineType({
         }),
       ],
     }),
+    languageField,
   ],
   preview: {
     select: {
       content: 'content',
       author: 'author',
+      language: 'language',
     },
-    prepare: ({ content, author }) => ({
+    prepare: ({ content, author, language }) => ({
       title: author?.name || author?.title || 'No author',
-      subtitle: getBlockText(content),
+      subtitle: withLanguage(language, getBlockText(content)),
       media: author?.image,
     }),
   },

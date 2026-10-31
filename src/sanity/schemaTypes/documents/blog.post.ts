@@ -1,6 +1,7 @@
 import { defineArrayMember, defineField, defineType } from 'sanity'
 import { VscEdit } from 'react-icons/vsc'
 import { imageBlock, admonition, richTextBlock } from '../fragments'
+import { languageField, withLanguage } from '../utils/language'
 
 export default defineType({
   name: 'blog.post',
@@ -83,12 +84,7 @@ export default defineType({
       type: 'metadata',
       group: 'metadata',
     }),
-    defineField({
-      name: 'language',
-      type: 'string',
-      readOnly: true,
-      hidden: true,
-    }),
+    languageField,
   ],
   preview: {
     select: {
@@ -101,7 +97,7 @@ export default defineType({
     },
     prepare: ({ featured, title, metaTitle, publishDate, image, language }) => ({
       title: [featured && '★', title || metaTitle].filter(Boolean).join(' '),
-      subtitle: [language && `[${language}] `, publishDate].filter(Boolean).join(''),
+      subtitle: withLanguage(language, publishDate),
       media: image,
     }),
   },
