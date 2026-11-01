@@ -11,7 +11,7 @@ npm run i18n:import -- --lang de [--type page] [--id <id>] --dry-run
 npm run i18n:import -- --lang de [--type page] [--id <id>]
 ```
 
-`--type` and `--id` can be repeated. Without them, every translatable type (`page`, `blog.post`, `navigation`, `global-module`, `blog.category`, `testimonial`, `site`) is included.
+`--type` and `--id` can be repeated. The import reads and checks every file before it writes anything. Without them, every translatable type (`page`, `blog.post`, `navigation`, `global-module`, `blog.category`, `testimonial`, `site`) is included.
 
 ## Export
 
@@ -26,7 +26,7 @@ Writes one file per published English document: `i18n-work/<lang>/<type>/<id>.js
 
 It covers `string` and `text` fields and every Portable Text span. Images (their alt text and captions are included), URLs, slugs, references, code blocks, enum options and technical fields (anchor ids, URL parameters, icon names, alignment) are not exported. The field rules are in `strings.ts`.
 
-Exporting again overwrites the file, so finish and import a translation before re-exporting that document.
+Exporting again keeps a file that already holds translated strings and says so; `--force` overwrites it with fresh English. Import a finished translation before re-exporting that document.
 
 ## Translating a file (instructions for the agent)
 

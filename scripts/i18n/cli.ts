@@ -23,6 +23,7 @@ export function parseOptions() {
       type: { type: 'string', multiple: true },
       id: { type: 'string', multiple: true },
       'dry-run': { type: 'boolean', default: false },
+      force: { type: 'boolean', default: false },
     },
   })
 
@@ -40,7 +41,7 @@ export function parseOptions() {
     )
   }
 
-  return { lang, types, ids: values.id, dryRun: values['dry-run'] }
+  return { lang, types, ids: values.id, dryRun: values['dry-run'], force: values.force }
 }
 
 /** `i18n-work/<lang>/<type>/<id>.json`, git-ignored. */

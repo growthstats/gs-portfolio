@@ -50,6 +50,14 @@ run(async () => {
   )
   const files = (await Promise.all(ordered.map((type) => listFiles(lang, type)))).flat()
   const selected = ids ? files.filter(({ id }) => ids.includes(id)) : files
+  // Read every file before writing anything, so a broken file stops the run before it starts.
+  const stringsOf = new Map(
+    await Promise.all(
+      selected.map(
+        async ({ type, id }) => [id, await readStrings(workFile(lang, type, id))] as const,
+      ),
+    ),
+  )
 
   const metadata = await client.fetch<MetadataDocument[]>(`*[_type == $type]`, {
     type: METADATA_TYPE,
@@ -84,8 +92,7 @@ run(async () => {
       continue
     }
 
-    const strings = await readStrings(workFile(lang, type, id))
-    const { doc, missing, unused } = unflatten(original, documentType(type), strings)
+    const { doc, missing, unused } = unflatten(original, documentType(type), stringsOf.get(id)!)
 
     const tx = client.transaction()
     let translationId: string
@@ -122,7 +129,7 @@ run(async () => {
       console.warn(`    ${unused.length} keys no longer in the English document, e.g. ${unused[0]}`)
 
     if (!dryRun) await tx.commit()
-    if (REMAPPED_TYPES.includes(type))
+    if (REMAPPED_TYPES.includes(type) && !translated.has(id))
       translated.set(id, { id: translationId, type, published: false })
   }
 
@@ -160,7 +167,12 @@ async function listFiles(lang: string, type: string) {
 }
 
 async function readStrings(file: string): Promise<Strings> {
-  const strings: unknown = JSON.parse(await readFile(file, 'utf8'))
+  let strings: unknown
+  try {
+    strings = JSON.parse(await readFile(file, 'utf8'))
+  } catch (error) {
+    throw new Error(`${file}: ${error instanceof Error ? error.message : error}`)
+  }
   const valid =
     typeof strings === 'object' &&
     strings !== null &&
