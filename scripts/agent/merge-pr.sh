@@ -13,9 +13,15 @@ pr=${1:?usage: scripts/agent/merge-pr.sh <pr-number>}
 GH_TOKEN=$(gh auth token --user AtharvaCM)
 export GH_TOKEN
 
-read -r base state mergeable sha < <(gh pr view "$pr" --repo "$repo" \
-  --json baseRefName,state,mergeable,headRefOid \
-  -q '"\(.baseRefName) \(.state) \(.mergeable) \(.headRefOid)"')
+# GitHub works out mergeability lazily and answers UNKNOWN right after the
+# base branch moves, so ask a few times before giving up.
+for attempt in 1 2 3 4 5 6; do
+  read -r base state mergeable sha < <(gh pr view "$pr" --repo "$repo" \
+    --json baseRefName,state,mergeable,headRefOid \
+    -q '"\(.baseRefName) \(.state) \(.mergeable) \(.headRefOid)"')
+  [[ $mergeable == UNKNOWN ]] || break
+  sleep 5
+done
 
 [[ $base == develop ]] || { echo "PR #$pr targets '$base', not develop" >&2; exit 1; }
 [[ $state == OPEN ]] || { echo "PR #$pr is $state" >&2; exit 1; }
