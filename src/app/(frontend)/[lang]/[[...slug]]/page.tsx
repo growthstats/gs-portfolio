@@ -23,7 +23,7 @@ export default async function Page({ params }: Props) {
   if (!page) notFound()
   return (
     <>
-      {page.isFallback && <FallbackNotice />}
+      {page.isFallback && <FallbackNotice key={page._id} />}
       <Modules modules={page.modules} page={page} />
     </>
   )

@@ -26,7 +26,7 @@ export default async function Page({ params }: Props) {
   if (!post) notFound()
   return (
     <>
-      {post.isFallback && <FallbackNotice />}
+      {post.isFallback && <FallbackNotice key={post._id} />}
       <BlogPostSchema post={post} />
       <Modules modules={post.modules} post={post} />
     </>

@@ -8,12 +8,13 @@ import Toggle from './Toggle'
 import LanguageSwitcher from '@/ui/LanguageSwitcher'
 import { cn } from '@/lib/utils'
 import css from './Header.module.css'
-import type { Lang } from '@/lib/i18n'
+import { enabledLanguages, type Lang } from '@/lib/i18n'
 
 export default async function Header({ lang }: { lang: Lang }) {
   const { title, logo, ctas } = await getSite(lang)
 
   const logoImage = logo?.image?.dark || logo?.image?.default
+  const hasSwitcher = enabledLanguages.length > 1
 
   return (
     <Wrapper
@@ -24,7 +25,13 @@ export default async function Header({ lang }: { lang: Lang }) {
         backgroundColor: 'rgba(255,255,255,0)',
       }}
     >
-      <div className={cn(css.header, 'mx-auto grid max-w-screen-xl items-center gap-x-6 p-4')}>
+      <div
+        className={cn(
+          css.header,
+          hasSwitcher && css.withLang,
+          'mx-auto grid max-w-screen-xl items-center gap-x-6 p-4',
+        )}
+      >
         <div className="[grid-area:logo]">
           <Link className={cn('h4 md:h3 grid', logo?.image && 'max-w-3xs')} href="/">
             {logoImage ? (
@@ -46,7 +53,9 @@ export default async function Header({ lang }: { lang: Lang }) {
           className="max-md:header-closed:hidden [grid-area:ctas] max-md:*:w-full md:ms-auto"
         />
 
-        <LanguageSwitcher className="max-md:header-closed:hidden [grid-area:lang] max-md:my-4 max-md:justify-center" />
+        {hasSwitcher && (
+          <LanguageSwitcher className="max-md:header-closed:hidden [grid-area:lang] max-md:my-4 max-md:justify-center" />
+        )}
 
         <Toggle />
       </div>
