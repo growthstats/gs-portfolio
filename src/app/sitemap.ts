@@ -35,16 +35,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     params: { languages: enabledLanguages, lang: DEFAULT_LANG },
   })
 
-  return docs.map((doc) => {
-    const { canonical, languages } = buildAlternates(withTranslationLinks(doc))
+  // `blog/*`-style slugs are templates, not pages.
+  return docs
+    .filter((doc) => !doc.metadata.slug.current.includes('*'))
+    .map((doc) => {
+      const { canonical, languages } = buildAlternates(withTranslationLinks(doc))
 
-    return {
-      url: canonical,
-      lastModified: doc._updatedAt,
-      priority: priority(doc),
-      alternates: { languages },
-    }
-  })
+      return {
+        url: canonical,
+        lastModified: doc._updatedAt,
+        priority: priority(doc),
+        alternates: { languages },
+      }
+    })
 }
 
 function priority({ _type, metadata }: Entry) {
