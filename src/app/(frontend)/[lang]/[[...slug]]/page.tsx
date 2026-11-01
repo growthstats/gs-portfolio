@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import Modules from '@/ui/modules'
+import FallbackNotice from '@/ui/FallbackNotice'
 import processMetadata from '@/lib/processMetadata'
 import { client } from '@/sanity/lib/client'
 import { groq } from 'next-sanity'
@@ -20,7 +21,12 @@ import errors from '@/lib/errors'
 export default async function Page({ params }: Props) {
   const page = await getPage(await params)
   if (!page) notFound()
-  return <Modules modules={page.modules} page={page} />
+  return (
+    <>
+      {page.isFallback && <FallbackNotice />}
+      <Modules modules={page.modules} page={page} />
+    </>
+  )
 }
 
 export async function generateMetadata({ params }: Props) {
