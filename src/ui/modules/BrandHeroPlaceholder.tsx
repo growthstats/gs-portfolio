@@ -1,29 +1,31 @@
+'use client'
+
 import moduleProps from '@/lib/moduleProps'
 import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
 import CTA from '../CTA'
+import { useDictionary } from '@/i18n/DictionaryProvider'
 
 export default function BrandHeroPlaceholder({ ...props }: Readonly<Sanity.Module>) {
+  const { brandHero } = useDictionary()
+  const { services } = brandHero
+
   return (
     <div className="section" {...moduleProps(props)}>
       <div className="mx-auto grid max-w-5xl gap-8 md:grid-cols-[6fr_4fr]">
         <div className="space-y-5 p-6 text-center md:text-start">
           <Heading as="h2" variant="display-hero" className="flex flex-col text-balance">
-            <span>Get the Growth</span>
-            <span>Your Brand</span>
-            <span>Deserves</span>
+            <span>{brandHero.headingLine1}</span>
+            <span>{brandHero.headingLine2}</span>
+            <span>{brandHero.headingLine3}</span>
           </Heading>
-          <Text>
-            We design digital experiences that reflect your brand, monitor promotions, design
-            standout visuals, and deliver content, branding, and marketing to elevate your business
-            online.
-          </Text>
+          <Text>{brandHero.intro}</Text>
           <CTA
             style={'secondary'}
             link={{
               _key: 'brand-hero-placeholder-cta',
               _type: 'link',
-              label: `Let's Work Together`,
+              label: brandHero.cta,
               type: 'internal',
               internal: {
                 _type: 'page',
@@ -37,32 +39,32 @@ export default function BrandHeroPlaceholder({ ...props }: Readonly<Sanity.Modul
           {/* Inner col 1 */}
           <div className="animate-float-updown-slow mt-5 space-y-2.5">
             <div className="flex h-22 items-center justify-center rounded-xl text-center shadow-(--shadow-card)">
-              <Text>Keyword Research</Text>
+              <Text>{services.keywordResearch}</Text>
             </div>
             <div className="flex h-22 items-center justify-center rounded-xl text-center shadow-(--shadow-card)">
-              <Text>Technical SEO</Text>
+              <Text>{services.technicalSeo}</Text>
             </div>
             <div className="flex h-22 items-center justify-center rounded-xl text-center shadow-(--shadow-card)">
-              <Text>Local SEO</Text>
+              <Text>{services.localSeo}</Text>
             </div>
             <div className="flex h-22 items-center justify-center rounded-xl text-center shadow-(--shadow-card)">
-              <Text>Campaign Management</Text>
+              <Text>{services.campaignManagement}</Text>
             </div>
           </div>
 
           {/* Inner col 2 */}
           <div className="animate-float-updown-slow-delayed space-y-2.5">
             <div className="flex h-22 items-center justify-center rounded-xl text-center shadow-(--shadow-card)">
-              <Text>UI UX</Text>
+              <Text>{services.uiUx}</Text>
             </div>
             <div className="flex h-22 items-center justify-center rounded-xl text-center shadow-(--shadow-card)">
-              <Text>Web Development</Text>
+              <Text>{services.webDevelopment}</Text>
             </div>
             <div className="flex h-22 items-center justify-center rounded-xl text-center shadow-(--shadow-card)">
-              <Text>Email Marketing</Text>
+              <Text>{services.emailMarketing}</Text>
             </div>
             <div className="flex h-22 items-center justify-center rounded-xl text-center shadow-(--shadow-card)">
-              <Text>Performance Marketing</Text>
+              <Text>{services.performanceMarketing}</Text>
             </div>
           </div>
         </div>

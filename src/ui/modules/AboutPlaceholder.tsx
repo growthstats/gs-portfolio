@@ -1,11 +1,16 @@
+'use client'
+
 import React from 'react'
 import Image from 'next/image'
 
 import { Badge } from '@/components/ui/badge'
 import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
+import { useDictionary } from '@/i18n/DictionaryProvider'
 
 const AboutPlaceholder = () => {
+  const { about } = useDictionary()
+
   return (
     <div className="w-full py-4">
       {/* Outer grid: on lg it's two columns, on mobile it stacks */}
@@ -16,7 +21,7 @@ const AboutPlaceholder = () => {
           <div className="relative h-[450px] w-full overflow-hidden rounded-2xl">
             <Image
               src="/images/about/about-gs-png.png"
-              alt="About GrowthStats"
+              alt={about.imageAlt}
               fill
               className="object-cover"
             />
@@ -34,7 +39,7 @@ const AboutPlaceholder = () => {
             >
               <span className="h-3 w-3 rounded-full bg-black" />
               <Text as="span" variant="body" className="text-ink">
-                About GrowthStats
+                {about.badge}
               </Text>
             </Badge>
           </div>
@@ -47,8 +52,8 @@ const AboutPlaceholder = () => {
                 variant="h2"
                 className="text-3xl leading-tight font-semibold text-gray-900 sm:text-4xl lg:text-5xl"
               >
-                An Agency With Classic <br />
-                Revolutionary Skills
+                {about.headingLine1} <br />
+                {about.headingLine2}
               </Heading>
 
               {/* ----- DESKTOP ONLY divider: keep as-is but hide on mobile ----- */}
@@ -66,7 +71,7 @@ const AboutPlaceholder = () => {
               <div className="relative h-[350px] w-full overflow-hidden rounded-2xl sm:h-[450px]">
                 <Image
                   src="/images/about/about-gs-png.png"
-                  alt="About GrowthStats"
+                  alt={about.imageAlt}
                   fill
                   className="object-cover"
                 />
@@ -76,21 +81,19 @@ const AboutPlaceholder = () => {
 
           {/* ---------- Rest of the content (appears after the image on mobile) ---------- */}
           <Heading as="h3" variant="h3" className="mt-6 text-xl font-semibold text-gray-800">
-            Your Growth, Our Mission
+            {about.missionTitle}
           </Heading>
 
           <Text as="p" variant="body" className="text-ink/80 leading-relaxed">
-            We focus on driving measurable success. Our team partners with you to unlock
-            opportunities and achieve lasting impact.
+            {about.missionText}
           </Text>
 
           <Heading as="h3" variant="h3" className="mt-4 text-xl font-semibold text-gray-800">
-            Success Through Partnership
+            {about.partnershipTitle}
           </Heading>
 
           <Text as="p" variant="body" className="text-ink/80 leading-relaxed">
-            Our priority is your growth. By combining guidance, innovation, and teamwork, we help
-            you achieve digital excellence.
+            {about.partnershipText}
           </Text>
 
           {/* ---------- MOBILE DIVIDER (6th place) ---------- */}

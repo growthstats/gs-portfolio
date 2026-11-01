@@ -1,20 +1,20 @@
+'use client'
+
 import React from 'react'
 import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
+import { useDictionary } from '@/i18n/DictionaryProvider'
+import type { Dictionary } from '@/i18n'
 
 type Feature = {
-  id: string
-  title: string
-  description: string
+  /** Key of the card's title and description in the dictionary's `team` section. */
+  id: Exclude<keyof Dictionary['team'], 'label'>
   icon?: React.ReactNode
 }
 
 const DEFAULT_FEATURES: Feature[] = [
   {
     id: 'expertise',
-    title: 'Expertise',
-    description:
-      'Our skilled team brings together expertise, creativity, and technological mastery to accelerate business growth online',
     icon: (
       <svg
         width="50"
@@ -37,10 +37,7 @@ const DEFAULT_FEATURES: Feature[] = [
     ),
   },
   {
-    id: 'client-centric',
-    title: 'Client-Centric Approach',
-    description:
-      'We prioritize our clients by delivering customized strategies designed to meet unique goals, challenges, and opportunities',
+    id: 'clientCentric',
     icon: (
       <svg
         width="50"
@@ -58,9 +55,6 @@ const DEFAULT_FEATURES: Feature[] = [
   },
   {
     id: 'results',
-    title: 'Result Driven Solutions',
-    description:
-      'We focus on measurable outcomes, combining innovation, technical excellence, and strategic insight to drive enduring development',
     icon: (
       <svg
         width="50"
@@ -87,8 +81,10 @@ export default function TeamPlaceholder({
   features = DEFAULT_FEATURES,
   className = '',
 }: Readonly<FeatureCardsProps>) {
+  const { team } = useDictionary()
+
   return (
-    <div aria-label="Key features" className={`w-full px-4 py-2 sm:px-6 lg:px-10 ${className}`}>
+    <div aria-label={team.label} className={`w-full px-4 py-2 sm:px-6 lg:px-10 ${className}`}>
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-10">
           {features.map((f) => (
@@ -104,11 +100,11 @@ export default function TeamPlaceholder({
               </div>
 
               <Heading as="h3" variant="h5" className="mt-3 text-center">
-                {f.title}
+                {team[f.id].title}
               </Heading>
 
               <Text as="p" variant="body" className="text-ink/80 text-center">
-                {f.description}
+                {team[f.id].description}
               </Text>
             </div>
           ))}
