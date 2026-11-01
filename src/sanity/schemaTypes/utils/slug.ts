@@ -5,7 +5,7 @@ import type { CustomValidator, SlugValue } from 'sanity'
  * `/technical-seo/` to `/technical-seo`, which no slug matches, so the page 404s (#100).
  */
 export const noEdgeSlashes: CustomValidator<SlugValue | undefined> = (slug) => {
-  const current = slug?.current
-  if (!current || (!current.startsWith('/') && !current.endsWith('/'))) return true
+  const current = slug?.current ?? ''
+  if (!current.startsWith('/') && !current.endsWith('/')) return true
   return 'Remove the "/" at the start or end. A slug looks like "technical-seo".'
 }

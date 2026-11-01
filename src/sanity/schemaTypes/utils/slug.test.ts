@@ -21,8 +21,8 @@ describe('noEdgeSlashes', () => {
   })
 
   it('rejects a trailing or leading slash', () => {
-    expect(validate('technical-seo/')).toEqual(expect.stringContaining('Remove the "/"'))
-    expect(validate('/technical-seo')).toEqual(expect.stringContaining('Remove the "/"'))
-    expect(validate('/')).toEqual(expect.stringContaining('Remove the "/"'))
+    expect(validate('technical-seo/')).toContain('Remove the "/"')
+    expect(validate('/technical-seo')).toContain('Remove the "/"')
+    expect(validate('/')).toContain('Remove the "/"')
   })
 })
