@@ -1,7 +1,12 @@
 import { stegaClean } from 'next-sanity'
 import { dev } from './env'
 
-export default function moduleProps({ _type, options, _key, ...props }: Partial<Sanity.Module>) {
+export default function moduleProps({
+  _type,
+  options,
+  _key,
+  ...props
+}: Partial<Sanity.Module> & { lang?: string }) {
   const hidden = stegaClean(options?.hidden)
 
   return {
@@ -9,5 +14,7 @@ export default function moduleProps({ _type, options, _key, ...props }: Partial<
     'data-module': _type,
     hidden: !dev && hidden,
     ...props,
+    // `Modules` hands every module `lang`; the root element inherits it from `<html>`.
+    lang: undefined,
   }
 }
