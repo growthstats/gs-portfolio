@@ -8,6 +8,7 @@ import { Img } from '@/ui/Img'
 import CTA from '@/ui/CTA'
 import { Button } from '@/components/ui/button'
 import PortableText from '@/ui/PortableText'
+import { useDictionary } from '@/i18n/DictionaryProvider'
 
 type ProjectCard = {
   _key?: string
@@ -35,6 +36,7 @@ export default function ProjectList({
   }, [initialProjects])
 
   const [showAll, setShowAll] = useState(false)
+  const { common } = useDictionary()
 
   const visibleProjects = showAll ? projects : projects?.slice(0, visibleByDefault)
   const hasMore = (projects?.length || 0) > visibleByDefault
@@ -95,7 +97,7 @@ export default function ProjectList({
       {hasMore && (
         <div className="flex justify-center">
           <Button variant="secondary" onClick={() => setShowAll((state) => !state)}>
-            {showAll ? 'Show less' : 'Show more'}
+            {showAll ? common.showLess : common.showMore}
           </Button>
         </div>
       )}

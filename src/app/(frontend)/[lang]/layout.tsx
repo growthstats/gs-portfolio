@@ -15,6 +15,8 @@ import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { notFound } from 'next/navigation'
 import { enabledLanguages, isEnabledLanguage } from '@/lib/i18n'
+import { getDictionary } from '@/i18n'
+import DictionaryProvider from '@/i18n/DictionaryProvider'
 
 export function generateStaticParams() {
   return enabledLanguages.map((lang) => ({ lang }))
@@ -40,17 +42,19 @@ export default async function RootLayout({
         <LocalBusinessSchema />
         <NextTopLoader />
 
-        <NuqsAdapter>
-          <SkipToContent />
-          <Announcement />
-          <Header lang={lang} />
-          <main id="main-content" role="main" tabIndex={-1}>
-            {children}
-          </main>
-          <Footer lang={lang} />
+        <DictionaryProvider lang={lang} dictionary={getDictionary(lang)}>
+          <NuqsAdapter>
+            <SkipToContent />
+            <Announcement />
+            <Header lang={lang} />
+            <main id="main-content" role="main" tabIndex={-1}>
+              {children}
+            </main>
+            <Footer lang={lang} />
 
-          <VisualEditingControls />
-        </NuqsAdapter>
+            <VisualEditingControls />
+          </NuqsAdapter>
+        </DictionaryProvider>
 
         <Analytics />
         <SpeedInsights />

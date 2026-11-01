@@ -3,6 +3,7 @@
 import PostPreview from '../PostPreview'
 import { useBlogFilters } from '../store'
 import { filterPosts } from './filterPosts'
+import { useDictionary } from '@/i18n/DictionaryProvider'
 
 export default function List({
   posts,
@@ -11,9 +12,10 @@ export default function List({
   posts: Sanity.BlogPost[]
 } & React.ComponentProps<'ul'>) {
   const filtered = filterPosts(posts, useBlogFilters())
+  const { blog } = useDictionary()
 
   if (!filtered.length) {
-    return <div>No posts found...</div>
+    return <div>{blog.noPosts}</div>
   }
 
   return (

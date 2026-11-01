@@ -56,3 +56,6 @@ studio/.env.development
 .claude/settings.local.json
 .claude/launch.json
 .claude/worktrees/
+
+# Translation pipeline working files (scripts/i18n)
+/i18n-work/

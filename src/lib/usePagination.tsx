@@ -1,6 +1,8 @@
 'use client'
 
 import { useQueryState, parseAsInteger } from 'nuqs'
+import { useDictionary } from '@/i18n/DictionaryProvider'
+import { format } from '@/i18n/format'
 
 type PaginationProps = React.ComponentProps<'div'> &
   Partial<{
@@ -21,6 +23,7 @@ export function usePagination<T>({
   itemsPerPage?: number
 }) {
   const { page, setPage } = usePageState()
+  const { pagination } = useDictionary()
 
   const atStart = page === 1
   const atEnd = page === Math.ceil(items.length / itemsPerPage)
@@ -37,8 +40,8 @@ export function usePagination<T>({
     buttonClassName,
     prevClassName,
     nextClassName,
-    prev = 'Prev',
-    next = 'Next',
+    prev = pagination.prev,
+    next = pagination.next,
     hidePage,
     onClick = () => {},
     ...props
@@ -59,9 +62,7 @@ export function usePagination<T>({
         </button>
 
         {!hidePage && (
-          <span>
-            {currentPage} of {totalPages}
-          </span>
+          <span>{format(pagination.page, { page: currentPage, total: totalPages })}</span>
         )}
 
         <button
