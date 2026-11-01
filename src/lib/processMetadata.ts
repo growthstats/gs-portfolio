@@ -5,7 +5,7 @@ import type { Metadata } from 'next'
 export default async function processMetadata(
   page: Sanity.Localized<Sanity.PageBase>,
 ): Promise<Metadata> {
-  const { canonical, languages, locale, alternateLocales } = buildAlternates(page, BASE_URL)
+  const { canonical, languages, locale, alternateLocales } = buildAlternates(page)
   const { title, description, ogimage, noIndex } = page.metadata
 
   return {

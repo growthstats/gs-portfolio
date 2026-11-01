@@ -1,7 +1,6 @@
 import { fetchSanityLive } from '@/sanity/lib/fetch'
 import { groq } from 'next-sanity'
 import { DEFAULT_LANG, enabledLanguages } from '@/lib/i18n'
-import { BASE_URL } from '@/lib/env'
 import { buildAlternates } from '@/lib/seo'
 import {
   LANGUAGE,
@@ -37,7 +36,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   })
 
   return docs.map((doc) => {
-    const { canonical, languages } = buildAlternates(withTranslationLinks(doc), BASE_URL)
+    const { canonical, languages } = buildAlternates(withTranslationLinks(doc))
 
     return {
       url: canonical,

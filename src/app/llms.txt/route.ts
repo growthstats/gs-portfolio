@@ -2,7 +2,7 @@ import { fetchSanity } from '@/sanity/lib/fetch'
 import { groq, stegaClean } from 'next-sanity'
 import { BASE_URL, BLOG_DIR } from '@/lib/env'
 import { DEFAULT_LANG } from '@/lib/i18n'
-import { LANGUAGE } from '@/sanity/lib/localized'
+import { LANGUAGE, SITE } from '@/sanity/lib/localized'
 
 export const dynamic = 'force-static'
 export const revalidate = 3600
@@ -25,7 +25,7 @@ export async function GET() {
   }>({
     // English only: the file lists unprefixed URLs.
     query: groq`{
-      'siteTitle': *[_id == 'site'][0].title,
+      'siteTitle': ${SITE}.title,
       'siteDesc': *[_type == 'page' && metadata.slug.current == 'index' && ${LANGUAGE} == $lang][0].metadata.description,
       'pages': *[
         _type == 'page' &&
