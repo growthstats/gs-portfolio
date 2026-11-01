@@ -13,9 +13,11 @@
     "lint:fix": "eslint . --fix",
     "manifest": "sanity manifest extract --path public/admin/static",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
+    "test": "vitest run && vitest run --config scripts/i18n/vitest.config.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "i18n:export": "sanity exec scripts/i18n/export.ts --",
+    "i18n:import": "sanity exec scripts/i18n/import.ts --",
     "prepare": "husky"
   },
   "dependencies": {
