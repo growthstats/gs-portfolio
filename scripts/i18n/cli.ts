@@ -7,7 +7,7 @@ import { parseArgs } from 'node:util'
 import { createClient } from 'next-sanity'
 import { codeInput } from '@sanity/code-input'
 import { createSchema, type ObjectSchemaType, type SchemaTypeDefinition } from 'sanity'
-import { DEFAULT_LANG, supportedLanguages } from '@/lib/i18n'
+import { DEFAULT_LANG, isSupportedLanguage, supportedLanguages } from '@/lib/i18n'
 import { schemaTypes } from '@/sanity/schemaTypes'
 import { translatableTypes } from '@/sanity/schemaTypes/utils/language'
 
@@ -29,7 +29,7 @@ export function parseOptions() {
 
   const lang = values.lang
   const targets = supportedLanguages.map(({ id }) => id).filter((id) => id !== DEFAULT_LANG)
-  if (!lang || !targets.includes(lang)) {
+  if (!isSupportedLanguage(lang) || !targets.includes(lang)) {
     throw new Error(`--lang must be one of: ${targets.join(', ')}`)
   }
 
