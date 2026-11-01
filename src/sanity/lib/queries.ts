@@ -208,7 +208,7 @@ export const GLOBAL_MODULE_PATH_QUERY = groq`
 `
 
 export const TRANSLATIONS_QUERY = groq`
-	'translations': *[_type == 'translation.metadata' && references(^._id)].translations[].value->{
+	'translations': *[_type == 'translation.metadata' && references(^._id)].translations[defined(value->_id)].value->{
 		'slug': metadata.slug.current,
 		language
 	}
@@ -241,7 +241,7 @@ export async function getTranslations() {
 				metadata.slug.current != 'index' => metadata.slug.current,
 				''
 			),
-			'translations': *[_type == 'translation.metadata' && references(^._id)].translations[].value->{
+			'translations': *[_type == 'translation.metadata' && references(^._id)].translations[defined(value->_id)].value->{
 				'slug': '/' + select(
 					_type == 'blog.post' => '${BLOG_DIR}/' + language + '/' + metadata.slug.current,
 					metadata.slug.current != 'index' => language + '/' + metadata.slug.current,
