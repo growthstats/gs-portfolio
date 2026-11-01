@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import Modules from '@/ui/modules'
+import FallbackNotice from '@/ui/FallbackNotice'
 import WebPageSchema from '@/ui/WebPageSchema'
 import processMetadata from '@/lib/processMetadata'
 import { client } from '@/sanity/lib/client'
@@ -24,6 +25,7 @@ export default async function Page({ params }: Props) {
   if (!page) notFound()
   return (
     <>
+      {page.isFallback && <FallbackNotice key={page._id} />}
       <WebPageSchema page={page} />
       <Modules lang={lang} modules={page.modules} page={page} />
     </>

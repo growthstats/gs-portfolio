@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import Modules from '@/ui/modules'
+import FallbackNotice from '@/ui/FallbackNotice'
 import BlogPostSchema from '@/ui/BlogPostSchema'
 import processMetadata from '@/lib/processMetadata'
 import { client } from '@/sanity/lib/client'
@@ -26,6 +27,7 @@ export default async function Page({ params }: Props) {
   if (!post) notFound()
   return (
     <>
+      {post.isFallback && <FallbackNotice key={post._id} />}
       <BlogPostSchema post={post} />
       <Modules lang={lang} modules={post.modules} post={post} />
     </>

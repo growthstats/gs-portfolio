@@ -163,6 +163,13 @@ const de = {
     featureAlt: 'Leistungsmerkmal',
     imageAlt: 'Bild zur Leistung',
   },
+  languageSwitcher: {
+    label: 'Sprache',
+  },
+  fallbackNotice: {
+    message: 'Diese Seite ist noch nicht auf Deutsch verfügbar. Sie sehen die englische Version.',
+    dismiss: 'Hinweis schließen',
+  },
 } satisfies Dictionary
 
 export default de

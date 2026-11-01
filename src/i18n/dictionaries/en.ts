@@ -160,6 +160,14 @@ const en = {
     featureAlt: 'feature',
     imageAlt: 'Service image',
   },
+  languageSwitcher: {
+    label: 'Language',
+  },
+  fallbackNotice: {
+    // Never shown in English, the fallback language; kept for the `Dictionary` shape.
+    message: `This page hasn't been translated yet, so it's shown in English.`,
+    dismiss: 'Dismiss',
+  },
 }
 
 export type Dictionary = typeof en
