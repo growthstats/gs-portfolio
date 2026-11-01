@@ -1,12 +1,14 @@
-'use client'
-
 import moduleProps from '@/lib/moduleProps'
 import Heading from '@/ui/Heading'
 import ContactForm from './contactPlaceholderForm'
-import { useDictionary } from '@/i18n/DictionaryProvider'
+import { getDictionary } from '@/i18n'
+import type { Lang } from '@/lib/i18n'
 
-export default function LetsTalkPlaceholder(props: Readonly<Sanity.Module>) {
-  const { letsTalk } = useDictionary()
+export default function LetsTalkPlaceholder({
+  lang,
+  ...props
+}: Readonly<Sanity.Module & { lang: Lang }>) {
+  const { letsTalk } = getDictionary(lang)
 
   return (
     <div

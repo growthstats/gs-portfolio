@@ -8,7 +8,7 @@ import { DEFAULT_LANG } from '@/lib/i18n'
 export default async function NotFound() {
   const page = await get404()
   if (!page) return <h1 className="section text-center text-5xl">404</h1>
-  return <Modules modules={page?.modules} />
+  return <Modules lang={DEFAULT_LANG} modules={page?.modules} />
 }
 
 export async function generateMetadata() {

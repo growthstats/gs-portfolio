@@ -13,6 +13,8 @@ const en = {
     showMore: 'Show more',
     showLess: 'Show less',
     faq: 'Frequently Asked Questions',
+    close: 'Close',
+    shareOn: 'Share on {platform}',
   },
   pagination: {
     prev: 'Prev',
@@ -143,6 +145,20 @@ const en = {
     typeBlog: 'Blog',
     typePage: 'Page',
     google: 'Search on Google',
+  },
+  testimonial: {
+    source: 'Source',
+    sourceLabel: 'Source of testimonial',
+    sourceLabelBy: 'Source of testimonial by {name}',
+    authorAlt: 'Author',
+  },
+  pricing: {
+    free: 'Free',
+  },
+  services: {
+    featuresHeading: 'Our Features',
+    featureAlt: 'feature',
+    imageAlt: 'Service image',
   },
 }
 

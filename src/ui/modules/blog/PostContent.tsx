@@ -11,11 +11,13 @@ import { Img } from '@/ui/Img'
 import Social from '@/ui/Social'
 import { BASE_URL, BLOG_DIR } from '@/lib/env'
 import Faq from '@/ui/modules/Faq'
+import type { Lang } from '@/lib/i18n'
 
 export default function PostContent({
+  lang,
   post,
   ...props
-}: { post?: Sanity.BlogPost & { faq?: Sanity.FaqModule } } & Sanity.Module) {
+}: { lang: Lang; post?: Sanity.BlogPost & { faq?: Sanity.FaqModule } } & Sanity.Module) {
   if (!post) return null
 
   const showTOC = !post.hideTableOfContents || !!post.headings?.length
@@ -32,7 +34,7 @@ export default function PostContent({
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
           <Date value={post.publishDate} />
           <Categories className="flex flex-wrap gap-x-2" categories={post.categories} linked />
-          <ReadTime value={post.readTime} />
+          <ReadTime lang={lang} value={post.readTime} />
         </div>
 
         <div className="mx-auto flex max-w-[710px] justify-between">
@@ -44,7 +46,12 @@ export default function PostContent({
             />
           )}
 
-          <Social className="justify-center gap-2" shareUrl={shareUrl} shareText={displayTitle} />
+          <Social
+            lang={lang}
+            className="justify-center gap-2"
+            shareUrl={shareUrl}
+            shareText={displayTitle}
+          />
         </div>
 
         {/* Image container */}

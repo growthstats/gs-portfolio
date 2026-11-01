@@ -1,14 +1,13 @@
-'use client'
-
 import React from 'react'
 import { Badge } from '@/components/ui/badge'
 import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
 import CTA from '@/ui/CTA'
-import { useDictionary } from '@/i18n/DictionaryProvider'
+import { getDictionary } from '@/i18n'
+import type { Lang } from '@/lib/i18n'
 
-const JoinUsPlaceholder = () => {
-  const { joinUs } = useDictionary()
+const JoinUsPlaceholder = ({ lang }: Readonly<{ lang: Lang }>) => {
+  const { joinUs } = getDictionary(lang)
 
   return (
     <div className="flex w-full justify-center py-2">

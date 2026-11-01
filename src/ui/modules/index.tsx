@@ -35,6 +35,7 @@ import ServiceDetails from './ServiceDetails'
 import dynamic from 'next/dynamic'
 import type { ReactNode } from 'react'
 import { createDataAttribute } from 'next-sanity'
+import type { Lang } from '@/lib/i18n'
 
 export const MODULE_MAP = {
   'about.placeholder': AboutPlaceholder,
@@ -75,10 +76,13 @@ export const MODULE_MAP = {
 } as const
 
 export default function Modules({
+  lang,
   modules,
   page,
   post,
 }: Readonly<{
+  /** The page language, handed to every module so server modules can call `getDictionary(lang)`. */
+  lang: Lang
   modules?: Sanity.Module[]
   page?: Sanity.Page
   post?: Sanity.BlogPost
@@ -125,6 +129,7 @@ export default function Modules({
       <Component
         {...module}
         {...getAdditionalProps(module)}
+        lang={lang}
         data-sanity={dataAttribute}
         key={elementKey}
       />
