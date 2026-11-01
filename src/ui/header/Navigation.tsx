@@ -2,9 +2,10 @@ import { getSite } from '@/sanity/lib/queries'
 import CTA from '@/ui/CTA'
 import LinkList from './LinkList'
 import { cn } from '@/lib/utils'
+import type { Lang } from '@/lib/i18n'
 
-export default async function Menu() {
-  const { headerMenu } = await getSite()
+export default async function Menu({ lang }: { lang: Lang }) {
+  const { headerMenu } = await getSite(lang)
 
   const parentClassName = cn('md:px-3 md:text-center md:leading-tight')
 

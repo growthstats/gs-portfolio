@@ -2,6 +2,7 @@ import Modules from '@/ui/modules'
 import { fetchSanityLive } from '@/sanity/lib/fetch'
 import { groq } from 'next-sanity'
 import { MODULES_QUERY } from '@/sanity/lib/queries'
+import { DEFAULT_LANG } from '@/lib/i18n'
 
 export default async function NotFound() {
   const page = await get404()
@@ -13,6 +14,7 @@ export async function generateMetadata() {
   return (await get404())?.metadata
 }
 
+// `not-found` gets no route params, so the 404 page is English for now.
 async function get404() {
   return await fetchSanityLive<Sanity.Page>({
     query: groq`*[_type == 'page' && metadata.slug.current == '404'][0]{
@@ -26,5 +28,6 @@ async function get404() {
 				+ *[_type == 'global-module' && path == '*'].after[]{ ${MODULES_QUERY} }
 			)
 		}`,
+    params: { lang: DEFAULT_LANG },
   })
 }

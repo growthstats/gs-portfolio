@@ -1,8 +1,9 @@
 import { fetchSanityLive } from './fetch'
 import { groq } from 'next-sanity'
 import errors from '@/lib/errors'
-import { BLOG_DIR } from '@/lib/env'
+import { DEFAULT_LANG, siteDocumentId, type Lang } from '@/lib/i18n'
 import { createSectionModuleQuery } from '@/sanity/queries/modules/section.groq'
+import { localizedRef, SITE } from './localized'
 
 export const LINK_QUERY = groq`
 	...,
@@ -48,7 +49,9 @@ const MODULES_BASE_PROJECTION = `
 		...,
 		link{ ${LINK_QUERY} }
 	},
-	_type == 'blog-list' => { filteredCategory-> },
+	// the blog modules fetch their own posts, in the requested language
+	_type in ['blog-frontpage', 'blog-list'] => { 'lang': $lang },
+	_type == 'blog-list' => { 'filteredCategory': ${localizedRef('filteredCategory')} },
 	_type == 'breadcrumbs' => { crumbs[]{ ${LINK_QUERY} } },
 	_type == 'callout' => {
 		content[]{
@@ -207,51 +210,27 @@ export const GLOBAL_MODULE_PATH_QUERY = groq`
 	)
 `
 
-export const TRANSLATIONS_QUERY = groq`
-	'translations': *[_type == 'translation.metadata' && references(^._id)].translations[].value->{
-		'slug': metadata.slug.current,
-		language
-	}
-`
-
-export async function getSite() {
+/**
+ * Site settings in `lang`: `site-<lang>` when it exists, else `site` (ADR 0002).
+ * Menus follow their references to the `lang` translation. Business details
+ * for structured data always come from the English `site`: call it without `lang`.
+ */
+export async function getSite(lang: Lang = DEFAULT_LANG) {
   const site = await fetchSanityLive<Sanity.Site>({
     query: groq`
-			*[_type == 'site'][0]{
+			${SITE}{
 				...,
 				ctas[]{ ${CTA_QUERY} },
-				headerMenu->{ ${NAVIGATION_QUERY} },
-				footerMenu->{ ${NAVIGATION_QUERY} },
+				'headerMenu': ${localizedRef('headerMenu')}{ ${NAVIGATION_QUERY} },
+				'footerMenu': ${localizedRef('footerMenu')}{ ${NAVIGATION_QUERY} },
 				social->{ ${NAVIGATION_QUERY} },
 				'ogimage': ogimage.asset->url
 			}
 		`,
+    params: { lang, siteId: siteDocumentId(lang) },
   })
 
   if (!site) throw new Error(errors.missingSiteSettings)
 
   return site
-}
-
-export async function getTranslations() {
-  return await fetchSanityLive<Sanity.Translation[]>({
-    query: groq`*[_type in ['page', 'blog.post'] && defined(language)]{
-			'slug': '/' + select(
-				_type == 'blog.post' => '${BLOG_DIR}/' + metadata.slug.current,
-				metadata.slug.current != 'index' => metadata.slug.current,
-				''
-			),
-			'translations': *[_type == 'translation.metadata' && references(^._id)].translations[].value->{
-				'slug': '/' + select(
-					_type == 'blog.post' => '${BLOG_DIR}/' + language + '/' + metadata.slug.current,
-					metadata.slug.current != 'index' => language + '/' + metadata.slug.current,
-					language
-				),
-				_type == 'blog.post' => {
-					'slugBlogAlt': '/' + language + '/${BLOG_DIR}/' + metadata.slug.current
-				},
-				language
-			}
-		}`,
-  })
 }

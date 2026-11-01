@@ -3,13 +3,18 @@ import { groq } from 'next-sanity'
 import { Suspense } from 'react'
 import Filter from './Filter'
 import { cn } from '@/lib/utils'
+import { IN_LANGUAGE, localizedRefs } from '@/sanity/lib/localized'
+import type { Lang } from '@/lib/i18n'
 
-export default async function FilterList() {
+export default async function FilterList({ lang }: { lang: Lang }) {
   const categories = await fetchSanityLive<Sanity.BlogCategory[]>({
+    // Categories in `lang` that a listed post shows, whichever language the post references.
     query: groq`*[
-      _type == 'blog.category' &&
-      count(*[_type == 'blog.post' && references(^._id)]) > 0
+      _type == 'blog.category'
+      && ${IN_LANGUAGE}
+      && count(*[_type == 'blog.post' && ${IN_LANGUAGE} && ^._id in ${localizedRefs('categories')}._id]) > 0
     ]|order(title)`,
+    params: { lang },
   })
 
   if (!categories) return null

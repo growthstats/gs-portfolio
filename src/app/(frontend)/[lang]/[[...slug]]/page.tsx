@@ -4,7 +4,14 @@ import processMetadata from '@/lib/processMetadata'
 import { client } from '@/sanity/lib/client'
 import { groq } from 'next-sanity'
 import { fetchSanityLive } from '@/sanity/lib/fetch'
-import { MODULES_QUERY, GLOBAL_MODULE_PATH_QUERY, TRANSLATIONS_QUERY } from '@/sanity/lib/queries'
+import { MODULES_QUERY, GLOBAL_MODULE_PATH_QUERY } from '@/sanity/lib/queries'
+import {
+  IN_LANGUAGE,
+  LOCALIZED_FIELDS,
+  staticSlugs,
+  withTranslationLinks,
+  type LocalizedResult,
+} from '@/sanity/lib/localized'
 import type { Lang } from '@/lib/i18n'
 import errors from '@/lib/errors'
 
@@ -17,57 +24,59 @@ export default async function Page({ params }: Props) {
 export async function generateMetadata({ params }: Props) {
   const page = await getPage(await params)
   if (!page) notFound()
-  return processMetadata(page)
+  // `processMetadata` doesn't read the new `translations` shape yet (#68).
+  return processMetadata({ ...page, translations: undefined })
 }
 
-export async function generateStaticParams() {
-  const slugs = await client.fetch<{ slug: string }[]>(
+export async function generateStaticParams({ params: { lang } }: { params: { lang: Lang } }) {
+  const docs = await client.fetch<{ slug: string; language: string }[]>(
     groq`*[
 			_type == 'page'
 			&& defined(metadata.slug.current)
 			&& !(metadata.slug.current in ['index'])
 		]{
-			'slug': metadata.slug.current
+			'slug': metadata.slug.current,
+			'language': coalesce(language, 'en')
 		}`,
   )
 
-  return slugs.map(({ slug }) => ({ slug: slug.split('/') }))
+  return staticSlugs(docs, lang).map((slug) => ({ slug: slug.split('/') }))
 }
 
-// `lang` is not used yet: every language gets the English document until #65.
-async function getPage({ slug: segments }: Params) {
+async function getPage({ lang, slug: segments }: Params) {
   const slug = segments?.join('/') ?? 'index'
 
-  const page = await fetchSanityLive<Sanity.Page>({
+  const page = await fetchSanityLive<LocalizedResult<Sanity.Page>>({
     query: groq`*[
 			_type == 'page'
 			&& metadata.slug.current == $slug
+			&& ${IN_LANGUAGE}
 		][0]{
 			...,
 			'modules': (
 				// global modules (before)
-				*[_type == 'global-module' && path == '*'].before[]{ ${MODULES_QUERY} }
+				*[_type == 'global-module' && path == '*' && ${IN_LANGUAGE}].before[]{ ${MODULES_QUERY} }
 				// path modules (before)
-				+ *[_type == 'global-module' && path != '*' && ${GLOBAL_MODULE_PATH_QUERY}].before[]{ ${MODULES_QUERY} }
+				+ *[_type == 'global-module' && path != '*' && ${GLOBAL_MODULE_PATH_QUERY} && ${IN_LANGUAGE}].before[]{ ${MODULES_QUERY} }
 				// page modules
 				+ modules[]{ ${MODULES_QUERY} }
 				// path modules (after)
-				+ *[_type == 'global-module' && path != '*' && ${GLOBAL_MODULE_PATH_QUERY}].after[]{ ${MODULES_QUERY} }
+				+ *[_type == 'global-module' && path != '*' && ${GLOBAL_MODULE_PATH_QUERY} && ${IN_LANGUAGE}].after[]{ ${MODULES_QUERY} }
 				// global modules (after)
-				+ *[_type == 'global-module' && path == '*'].after[]{ ${MODULES_QUERY} }
+				+ *[_type == 'global-module' && path == '*' && ${IN_LANGUAGE}].after[]{ ${MODULES_QUERY} }
 			),
 			metadata {
 				...,
 				'ogimage': image.asset->url + '?w=1200'
 			},
-			${TRANSLATIONS_QUERY},
+			${LOCALIZED_FIELDS}
 		}`,
-    params: { slug },
+    params: { lang, slug },
   })
 
   if (slug === 'index' && !page) throw new Error(errors.missingHomepage)
 
-  return page
+  return page && withTranslationLinks(page)
 }
 
 type Params = { lang: Lang; slug?: string[] }

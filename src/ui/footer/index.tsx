@@ -5,9 +5,10 @@ import LanguageSwitcher from '@/ui/LanguageSwitcher'
 import Link from 'next/link'
 import { Img } from '@/ui/Img'
 import PortableText from '@/ui/PortableText'
+import type { Lang } from '@/lib/i18n'
 
-export default async function Footer() {
-  const { title, blurb, logo, copyright, footerMenu } = await getSite()
+export default async function Footer({ lang }: { lang: Lang }) {
+  const { title, blurb, logo, copyright, footerMenu } = await getSite(lang)
 
   const logoImage = logo?.image?.light || logo?.image?.default
 

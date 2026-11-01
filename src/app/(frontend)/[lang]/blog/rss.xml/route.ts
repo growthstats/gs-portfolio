@@ -5,26 +5,29 @@ import resolveUrl from '@/lib/resolveUrl'
 import { Feed } from 'feed'
 import { escapeHTML, toHTML } from '@portabletext/to-html'
 import { urlFor } from '@/sanity/lib/image'
-import { DEFAULT_LANG, enabledLanguages } from '@/lib/i18n'
+import { enabledLanguages, siteDocumentId, type Lang } from '@/lib/i18n'
+import { IN_LANGUAGE, SITE } from '@/sanity/lib/localized'
 
 export function generateStaticParams() {
   return enabledLanguages.map((lang) => ({ lang }))
 }
 
-export async function GET() {
+export async function GET(_request: Request, { params }: { params: Promise<{ lang: Lang }> }) {
+  const { lang } = await params
+
   const { blog, posts, copyright } = await fetchSanityLive<{
     blog: Sanity.Page
     posts: Array<Sanity.BlogPost & { image?: string }>
     copyright: string
   }>({
     query: groq`{
-			'blog': *[_type == 'page' && metadata.slug.current == '${BLOG_DIR}'][0]{
+			'blog': *[_type == 'page' && metadata.slug.current == '${BLOG_DIR}' && ${IN_LANGUAGE}][0]{
 				_type,
 				title,
 				metadata,
 				'image': metadata.image.asset->url,
 			},
-			'posts': *[_type == 'blog.post']{
+			'posts': *[_type == 'blog.post' && ${IN_LANGUAGE}]{
 				_type,
 				title,
 				body,
@@ -32,10 +35,10 @@ export async function GET() {
 				authors[]->,
 				metadata,
 				'image': metadata.image.asset->url,
-				language,
 			},
-			'copyright': pt::text(*[_type == 'site'][0].copyright)
+			'copyright': pt::text(${SITE}.copyright)
 		}`,
+    params: { lang, siteId: siteDocumentId(lang) },
   })
 
   if (!blog || !posts) {
@@ -44,7 +47,7 @@ export async function GET() {
     })
   }
 
-  const url = resolveUrl(blog)
+  const url = resolveUrl(blog, { language: lang })
 
   const feed = new Feed({
     title: blog?.title || blog.metadata.title,
@@ -53,12 +56,12 @@ export async function GET() {
     id: url,
     copyright,
     favicon: process.env.NEXT_PUBLIC_BASE_URL + '/favicon.ico',
-    language: DEFAULT_LANG,
+    language: lang,
     generator: 'https://sanitypress.dev',
   })
 
   posts.map((post) => {
-    const url = resolveUrl(post, { language: post.language })
+    const url = resolveUrl(post, { language: lang })
     const displayTitle = post.title || post.metadata.title
 
     return feed.addItem({
