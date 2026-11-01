@@ -51,7 +51,7 @@ Don't change:
 
 ## Publishing
 
-When a draft has been proofread, click **Publish** at the bottom right. The German page goes live straight away, as long as German is switched on for the site (see [German launch](#before-the-german-launch)).
+When a draft has been proofread, click **Publish** at the bottom right. The German page appears on the site shortly afterwards, as long as German is switched on for the site (see [German launch](#before-the-german-launch)).
 
 To take a German page off the site again, use the **⋯** menu next to **Publish** and choose **Unpublish**. German visitors then get the English page again.
 
@@ -85,7 +85,7 @@ For a large rewrite, ask a developer for a fresh AI draft of the German page. Th
 
 ## German menus
 
-Menus are under **Navigation**. Each has its own German version: **Header-Menü**, **Footer-Menü** and **Social-Media-Links**.
+Menus are under **Navigation**. The header and footer menus have German versions: **Header-Menü** and **Footer-Menü**. The social links (**Social-Media-Links**) are icons and web addresses, and the site uses the English **Social Links** in every language for now, so editing the German one has no effect.
 
 ![The Navigation list with the German menus (marked [de]) above the English ones (marked [en]).](images/navigation.jpg)
 
@@ -108,6 +108,8 @@ Open **Site settings › Deutsch**. This is where the German site title and foot
 ## Before the German launch
 
 Until German is switched on, the live site has no `/de/` pages, even for German pages that are already published. That lets you proofread and publish German pages one by one before visitors can see any of them.
+
+Two parts are still being finished before launch: menu links that take German visitors to the German page ([#88](https://github.com/growthstats/gs-portfolio/issues/88)), and telling Google about untranslated pages ([#68](https://github.com/growthstats/gs-portfolio/issues/68)). Until then, links in German menus go to the English pages.
 
 German is switched on once proofreading is done (issue [#74](https://github.com/growthstats/gs-portfolio/issues/74)). Tell a developer when everything is ready.
 
@@ -139,9 +141,7 @@ npm run i18n:import -- --lang de --id <english-document-id>
 **Changed English content:** the import rebuilds the German draft from the current English document and replaces the existing draft, including any proofreading edits in it. Check with the editors first:
 
 - Small change, or proofreading already started: let the editors make the change by hand in the German document.
-- Large rewrite and no proofreading yet: re-export with `--force` (the old file holds translated strings, so a plain export keeps it), translate, and import as above.
-
-The import warns about strings left in English and about keys the English document no longer has.
+- Large rewrite and no proofreading yet: re-export with `--force`, translate, and import as above.
 
 **Checking drafts locally:** set `NEXT_PUBLIC_ENABLED_LANGUAGES=en,de` in `.env` and run `npm run dev`. Dev reads drafts, so unpublished German pages show under `/de/`. A page that works locally may not be published yet.
 
