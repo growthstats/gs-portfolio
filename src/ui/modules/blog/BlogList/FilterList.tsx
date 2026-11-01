@@ -6,7 +6,10 @@ import { cn } from '@/lib/utils'
 export default function FilterList({ posts }: { posts: Sanity.BlogPost[] }) {
   const categories = [
     ...new Map(
-      posts.flatMap((post) => post.categories ?? []).map((category) => [category._id, category]),
+      posts
+        .flatMap((post) => post.categories ?? [])
+        .filter(Boolean)
+        .map((category) => [category._id, category]),
     ).values(),
   ].sort((a, b) => a.title.localeCompare(b.title))
 

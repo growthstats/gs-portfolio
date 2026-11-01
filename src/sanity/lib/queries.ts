@@ -233,7 +233,11 @@ export function withGlobalModules(modules: string, pathFilter = 'false') {
  * Menus follow their references to the `lang` translation. Business details
  * for structured data always come from the English `site`: call it without `lang`.
  */
-export const getSite = cache(async (lang: Lang = DEFAULT_LANG) => {
+export function getSite(lang: Lang = DEFAULT_LANG) {
+  return fetchSite(lang)
+}
+
+const fetchSite = cache(async (lang: Lang) => {
   const site = await fetchSanityLive<Sanity.Site>({
     query: groq`
 			${SITE}{

@@ -11,6 +11,7 @@ import {
   IN_LANGUAGE,
   LANGUAGE,
   LOCALIZED_FIELDS,
+  PREFER_LANGUAGE,
   localizedRefs,
   withTranslationLinks,
   type LocalizedResult,
@@ -70,7 +71,7 @@ const fetchPost = cache(async (lang: Lang, slug: string) => {
 			_type == 'blog.post'
 			&& metadata.slug.current == $slug
 			&& ${IN_LANGUAGE}
-		][0]{
+		] | ${PREFER_LANGUAGE}[0]{
 			...,
 			body[]{
 				...,

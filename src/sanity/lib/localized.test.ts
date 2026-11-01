@@ -9,6 +9,7 @@ vi.hoisted(() => {
 import {
   IN_LANGUAGE,
   LOCALIZED_FIELDS,
+  PREFER_LANGUAGE,
   localizedRef,
   localizedRefs,
   SITE,
@@ -86,6 +87,15 @@ describe('IN_LANGUAGE', () => {
     expect(await find('services', 'de')).toEqual(['services-de'])
     expect(await find('services', 'en')).toEqual(['services-en'])
     expect(await find('about', 'de')).toEqual(['about-en'])
+  })
+
+  it('prefers `$lang` when an unlinked copy shares the slug', async () => {
+    const docs = [page('faq-en', 'faq', 'en'), page('faq-de', 'faq', 'de')]
+    const find = (lang: string) =>
+      query(`*[_type == 'page' && ${IN_LANGUAGE}] | ${PREFER_LANGUAGE}[0]._id`, lang, docs)
+
+    expect(await find('de')).toBe('faq-de')
+    expect(await find('en')).toBe('faq-en')
   })
 })
 

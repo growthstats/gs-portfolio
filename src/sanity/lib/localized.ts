@@ -21,12 +21,16 @@ const translationOf = (id: string) => groq`${translationsOf(id)}[_key == $lang][
 
 /**
  * Filter: the document is in `$lang`, or it is English and has no `$lang`
- * translation. Keeps exactly one document per translation group.
+ * translation. Keeps one document per translation group; an unlinked German
+ * copy of an English document passes too, so single lookups add {@link PREFER_LANGUAGE}.
  */
 export const IN_LANGUAGE = groq`(
 	${LANGUAGE} == $lang
 	|| (${LANGUAGE} == '${DEFAULT_LANG}' && !defined(${translationOf('^._id')}))
 )`
+
+/** Pipe: sorts `$lang` documents first. */
+export const PREFER_LANGUAGE = groq`order(select(${LANGUAGE} == $lang => 0, 1))`
 
 /**
  * Site settings in `$lang`: `site-<lang>` when it exists, else the English

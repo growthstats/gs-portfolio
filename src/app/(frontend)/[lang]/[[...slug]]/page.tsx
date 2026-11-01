@@ -9,6 +9,7 @@ import {
   IN_LANGUAGE,
   LANGUAGE,
   LOCALIZED_FIELDS,
+  PREFER_LANGUAGE,
   withTranslationLinks,
   type LocalizedResult,
 } from '@/sanity/lib/localized'
@@ -55,7 +56,7 @@ const fetchPage = cache(async (lang: Lang, slug: string) => {
 			_type == 'page'
 			&& metadata.slug.current == $slug
 			&& ${IN_LANGUAGE}
-		][0]{
+		] | ${PREFER_LANGUAGE}[0]{
 			...,
 			'modules': ${withGlobalModules(`modules[]{ ${MODULES_QUERY} }`, GLOBAL_MODULE_PATH_QUERY)},
 			metadata {
