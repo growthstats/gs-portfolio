@@ -1,6 +1,7 @@
 import { defineField, defineType } from 'sanity'
 import { CharacterCount } from 'sanitypress-utils'
 import PreviewOG from '@/sanity/ui/PreviewOG'
+import { isUniquePerLanguage } from '../utils/language'
 
 export default defineType({
   name: 'metadata',
@@ -15,6 +16,7 @@ export default defineType({
       options: {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         source: (doc: any) => doc.title || doc.metadata.title,
+        isUnique: isUniquePerLanguage,
       },
       validation: (Rule) => Rule.required(),
     }),
