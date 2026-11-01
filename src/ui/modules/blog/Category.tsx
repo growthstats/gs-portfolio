@@ -1,7 +1,7 @@
-import Link from 'next/link'
-import { BLOG_DIR } from '@/lib/env'
 import { cn } from '@/lib/utils'
 import { Badge } from '@/components/ui/badge'
+import LocalizedLink from '@/ui/LocalizedLink'
+import { filterHref } from './filterHref'
 
 export default function Category({
   value,
@@ -19,13 +19,7 @@ export default function Category({
 
   return linked ? (
     <Badge variant={'secondary'}>
-      <Link
-        href={{
-          pathname: `/${BLOG_DIR}`,
-          query: { category: value?.slug.current },
-        }}
-        {...props}
-      />
+      <LocalizedLink href={filterHref('category', value?.slug.current)} {...props} />
     </Badge>
   ) : (
     <div {...props} />
