@@ -26,6 +26,7 @@ type SocialProps = ComponentProps<'div'> & {
 }
 
 export default async function Social({ lang, className, shareUrl, shareText }: SocialProps) {
+  // The links are the same in every language, so they come from the English `site`.
   const { social } = await getSite()
   const { common } = getDictionary(lang)
 
