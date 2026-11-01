@@ -40,6 +40,11 @@ Never run `gh auth switch`, and never use the work account.
 2. Only touch the files and areas the issue's **Scope** section allows. If you need a file listed under **Do not touch**, or a change outside the issue: **Stop** and comment on the issue saying what's needed and why.
 3. Add or update Vitest tests for any pure logic you write.
 4. Commit in small logical steps (Conventional Commits). No attribution trailers.
+5. **Writes to the Sanity `production` dataset reach the live site.** It runs `main`'s code, which is older than `develop`'s, against the same dataset. A backfill, a script run, new references or new drafts all count as writes, even when nothing is published. Before writing:
+   - Find the queries on `main` that read the types you're changing (`git grep <type> origin/main -- src`) and check they cope with the new data. Unpublished drafts resolve to `null` through references in the published perspective.
+   - Get the user's OK, after a `--dry-run` where the tool has one.
+
+   After writing, run `scripts/agent/smoke-prod.sh`. If it fails, undo the write, then **Stop**. See `docs/incidents/2026-11-01-production-500.md`.
 
 ## 5. Check locally
 

@@ -1,0 +1,40 @@
+name: Uptime
+
+# Opens an issue when the live site stops answering, and comments on it while
+# it stays down. Scheduled runs only happen on the default branch (main).
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: uptime
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  uptime:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the live site
+        id: smoke
+        run: scripts/agent/smoke-prod.sh | tee smoke.txt
+
+      - name: Report it on an issue
+        if: failure() && steps.smoke.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title='Production is down'
+          body=$(printf '@AtharvaCM the uptime check failed.\n\n```\n%s\n```\n\nRun: %s\n\nSee docs/incidents/ for past causes.' "$(cat smoke.txt)" "$RUN_URL")
+          open=$(gh issue list --state open --search "in:title \"$title\"" --json number -q '.[0].number')
+          if [[ -n $open ]]; then
+            gh issue comment "$open" --body "$body"
+          else
+            gh issue create --title "$title" --label bug --body "$body"
+          fi
