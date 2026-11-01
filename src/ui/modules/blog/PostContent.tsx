@@ -9,7 +9,8 @@ import { cn } from '@/lib/utils'
 import css from './PostContent.module.css'
 import { Img } from '@/ui/Img'
 import Social from '@/ui/Social'
-import { BASE_URL, BLOG_DIR } from '@/lib/env'
+import { BASE_URL } from '@/lib/env'
+import resolveUrl from '@/lib/resolveUrl'
 import Faq from '@/ui/modules/Faq'
 import type { Lang } from '@/lib/i18n'
 
@@ -22,10 +23,9 @@ export default function PostContent({
 
   const showTOC = !post.hideTableOfContents || !!post.headings?.length
   const displayTitle = post.title || post.metadata.title
-  const postSlug = post.metadata?.slug?.current
-  const blogPath = postSlug ? `/${BLOG_DIR}/${postSlug}` : ''
-  const localizedPath = post.language ? `/${post.language}${blogPath}` : blogPath
-  const shareUrl = localizedPath ? `${BASE_URL}${localizedPath}` : BASE_URL
+  const shareUrl = post.metadata?.slug?.current
+    ? BASE_URL + resolveUrl(post, { base: false, language: lang })
+    : BASE_URL
 
   return (
     <article {...moduleProps(props)}>
