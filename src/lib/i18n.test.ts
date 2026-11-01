@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   isEnabledLanguage,
   isSupportedLanguage,
+  localizeHref,
   localizePath,
   parseEnabledLanguages,
   parseLangFromPath,
@@ -67,6 +68,27 @@ describe('localizePath', () => {
     expect(localizePath('/services', 'de')).toBe('/de/services')
     expect(localizePath('/blog/a-post', 'de')).toBe('/de/blog/a-post')
     expect(localizePath('/', 'de')).toBe('/de')
+  })
+})
+
+describe('localizeHref', () => {
+  it('leaves English unprefixed', () => {
+    expect(localizeHref('/services', 'en')).toBe('/services')
+    expect(localizeHref('/?a=1')).toBe('/?a=1')
+  })
+
+  it('prefixes the path and keeps the query or hash', () => {
+    expect(localizeHref('/services', 'de')).toBe('/de/services')
+    expect(localizeHref('/services#faq', 'de')).toBe('/de/services#faq')
+    expect(localizeHref('/?a=1#b', 'de')).toBe('/de?a=1#b')
+    expect(localizeHref('/#top', 'de')).toBe('/de#top')
+  })
+
+  it('leaves non-path hrefs alone', () => {
+    expect(localizeHref('https://example.com/services', 'de')).toBe('https://example.com/services')
+    expect(localizeHref('//cdn.example.com/a', 'de')).toBe('//cdn.example.com/a')
+    expect(localizeHref('mailto:hi@example.com', 'de')).toBe('mailto:hi@example.com')
+    expect(localizeHref('#top', 'de')).toBe('#top')
   })
 })
 
