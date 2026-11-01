@@ -84,10 +84,11 @@ Do not rely on a Vercel preview; previews are off for feature branches.
 ## 10. Merge
 
 1. Once every check is green and the PR is mergeable, merge with `scripts/agent/merge-pr.sh <pr>`.
+   - Run it exactly like that, as its own Bash call: no `GH_TOKEN=` prefix (the script sets it), no `bash` in front, no pipe, no `&&` or `;`. The permission rule only matches that exact shape; anything else is blocked as a merge without review.
    - It is the only merge command allowed without a prompt. It refuses a PR that doesn't target `develop`, isn't mergeable or has a check that isn't green, and merges only the commit the checks ran on.
    - Don't call `gh pr merge` yourself, and never pass `--auto`; in this repo it merges instantly.
    - Never merge into `main`. Releases are done by a human.
-2. Confirm the issue closed. If it didn't, close it with a comment linking the PR.
+2. Close the issue by hand with a comment linking the PR. Closing keywords only fire on merges into `main`, so a merge into `develop` never closes it.
 
 ## 11. Log
 
