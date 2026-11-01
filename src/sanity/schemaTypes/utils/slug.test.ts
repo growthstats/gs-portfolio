@@ -1,14 +1,14 @@
 import { describe, expect, it } from 'vitest'
 import type { SlugValue, ValidationContext } from 'sanity'
-import { noEdgeSlashes } from './slug'
+import { noEmptySegments } from './slug'
 
 const validate = (current?: string) =>
-  noEdgeSlashes(
+  noEmptySegments(
     current === undefined ? undefined : ({ _type: 'slug', current } as SlugValue),
     {} as ValidationContext,
   )
 
-describe('noEdgeSlashes', () => {
+describe('noEmptySegments', () => {
   it('accepts plain and nested slugs', () => {
     expect(validate('technical-seo')).toBe(true)
     expect(validate('services/seo')).toBe(true)
@@ -20,9 +20,8 @@ describe('noEdgeSlashes', () => {
     expect(validate('')).toBe(true)
   })
 
-  it('rejects a trailing or leading slash', () => {
-    expect(validate('technical-seo/')).toContain('Remove the "/"')
-    expect(validate('/technical-seo')).toContain('Remove the "/"')
-    expect(validate('/')).toContain('Remove the "/"')
+  it('rejects a leading, trailing or double slash', () => {
+    for (const slug of ['technical-seo/', '/technical-seo', '/', 'services//seo'])
+      expect(validate(slug)).toContain('Remove the extra "/"')
   })
 })

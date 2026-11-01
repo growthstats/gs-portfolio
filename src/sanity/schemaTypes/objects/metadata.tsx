@@ -2,7 +2,7 @@ import { defineField, defineType } from 'sanity'
 import { CharacterCount } from 'sanitypress-utils'
 import PreviewOG from '@/sanity/ui/PreviewOG'
 import { isUniquePerLanguage } from '../utils/language'
-import { noEdgeSlashes } from '../utils/slug'
+import { noEmptySegments } from '../utils/slug'
 
 export default defineType({
   name: 'metadata',
@@ -19,7 +19,7 @@ export default defineType({
         source: (doc: any) => doc.title || doc.metadata.title,
         isUnique: isUniquePerLanguage,
       },
-      validation: (Rule) => Rule.required().custom(noEdgeSlashes),
+      validation: (Rule) => Rule.required().custom(noEmptySegments),
     }),
     defineField({
       name: 'title',
