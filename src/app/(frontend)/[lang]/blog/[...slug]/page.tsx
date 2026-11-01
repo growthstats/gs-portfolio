@@ -34,8 +34,7 @@ export default async function Page({ params }: Props) {
 export async function generateMetadata({ params }: Props) {
   const post = await getPost(await params)
   if (!post) notFound()
-  // `processMetadata` doesn't read the new `translations` shape yet (#68).
-  return processMetadata({ ...post, translations: undefined })
+  return processMetadata(post)
 }
 
 export async function generateStaticParams({ params: { lang } }: { params: { lang: Lang } }) {
