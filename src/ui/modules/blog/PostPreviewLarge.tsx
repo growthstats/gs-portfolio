@@ -1,3 +1,5 @@
+'use client'
+
 import Link from 'next/link'
 
 import resolveUrl from '@/lib/resolveUrl'
@@ -7,8 +9,10 @@ import { Img } from '@/ui/Img'
 
 import Authors from './Authors'
 import Categories from './Categories'
+import { useDictionary } from '@/i18n/DictionaryProvider'
 
 export default function PostPreviewLarge({ post }: Readonly<{ post: Sanity.BlogPost }>) {
+  const { blog } = useDictionary()
   if (!post) return null
   const displayTitle = post.title || post.metadata.title
 
@@ -26,7 +30,7 @@ export default function PostPreviewLarge({ post }: Readonly<{ post: Sanity.BlogP
 
           {post.featured && (
             <span className="action absolute top-0 right-4 rounded-t-none py-1 text-xs shadow-md">
-              Featured
+              {blog.featured}
             </span>
           )}
         </figure>

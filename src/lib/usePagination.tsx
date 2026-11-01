@@ -9,6 +9,7 @@ type PaginationProps = React.ComponentProps<'div'> &
     nextClassName: string
     prev: React.ReactNode
     next: React.ReactNode
+    of: React.ReactNode
     hidePage: boolean
     onClick: () => void
   }>
@@ -39,6 +40,7 @@ export function usePagination<T>({
     nextClassName,
     prev = 'Prev',
     next = 'Next',
+    of = 'of',
     hidePage,
     onClick = () => {},
     ...props
@@ -60,7 +62,7 @@ export function usePagination<T>({
 
         {!hidePage && (
           <span>
-            {currentPage} of {totalPages}
+            {currentPage} {of} {totalPages}
           </span>
         )}
 

@@ -1,12 +1,14 @@
-export default function ReadTime({
-	value,
-	...props
-}: { value: number } & React.ComponentProps<'span'>) {
-	const minutes = Math.ceil(value)
+'use client'
 
-	return (
-		<span {...props}>
-			Read time: {minutes} {minutes === 1 ? 'minute' : 'minutes'}
-		</span>
-	)
+import { useDictionary, useLang } from '@/i18n/DictionaryProvider'
+import { plural } from '@/i18n/format'
+
+export default function ReadTime({
+  value,
+  ...props
+}: { value: number } & React.ComponentProps<'span'>) {
+  const lang = useLang()
+  const { blog } = useDictionary()
+
+  return <span {...props}>{plural(lang, Math.ceil(value), blog.readTime)}</span>
 }
