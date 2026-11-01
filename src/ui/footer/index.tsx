@@ -30,7 +30,7 @@ export default async function Footer({ lang }: { lang: Lang }) {
             </div>
           )}
 
-          <Social className="mb-auto -ml-2" />
+          <Social lang={lang} className="mb-auto -ml-2" />
 
           <LanguageSwitcher className="mt-4 max-w-max" />
         </div>

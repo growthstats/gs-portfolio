@@ -1,11 +1,9 @@
-'use client'
-
 import moduleProps from '@/lib/moduleProps'
 import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
 import CTA from '../CTA'
-import { useDictionary } from '@/i18n/DictionaryProvider'
-import type { Dictionary } from '@/i18n'
+import { getDictionary, type Dictionary } from '@/i18n'
+import type { Lang } from '@/lib/i18n'
 
 type Service = keyof Dictionary['brandHero']['services']
 
@@ -14,8 +12,11 @@ const SERVICE_COLUMNS: Service[][] = [
   ['uiUx', 'webDevelopment', 'emailMarketing', 'performanceMarketing'],
 ]
 
-export default function BrandHeroPlaceholder({ ...props }: Readonly<Sanity.Module>) {
-  const { brandHero } = useDictionary()
+export default function BrandHeroPlaceholder({
+  lang,
+  ...props
+}: Readonly<Sanity.Module & { lang: Lang }>) {
+  const { brandHero } = getDictionary(lang)
   const { services } = brandHero
 
   return (

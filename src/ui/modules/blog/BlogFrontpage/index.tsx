@@ -1,7 +1,7 @@
 import { groq, stegaClean } from 'next-sanity'
 import { Suspense } from 'react'
 
-import { DEFAULT_LANG, type Lang } from '@/lib/i18n'
+import type { Lang } from '@/lib/i18n'
 import { fetchSanityLive } from '@/sanity/lib/fetch'
 import { IMAGE_QUERY } from '@/sanity/lib/queries'
 import { IN_LANGUAGE, localizedRefs } from '@/sanity/lib/localized'
@@ -14,17 +14,15 @@ import sortFeaturedPosts from './sortFeaturedPosts'
 import BlogListSchema from '@/ui/BlogListSchema'
 
 export default async function BlogFrontpage({
-  lang = DEFAULT_LANG,
+  lang,
   mainPost,
   showFeaturedPostsFirst,
   itemsPerPage,
 }: Readonly<
-  Partial<{
+  { lang: Lang } & Partial<{
     mainPost: 'recent' | 'featured'
     showFeaturedPostsFirst: boolean
     itemsPerPage: number
-    /** Set by the module query. */
-    lang: Lang
   }>
 >) {
   const posts = await fetchSanityLive<Sanity.BlogPost[]>({
@@ -57,11 +55,11 @@ export default async function BlogFrontpage({
     <section className="section space-y-8">
       <BlogListSchema posts={posts} />
 
-      <PostPreviewLarge post={firstPost} />
+      <PostPreviewLarge lang={lang} post={firstPost} />
 
       <hr />
 
-      <FilterList posts={posts} />
+      <FilterList lang={lang} posts={posts} />
 
       <Suspense
         fallback={
