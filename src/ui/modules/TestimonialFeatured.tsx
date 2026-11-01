@@ -2,16 +2,21 @@ import { VscQuote, VscSurroundWith } from 'react-icons/vsc'
 import moduleProps from '@/lib/moduleProps'
 import { Img } from '@/ui/Img'
 import PortableText from '@/ui/PortableText'
+import { getDictionary } from '@/i18n'
+import { format } from '@/i18n/format'
+import type { Lang } from '@/lib/i18n'
 
 export default function TestimonialFeatured({
+  lang,
   testimonial,
   ...props
-}: Partial<{
+}: { lang: Lang } & Partial<{
   testimonial: Sanity.Testimonial
 }> &
   Sanity.Module) {
   if (!testimonial) return null
 
+  const t = getDictionary(lang).testimonial
   const { author } = testimonial
 
   return (
@@ -22,7 +27,7 @@ export default function TestimonialFeatured({
             className="size-24 shrink-0 rounded-full object-cover"
             image={author.image}
             width={192}
-            alt={[author?.name, author?.title].filter(Boolean).join(', ') || 'Author'}
+            alt={[author?.name, author?.title].filter(Boolean).join(', ') || t.authorAlt}
           />
         )}
 
@@ -45,8 +50,12 @@ export default function TestimonialFeatured({
                       href={testimonial.source}
                       target="_blank"
                       rel="noopener noreferrer"
-                      title="Source"
-                      aria-label={`Source of testimonial${author?.name ? ` by ${author.name}` : ''}`}
+                      title={t.source}
+                      aria-label={
+                        author?.name
+                          ? format(t.sourceLabelBy, { name: author.name })
+                          : t.sourceLabel
+                      }
                     >
                       <VscSurroundWith aria-hidden />
                     </a>

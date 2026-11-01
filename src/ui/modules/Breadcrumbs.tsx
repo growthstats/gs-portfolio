@@ -1,8 +1,10 @@
 import CTA from '@/ui/CTA'
 import { stegaClean } from 'next-sanity'
-import BreadcrumbsNav from './BreadcrumbsNav'
+import { getDictionary } from '@/i18n'
+import type { Lang } from '@/lib/i18n'
 
 export default async function Breadcrumbs({
+  lang,
   crumbs,
   hideCurrent,
   currentPage,
@@ -12,9 +14,11 @@ export default async function Breadcrumbs({
     hideCurrent?: boolean
     currentPage: Sanity.Page | Sanity.BlogPost
   }>
->) {
+> & { lang: Lang }) {
+  const { common } = getDictionary(lang)
+
   return (
-    <BreadcrumbsNav className="section py-4 text-sm">
+    <nav aria-label={common.breadcrumbs} className="section py-4 text-sm">
       <ol
         className="flex flex-wrap items-center gap-x-2 gap-y-1"
         itemScope
@@ -32,7 +36,7 @@ export default async function Breadcrumbs({
           {currentPage?.title || currentPage?.metadata.title}
         </Crumb>
       </ol>
-    </BreadcrumbsNav>
+    </nav>
   )
 }
 

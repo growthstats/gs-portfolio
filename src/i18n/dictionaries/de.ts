@@ -16,6 +16,8 @@ const de = {
     showMore: 'Mehr anzeigen',
     showLess: 'Weniger anzeigen',
     faq: 'Häufig gestellte Fragen',
+    close: 'Schließen',
+    shareOn: 'Auf {platform} teilen',
   },
   pagination: {
     prev: 'Zurück',
@@ -146,6 +148,20 @@ const de = {
     typeBlog: 'Blog',
     typePage: 'Seite',
     google: 'Auf Google suchen',
+  },
+  testimonial: {
+    source: 'Quelle',
+    sourceLabel: 'Quelle des Testimonials',
+    sourceLabelBy: 'Quelle des Testimonials von {name}',
+    authorAlt: 'Autor',
+  },
+  pricing: {
+    free: 'Kostenlos',
+  },
+  services: {
+    featuresHeading: 'Unsere Leistungsmerkmale',
+    featureAlt: 'Leistungsmerkmal',
+    imageAlt: 'Bild zur Leistung',
   },
   languageSwitcher: {
     label: 'Sprache',

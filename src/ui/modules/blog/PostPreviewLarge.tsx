@@ -1,5 +1,3 @@
-'use client'
-
 import Link from 'next/link'
 
 import resolveUrl from '@/lib/resolveUrl'
@@ -9,11 +7,15 @@ import { Img } from '@/ui/Img'
 
 import Authors from './Authors'
 import Categories from './Categories'
-import { useDictionary } from '@/i18n/DictionaryProvider'
+import { getDictionary } from '@/i18n'
+import type { Lang } from '@/lib/i18n'
 
-export default function PostPreviewLarge({ post }: Readonly<{ post: Sanity.BlogPost }>) {
-  const { blog } = useDictionary()
+export default function PostPreviewLarge({
+  lang,
+  post,
+}: Readonly<{ lang: Lang; post: Sanity.BlogPost }>) {
   if (!post) return null
+  const { blog } = getDictionary(lang)
   const displayTitle = post.title || post.metadata.title
 
   return (

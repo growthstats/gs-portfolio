@@ -19,12 +19,13 @@ import { cache } from 'react'
 import errors from '@/lib/errors'
 
 export default async function Page({ params }: Props) {
-  const page = await getPage(await params)
+  const { lang, slug } = await params
+  const page = await getPage({ lang, slug })
   if (!page) notFound()
   return (
     <>
       {page.isFallback && <FallbackNotice key={page._id} />}
-      <Modules modules={page.modules} page={page} />
+      <Modules lang={lang} modules={page.modules} page={page} />
     </>
   )
 }

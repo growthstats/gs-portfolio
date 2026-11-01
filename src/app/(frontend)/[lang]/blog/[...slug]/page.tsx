@@ -22,13 +22,14 @@ import { cache } from 'react'
 import errors from '@/lib/errors'
 
 export default async function Page({ params }: Props) {
-  const post = await getPost(await params)
+  const { lang, slug } = await params
+  const post = await getPost({ lang, slug })
   if (!post) notFound()
   return (
     <>
       {post.isFallback && <FallbackNotice key={post._id} />}
       <BlogPostSchema post={post} />
-      <Modules modules={post.modules} post={post} />
+      <Modules lang={lang} modules={post.modules} post={post} />
     </>
   )
 }

@@ -9,6 +9,8 @@ import type { PortableTextBlock } from 'sanity'
 
 import type { LucideIcon } from 'lucide-react'
 import PortableText from '@/ui/PortableText'
+import { getDictionary } from '@/i18n'
+import type { Lang } from '@/lib/i18n'
 
 interface ServiceItem {
   _key: string
@@ -22,14 +24,17 @@ interface ServiceItem {
 }
 
 interface Props {
+  lang: Lang
   layout?: 'text-left' | 'text-right'
   services?: ServiceItem[]
 }
 
 export default async function ServiceList({
+  lang,
   layout = 'text-left',
   services = [],
 }: Readonly<Props>) {
+  const dictionary = getDictionary(lang)
   // Properly typed icon map
   const iconMap: Record<string, LucideIcon | null> = {}
 
@@ -112,7 +117,7 @@ export default async function ServiceList({
                     width={200}
                     height={200}
                     className="relative z-0 rounded-xl object-contain max-md:h-[100px] max-md:w-[100px]"
-                    alt={s.title || 'Service image'}
+                    alt={s.title || dictionary.services.imageAlt}
                   />
                 ) : (
                   <div className="relative z-0 text-4xl opacity-60">⚙</div>

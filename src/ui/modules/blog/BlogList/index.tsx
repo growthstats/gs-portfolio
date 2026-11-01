@@ -1,7 +1,7 @@
 import { groq, stegaClean } from 'next-sanity'
 import { Suspense } from 'react'
 
-import { DEFAULT_LANG, type Lang } from '@/lib/i18n'
+import type { Lang } from '@/lib/i18n'
 import moduleProps from '@/lib/moduleProps'
 import { cn } from '@/lib/utils'
 import { fetchSanityLive } from '@/sanity/lib/fetch'
@@ -17,7 +17,7 @@ import List from './List'
 import PortableText from '@/ui/PortableText'
 
 export default async function BlogList({
-  lang = DEFAULT_LANG,
+  lang,
   pretitle,
   intro,
   ctas,
@@ -27,7 +27,7 @@ export default async function BlogList({
   displayFilters,
   filteredCategory,
   ...props
-}: Partial<{
+}: { lang: Lang } & Partial<{
   pretitle: string
   intro: Sanity.PortableText
   ctas: Sanity.CTA[]
@@ -36,8 +36,6 @@ export default async function BlogList({
   showFeaturedPostsFirst: boolean
   displayFilters: boolean
   filteredCategory: Sanity.BlogCategory
-  /** Set by the module query. */
-  lang: Lang
 }> &
   Sanity.Module) {
   const posts = await fetchSanityLive<Sanity.BlogPost[]>({
@@ -86,7 +84,7 @@ export default async function BlogList({
         </header>
       )}
 
-      {displayFilters && !filteredCategory && <FilterList posts={posts} />}
+      {displayFilters && !filteredCategory && <FilterList lang={lang} posts={posts} />}
 
       <Suspense
         fallback={
