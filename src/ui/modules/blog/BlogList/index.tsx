@@ -1,12 +1,12 @@
 import { groq, stegaClean } from 'next-sanity'
-import { cookies } from 'next/headers'
 import { Suspense } from 'react'
 
-import { DEFAULT_LANG, langCookieName } from '@/lib/i18n'
+import { DEFAULT_LANG, type Lang } from '@/lib/i18n'
 import moduleProps from '@/lib/moduleProps'
 import { cn } from '@/lib/utils'
 import { fetchSanityLive } from '@/sanity/lib/fetch'
 import { IMAGE_QUERY } from '@/sanity/lib/queries'
+import { IN_LANGUAGE, localizedRefs } from '@/sanity/lib/localized'
 import FilterList from '@/ui/modules/blog/BlogList/FilterList'
 import Pretitle from '@/ui/Pretitle'
 import CTAList from '@/ui/CTAList'
@@ -17,6 +17,7 @@ import List from './List'
 import PortableText from '@/ui/PortableText'
 
 export default async function BlogList({
+  lang = DEFAULT_LANG,
   pretitle,
   intro,
   ctas,
@@ -35,16 +36,16 @@ export default async function BlogList({
   showFeaturedPostsFirst: boolean
   displayFilters: boolean
   filteredCategory: Sanity.BlogCategory
+  /** Set by the module query. */
+  lang: Lang
 }> &
   Sanity.Module) {
-  const lang = (await cookies()).get(langCookieName)?.value ?? DEFAULT_LANG
-
   const posts = await fetchSanityLive<Sanity.BlogPost[]>({
     query: groq`
 			*[
 				_type == 'blog.post'
-				${!!lang ? `&& (!defined(language) || language == '${lang}')` : ''}
-				${!!filteredCategory ? `&& $filteredCategory in categories[]->._id` : ''}
+				&& ${IN_LANGUAGE}
+				${!!filteredCategory ? `&& $filteredCategory in ${localizedRefs('categories')}._id` : ''}
 			]|order(
 				${showFeaturedPostsFirst ? 'featured desc, ' : ''}
 				publishDate desc
@@ -52,7 +53,7 @@ export default async function BlogList({
 			${limit ? `[0...${limit}]` : ''}
 			{
 				...,
-				categories[]->,
+				'categories': ${localizedRefs('categories')},
 				authors[]->,
 				metadata{
 					...,
@@ -61,6 +62,7 @@ export default async function BlogList({
 			}
 		`,
     params: {
+      lang,
       filteredCategory: filteredCategory?._id || '',
       limit: limit ?? 0,
     },
@@ -84,7 +86,7 @@ export default async function BlogList({
         </header>
       )}
 
-      {displayFilters && !filteredCategory && <FilterList />}
+      {displayFilters && !filteredCategory && <FilterList posts={posts} />}
 
       <Suspense
         fallback={

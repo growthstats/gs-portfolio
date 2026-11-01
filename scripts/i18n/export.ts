@@ -8,7 +8,7 @@
  */
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import path from 'node:path'
-import { DEFAULT_LANGUAGE } from '@/lib/languages'
+import { DEFAULT_LANG } from '@/lib/i18n'
 import { documentType, parseOptions, published, run, target, workFile } from './cli'
 import { flatten, type Strings } from './strings'
 
@@ -20,7 +20,7 @@ run(async () => {
   const docs = await published.fetch<Doc[]>(
     `*[_type in $types && coalesce(language, $default) == $default ${ids ? '&& _id in $ids' : ''}]
       | order(_type asc, _id asc)`,
-    { types, ids: ids ?? [], default: DEFAULT_LANGUAGE },
+    { types, ids: ids ?? [], default: DEFAULT_LANG },
   )
 
   console.log(`${target}: ${docs.length} English documents`)

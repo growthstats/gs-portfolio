@@ -7,9 +7,10 @@ import CTAList from '@/ui/CTAList'
 import Toggle from './Toggle'
 import { cn } from '@/lib/utils'
 import css from './Header.module.css'
+import type { Lang } from '@/lib/i18n'
 
-export default async function Header() {
-  const { title, logo, ctas } = await getSite()
+export default async function Header({ lang }: { lang: Lang }) {
+  const { title, logo, ctas } = await getSite(lang)
 
   const logoImage = logo?.image?.dark || logo?.image?.default
 
@@ -37,7 +38,7 @@ export default async function Header() {
           </Link>
         </div>
 
-        <Navigation />
+        <Navigation lang={lang} />
 
         <CTAList
           ctas={ctas}

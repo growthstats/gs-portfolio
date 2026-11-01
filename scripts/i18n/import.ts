@@ -16,7 +16,7 @@ import path from 'node:path'
 import type { MetadataDocument } from '@sanity/document-internationalization'
 import type { Transaction } from 'next-sanity'
 import { getDraftId } from 'sanity'
-import { DEFAULT_LANGUAGE, siteDocumentId } from '@/lib/languages'
+import { DEFAULT_LANG, siteDocumentId } from '@/lib/i18n'
 import {
   client,
   documentType,
@@ -65,7 +65,7 @@ run(async () => {
   const metadataOf = new Map(
     metadata.flatMap((doc) =>
       doc.translations
-        .filter(({ _key }) => _key === DEFAULT_LANGUAGE)
+        .filter(({ _key }) => _key === DEFAULT_LANG)
         .map(({ value }) => [value._ref, doc] as const),
     ),
   )
@@ -86,7 +86,7 @@ run(async () => {
     if (
       !original ||
       original._type !== type ||
-      (original.language ?? DEFAULT_LANGUAGE) !== DEFAULT_LANGUAGE
+      (original.language ?? DEFAULT_LANG) !== DEFAULT_LANG
     ) {
       console.warn(`  skip  ${label}: no published English ${type} with this id`)
       continue
@@ -147,7 +147,7 @@ function link(
     existing,
   }: { id: string; type: string; lang: string; translationId: string; existing?: MetadataDocument },
 ) {
-  const source = translationReference(DEFAULT_LANGUAGE, id, type)
+  const source = translationReference(DEFAULT_LANG, id, type)
   const metadataId = existing?._id ?? randomUUID()
   if (!existing) tx.createIfNotExists(metadataDocument(metadataId, type, source))
   tx.patch(metadataId, (patch) =>
@@ -188,7 +188,7 @@ async function translatedReferences(metadata: MetadataDocument[], lang: string) 
   for (const { schemaTypes, translations } of metadata) {
     const [type] = schemaTypes
     if (!REMAPPED_TYPES.includes(type)) continue
-    const source = translations.find(({ _key }) => _key === DEFAULT_LANGUAGE)?.value._ref
+    const source = translations.find(({ _key }) => _key === DEFAULT_LANG)?.value._ref
     const translation = translations.find(({ _key }) => _key === lang)?.value._ref
     if (source && translation) translated.set(source, { id: translation, type, published: false })
   }

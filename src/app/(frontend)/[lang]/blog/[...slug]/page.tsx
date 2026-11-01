@@ -6,8 +6,18 @@ import { client } from '@/sanity/lib/client'
 import { fetchSanityLive } from '@/sanity/lib/fetch'
 import { groq } from 'next-sanity'
 import { BLOG_DIR } from '@/lib/env'
-import { IMAGE_QUERY, MODULES_QUERY, TRANSLATIONS_QUERY } from '@/sanity/lib/queries'
-import type { Lang } from '@/lib/i18n'
+import { IMAGE_QUERY, withGlobalModules } from '@/sanity/lib/queries'
+import {
+  IN_LANGUAGE,
+  LANGUAGE,
+  LOCALIZED_FIELDS,
+  PREFER_LANGUAGE,
+  localizedRefs,
+  withTranslationLinks,
+  type LocalizedResult,
+} from '@/sanity/lib/localized'
+import { DEFAULT_LANG, type Lang } from '@/lib/i18n'
+import { cache } from 'react'
 import errors from '@/lib/errors'
 
 export default async function Page({ params }: Props) {
@@ -24,32 +34,44 @@ export default async function Page({ params }: Props) {
 export async function generateMetadata({ params }: Props) {
   const post = await getPost(await params)
   if (!post) notFound()
-  return processMetadata(post)
+  // `processMetadata` doesn't read the new `translations` shape yet (#68).
+  return processMetadata({ ...post, translations: undefined })
 }
 
-export async function generateStaticParams() {
+export async function generateStaticParams({ params: { lang } }: { params: { lang: Lang } }) {
+  // Each language's own documents, plus the English ones it renders as fallbacks.
   const slugs = await client.fetch<string[]>(
-    groq`*[_type == 'blog.post' && defined(metadata.slug.current)].metadata.slug.current`,
+    groq`array::unique(*[
+			_type == 'blog.post'
+			&& defined(metadata.slug.current)
+			&& ${LANGUAGE} in [$lang, '${DEFAULT_LANG}']
+		].metadata.slug.current)`,
+    { lang },
   )
 
   return slugs.map((slug) => ({ slug: slug.split('/') }))
 }
 
-// `lang` is not used yet: every language gets the English post until #65.
-async function getPost(params: Params) {
+function getPost({ lang, slug }: Params) {
+  return fetchPost(lang, slug.join('/'))
+}
+
+// Keyed by strings so `Page` and `generateMetadata` share one fetch.
+const fetchPost = cache(async (lang: Lang, slug: string) => {
   const blogTemplateExists = await fetchSanityLive<boolean>({
     query: groq`count(*[_type == 'global-module' && path == '${BLOG_DIR}/']) > 0`,
   })
 
   if (!blogTemplateExists) throw new Error(errors.missingBlogTemplate)
 
-  const slug = params.slug.join('/')
-
-  return await fetchSanityLive<Sanity.BlogPost & { modules: Sanity.Module[] }>({
+  const post = await fetchSanityLive<
+    LocalizedResult<Sanity.BlogPost & { modules: Sanity.Module[] }>
+  >({
     query: groq`*[
 			_type == 'blog.post'
 			&& metadata.slug.current == $slug
-		][0]{
+			&& ${IN_LANGUAGE}
+		] | ${PREFER_LANGUAGE}[0]{
 			...,
 			body[]{
 				...,
@@ -63,27 +85,20 @@ async function getPost(params: Params) {
 				style,
 				'text': pt::text(@)
 			},
-			categories[]->,
+			'categories': ${localizedRefs('categories')},
 			authors[]->,
 			metadata {
 				...,
 				'ogimage': image.asset->url + '?w=1200'
 			},
-			'modules': (
-				// global modules (before)
-				*[_type == 'global-module' && path == '*'].before[]{ ${MODULES_QUERY} }
-				// path modules (before)
-				+ *[_type == 'global-module' && path == '${BLOG_DIR}/'].before[]{ ${MODULES_QUERY} }
-				// path modules (after)
-				+ *[_type == 'global-module' && path == '${BLOG_DIR}/'].after[]{ ${MODULES_QUERY} }
-				// global modules (after)
-				+ *[_type == 'global-module' && path == '*'].after[]{ ${MODULES_QUERY} }
-			),
-			${TRANSLATIONS_QUERY},
+			'modules': ${withGlobalModules('[]', `path == '${BLOG_DIR}/'`)},
+			${LOCALIZED_FIELDS}
 		}`,
-    params: { slug },
+    params: { lang, slug },
   })
-}
+
+  return post && withTranslationLinks(post)
+})
 
 type Params = { lang: Lang; slug: string[] }
 

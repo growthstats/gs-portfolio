@@ -1,18 +1,17 @@
-import { fetchSanityLive } from '@/sanity/lib/fetch'
-import { groq } from 'next-sanity'
 import { Suspense } from 'react'
 import Filter from './Filter'
 import FilterGroup from './FilterGroup'
 
-export default async function FilterList() {
-  const categories = await fetchSanityLive<Sanity.BlogCategory[]>({
-    query: groq`*[
-      _type == 'blog.category' &&
-      count(*[_type == 'blog.post' && references(^._id)]) > 0
-    ]|order(title)`,
-  })
-
-  if (!categories) return null
+/** Filters by the categories the listed posts show. */
+export default function FilterList({ posts }: { posts: Sanity.BlogPost[] }) {
+  const categories = [
+    ...new Map(
+      posts
+        .flatMap((post) => post.categories ?? [])
+        .filter(Boolean)
+        .map((category) => [category._id, category]),
+    ).values(),
+  ].sort((a, b) => a.title.localeCompare(b.title))
 
   return (
     <FilterGroup>

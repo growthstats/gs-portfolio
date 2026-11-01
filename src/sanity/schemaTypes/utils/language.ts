@@ -4,7 +4,7 @@ import {
   type ReferenceFilterResolver,
   type SlugIsUniqueValidator,
 } from 'sanity'
-import { DEFAULT_LANGUAGE } from '@/lib/languages'
+import { DEFAULT_LANG } from '@/lib/i18n'
 
 /** Document types with a translation per language (ADR 0002). */
 export const translatableTypes = [
@@ -29,8 +29,8 @@ export const languageField = defineField({
 export const sameLanguage: ReferenceFilterResolver = ({ document }) => ({
   filter: 'coalesce(language, $defaultLanguage) == $language',
   params: {
-    language: (document.language as string | undefined) ?? DEFAULT_LANGUAGE,
-    defaultLanguage: DEFAULT_LANGUAGE,
+    language: (document.language as string | undefined) ?? DEFAULT_LANG,
+    defaultLanguage: DEFAULT_LANG,
   },
 })
 
@@ -48,7 +48,7 @@ export const isUniquePerLanguage: SlugIsUniqueValidator = (slug, { document, pat
   if (!document || !path) throw new Error('Slug validation needs `document` and `path`.')
 
   const slugPath = [...path, 'current'].join('.')
-  const language = (document.language as string | undefined) ?? DEFAULT_LANGUAGE
+  const language = (document.language as string | undefined) ?? DEFAULT_LANG
 
   return getClient({ apiVersion: '2025-02-19' })
     .withConfig({ perspective: 'raw' })
@@ -64,7 +64,7 @@ export const isUniquePerLanguage: SlugIsUniqueValidator = (slug, { document, pat
         published: getPublishedId(document._id),
         slug,
         language,
-        defaultLanguage: DEFAULT_LANGUAGE,
+        defaultLanguage: DEFAULT_LANG,
       },
       { tag: 'validation.slug-is-unique-per-language' },
     )
