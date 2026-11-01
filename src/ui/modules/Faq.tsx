@@ -21,6 +21,7 @@ import type {
 import { toPlainText } from '@portabletext/toolkit'
 import type { PortableTextLink } from '@portabletext/types'
 import PortableText from '@/ui/PortableText'
+import { useDictionary } from '@/i18n/DictionaryProvider'
 
 // PortableText components override specifically for FAQ answers
 const portableComponents: PortableTextComponents = {
@@ -68,6 +69,7 @@ export default function Faq({
   accessibleAccordion = true,
   generateSchema = true,
 }: Readonly<FaqProps>) {
+  const { common } = useDictionary()
   const [openItemKey, setOpenItemKey] = useState<string | null>(
     () => items.find((item) => item.open)?._key ?? null,
   )
@@ -98,7 +100,7 @@ export default function Faq({
       : null
 
   return (
-    <div className="py-8" aria-label="Frequently Asked Questions">
+    <div className="py-8" aria-label={common.faq}>
       {schemaMarkup && (
         <Script
           strategy="afterInteractive"
@@ -157,7 +159,7 @@ export default function Faq({
             collapsible
             value={openItemKey ?? undefined}
             onValueChange={(val: string | undefined) => setOpenItemKey(val ?? null)}
-            aria-label={accessibleAccordion ? 'Frequently Asked Questions' : undefined}
+            aria-label={accessibleAccordion ? common.faq : undefined}
           >
             {items.map((item) => {
               const panelId = `faq-panel-${item._key}`

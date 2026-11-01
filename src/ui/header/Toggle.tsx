@@ -1,9 +1,15 @@
+'use client'
+
+import { useDictionary } from '@/i18n/DictionaryProvider'
+
 export default function Toggle() {
+  const { common } = useDictionary()
+
   return (
     <label className="[grid-area:toggle] md:hidden">
-      <input id="header-toggle" type="checkbox" hidden aria-label="Toggle navigation" />
+      <input id="header-toggle" type="checkbox" hidden aria-label={common.toggleNavigation} />
 
-      <span className="sr-only">Toggle navigation</span>
+      <span className="sr-only">{common.toggleNavigation}</span>
       <span
         aria-hidden="true"
         className="text-ink inline-flex h-10 w-10 items-center justify-center rounded-md"

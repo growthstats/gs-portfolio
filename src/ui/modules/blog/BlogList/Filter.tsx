@@ -5,14 +5,17 @@ import { usePageState } from '@/lib/usePagination'
 import Category from '../Category'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
+import { useDictionary } from '@/i18n/DictionaryProvider'
 
 export default function Filter({
   label,
   value = 'All',
 }: Readonly<{
-  label: string
+  /** Ignored for the "All" filter, which uses the dictionary's label. */
+  label?: string
   value?: 'All' | string
 }>) {
+  const { blog } = useDictionary()
   const { category, setCategory } = useBlogFilters()
   const { setPage } = usePageState()
 
@@ -30,7 +33,7 @@ export default function Filter({
         setPage(1)
       }}
     >
-      <Category label={label} />
+      <Category label={value === 'All' ? blog.allCategories : label} />
     </Button>
   )
 }

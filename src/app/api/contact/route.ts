@@ -1,9 +1,14 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
-import { contactFormSchema, HONEYPOT_FIELD, type ContactFormValues } from '@/lib/contactForm'
+import { createContactFormSchema, HONEYPOT_FIELD, type ContactFormValues } from '@/lib/contactForm'
+import { DEFAULT_LANG } from '@/lib/i18n'
+import { getDictionary } from '@/i18n'
 
 const { RESEND_API_KEY, CONTACT_FROM_EMAIL, CONTACT_TO_EMAIL, CONTACT_APPS_SCRIPT_URL } =
   process.env
+
+// The form validates before it posts, so these messages never reach a visitor; the default language will do.
+const contactFormSchema = createContactFormSchema(getDictionary(DEFAULT_LANG).contactForm.errors)
 
 export async function POST(request: Request) {
   if (!RESEND_API_KEY || !CONTACT_FROM_EMAIL || !CONTACT_TO_EMAIL || !CONTACT_APPS_SCRIPT_URL) {

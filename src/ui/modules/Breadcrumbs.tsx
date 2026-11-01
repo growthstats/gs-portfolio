@@ -1,5 +1,6 @@
 import CTA from '@/ui/CTA'
 import { stegaClean } from 'next-sanity'
+import BreadcrumbsNav from './BreadcrumbsNav'
 
 export default async function Breadcrumbs({
   crumbs,
@@ -13,7 +14,7 @@ export default async function Breadcrumbs({
   }>
 >) {
   return (
-    <nav className="section py-4 text-sm">
+    <BreadcrumbsNav className="section py-4 text-sm">
       <ol
         className="flex flex-wrap items-center gap-x-2 gap-y-1"
         itemScope
@@ -31,7 +32,7 @@ export default async function Breadcrumbs({
           {currentPage?.title || currentPage?.metadata.title}
         </Crumb>
       </ol>
-    </nav>
+    </BreadcrumbsNav>
   )
 }
 
