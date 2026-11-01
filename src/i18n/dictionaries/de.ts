@@ -147,6 +147,13 @@ const de = {
     typePage: 'Seite',
     google: 'Auf Google suchen',
   },
+  languageSwitcher: {
+    label: 'Sprache',
+  },
+  fallbackNotice: {
+    message: 'Diese Seite ist noch nicht auf Deutsch verfügbar. Sie sehen die englische Version.',
+    dismiss: 'Hinweis schließen',
+  },
 } satisfies Dictionary
 
 export default de

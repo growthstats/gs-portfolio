@@ -144,6 +144,13 @@ const en = {
     typePage: 'Page',
     google: 'Search on Google',
   },
+  languageSwitcher: {
+    label: 'Language',
+  },
+  fallbackNotice: {
+    message: `This page hasn't been translated into English yet.`,
+    dismiss: 'Dismiss',
+  },
 }
 
 export type Dictionary = typeof en

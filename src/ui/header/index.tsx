@@ -5,6 +5,7 @@ import { Img } from '@/ui/Img'
 import Navigation from './Navigation'
 import CTAList from '@/ui/CTAList'
 import Toggle from './Toggle'
+import LanguageSwitcher from '@/ui/LanguageSwitcher'
 import { cn } from '@/lib/utils'
 import css from './Header.module.css'
 import type { Lang } from '@/lib/i18n'
@@ -44,6 +45,8 @@ export default async function Header({ lang }: { lang: Lang }) {
           ctas={ctas}
           className="max-md:header-closed:hidden [grid-area:ctas] max-md:*:w-full md:ms-auto"
         />
+
+        <LanguageSwitcher className="max-md:header-closed:hidden [grid-area:lang] max-md:my-4 max-md:justify-center" />
 
         <Toggle />
       </div>
