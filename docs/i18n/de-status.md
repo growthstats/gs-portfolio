@@ -68,17 +68,17 @@ Each draft is linked to its English original by a `translation.metadata` documen
 
 ## Not translated, and why
 
-| Where                                        | What shows in English on `/de`                                                                              | Why                                                                                   | Follow-up                                                                               |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
-| Homepage hero                                | "Get Discovered / By Search Engines & AI / Build the technical and semantic signals that drive visibility." | Stored as raw HTML in a `custom-html` code block, which the pipeline skips by design. | To file: move the hero text into rich text, or translate the HTML by hand in the Studio |
-| Every service page                           | "Our Features" heading                                                                                      | Hard-coded in `src/ui/modules/ServiceDetails.tsx`                                     | To add to #87                                                                           |
-| Blog posts                                   | "Table of Contents"                                                                                         | Hard-coded in `src/ui/modules/RichtextModule/TableOfContents.tsx`                     | To add to #87                                                                           |
-| `/de/blog`, homepage blog teaser, every post | Post titles and bodies                                                                                      | Blog posts are #71                                                                    | #71                                                                                     |
-| Menus, CTAs, blog cards                      | Links go to English URLs (`/blog/...`, not `/de/blog/...`)                                                  | Internal links aren't localized yet                                                   | #88                                                                                     |
+| Where                                        | What shows in English on `/de`                                                                              | Why                                                                                   | Follow-up |
+| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | --------- |
+| Homepage hero                                | "Get Discovered / By Search Engines & AI / Build the technical and semantic signals that drive visibility." | Stored as raw HTML in a `custom-html` code block, which the pipeline skips by design. | #94       |
+| Every service page                           | "Our Features" heading                                                                                      | Hard-coded in `src/ui/modules/ServiceDetails.tsx`                                     | PR #90    |
+| Blog posts                                   | "Table of Contents"                                                                                         | Hard-coded in `src/ui/modules/RichtextModule/TableOfContents.tsx`                     | #87       |
+| `/de/blog`, homepage blog teaser, every post | Post titles and bodies                                                                                      | Blog posts are #71                                                                    | #71       |
+| Menus, CTAs, blog cards                      | Links go to English URLs (`/blog/...`, not `/de/blog/...`)                                                  | Internal links aren't localized yet                                                   | #88       |
 
 ## Layout issues found
 
 - `/de/search-engine-optimization` at 375px: the H1 "Suchmaschinenoptimierung" is wider than the screen (393px > 375px), so the page scrolls sideways.
 - `/de` at 375px: the service card title "Weblösungen" overflows its box by 13px.
 
-Both are single long German words that don't wrap or hyphenate. Fix in CSS (`hyphens: auto` with `lang="de"`, or `overflow-wrap` on headings); follow-up issue to file. Desktop is fine on every page.
+Both are single long German words that don't wrap or hyphenate. Fix in CSS (`hyphens: auto` with `lang="de"`, or `overflow-wrap` on headings), tracked in #93. Desktop is fine on every page.
