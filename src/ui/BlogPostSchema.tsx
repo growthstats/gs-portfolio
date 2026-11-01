@@ -1,10 +1,13 @@
 import resolveUrl from '@/lib/resolveUrl'
 import { BASE_URL } from '@/lib/env'
+import { documentLanguage } from '@/lib/seo'
 import { stegaClean } from 'next-sanity'
 import JsonLd from './JsonLd'
 
 export default function BlogPostSchema({ post }: { post: Sanity.BlogPost }) {
-  const url = resolveUrl(post)
+  // A fallback is the English post, so its URL and language are English.
+  const inLanguage = documentLanguage(post)
+  const url = resolveUrl(post, { language: inLanguage })
   const headline = stegaClean(post.metadata?.title || post.title)
   const description = stegaClean(post.metadata?.description)
   const image = post.metadata?.ogimage
@@ -20,6 +23,7 @@ export default function BlogPostSchema({ post }: { post: Sanity.BlogPost }) {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline,
+    inLanguage,
     ...(description && { description }),
     ...(image && { image }),
     ...(datePublished && { datePublished }),

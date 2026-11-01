@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation'
 import Modules from '@/ui/modules'
+import WebPageSchema from '@/ui/WebPageSchema'
 import processMetadata from '@/lib/processMetadata'
 import { client } from '@/sanity/lib/client'
 import { groq } from 'next-sanity'
@@ -20,14 +21,18 @@ import errors from '@/lib/errors'
 export default async function Page({ params }: Props) {
   const page = await getPage(await params)
   if (!page) notFound()
-  return <Modules modules={page.modules} page={page} />
+  return (
+    <>
+      <WebPageSchema page={page} />
+      <Modules modules={page.modules} page={page} />
+    </>
+  )
 }
 
 export async function generateMetadata({ params }: Props) {
   const page = await getPage(await params)
   if (!page) notFound()
-  // `processMetadata` doesn't read the new `translations` shape yet (#68).
-  return processMetadata({ ...page, translations: undefined })
+  return processMetadata(page)
 }
 
 export async function generateStaticParams({ params: { lang } }: { params: { lang: Lang } }) {
