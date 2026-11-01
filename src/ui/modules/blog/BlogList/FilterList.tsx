@@ -1,23 +1,14 @@
-import { fetchSanityLive } from '@/sanity/lib/fetch'
-import { groq } from 'next-sanity'
 import { Suspense } from 'react'
 import Filter from './Filter'
 import { cn } from '@/lib/utils'
-import { IN_LANGUAGE, localizedRefs } from '@/sanity/lib/localized'
-import type { Lang } from '@/lib/i18n'
 
-export default async function FilterList({ lang }: { lang: Lang }) {
-  const categories = await fetchSanityLive<Sanity.BlogCategory[]>({
-    // Categories in `lang` that a listed post shows, whichever language the post references.
-    query: groq`*[
-      _type == 'blog.category'
-      && ${IN_LANGUAGE}
-      && count(*[_type == 'blog.post' && ${IN_LANGUAGE} && ^._id in ${localizedRefs('categories')}._id]) > 0
-    ]|order(title)`,
-    params: { lang },
-  })
-
-  if (!categories) return null
+/** Filters by the categories the listed posts show. */
+export default function FilterList({ posts }: { posts: Sanity.BlogPost[] }) {
+  const categories = [
+    ...new Map(
+      posts.flatMap((post) => post.categories ?? []).map((category) => [category._id, category]),
+    ).values(),
+  ].sort((a, b) => a.title.localeCompare(b.title))
 
   return (
     <fieldset>

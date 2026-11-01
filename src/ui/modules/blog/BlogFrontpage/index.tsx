@@ -61,7 +61,7 @@ export default async function BlogFrontpage({
 
       <hr />
 
-      <FilterList lang={lang} />
+      <FilterList posts={posts} />
 
       <Suspense
         fallback={

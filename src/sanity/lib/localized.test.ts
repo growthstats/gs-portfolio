@@ -11,7 +11,7 @@ import {
   LOCALIZED_FIELDS,
   localizedRef,
   localizedRefs,
-  staticSlugs,
+  SITE,
   withTranslationLinks,
 } from './localized'
 
@@ -63,8 +63,8 @@ const dataset = [
   },
 ]
 
-async function query(q: string, lang: string) {
-  return (await evaluate(parse(q), { dataset, params: { lang } })).get()
+async function query(q: string, lang: string, docs: object[] = dataset) {
+  return (await evaluate(parse(q), { dataset: docs, params: { lang } })).get()
 }
 
 describe('IN_LANGUAGE', () => {
@@ -176,19 +176,17 @@ describe('withTranslationLinks', () => {
   })
 })
 
-describe('staticSlugs', () => {
-  const docs = [
-    { slug: 'services', language: 'en' },
-    { slug: 'services', language: 'de' },
-    { slug: 'about', language: 'en' },
-    { slug: 'impressum', language: 'de' },
-  ]
+describe('SITE', () => {
+  const site = (lang: string, docs: object[]) => query(`${SITE}._id`, lang, docs)
+  const en = { _id: 'site', _type: 'site' }
+  const de = { _id: 'site-de', _type: 'site' }
 
-  it('prerenders English documents in every language, as themselves or as fallbacks', () => {
-    expect(staticSlugs(docs, 'de')).toEqual(['services', 'about', 'impressum'])
+  it('reads site-<lang> when it exists', async () => {
+    expect(await site('de', [en, de])).toBe('site-de')
   })
 
-  it('leaves out other languages’ documents', () => {
-    expect(staticSlugs(docs, 'en')).toEqual(['services', 'about'])
+  it('falls back to the English site', async () => {
+    expect(await site('de', [en])).toBe('site')
+    expect(await site('en', [en, de])).toBe('site')
   })
 })

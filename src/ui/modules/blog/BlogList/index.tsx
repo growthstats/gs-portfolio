@@ -86,7 +86,7 @@ export default async function BlogList({
         </header>
       )}
 
-      {displayFilters && !filteredCategory && <FilterList lang={lang} />}
+      {displayFilters && !filteredCategory && <FilterList posts={posts} />}
 
       <Suspense
         fallback={

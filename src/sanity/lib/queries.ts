@@ -1,9 +1,10 @@
 import { fetchSanityLive } from './fetch'
 import { groq } from 'next-sanity'
 import errors from '@/lib/errors'
-import { DEFAULT_LANG, siteDocumentId, type Lang } from '@/lib/i18n'
+import { DEFAULT_LANG, type Lang } from '@/lib/i18n'
 import { createSectionModuleQuery } from '@/sanity/queries/modules/section.groq'
-import { localizedRef, SITE } from './localized'
+import { IN_LANGUAGE, localizedRef, SITE } from './localized'
+import { cache } from 'react'
 
 export const LINK_QUERY = groq`
 	...,
@@ -211,11 +212,28 @@ export const GLOBAL_MODULE_PATH_QUERY = groq`
 `
 
 /**
+ * `modules` wrapped in the global modules in `$lang`: the site-wide ones (`path == '*'`)
+ * outermost, then those matching `pathFilter`.
+ */
+export function withGlobalModules(modules: string, pathFilter = 'false') {
+  const globalModules = (filter: string, position: 'before' | 'after') =>
+    groq`*[_type == 'global-module' && ${filter} && ${IN_LANGUAGE}].${position}[]{ ${MODULES_QUERY} }`
+
+  return groq`(
+		${globalModules(`path == '*'`, 'before')}
+		+ ${globalModules(`path != '*' && ${pathFilter}`, 'before')}
+		+ ${modules}
+		+ ${globalModules(`path != '*' && ${pathFilter}`, 'after')}
+		+ ${globalModules(`path == '*'`, 'after')}
+	)`
+}
+
+/**
  * Site settings in `lang`: `site-<lang>` when it exists, else `site` (ADR 0002).
  * Menus follow their references to the `lang` translation. Business details
  * for structured data always come from the English `site`: call it without `lang`.
  */
-export async function getSite(lang: Lang = DEFAULT_LANG) {
+export const getSite = cache(async (lang: Lang = DEFAULT_LANG) => {
   const site = await fetchSanityLive<Sanity.Site>({
     query: groq`
 			${SITE}{
@@ -227,10 +245,10 @@ export async function getSite(lang: Lang = DEFAULT_LANG) {
 				'ogimage': ogimage.asset->url
 			}
 		`,
-    params: { lang, siteId: siteDocumentId(lang) },
+    params: { lang },
   })
 
   if (!site) throw new Error(errors.missingSiteSettings)
 
   return site
-}
+})

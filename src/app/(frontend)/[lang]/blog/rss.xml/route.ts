@@ -5,7 +5,7 @@ import resolveUrl from '@/lib/resolveUrl'
 import { Feed } from 'feed'
 import { escapeHTML, toHTML } from '@portabletext/to-html'
 import { urlFor } from '@/sanity/lib/image'
-import { enabledLanguages, siteDocumentId, type Lang } from '@/lib/i18n'
+import { enabledLanguages, type Lang } from '@/lib/i18n'
 import { IN_LANGUAGE, SITE } from '@/sanity/lib/localized'
 
 export function generateStaticParams() {
@@ -38,7 +38,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ lan
 			},
 			'copyright': pt::text(${SITE}.copyright)
 		}`,
-    params: { lang, siteId: siteDocumentId(lang) },
+    params: { lang },
   })
 
   if (!blog || !posts) {
