@@ -65,7 +65,7 @@ Do not rely on a Vercel preview; previews are off for feature branches.
 
 **Studio (`/admin`) checks** need a Sanity login, which the built-in browser doesn't have and agents must not create:
 
-- Use Claude in Chrome: `list_connected_browsers`, then `select_browser` on "Browser 2", the profile signed in to Sanity. "Browser 1" isn't signed in.
+- Use Claude in Chrome: `list_connected_browsers`, then `select_browser` on the profile that is signed in to Sanity. The "Browser 1"/"Browser 2" labels change between connections, so don't go by the name: if only one browser is connected, use it; if several are, open `/admin` in each and use the one that shows the Studio rather than a login screen.
 - Run the dev server on port 3000 for these checks, not your issue port. Sanity's CORS list only allows `localhost:3000`. Only one agent can use port 3000 at a time, so stop the server as soon as the Studio check is done.
 
 ## 8. Pull request
