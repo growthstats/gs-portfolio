@@ -22,23 +22,27 @@ export default function LanguageSwitcher({ className }: { className?: string }) 
       className={cn('flex items-center gap-1 text-sm', className)}
       aria-label={languageSwitcher.label}
     >
-      {languageLinks(pathname, enabledLanguages).map(({ lang, title, href }) => (
-        <li key={lang}>
-          <a
-            className={cn(
-              'block rounded-sm px-2 py-1 uppercase',
-              lang === current ? 'font-semibold' : 'opacity-70 hover:opacity-100',
-            )}
-            href={href}
-            hrefLang={lang}
-            lang={lang}
-            aria-current={lang === current ? 'true' : undefined}
-          >
-            <span aria-hidden="true">{lang}</span>
-            <span className="sr-only">{title}</span>
-          </a>
-        </li>
-      ))}
+      {languageLinks(pathname, enabledLanguages).map(({ lang, title, href }) => {
+        const active = lang === current
+
+        return (
+          <li key={lang}>
+            <a
+              className={cn(
+                'block rounded-sm px-2 py-1 uppercase',
+                active ? 'font-semibold' : 'opacity-70 hover:opacity-100',
+              )}
+              href={href}
+              hrefLang={lang}
+              lang={lang}
+              aria-current={active ? 'true' : undefined}
+            >
+              <span aria-hidden="true">{lang}</span>
+              <span className="sr-only">{title}</span>
+            </a>
+          </li>
+        )
+      })}
     </ul>
   )
 }

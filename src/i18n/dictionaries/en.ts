@@ -148,7 +148,8 @@ const en = {
     label: 'Language',
   },
   fallbackNotice: {
-    message: `This page hasn't been translated into English yet.`,
+    // Never shown in English, the fallback language; kept for the `Dictionary` shape.
+    message: `This page hasn't been translated yet, so it's shown in English.`,
     dismiss: 'Dismiss',
   },
 }
