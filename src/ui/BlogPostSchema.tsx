@@ -1,10 +1,11 @@
-import resolveUrl from '@/lib/resolveUrl'
 import { BASE_URL } from '@/lib/env'
+import { canonicalUrl, documentLanguage } from '@/lib/seo'
 import { stegaClean } from 'next-sanity'
 import JsonLd from './JsonLd'
 
 export default function BlogPostSchema({ post }: { post: Sanity.BlogPost }) {
-  const url = resolveUrl(post)
+  const url = canonicalUrl(post)
+  const inLanguage = documentLanguage(post)
   const headline = stegaClean(post.metadata?.title || post.title)
   const description = stegaClean(post.metadata?.description)
   const image = post.metadata?.ogimage
@@ -20,6 +21,7 @@ export default function BlogPostSchema({ post }: { post: Sanity.BlogPost }) {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline,
+    inLanguage,
     ...(description && { description }),
     ...(image && { image }),
     ...(datePublished && { datePublished }),
