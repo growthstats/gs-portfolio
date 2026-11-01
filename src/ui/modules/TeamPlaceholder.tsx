@@ -1,7 +1,11 @@
 import type { ReactNode } from 'react'
-import TeamPlaceholderCards, { type TeamCardId } from './TeamPlaceholderCards'
+import Heading from '@/ui/Heading'
+import Text from '@/ui/Text'
+import { getDictionary, type Dictionary } from '@/i18n'
+import type { Lang } from '@/lib/i18n'
 
-// Icons stay in this server component so their markup isn't shipped as client JS.
+type TeamCardId = keyof Dictionary['team']['cards']
+
 const ICONS: Record<TeamCardId, ReactNode> = {
   expertise: (
     <svg
@@ -41,6 +45,39 @@ const ICONS: Record<TeamCardId, ReactNode> = {
   ),
 }
 
-export default function TeamPlaceholder({ className = '' }: Readonly<{ className?: string }>) {
-  return <TeamPlaceholderCards icons={ICONS} className={className} />
+export default function TeamPlaceholder({
+  lang,
+  className = '',
+}: Readonly<{ lang: Lang; className?: string }>) {
+  const { team } = getDictionary(lang)
+
+  return (
+    <div aria-label={team.label} className={`w-full px-4 py-2 sm:px-6 lg:px-10 ${className}`}>
+      <div className="mx-auto max-w-7xl">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-10">
+          {(Object.keys(ICONS) as TeamCardId[]).map((id) => (
+            <div
+              key={id}
+              className="flex flex-col items-center gap-2 overflow-visible rounded-3xl px-6 py-8 text-center shadow-(--shadow-card) transition-shadow duration-300"
+            >
+              <div
+                className="flex h-20 w-20 items-center justify-center rounded-2xl shadow-(--shadow-badge)"
+                aria-hidden
+              >
+                <div className="m-2 p-1 text-black">{ICONS[id]}</div>
+              </div>
+
+              <Heading as="h3" variant="h5" className="mt-3 text-center">
+                {team.cards[id].title}
+              </Heading>
+
+              <Text as="p" variant="body" className="text-ink/80 text-center">
+                {team.cards[id].description}
+              </Text>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
 }

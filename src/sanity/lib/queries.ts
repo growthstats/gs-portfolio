@@ -50,8 +50,6 @@ const MODULES_BASE_PROJECTION = `
 		...,
 		link{ ${LINK_QUERY} }
 	},
-	// the blog modules fetch their own posts, in the requested language
-	_type in ['blog-frontpage', 'blog-list'] => { 'lang': $lang },
 	_type == 'blog-list' => { 'filteredCategory': ${localizedRef('filteredCategory')} },
 	_type == 'breadcrumbs' => { crumbs[]{ ${LINK_QUERY} } },
 	_type == 'callout' => {

@@ -1,15 +1,14 @@
-'use client'
-
 import React from 'react'
 import Image from 'next/image'
 
 import { Badge } from '@/components/ui/badge'
 import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
-import { useDictionary } from '@/i18n/DictionaryProvider'
+import { getDictionary } from '@/i18n'
+import type { Lang } from '@/lib/i18n'
 
-const AboutPlaceholder = () => {
-  const { about } = useDictionary()
+const AboutPlaceholder = ({ lang }: Readonly<{ lang: Lang }>) => {
+  const { about } = getDictionary(lang)
 
   return (
     <div className="w-full py-4">
