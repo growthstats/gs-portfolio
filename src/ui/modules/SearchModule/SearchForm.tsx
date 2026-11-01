@@ -44,7 +44,7 @@ export default function SearchForm({
           className="grow outline-none"
           name="query"
           type="search"
-          placeholder={search.placeholder[PLACEHOLDERS[scope ?? 'all']]}
+          placeholder={search.placeholder[PLACEHOLDERS[scope ?? 'all'] ?? 'all']}
           defaultValue={query}
           onChange={debounce((e: React.ChangeEvent<HTMLInputElement>) =>
             handleSearch({

@@ -11,7 +11,7 @@ export default function Filter({
   label,
   value = 'All',
 }: Readonly<{
-  /** Defaults to the "All" label. */
+  /** Ignored for the "All" filter, which uses the dictionary's label. */
   label?: string
   value?: 'All' | string
 }>) {
@@ -33,7 +33,7 @@ export default function Filter({
         setPage(1)
       }}
     >
-      <Category label={label ?? blog.allCategories} />
+      <Category label={value === 'All' ? blog.allCategories : label} />
     </Button>
   )
 }

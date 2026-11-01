@@ -2,7 +2,7 @@
 
 `ContactForm` (`src/ui/modules/contactPlaceholderForm.tsx`) posts to `POST /api/contact`, which:
 
-1. Validates the payload with `contactFormSchema` (`src/lib/contactForm.ts`).
+1. Validates the payload with the schema from `createContactFormSchema` (`src/lib/contactForm.ts`), built with default-language messages; the form builds the same schema with the page language's messages.
 2. Drops bot submissions that fill the hidden `fax` honeypot field (responds `200` so bots don't adapt).
 3. In parallel:
    - **Logs** the lead to the Google Sheet through an Apps Script web app (`CONTACT_APPS_SCRIPT_URL`).
