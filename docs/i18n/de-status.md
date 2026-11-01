@@ -4,7 +4,7 @@ Draft translations for #70, made with the translation pipeline (`scripts/i18n/`,
 
 **Every German document below is a draft. Nothing is published.** A native speaker proofreads and publishes each one in the Studio (filter the document lists by `[de]`).
 
-Blog posts are not part of this batch; they are #71.
+The 10 blog posts were drafted afterwards in #71; see [Blog posts (#71)](#blog-posts-71) at the end.
 
 ## Before you proofread
 
@@ -68,13 +68,12 @@ Each draft is linked to its English original by a `translation.metadata` documen
 
 ## Not translated, and why
 
-| Where                                        | What shows in English on `/de`                                                                              | Why                                                                                   | Follow-up |
-| -------------------------------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | --------- |
-| Homepage hero                                | "Get Discovered / By Search Engines & AI / Build the technical and semantic signals that drive visibility." | Stored as raw HTML in a `custom-html` code block, which the pipeline skips by design. | #94       |
-| Every service page                           | "Our Features" heading                                                                                      | Hard-coded in `src/ui/modules/ServiceDetails.tsx`                                     | PR #90    |
-| Blog posts                                   | "Table of Contents"                                                                                         | Hard-coded in `src/ui/modules/RichtextModule/TableOfContents.tsx`                     | #87       |
-| `/de/blog`, homepage blog teaser, every post | Post titles and bodies                                                                                      | Blog posts are #71                                                                    | #71       |
-| Menus, CTAs, blog cards                      | Links go to English URLs (`/blog/...`, not `/de/blog/...`)                                                  | Internal links aren't localized yet                                                   | #88       |
+| Where                   | What shows in English on `/de`                                                                              | Why                                                                                   | Follow-up |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | --------- |
+| Homepage hero           | "Get Discovered / By Search Engines & AI / Build the technical and semantic signals that drive visibility." | Stored as raw HTML in a `custom-html` code block, which the pipeline skips by design. | #94       |
+| Every service page      | "Our Features" heading                                                                                      | Hard-coded in `src/ui/modules/ServiceDetails.tsx`                                     | PR #90    |
+| Blog posts              | "Table of Contents"                                                                                         | Hard-coded in `src/ui/modules/RichtextModule/TableOfContents.tsx`                     | #87       |
+| Menus, CTAs, blog cards | Links go to English URLs (`/blog/...`, not `/de/blog/...`)                                                  | Internal links aren't localized yet                                                   | #88       |
 
 ## Layout issues found
 
@@ -82,3 +81,60 @@ Each draft is linked to its English original by a `translation.metadata` documen
 - `/de` at 375px: the service card title "Weblösungen" overflows its box by 13px.
 
 Both are single long German words that don't wrap or hyphenate. Fix in CSS (`hyphens: auto` with `lang="de"`, or `overflow-wrap` on headings), tracked in #93. Desktop is fine on every page.
+
+## Blog posts (#71)
+
+Draft translations of all 10 blog posts, made with the same pipeline on 2026-11-01 (`npm run i18n:import -- --lang de --type blog.post`). Each draft is linked to its English post by a new `translation.metadata` document. Categories point at the German category drafts from #70. **Nothing is published.**
+
+| English post                                                                                          | German draft                                                                                                                                         |   Strings |   EN words |   DE words |
+| ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | --------: | ---------: | ---------: |
+| 5 Proven Ways to Reduce Bounce Rate and Increase Dwell Time                                           | 5 bewährte Wege, die Absprungrate zu senken und die Verweildauer zu erhöhen `drafts.9f41c080-5dae-4897-a8ef-be21368397f8`                            |       175 |      3,151 |      3,037 |
+| From Keywords to Intent: How to Optimize Your Website for Conversational AI Queries                   | Von Keywords zur Suchintention: So optimieren Sie Ihre Website für dialogorientierte KI-Anfragen `drafts.0edee32d-0d85-4e23-9938-bfce0d271d46`       |       229 |      1,739 |      1,770 |
+| How to Appear in Google AI Overviews: Step-by-Step SEO Guide for 2026                                 | So erscheinen Sie in Google AI Overviews: Schritt-für-Schritt-SEO-Leitfaden für 2026 `drafts.efabca86-093e-477d-b1c0-bb7698557e11`                   |       192 |      3,150 |      3,202 |
+| Predictive Analytics in Marketing SERP Research & AI Forecasting -Growth Stats                        | Predictive Analytics im Marketing: SERP-Recherche & KI-Prognosen – Growth Stats `drafts.5fd73ad6-74fe-439b-9333-9fd6c19a237a`                        |       307 |      2,095 |      2,183 |
+| Sitemaps and Indexing: Complete Technical SEO Guide for Faster Google Indexing                        | Sitemaps und Indexierung: Der komplette Guide für technisches SEO und schnellere Google-Indexierung `drafts.270a7c79-12af-49f4-9e0a-1a1a08bc2fa3`    |       216 |      2,289 |      2,305 |
+| The E-E-A-T SEO Imperative: Why Human-First Content is the Only Way to Rank in the AI Era             | E-E-A-T als SEO-Pflicht: Warum im KI-Zeitalter nur menschenzentrierte Inhalte ranken `drafts.aabe21e1-7406-4cd0-9f45-90d32579d557`                   |       137 |      1,615 |      1,687 |
+| The Future of Search: GEO vs Traditional SEO – SERP Research Insights for 2026                        | Die Zukunft der Suche: GEO vs. klassisches SEO – SERP-Insights für 2026 `drafts.7547b3f4-5c06-43b7-af72-406f0c969b51`                                |       245 |      1,807 |      1,913 |
+| The Rise of Voice Search 2.0: Optimizing for Smart Assistants and Wearable AI Devices — SERP research | Der Aufstieg von Voice Search 2.0: Optimierung für Sprachassistenten und KI-Wearables — SERP-Recherche `drafts.d74a7c69-f6b3-460e-be94-f605bfaf16b4` |       216 |      2,134 |      2,193 |
+| The Ultimate Guide to Free SEO Tools: Boosting Your Rankings Without a Massive Budget                 | Der ultimative Leitfaden zu kostenlosen SEO-Tools: Bessere Rankings ohne großes Budget `drafts.81756954-552d-4f86-83c6-cfa7518c594e`                 |       182 |      1,963 |      1,913 |
+| Why Most Small Businesses Fail at Technical SEO (And How to Fix It)                                   | Warum die meisten kleinen Unternehmen an technischer SEO scheitern (und wie Sie das ändern) `drafts.6f0802c8-9046-46ba-b068-d6d7f68bcc78`            |       120 |      1,967 |      1,909 |
+| **Total**                                                                                             | **10 posts**                                                                                                                                         | **2,019** | **21,910** | **22,112** |
+
+### Publish order
+
+Publish the German **blog categories** (from #70) before the posts. Until then, every post that has a category fails validation with "Referenced document must be published". That error is on the category reference, not in the post text.
+
+### Checks done
+
+- **Validation:** `sanity documents validate` with the local Studio schema shows no errors on the 10 drafts other than the category reference above. The two SEO titles over 60 characters were shortened.
+- **Site, desktop and 375px mobile** (`next dev`, drafts): all 10 posts under `/de/blog/<slug>` render the German draft with `<html lang="de">` and no fallback notice. `/de/blog` lists the German titles.
+- **Mobile width:** 6 of the 10 posts scroll sideways by 16px at 375px. The English originals do the same, because a bulleted or numbered list in the post body is as wide as the screen and is pushed in 16px. This is a layout bug, not a translation one, tracked in #98.
+
+### For the proofreader
+
+- **FAQ heading:** "Häufig gestellte Fragen" in every post. The English source has a stray "?" ("Frequently Asked Questions ?"), which the German drops.
+- **Gaps in the English source**, filled in or kept as they are:
+  - _From Keywords to Intent_: two sentences are missing a word ("mapping your content to these , you cover…", "content that addresses ."). The German completes them.
+  - _From Keywords to Intent_: "Case Study 2: SaaS Company" ends without a result. It is translated as it stands.
+  - _GEO vs Traditional SEO_: the heading "Traditional SEO vs GEO – The Core Differences" is followed by one sentence; a comparison table may be missing. "4. Leverage Multi-Platform" looks cut off.
+  - _Voice Search 2.0_ and _Predictive Analytics_: the titles end in "— SERP research" / "-Growth Stats", which look like working labels. They are translated as they are.
+- **Outdated facts** in _Why Most Small Businesses Fail at Technical SEO_, translated as written:
+  - FID was replaced by INP as a Core Web Vital in 2024.
+  - Google has retired the Mobile-Friendly Test and the Structured Data Markup Helper.
+  - The Search Console "Coverage" report is now „Seitenindexierung“.
+- **Source typos fixed in German:** "Chat GPT Search" → ChatGPT Search, "Page Speed Insights" → PageSpeed Insights, "SEMrush" → Semrush, "EEAT" → E-E-A-T, "same As" → sameAs, "How To schema" → HowTo-Schema.
+- **Source typos left as written:**
+  - "Site bulb", which should be Sitebulb.
+  - Schema names written with spaces ("Blog Posting", "FAQ Page"); the real names are BlogPosting and FAQPage.
+  - The Screaming Frog image alt "ScreamingFrogSEOSpider".
+- **Missing spaces at bold or link edges:** the English has a few missing spaces at these edges, for example "Conversational AIrequire" and "SEOand". The German pieces add the space. Two GEO sentences use a hyphenated compound across a bold edge instead ("Generative-Engine-Optimization das **klassische SEO**-Modell", "Dialog-Antworten"). Check that they read well.
+- **Terms:**
+  - These stay in English: SEO terms German marketers use (Keyword, Backlink, Featured Snippet, SERP, CTR, Core Web Vitals, AI Overviews, Predictive Analytics, Conversational AI, Customer Journey, Lead Scoring, Duplicate Content).
+  - Translated: AI → "KI", bounce rate → "Absprungrate", dwell time → "Verweildauer", search intent → "Suchintention", conversational queries → "dialogorientierte Anfragen", traditional SEO → "klassisches SEO".
+  - Search Console steps use the German interface labels.
+- **Prices and places** stay as in the source ("unter 50 $", "in Indien", "USA").
+
+### Still English on `/de/blog`
+
+- "Table of Contents" in every post, which is hard-coded (#97).
+- Blog cards and search results link to `/blog/<slug>`, not `/de/blog/<slug>`. These are out of scope in #88 (`PostPreview`, `PostPreviewLarge`, `SearchForm`).
