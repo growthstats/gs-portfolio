@@ -5,6 +5,7 @@ import {
   localizePath,
   parseEnabledLanguages,
   parseLangFromPath,
+  siteDocumentId,
 } from './i18n'
 
 describe('parseEnabledLanguages', () => {
@@ -66,5 +67,15 @@ describe('localizePath', () => {
     expect(localizePath('/services', 'de')).toBe('/de/services')
     expect(localizePath('/blog/a-post', 'de')).toBe('/de/blog/a-post')
     expect(localizePath('/', 'de')).toBe('/de')
+  })
+})
+
+describe('siteDocumentId', () => {
+  it('keeps the English site settings at `site`', () => {
+    expect(siteDocumentId('en')).toBe('site')
+  })
+
+  it('suffixes other languages', () => {
+    expect(siteDocumentId('de')).toBe('site-de')
   })
 })

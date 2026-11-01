@@ -7,7 +7,10 @@ export type Lang = (typeof LANGUAGES)[number]['id']
 
 export const DEFAULT_LANG: Lang = 'en'
 
-/** Every language the code can render. `src/lib/languages.ts` mirrors it for the Studio until #65. */
+/**
+ * Every language the code can render, and the Studio can hold content in (ADR 0001, 0002).
+ * The Studio uses the supported list, not the enabled one, so editors can prepare German before launch.
+ */
 export const supportedLanguages: { id: Lang; title: string }[] = [...LANGUAGES]
 
 const supportedIds = supportedLanguages.map(({ id }) => id)
@@ -48,4 +51,9 @@ export function parseLangFromPath(pathname: string): { lang?: Lang; path: string
 export function localizePath(path: string, lang: Lang = DEFAULT_LANG) {
   if (lang === DEFAULT_LANG) return path
   return path === '/' ? `/${lang}` : `/${lang}${path}`
+}
+
+/** Site settings singleton per language: `site` for English, `site-<lang>` for the rest (ADR 0002). */
+export function siteDocumentId(lang: string) {
+  return lang === DEFAULT_LANG ? 'site' : `site-${lang}`
 }

@@ -1,7 +1,7 @@
 import { structureTool, type StructureBuilder } from 'sanity/structure'
 import { group, directory } from 'sanitypress-utils'
 import { VscFiles, VscServerProcess } from 'react-icons/vsc'
-import { siteDocumentId, supportedLanguages } from '@/lib/languages'
+import { siteDocumentId, supportedLanguages } from '@/lib/i18n'
 
 /** One site settings singleton per language. */
 const siteSettings = (S: StructureBuilder) =>

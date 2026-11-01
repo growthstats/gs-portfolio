@@ -14,7 +14,7 @@
  */
 import { existsSync } from 'node:fs'
 import { createClient } from 'next-sanity'
-import { DEFAULT_LANGUAGE } from '@/lib/languages'
+import { DEFAULT_LANG } from '@/lib/i18n'
 import { translatableTypes } from '@/sanity/schemaTypes/utils/language'
 
 if (existsSync('.env')) process.loadEnvFile('.env')
@@ -59,9 +59,7 @@ async function main() {
   console.table(counts)
 
   if (dryRun) {
-    console.log(
-      `Dry run: nothing written. Without --dry-run, sets language: '${DEFAULT_LANGUAGE}'.`,
-    )
+    console.log(`Dry run: nothing written. Without --dry-run, sets language: '${DEFAULT_LANG}'.`)
     return
   }
 
@@ -69,7 +67,7 @@ async function main() {
   for (let i = 0; i < docs.length; i += BATCH) {
     const tx = client.transaction()
     for (const { _id } of docs.slice(i, i + BATCH)) {
-      tx.patch(_id, (patch) => patch.setIfMissing({ language: DEFAULT_LANGUAGE }))
+      tx.patch(_id, (patch) => patch.setIfMissing({ language: DEFAULT_LANG }))
     }
     await tx.commit()
     console.log(`Patched ${Math.min(i + BATCH, docs.length)}/${docs.length}`)
