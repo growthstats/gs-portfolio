@@ -71,7 +71,7 @@ async function main() {
     for (const { _id } of docs.slice(i, i + BATCH)) {
       tx.patch(_id, (patch) => patch.setIfMissing({ language: DEFAULT_LANGUAGE }))
     }
-    await tx.commit({ visibility: 'async' })
+    await tx.commit()
     console.log(`Patched ${Math.min(i + BATCH, docs.length)}/${docs.length}`)
   }
 
