@@ -141,13 +141,11 @@ export default function Faq({
 
           {description && (
             <Text
-              as="p"
+              as="div"
               variant="body"
               className="mt-4 max-w-[45rem] text-center text-gray-800 md:text-left"
             >
-              {description && (
-                <PortableText value={description ?? []} components={portableComponents} />
-              )}
+              <PortableText value={description} components={portableComponents} />
             </Text>
           )}
         </div>
@@ -173,31 +171,29 @@ export default function Faq({
                     'relative mb-4 overflow-hidden rounded-[20px] shadow-(--shadow-badge) transition-shadow duration-300',
                   )}
                 >
-                  <h3>
-                    <AccordionTrigger
-                      id={buttonId}
-                      aria-controls={panelId}
-                      className={clsx(
-                        'flex w-full items-center justify-between px-6 py-5 text-left transition-all duration-200 focus:outline-none',
-                        'focus-visible:ring-primary/60 hover:no-underline focus-visible:ring-2 focus-visible:ring-offset-2',
-                        'rounded-[20px]',
-                        'relative z-0',
-                      )}
-                    >
-                      <Text as="span" variant="body" className="pr-4 break-words text-gray-800">
-                        {item.question}
-                      </Text>
-                    </AccordionTrigger>
-                  </h3>
+                  <AccordionTrigger
+                    id={buttonId}
+                    aria-controls={panelId}
+                    className={clsx(
+                      'flex w-full items-center justify-between px-6 py-5 text-left transition-all duration-200 focus:outline-none',
+                      'focus-visible:ring-primary/60 hover:no-underline focus-visible:ring-2 focus-visible:ring-offset-2',
+                      'rounded-[20px]',
+                      'relative z-0',
+                    )}
+                  >
+                    <Text as="span" variant="body" className="pr-4 break-words text-gray-800">
+                      {item.question}
+                    </Text>
+                  </AccordionTrigger>
 
                   <AccordionContent
                     id={panelId}
                     aria-labelledby={buttonId}
                     className="overflow-hidden rounded-b-[20px] px-6 pt-0 pb-6"
                   >
-                    <Text as="p" variant="body" className="mt-2 text-gray-600">
+                    <Text as="div" variant="body" className="mt-2 text-gray-600">
                       {item.answer && (
-                        <PortableText value={item.answer ?? []} components={portableComponents} />
+                        <PortableText value={item.answer} components={portableComponents} />
                       )}
                     </Text>
                   </AccordionContent>
