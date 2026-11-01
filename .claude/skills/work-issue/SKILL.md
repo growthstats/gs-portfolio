@@ -43,7 +43,7 @@ Never run `gh auth switch`, and never use the work account.
 
 ## 5. Check locally
 
-Run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build`. All four must pass.
+Run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build`. All four must pass. Build with Node 22 (`.nvmrc`); on Node 26 `sanity manifest extract` fails during the build.
 
 ## 6. Simplify and review
 
@@ -62,6 +62,11 @@ If the change can be seen in the site or Studio:
 5. Stop the server when done.
 
 Do not rely on a Vercel preview; previews are off for feature branches.
+
+**Studio (`/admin`) checks** need a Sanity login, which the built-in browser doesn't have and agents must not create:
+
+- Use Claude in Chrome: `list_connected_browsers`, then `select_browser` on "Browser 2", the profile signed in to Sanity. "Browser 1" isn't signed in.
+- Run the dev server on port 3000 for these checks, not your issue port. Sanity's CORS list only allows `localhost:3000`. Only one agent can use port 3000 at a time, so stop the server as soon as the Studio check is done.
 
 ## 8. Pull request
 
