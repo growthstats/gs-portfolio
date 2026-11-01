@@ -7,7 +7,7 @@ export type Lang = (typeof LANGUAGES)[number]['id']
 
 export const DEFAULT_LANG: Lang = 'en'
 
-/** Every language the code can render. Sanity's translation plugin reads this list too. */
+/** Every language the code can render. `src/lib/languages.ts` mirrors it for the Studio until #65. */
 export const supportedLanguages: { id: Lang; title: string }[] = [...LANGUAGES]
 
 const supportedIds = supportedLanguages.map(({ id }) => id)
