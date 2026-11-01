@@ -1,9 +1,9 @@
-import Link from 'next/link'
 import { Img } from '@/ui/Img'
 import { GoPerson } from 'react-icons/go'
-import { BLOG_DIR } from '@/lib/env'
 import { cn } from '@/lib/utils'
 import type { ComponentProps } from 'react'
+import LocalizedLink from '@/ui/LocalizedLink'
+import { filterHref } from './filterHref'
 
 export default function Authors({
   authors,
@@ -52,13 +52,7 @@ function Author({ author, linked }: { author?: Sanity.Person; linked?: boolean }
   return (
     <li>
       {linked ? (
-        <Link
-          href={{
-            pathname: `/${BLOG_DIR}`,
-            query: { author: author?.slug?.current },
-          }}
-          {...props}
-        />
+        <LocalizedLink href={filterHref('author', author?.slug?.current)} {...props} />
       ) : (
         <div {...props} />
       )}
