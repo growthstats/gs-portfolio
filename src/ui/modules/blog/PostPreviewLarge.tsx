@@ -7,9 +7,15 @@ import { Img } from '@/ui/Img'
 
 import Authors from './Authors'
 import Categories from './Categories'
+import { getDictionary } from '@/i18n'
+import type { Lang } from '@/lib/i18n'
 
-export default function PostPreviewLarge({ post }: Readonly<{ post: Sanity.BlogPost }>) {
+export default function PostPreviewLarge({
+  lang,
+  post,
+}: Readonly<{ lang: Lang; post: Sanity.BlogPost }>) {
   if (!post) return null
+  const { blog } = getDictionary(lang)
   const displayTitle = post.title || post.metadata.title
 
   return (
@@ -26,7 +32,7 @@ export default function PostPreviewLarge({ post }: Readonly<{ post: Sanity.BlogP
 
           {post.featured && (
             <span className="action absolute top-0 right-4 rounded-t-none py-1 text-xs shadow-md">
-              Featured
+              {blog.featured}
             </span>
           )}
         </figure>

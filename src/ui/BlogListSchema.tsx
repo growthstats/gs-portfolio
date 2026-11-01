@@ -1,13 +1,13 @@
-import resolveUrl from '@/lib/resolveUrl'
 import { BASE_URL } from '@/lib/env'
+import { canonicalUrl, documentLanguage } from '@/lib/seo'
 import { stegaClean } from 'next-sanity'
 import JsonLd from './JsonLd'
 
 export default function BlogListSchema({ posts }: { posts: Sanity.BlogPost[] }) {
   const blogPost = (posts ?? [])
     .map((post) => {
-      const url = resolveUrl(post)
-      if (!url) return null
+      const url = canonicalUrl(post)
+      const inLanguage = documentLanguage(post)
 
       const headline = stegaClean(post.title || post.metadata?.title)
       const description = stegaClean(post.metadata?.description)
@@ -23,6 +23,7 @@ export default function BlogListSchema({ posts }: { posts: Sanity.BlogPost[] }) 
       return {
         '@type': 'BlogPosting',
         headline,
+        inLanguage,
         url,
         mainEntityOfPage: { '@type': 'WebPage', '@id': url },
         ...(description && { description }),

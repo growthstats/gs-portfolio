@@ -5,9 +5,10 @@ import LanguageSwitcher from '@/ui/LanguageSwitcher'
 import Link from 'next/link'
 import { Img } from '@/ui/Img'
 import PortableText from '@/ui/PortableText'
+import { localizePath, type Lang } from '@/lib/i18n'
 
-export default async function Footer() {
-  const { title, blurb, logo, copyright, footerMenu } = await getSite()
+export default async function Footer({ lang }: { lang: Lang }) {
+  const { title, blurb, logo, copyright, footerMenu } = await getSite(lang)
 
   const logoImage = logo?.image?.light || logo?.image?.default
 
@@ -15,7 +16,7 @@ export default async function Footer() {
     <footer className="bg-ring/10 text-primary" role="contentinfo">
       <div className="section flex flex-wrap justify-between gap-x-12 gap-y-8 max-sm:flex-col">
         <div className="flex flex-col gap-3 self-stretch">
-          <Link className="h3 md:h2 max-w-max" href="/">
+          <Link className="h3 md:h2 max-w-max" href={localizePath('/', lang)}>
             {logoImage ? (
               <Img className="max-h-[1.5em] w-auto" image={logoImage} alt={logo?.name || title} />
             ) : (
@@ -29,7 +30,7 @@ export default async function Footer() {
             </div>
           )}
 
-          <Social className="mb-auto -ml-2" />
+          <Social lang={lang} className="mb-auto -ml-2" />
 
           <LanguageSwitcher className="mt-4 max-w-max" />
         </div>

@@ -5,15 +5,19 @@ import moduleProps from '@/lib/moduleProps'
 import { Img } from '@/ui/Img'
 import PortableText from '@/ui/PortableText'
 import Pretitle from '@/ui/Pretitle'
+import { getDictionary } from '@/i18n'
+import { format } from '@/i18n/format'
+import type { Lang } from '@/lib/i18n'
 
 export default function TestimonialList({
+  lang,
   pretitle,
   intro,
   testimonials,
   layout: l,
   layoutMobile: lm,
   ...props
-}: Partial<{
+}: { lang: Lang } & Partial<{
   pretitle: string
   intro: Sanity.PortableText
   testimonials: Sanity.Testimonial[]
@@ -21,6 +25,7 @@ export default function TestimonialList({
   layoutMobile: 'grid' | 'carousel'
 }> &
   Sanity.Module) {
+  const t = getDictionary(lang).testimonial
   const layout = stegaClean(l)
   const layoutMobile = stegaClean(lm)
 
@@ -65,7 +70,7 @@ export default function TestimonialList({
                         alt={
                           [testimonial.author.name, testimonial.author.title]
                             .filter(Boolean)
-                            .join(', ') || 'Author'
+                            .join(', ') || t.authorAlt
                         }
                       />
                     ) : (
@@ -90,8 +95,10 @@ export default function TestimonialList({
                               href={testimonial.source}
                               target="_blank"
                               rel="noopener noreferrer"
-                              title="Source"
-                              aria-label={`Source of testimonial by ${testimonial.author.name}`}
+                              title={t.source}
+                              aria-label={format(t.sourceLabelBy, {
+                                name: testimonial.author.name,
+                              })}
                             >
                               <VscSurroundWith aria-hidden />
                             </a>

@@ -1,11 +1,13 @@
 import { getSite } from '@/sanity/lib/queries'
+import { DEFAULT_LANG } from '@/lib/i18n'
 import { urlFor } from '@/sanity/lib/image'
 import { BASE_URL } from '@/lib/env'
 import { stegaClean } from 'next-sanity'
 import JsonLd from './JsonLd'
 
 export default async function LocalBusinessSchema() {
-  const site = await getSite()
+  // Business details always come from the English site settings (ADR 0002).
+  const site = await getSite(DEFAULT_LANG)
   const b = site.localBusiness
 
   // Render nothing unless a physical address is configured.

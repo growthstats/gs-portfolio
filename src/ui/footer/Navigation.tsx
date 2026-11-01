@@ -3,7 +3,8 @@
 import { usePathname } from 'next/navigation'
 import CTA from '@/ui/CTA'
 import resolveUrl from '@/lib/resolveUrl'
-import { languages } from '@/lib/i18n'
+import { localizePath, parseLangFromPath, type Lang } from '@/lib/i18n'
+import { useLang } from '@/i18n/DictionaryProvider'
 import { stegaClean } from 'next-sanity'
 
 type FooterNavigationProps = {
@@ -18,16 +19,7 @@ function normalizePathname(pathname: string) {
   return normalized || '/'
 }
 
-function getLanguageFromPathname(pathname: string) {
-  if (languages.length === 0) return undefined
-
-  const firstSegment = pathname.split('/').filter(Boolean)[0]
-  if (!firstSegment) return undefined
-
-  return languages.includes(firstSegment) ? firstSegment : undefined
-}
-
-function getLinkPathname(link?: Sanity.Link, language?: string) {
+function getLinkPathname(link?: Sanity.Link, language?: Lang) {
   if (!link) return null
 
   if (link.type === 'internal' && link.internal) {
@@ -50,8 +42,11 @@ function getLinkPathname(link?: Sanity.Link, language?: string) {
 
 export default function Menu({ footerMenu }: FooterNavigationProps) {
   const pathname = usePathname()
-  const currentPath = normalizePathname(pathname)
-  const language = getLanguageFromPathname(currentPath)
+  // CTA localizes links with the provider's language, so compare against the same one.
+  const language = useLang()
+  // A prerendered page sees its rewritten `/en/...` path on the server, so drop the prefix.
+  const { path } = parseLangFromPath(normalizePathname(pathname))
+  const currentPath = localizePath(path, language)
 
   const isCurrentLink = (link?: Sanity.Link) => getLinkPathname(link, language) === currentPath
 

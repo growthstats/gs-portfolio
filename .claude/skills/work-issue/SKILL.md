@@ -40,10 +40,15 @@ Never run `gh auth switch`, and never use the work account.
 2. Only touch the files and areas the issue's **Scope** section allows. If you need a file listed under **Do not touch**, or a change outside the issue: **Stop** and comment on the issue saying what's needed and why.
 3. Add or update Vitest tests for any pure logic you write.
 4. Commit in small logical steps (Conventional Commits). No attribution trailers.
+5. **Writes to the Sanity `production` dataset reach the live site.** It runs `main`'s code, which is older than `develop`'s, against the same dataset. A backfill, a script run, new references or new drafts all count as writes, even when nothing is published. Before writing:
+   - Find the queries on `main` that read the types you're changing (`git grep <type> origin/main -- src`) and check they cope with the new data. Unpublished drafts resolve to `null` through references in the published perspective.
+   - Get the user's OK, after a `--dry-run` where the tool has one.
+
+   After writing, run `scripts/agent/smoke-prod.sh`. If it fails, undo the write, then **Stop**. See `docs/incidents/2026-11-01-production-500.md`.
 
 ## 5. Check locally
 
-Run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build`. All four must pass.
+Run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build`. All four must pass. Build with Node 22 (`.nvmrc`); on Node 26 `sanity manifest extract` fails during the build.
 
 ## 6. Simplify and review
 
@@ -63,6 +68,11 @@ If the change can be seen in the site or Studio:
 
 Do not rely on a Vercel preview; previews are off for feature branches.
 
+**Studio (`/admin`) checks** need a Sanity login, which the built-in browser doesn't have and agents must not create:
+
+- Use Claude in Chrome: `list_connected_browsers`, then `select_browser` on the profile that is signed in to Sanity. The "Browser 1"/"Browser 2" labels change between connections, so don't go by the name: if only one browser is connected, use it; if several are, open `/admin` in each and use the one that shows the Studio rather than a login screen.
+- Run the dev server on port 3000 for these checks, not your issue port. Sanity's CORS list only allows `localhost:3000`. Only one agent can use port 3000 at a time, so stop the server as soon as the Studio check is done.
+
 ## 8. Pull request
 
 1. Push the branch and open a PR into `develop`:
@@ -79,10 +89,11 @@ Do not rely on a Vercel preview; previews are off for feature branches.
 ## 10. Merge
 
 1. Once every check is green and the PR is mergeable, merge with `scripts/agent/merge-pr.sh <pr>`.
+   - Run it exactly like that, as its own Bash call: no `GH_TOKEN=` prefix (the script sets it), no `bash` in front, no pipe, no `&&` or `;`. The permission rule only matches that exact shape; anything else is blocked as a merge without review.
    - It is the only merge command allowed without a prompt. It refuses a PR that doesn't target `develop`, isn't mergeable or has a check that isn't green, and merges only the commit the checks ran on.
    - Don't call `gh pr merge` yourself, and never pass `--auto`; in this repo it merges instantly.
    - Never merge into `main`. Releases are done by a human.
-2. Confirm the issue closed. If it didn't, close it with a comment linking the PR.
+2. Close the issue by hand with a comment linking the PR. Closing keywords only fire on merges into `main`, so a merge into `develop` never closes it.
 
 ## 11. Log
 

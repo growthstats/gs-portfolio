@@ -1,12 +1,15 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
-import { contactFormSchema, HONEYPOT_FIELD, type ContactFormValues } from '@/lib/contactForm'
+import { createContactFormSchema, HONEYPOT_FIELD, type ContactFormValues } from '@/lib/contactForm'
+import { useDictionary } from '@/i18n/DictionaryProvider'
 
 export default function ContactForm() {
+  const { contactForm } = useDictionary()
+  const schema = useMemo(() => createContactFormSchema(contactForm.errors), [contactForm.errors])
   const honeypotRef = useRef<HTMLInputElement>(null)
   const [submitStatus, setSubmitStatus] = useState<{
     type: 'success' | 'error'
@@ -19,7 +22,7 @@ export default function ContactForm() {
     formState: { errors, isSubmitting },
     reset,
   } = useForm<ContactFormValues>({
-    resolver: zodResolver(contactFormSchema),
+    resolver: zodResolver(schema),
     defaultValues: {
       name: '',
       phone: '',
@@ -46,17 +49,11 @@ export default function ContactForm() {
         throw new Error(`Form submission failed with status ${response.status}`)
       }
 
-      setSubmitStatus({
-        type: 'success',
-        message: 'Form submitted successfully!',
-      })
+      setSubmitStatus({ type: 'success', message: contactForm.success })
       reset()
     } catch (error) {
       console.error('Form submission error:', error)
-      setSubmitStatus({
-        type: 'error',
-        message: 'Error submitting the form. Please try again.',
-      })
+      setSubmitStatus({ type: 'error', message: contactForm.error })
     }
   }
 
@@ -76,12 +73,12 @@ export default function ContactForm() {
       <div className="grid gap-6 md:grid-cols-2">
         <div>
           <label className="mb-2 block text-sm font-medium" htmlFor="contact-name">
-            Name
+            {contactForm.labels.name}
           </label>
           <input
             id="contact-name"
             type="text"
-            placeholder="Enter Your name"
+            placeholder={contactForm.placeholders.name}
             className="input w-full rounded-md px-4 py-2 text-sm shadow-(--shadow-card) focus:border-neutral-400"
             aria-invalid={!!errors.name}
             {...register('name')}
@@ -91,12 +88,12 @@ export default function ContactForm() {
 
         <div>
           <label className="mb-2 block text-sm font-medium" htmlFor="contact-phone">
-            Phone Number
+            {contactForm.labels.phone}
           </label>
           <input
             id="contact-phone"
             type="tel"
-            placeholder="+91 XXXX XXXXX"
+            placeholder={contactForm.placeholders.phone}
             className="input w-full rounded-md px-4 py-2 text-sm shadow-(--shadow-card) focus:border-neutral-400"
             aria-invalid={!!errors.phone}
             {...register('phone')}
@@ -108,12 +105,12 @@ export default function ContactForm() {
       <div className="grid gap-6 md:grid-cols-2">
         <div>
           <label className="mb-2 block text-sm font-medium" htmlFor="contact-email">
-            Email
+            {contactForm.labels.email}
           </label>
           <input
             id="contact-email"
             type="email"
-            placeholder="example@gmail.com"
+            placeholder={contactForm.placeholders.email}
             className="input w-full rounded-md px-4 py-2 text-sm shadow-(--shadow-card) focus:border-neutral-400"
             aria-invalid={!!errors.email}
             {...register('email')}
@@ -123,14 +120,15 @@ export default function ContactForm() {
 
         <div>
           <label className="mb-2 block text-sm font-medium" htmlFor="contact-website">
-            Website <span className="font-normal text-neutral-500">(optional)</span>
+            {contactForm.labels.website}{' '}
+            <span className="font-normal text-neutral-500">{contactForm.labels.optional}</span>
           </label>
           <input
             id="contact-website"
             type="text"
             inputMode="url"
             autoComplete="url"
-            placeholder="yourcompany.com"
+            placeholder={contactForm.placeholders.website}
             className="input w-full rounded-md px-4 py-2 text-sm shadow-(--shadow-card) focus:border-neutral-400"
             aria-invalid={!!errors.website}
             {...register('website')}
@@ -141,7 +139,7 @@ export default function ContactForm() {
 
       <div>
         <label className="mb-2 block text-sm font-medium" htmlFor="contact-message">
-          Message
+          {contactForm.labels.message}
         </label>
         <textarea
           id="contact-message"
@@ -159,7 +157,7 @@ export default function ContactForm() {
           className="inline-flex w-full max-w-xs items-center justify-center rounded-md px-6 py-2.5 text-sm font-medium"
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Submitting…' : 'Submit'}
+          {isSubmitting ? contactForm.submitting : contactForm.submit}
         </Button>
 
         {submitStatus && (

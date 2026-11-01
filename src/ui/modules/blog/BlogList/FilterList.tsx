@@ -1,25 +1,28 @@
-import { fetchSanityLive } from '@/sanity/lib/fetch'
-import { groq } from 'next-sanity'
 import { Suspense } from 'react'
 import Filter from './Filter'
 import { cn } from '@/lib/utils'
+import { getDictionary } from '@/i18n'
+import type { Lang } from '@/lib/i18n'
 
-export default async function FilterList() {
-  const categories = await fetchSanityLive<Sanity.BlogCategory[]>({
-    query: groq`*[
-      _type == 'blog.category' &&
-      count(*[_type == 'blog.post' && references(^._id)]) > 0
-    ]|order(title)`,
-  })
+/** Filters by the categories the listed posts show. */
+export default function FilterList({ lang, posts }: { lang: Lang; posts: Sanity.BlogPost[] }) {
+  const { blog } = getDictionary(lang)
 
-  if (!categories) return null
+  const categories = [
+    ...new Map(
+      posts
+        .flatMap((post) => post.categories ?? [])
+        .filter(Boolean)
+        .map((category) => [category._id, category]),
+    ).values(),
+  ].sort((a, b) => a.title.localeCompare(b.title))
 
   return (
     <fieldset>
-      <legend className="sr-only">Filter by category</legend>
+      <legend className="sr-only">{blog.filterByCategory}</legend>
 
       <div
-        aria-label="Blog categories"
+        aria-label={blog.categories}
         className={cn(
           // container padding + safe scroll area
           'w-full px-2 py-1',
@@ -41,7 +44,7 @@ export default async function FilterList() {
           )}
         >
           <Suspense>
-            <Filter label="All" value="All" />
+            <Filter value="All" />
 
             {categories.map((category) => (
               <Filter

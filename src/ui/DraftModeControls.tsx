@@ -5,6 +5,7 @@
 import { usePathname } from 'next/navigation'
 import { VscSymbolField, VscBeakerStop } from 'react-icons/vsc'
 import { createDataAttribute, stegaClean } from 'next-sanity'
+import { parseLangFromPath } from '@/lib/i18n'
 
 export default function DraftModeControls({
   globalModules,
@@ -19,7 +20,7 @@ export default function DraftModeControls({
   const filteredGlobalModules = globalModules
     ?.filter(({ path, excludePaths: ex }) => {
       const p = stegaClean(path)
-      const curr = pathname.replace(/^\//, '')
+      const curr = parseLangFromPath(pathname).path.replace(/^\//, '')
 
       return p === '*' || (curr.startsWith(p) && !ex?.some((e) => curr.startsWith(e)))
     })

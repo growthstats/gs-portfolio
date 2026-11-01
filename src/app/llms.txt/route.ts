@@ -1,6 +1,8 @@
 import { fetchSanity } from '@/sanity/lib/fetch'
 import { groq, stegaClean } from 'next-sanity'
 import { BASE_URL, BLOG_DIR } from '@/lib/env'
+import { DEFAULT_LANG } from '@/lib/i18n'
+import { LANGUAGE, SITE } from '@/sanity/lib/localized'
 
 export const dynamic = 'force-static'
 export const revalidate = 3600
@@ -21,11 +23,13 @@ export async function GET() {
     pages?: Entry[]
     posts?: Entry[]
   }>({
+    // English only: the file lists unprefixed URLs.
     query: groq`{
-      'siteTitle': *[_type == 'site'][0].title,
-      'siteDesc': *[_type == 'page' && metadata.slug.current == 'index'][0].metadata.description,
+      'siteTitle': ${SITE}.title,
+      'siteDesc': *[_type == 'page' && metadata.slug.current == 'index' && ${LANGUAGE} == $lang][0].metadata.description,
       'pages': *[
         _type == 'page' &&
+        ${LANGUAGE} == $lang &&
         metadata.noIndex != true &&
         !(metadata.slug.current in ['404', 'index'])
       ]|order(metadata.slug.current){
@@ -33,12 +37,13 @@ export async function GET() {
         'slug': metadata.slug.current,
         'desc': metadata.description,
       },
-      'posts': *[_type == 'blog.post' && metadata.noIndex != true]|order(publishDate desc){
+      'posts': *[_type == 'blog.post' && ${LANGUAGE} == $lang && metadata.noIndex != true]|order(publishDate desc){
         'title': coalesce(title, metadata.title),
         'slug': metadata.slug.current,
         'desc': metadata.description,
       }
     }`,
+    params: { lang: DEFAULT_LANG },
   })
 
   const siteTitle = clean(data.siteTitle) || 'Growth Stats'

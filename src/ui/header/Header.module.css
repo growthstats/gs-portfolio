@@ -1,10 +1,23 @@
 .header {
-	grid-template:
-		'logo toggle' auto
-		'nav nav' auto
-		'ctas ctas' auto / 1fr auto;
+  grid-template:
+    'logo toggle' auto
+    'nav nav' auto
+    'ctas ctas' auto / 1fr auto;
 
-	@media (width >= 48rem) {
-		grid-template: 'logo nav ctas' auto / auto 1fr auto;
-	}
+  @media (width >= 48rem) {
+    grid-template: 'logo nav ctas' auto / auto 1fr auto;
+  }
+}
+
+/* Only with the language switcher, so a single-language site has no empty column gap. */
+.withLang {
+  grid-template:
+    'logo toggle' auto
+    'nav nav' auto
+    'ctas ctas' auto
+    'lang lang' auto / 1fr auto;
+
+  @media (width >= 48rem) {
+    grid-template: 'logo nav ctas lang' auto / auto 1fr auto auto;
+  }
 }

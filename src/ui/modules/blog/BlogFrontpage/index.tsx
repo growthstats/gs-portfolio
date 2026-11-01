@@ -1,10 +1,10 @@
 import { groq, stegaClean } from 'next-sanity'
-import { cookies } from 'next/headers'
 import { Suspense } from 'react'
 
-import { DEFAULT_LANG, langCookieName } from '@/lib/i18n'
+import type { Lang } from '@/lib/i18n'
 import { fetchSanityLive } from '@/sanity/lib/fetch'
 import { IMAGE_QUERY } from '@/sanity/lib/queries'
+import { IN_LANGUAGE, localizedRefs } from '@/sanity/lib/localized'
 
 import FilterList from '../BlogList/FilterList'
 import PostPreview from '../PostPreview'
@@ -14,29 +14,28 @@ import sortFeaturedPosts from './sortFeaturedPosts'
 import BlogListSchema from '@/ui/BlogListSchema'
 
 export default async function BlogFrontpage({
+  lang,
   mainPost,
   showFeaturedPostsFirst,
   itemsPerPage,
 }: Readonly<
-  Partial<{
+  { lang: Lang } & Partial<{
     mainPost: 'recent' | 'featured'
     showFeaturedPostsFirst: boolean
     itemsPerPage: number
   }>
 >) {
-  const lang = (await cookies()).get(langCookieName)?.value ?? DEFAULT_LANG
-
   const posts = await fetchSanityLive<Sanity.BlogPost[]>({
     query: groq`
 			*[
 				_type == 'blog.post'
-				${lang ? `&& (!defined(language) || language == '${lang}')` : ''}
+				&& ${IN_LANGUAGE}
 			]|order(publishDate desc){
 				_type,
 				_id,
 				title,
 				featured,
-				categories[]->,
+				'categories': ${localizedRefs('categories')},
 				authors[]->,
 				publishDate,
 				language,
@@ -46,6 +45,7 @@ export default async function BlogFrontpage({
 				},
 			}
 		`,
+    params: { lang },
   })
 
   const [firstPost, ...otherPosts] =
@@ -55,11 +55,11 @@ export default async function BlogFrontpage({
     <section className="section space-y-8">
       <BlogListSchema posts={posts} />
 
-      <PostPreviewLarge post={firstPost} />
+      <PostPreviewLarge lang={lang} post={firstPost} />
 
       <hr />
 
-      <FilterList />
+      <FilterList lang={lang} posts={posts} />
 
       <Suspense
         fallback={

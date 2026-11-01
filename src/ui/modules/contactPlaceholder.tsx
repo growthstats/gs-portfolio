@@ -1,10 +1,14 @@
 import { Mail, Phone } from 'lucide-react'
-import Social from '@/ui/Social'
 import Heading from '@/ui/Heading'
+import Social from '@/ui/Social'
 import Text from '@/ui/Text'
+import { getDictionary } from '@/i18n'
+import type { Lang } from '@/lib/i18n'
 import ContactForm from './contactPlaceholderForm'
 
-export default function ContactPlaceholder() {
+export default function ContactPlaceholder({ lang }: Readonly<{ lang: Lang }>) {
+  const { contact } = getDictionary(lang)
+
   return (
     <div className="section w-full space-y-20 py-20">
       {/* =====================================================
@@ -12,7 +16,7 @@ export default function ContactPlaceholder() {
       ===================================================== */}
       <div className="mx-auto max-w-5xl md:px-4">
         <Heading as="h2" variant="h2" className="mb-8 text-center">
-          Get in Touch
+          {contact.formHeading}
         </Heading>
 
         <div className="md:px-8 md:pb-8">
@@ -25,14 +29,14 @@ export default function ContactPlaceholder() {
       ===================================================== */}
       <div className="mx-auto max-w-6xl md:px-4">
         <Heading as="h2" variant="h2" className="mb-8 text-center">
-          Contact Us
+          {contact.infoHeading}
         </Heading>
 
         <div className="rounded-3xl shadow-(--shadow-card)">
           {/* Map */}
           <div className="overflow-hidden rounded-t-2xl px-2 pt-2 md:px-8 md:pt-8">
             <iframe
-              title="Google Map"
+              title={contact.mapTitle}
               src="https://www.google.com/maps?q=Growth%20Stats%2C%20Citadel%20Commercial%20Complex%2C%20Pune%20411001&output=embed"
               className="h-[220px] w-full rounded-2xl"
               loading="lazy"
@@ -44,22 +48,22 @@ export default function ContactPlaceholder() {
             {/* Location */}
             <div>
               <Heading as="h3" variant="h5" className="mb-2">
-                Location
+                {contact.location}
               </Heading>
               {/* TODO: Check SEO Implications of breaking sentence */}
               <Text as="p" variant="body">
-                1st Floor,
+                {contact.addressLine1}
                 <br />
-                Citadel Commercial Complex,
+                {contact.addressLine2}
                 <br />
-                Pune, Maharashtra 411001
+                {contact.addressLine3}
               </Text>
             </div>
 
             {/* General Inquiries */}
             <div>
               <Heading as="h3" variant="h5" className="mb-2">
-                General Inquiries
+                {contact.generalInquiries}
               </Heading>
 
               <div className="text-ink/80 flex items-center gap-3">
@@ -80,10 +84,10 @@ export default function ContactPlaceholder() {
             {/* Social */}
             <div>
               <Heading as="h3" variant="h5" className="mb-2">
-                Social
+                {contact.social}
               </Heading>
 
-              <Social className="mb-auto -ml-2" />
+              <Social lang={lang} className="mb-auto -ml-2" />
             </div>
           </div>
         </div>

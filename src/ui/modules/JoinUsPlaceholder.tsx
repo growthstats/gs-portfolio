@@ -3,8 +3,12 @@ import { Badge } from '@/components/ui/badge'
 import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
 import CTA from '@/ui/CTA'
+import { getDictionary } from '@/i18n'
+import type { Lang } from '@/lib/i18n'
 
-const JoinUsPlaceholder = () => {
+const JoinUsPlaceholder = ({ lang }: Readonly<{ lang: Lang }>) => {
+  const { joinUs } = getDictionary(lang)
+
   return (
     <div className="flex w-full justify-center py-2">
       <div className="flex w-full flex-col items-center rounded-3xl bg-[#F0F0F0] px-4 py-8 text-center shadow-(--shadow-badge)">
@@ -14,7 +18,7 @@ const JoinUsPlaceholder = () => {
         >
           <span className="h-3 w-3 rounded-full bg-black"></span>
           <Text as="span" variant="eyebrow" className="text-ink">
-            Join Us Now
+            {joinUs.badge}
           </Text>
         </Badge>
 
@@ -25,16 +29,15 @@ const JoinUsPlaceholder = () => {
           className="max-w-3xl text-3xl leading-snug font-semibold sm:text-4xl lg:text-5xl"
         >
           {/* TODO: Check SEO Implications of breaking sentence */}
-          <span className="bg-clip-text">Each Project we Undertake</span>
+          <span className="bg-clip-text">{joinUs.headingLine1}</span>
           <br />
 
-          <span className="text-black">is a Unique Opportunity.</span>
+          <span className="text-black">{joinUs.headingLine2}</span>
         </Heading>
 
         {/* Description */}
         <Text as="p" variant="body" className="text-ink/80 mt-4 max-w-xl">
-          Ready to take the next step? Join us now and start transforming your vision into reality
-          with expert support.
+          {joinUs.text}
         </Text>
 
         {/* Bottom Button */}
@@ -44,7 +47,7 @@ const JoinUsPlaceholder = () => {
           link={{
             _key: '1',
             _type: 'link',
-            label: 'Book an Appointment',
+            label: joinUs.cta,
             type: 'internal',
             internal: {
               _type: 'page',

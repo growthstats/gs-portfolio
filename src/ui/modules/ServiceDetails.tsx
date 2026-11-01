@@ -2,29 +2,41 @@ import moduleProps from '@/lib/moduleProps'
 import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
 import { Img } from '@/ui/Img'
+import { getDictionary } from '@/i18n'
+import type { Lang } from '@/lib/i18n'
 
 export default function ServiceDetails({
+  lang,
   features,
   ...props
-}: Partial<Omit<Sanity.ServiceDetailsModule, '_type'>> & Sanity.Module) {
+}: { lang: Lang } & Partial<Omit<Sanity.ServiceDetailsModule, '_type'>> & Sanity.Module) {
   if (!features?.length) return null
+
+  const { services } = getDictionary(lang)
 
   return (
     <section className="section space-y-10" {...moduleProps(props)}>
       <Heading as="h2" variant="h1" className="text-center text-balance">
-        Our Features
+        {services.featuresHeading}
       </Heading>
 
       <div className="grid gap-8 md:grid-cols-2">
         {features.map((feature, index) => (
-          <FeatureCard feature={feature} key={feature?._key ?? index} />
+          <FeatureCard
+            feature={feature}
+            fallbackAlt={services.featureAlt}
+            key={feature?._key ?? index}
+          />
         ))}
       </div>
     </section>
   )
 }
 
-function FeatureCard({ feature }: Readonly<{ feature?: Sanity.ServiceFeature }>) {
+function FeatureCard({
+  feature,
+  fallbackAlt,
+}: Readonly<{ feature?: Sanity.ServiceFeature; fallbackAlt: string }>) {
   if (!feature) return null
 
   const { name, description, img } = feature
@@ -40,7 +52,7 @@ function FeatureCard({ feature }: Readonly<{ feature?: Sanity.ServiceFeature }>)
                 width={150}
                 height={150}
                 className="h-full w-full object-contain"
-                alt={name || 'feature'}
+                alt={name || fallbackAlt}
               />
             </div>
           ) : (

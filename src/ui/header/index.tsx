@@ -5,13 +5,16 @@ import { Img } from '@/ui/Img'
 import Navigation from './Navigation'
 import CTAList from '@/ui/CTAList'
 import Toggle from './Toggle'
+import LanguageSwitcher from '@/ui/LanguageSwitcher'
 import { cn } from '@/lib/utils'
 import css from './Header.module.css'
+import { enabledLanguages, localizePath, type Lang } from '@/lib/i18n'
 
-export default async function Header() {
-  const { title, logo, ctas } = await getSite()
+export default async function Header({ lang }: { lang: Lang }) {
+  const { title, logo, ctas } = await getSite(lang)
 
   const logoImage = logo?.image?.dark || logo?.image?.default
+  const hasSwitcher = enabledLanguages.length > 1
 
   return (
     <Wrapper
@@ -22,9 +25,18 @@ export default async function Header() {
         backgroundColor: 'rgba(255,255,255,0)',
       }}
     >
-      <div className={cn(css.header, 'mx-auto grid max-w-screen-xl items-center gap-x-6 p-4')}>
+      <div
+        className={cn(
+          css.header,
+          hasSwitcher && css.withLang,
+          'mx-auto grid max-w-screen-xl items-center gap-x-6 p-4',
+        )}
+      >
         <div className="[grid-area:logo]">
-          <Link className={cn('h4 md:h3 grid', logo?.image && 'max-w-3xs')} href="/">
+          <Link
+            className={cn('h4 md:h3 grid', logo?.image && 'max-w-3xs')}
+            href={localizePath('/', lang)}
+          >
             {logoImage ? (
               <Img
                 className="inline-block max-h-[1.2em] w-auto"
@@ -37,12 +49,16 @@ export default async function Header() {
           </Link>
         </div>
 
-        <Navigation />
+        <Navigation lang={lang} />
 
         <CTAList
           ctas={ctas}
           className="max-md:header-closed:hidden [grid-area:ctas] max-md:*:w-full md:ms-auto"
         />
+
+        {hasSwitcher && (
+          <LanguageSwitcher className="max-md:header-closed:hidden [grid-area:lang] max-md:my-4 max-md:justify-center" />
+        )}
 
         <Toggle />
       </div>

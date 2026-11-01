@@ -3,14 +3,22 @@ import Pretitle from '@/ui/Pretitle'
 import CTAList from '@/ui/CTAList'
 import { cn, formatCurrency } from '@/lib/utils'
 import PortableText from '@/ui/PortableText'
+import { getDictionary, type Dictionary } from '@/i18n'
+import type { Lang } from '@/lib/i18n'
 
 export default function PricingList({
+  lang,
   pretitle,
   intro,
   tiers,
   ...props
-}: Partial<{ pretitle: string; intro: Sanity.PortableText; tiers: Sanity.Pricing[] }> &
+}: { lang: Lang } & Partial<{
+  pretitle: string
+  intro: Sanity.PortableText
+  tiers: Sanity.Pricing[]
+}> &
   Sanity.Module) {
+  const { pricing } = getDictionary(lang)
   const count = tiers?.length ?? 0
 
   return (
@@ -45,7 +53,7 @@ export default function PricingList({
                 {tier.price?.base !== undefined && (
                   <div className="flex flex-wrap items-end gap-x-1">
                     {tier.price.base !== undefined && !Number.isNaN(tier.price.base) && (
-                      <b className="h1">{formatPrice(tier.price.base)}</b>
+                      <b className="h1">{formatPrice(tier.price.base, pricing)}</b>
                     )}
                     {tier.price.suffix && (
                       <span className={cn(Number.isNaN(tier.price.base) && 'h1')}>
@@ -54,7 +62,7 @@ export default function PricingList({
                     )}
                     {tier.price.strikethrough && (
                       <s className="font-bold decoration-red-500">
-                        {formatPrice(tier.price?.strikethrough)}
+                        {formatPrice(tier.price?.strikethrough, pricing)}
                       </s>
                     )}
                   </div>
@@ -72,7 +80,7 @@ export default function PricingList({
   )
 }
 
-function formatPrice(value: number) {
-  if (value === 0) return 'Free'
+function formatPrice(value: number, pricing: Dictionary['pricing']) {
+  if (value === 0) return pricing.free
   return formatCurrency(value).replace(/\.00$/, '')
 }

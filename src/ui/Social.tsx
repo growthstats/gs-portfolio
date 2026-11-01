@@ -15,14 +15,20 @@ import {
 } from 'react-icons/fa6'
 import { IoIosLink } from 'react-icons/io'
 import type { ComponentProps } from 'react'
+import { getDictionary } from '@/i18n'
+import { format } from '@/i18n/format'
+import type { Lang } from '@/lib/i18n'
 
 type SocialProps = ComponentProps<'div'> & {
+  lang: Lang
   shareUrl?: string
   shareText?: string
 }
 
-export default async function Social({ className, shareUrl, shareText }: SocialProps) {
+export default async function Social({ lang, className, shareUrl, shareText }: SocialProps) {
+  // The links are the same in every language, so they come from the English `site`.
   const { social } = await getSite()
+  const { common } = getDictionary(lang)
 
   if (!social?.items?.length) return null
 
@@ -57,7 +63,9 @@ export default async function Social({ className, shareUrl, shareText }: SocialP
               >
                 <Icon
                   url={item.external}
-                  aria-label={shareUrl ? `Share on ${item.label}` : item.label}
+                  aria-label={
+                    shareUrl ? format(common.shareOn, { platform: item.label }) : item.label
+                  }
                 />
               </CTA>
             )
