@@ -20,7 +20,7 @@ const de = {
   pagination: {
     prev: 'Zurück',
     next: 'Weiter',
-    of: 'von',
+    page: '{page} von {total}',
   },
   about: {
     badge: 'Über GrowthStats',
@@ -64,20 +64,22 @@ const de = {
   },
   team: {
     label: 'Unsere Stärken',
-    expertise: {
-      title: 'Expertise',
-      description:
-        'Unser erfahrenes Team vereint Fachwissen, Kreativität und technologische Kompetenz, um Ihr Wachstum online zu beschleunigen',
-    },
-    clientCentric: {
-      title: 'Kundenorientierter Ansatz',
-      description:
-        'Unsere Kunden stehen im Mittelpunkt: Wir entwickeln maßgeschneiderte Strategien für individuelle Ziele, Herausforderungen und Chancen',
-    },
-    results: {
-      title: 'Ergebnisorientierte Lösungen',
-      description:
-        'Wir konzentrieren uns auf messbare Ergebnisse und verbinden Innovation, technische Exzellenz und strategischen Weitblick für nachhaltige Entwicklung',
+    cards: {
+      expertise: {
+        title: 'Expertise',
+        description:
+          'Unser erfahrenes Team vereint Fachwissen, Kreativität und technologische Kompetenz, um Ihr Wachstum online zu beschleunigen',
+      },
+      clientCentric: {
+        title: 'Kundenorientierter Ansatz',
+        description:
+          'Unsere Kunden stehen im Mittelpunkt: Wir entwickeln maßgeschneiderte Strategien für individuelle Ziele, Herausforderungen und Chancen',
+      },
+      results: {
+        title: 'Ergebnisorientierte Lösungen',
+        description:
+          'Wir konzentrieren uns auf messbare Ergebnisse und verbinden Innovation, technische Exzellenz und strategischen Weitblick für nachhaltige Entwicklung',
+      },
     },
   },
   contact: {

@@ -9,8 +9,11 @@ export function format(template: string, values: Record<string, string | number>
 
 export type PluralForms = { one: string; other: string }
 
+const pluralRules = new Map<Lang, Intl.PluralRules>()
+
 /** Picks the plural form for `count` in `lang` and fills its `{count}` placeholder. */
 export function plural(lang: Lang, count: number, forms: PluralForms) {
-  const rule = new Intl.PluralRules(lang).select(count)
+  if (!pluralRules.has(lang)) pluralRules.set(lang, new Intl.PluralRules(lang))
+  const rule = pluralRules.get(lang)!.select(count)
   return format(rule === 'one' ? forms.one : forms.other, { count })
 }

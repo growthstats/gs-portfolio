@@ -4,7 +4,6 @@ import { usePagination } from '@/lib/usePagination'
 import List from '../BlogList/List'
 import { filterPosts } from '../BlogList/filterPosts'
 import { useBlogFilters } from '../store'
-import { useDictionary } from '@/i18n/DictionaryProvider'
 
 export default function Paginated({
   posts,
@@ -14,7 +13,6 @@ export default function Paginated({
   itemsPerPage?: number
 }) {
   const filters = useBlogFilters()
-  const { pagination } = useDictionary()
   const { paginatedItems, Pagination } = usePagination({
     items: filterPosts(posts, filters),
     itemsPerPage,
@@ -37,7 +35,6 @@ export default function Paginated({
         className="frosted-glass bg-canvas sticky bottom-0 flex items-center justify-center gap-4 p-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] tabular-nums"
         buttonClassName="hover:underline disabled:opacity-20"
         onClick={scrollToList}
-        {...pagination}
       />
     </div>
   )

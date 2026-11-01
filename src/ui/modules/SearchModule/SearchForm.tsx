@@ -10,6 +10,13 @@ import css from './SearchForm.module.css'
 import { useDictionary, useLang } from '@/i18n/DictionaryProvider'
 import { plural } from '@/i18n/format'
 
+const PLACEHOLDERS = {
+  all: 'all',
+  pages: 'pages',
+  path: 'pages',
+  'blog posts': 'blogPosts',
+} as const satisfies Record<NonNullable<SearchScope>, string>
+
 /**
  * @note Remember to wrap this component in a Suspense
  */
@@ -27,12 +34,6 @@ export default function SearchForm({
   const { loading, setLoading, results, setResults } = searchStore()
   const lang = useLang()
   const { search } = useDictionary()
-  const placeholder =
-    scope === 'pages' || scope === 'path'
-      ? search.placeholder.pages
-      : scope === 'blog posts'
-        ? search.placeholder.blogPosts
-        : search.placeholder.all
 
   return (
     <search className={cn(css.root, 'relative', className)} {...props}>
@@ -43,7 +44,7 @@ export default function SearchForm({
           className="grow outline-none"
           name="query"
           type="search"
-          placeholder={placeholder}
+          placeholder={search.placeholder[PLACEHOLDERS[scope ?? 'all']]}
           defaultValue={query}
           onChange={debounce((e: React.ChangeEvent<HTMLInputElement>) =>
             handleSearch({

@@ -17,7 +17,7 @@ const en = {
   pagination: {
     prev: 'Prev',
     next: 'Next',
-    of: 'of',
+    page: '{page} of {total}',
   },
   about: {
     badge: 'About GrowthStats',
@@ -61,20 +61,22 @@ const en = {
   },
   team: {
     label: 'Key features',
-    expertise: {
-      title: 'Expertise',
-      description:
-        'Our skilled team brings together expertise, creativity, and technological mastery to accelerate business growth online',
-    },
-    clientCentric: {
-      title: 'Client-Centric Approach',
-      description:
-        'We prioritize our clients by delivering customized strategies designed to meet unique goals, challenges, and opportunities',
-    },
-    results: {
-      title: 'Result Driven Solutions',
-      description:
-        'We focus on measurable outcomes, combining innovation, technical excellence, and strategic insight to drive enduring development',
+    cards: {
+      expertise: {
+        title: 'Expertise',
+        description:
+          'Our skilled team brings together expertise, creativity, and technological mastery to accelerate business growth online',
+      },
+      clientCentric: {
+        title: 'Client-Centric Approach',
+        description:
+          'We prioritize our clients by delivering customized strategies designed to meet unique goals, challenges, and opportunities',
+      },
+      results: {
+        title: 'Result Driven Solutions',
+        description:
+          'We focus on measurable outcomes, combining innovation, technical excellence, and strategic insight to drive enduring development',
+      },
     },
   },
   contact: {
