@@ -1,10 +1,9 @@
-import Link from 'next/link'
-
 import resolveUrl from '@/lib/resolveUrl'
 import { cn } from '@/lib/utils'
 import Date from '@/ui/Date'
 import { Img } from '@/ui/Img'
 import Heading from '@/ui/Heading'
+import LocalizedLink from '@/ui/LocalizedLink'
 import Category from './Category'
 import Authors from './Authors'
 
@@ -62,9 +61,9 @@ export default function PostPreview({
 
       {/* TITLE */}
       <Heading as="h3" variant="h4" className={cn('mt-4 rounded-lg', skeleton && 'skeleton-2')}>
-        <Link className="m-1 block p-1" href={resolveUrl(post, { base: false })}>
+        <LocalizedLink className="m-1 block p-1" href={resolveUrl(post, { base: false })}>
           {displayTitle}
-        </Link>
+        </LocalizedLink>
       </Heading>
     </figure>
   )
