@@ -13,6 +13,9 @@
 import { randomUUID } from 'node:crypto'
 import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
+import type { MetadataDocument } from '@sanity/document-internationalization'
+import type { Transaction } from 'next-sanity'
+import { getDraftId } from 'sanity'
 import { DEFAULT_LANGUAGE, siteDocumentId } from '@/lib/languages'
 import {
   client,
@@ -29,7 +32,6 @@ import {
   metadataDocument,
   remapReferences,
   translationReference,
-  type MetadataDocument,
   type Translated,
 } from './metadata'
 import { unflatten, type Strings } from './strings'
@@ -52,17 +54,27 @@ run(async () => {
   const metadata = await client.fetch<MetadataDocument[]>(`*[_type == $type]`, {
     type: METADATA_TYPE,
   })
-  const metadataOf = (id: string) =>
-    metadata.find(({ translations }) =>
-      translations?.some(({ _key, value }) => _key === DEFAULT_LANGUAGE && value?._ref === id),
-    )
+  const metadataOf = new Map(
+    metadata.flatMap((doc) =>
+      doc.translations
+        .filter(({ _key }) => _key === DEFAULT_LANGUAGE)
+        .map(({ value }) => [value._ref, doc] as const),
+    ),
+  )
   const translated = await translatedReferences(metadata, lang)
+
+  const [originals, drafts] = await Promise.all([
+    published.fetch<Doc[]>(`*[_id in $ids]`, { ids: selected.map(({ id }) => id) }),
+    client.fetch<string[]>(`*[_id in path("drafts.**") && language == $lang]._id`, { lang }),
+  ])
+  const originalOf = new Map(originals.map((doc) => [doc._id, doc]))
+  const existingDrafts = new Set(drafts)
 
   console.log(`${target}: importing ${selected.length} ${lang} files${dryRun ? ' (dry run)' : ''}`)
 
   for (const { type, id } of selected) {
     const label = `${type}/${id}`
-    const original = await published.getDocument<Doc>(id)
+    const original = originalOf.get(id)
     if (
       !original ||
       original._type !== type ||
@@ -75,40 +87,35 @@ run(async () => {
     const strings = await readStrings(workFile(lang, type, id))
     const { doc, missing, unused } = unflatten(original, documentType(type), strings)
 
-    const existing = type === 'site' ? undefined : metadataOf(id)
-    const translationId =
-      type === 'site'
-        ? siteDocumentId(lang)
-        : (existing?.translations.find(({ _key }) => _key === lang)?.value._ref ?? randomUUID())
+    const tx = client.transaction()
+    let translationId: string
+    let note: string
+    if (type === 'site') {
+      // The German site settings have a fixed id and no metadata (ADR 0002).
+      translationId = siteDocumentId(lang)
+      note = 'site settings, no metadata'
+    } else {
+      const existing = metadataOf.get(id)
+      const linked = existing?.translations.find(({ _key }) => _key === lang)?.value._ref
+      translationId = linked ?? randomUUID()
+      note = linked ? 'already linked' : link(tx, { id, type, lang, translationId, existing })
+    }
 
     // System fields (`_rev`, `_createdAt`, `_system`, ...) belong to the English document.
     const content = Object.entries(remapReferences(doc, translated)).filter(
       ([key]) => !key.startsWith('_'),
     )
-    const draft = {
+    const draftId = getDraftId(translationId)
+    tx.createOrReplace({
       ...Object.fromEntries(content),
-      _id: `drafts.${translationId}`,
+      _id: draftId,
       _type: type,
       language: lang,
-    }
+    })
 
-    const tx = client.transaction().createOrReplace(draft)
-    let link = type === 'site' ? 'site settings, no metadata' : 'already linked'
-    if (type !== 'site' && !existing?.translations.some(({ _key }) => _key === lang)) {
-      // Same steps as the plugin's `handleCreate` in LanguageOption.tsx.
-      const source = translationReference(DEFAULT_LANGUAGE, id, type)
-      const metadataId = existing?._id ?? randomUUID()
-      if (!existing) tx.createIfNotExists(metadataDocument(metadataId, type, source))
-      tx.patch(metadataId, (patch) =>
-        patch
-          .setIfMissing({ translations: [source] })
-          .insert('after', 'translations[-1]', [translationReference(lang, translationId, type)]),
-      )
-      link = existing ? `add ${lang} to ${metadataId}` : `new metadata ${metadataId}`
-    }
-
-    const action = (await client.getDocument(draft._id)) ? 'replace' : 'create'
-    console.log(`  ${action} ${draft._id} from ${label} (${link})`)
+    console.log(
+      `  ${existingDrafts.has(draftId) ? 'replace' : 'create'} ${draftId} from ${label} (${note})`,
+    )
     if (missing.length)
       console.warn(`    ${missing.length} strings left in English, e.g. ${missing[0]}`)
     if (unused.length)
@@ -121,6 +128,28 @@ run(async () => {
 
   console.log(dryRun ? 'Dry run: nothing written.' : 'Done. Nothing was published.')
 })
+
+/** Adds the translation to the English document's metadata, the same steps as the plugin's `handleCreate` in LanguageOption.tsx. */
+function link(
+  tx: Transaction,
+  {
+    id,
+    type,
+    lang,
+    translationId,
+    existing,
+  }: { id: string; type: string; lang: string; translationId: string; existing?: MetadataDocument },
+) {
+  const source = translationReference(DEFAULT_LANGUAGE, id, type)
+  const metadataId = existing?._id ?? randomUUID()
+  if (!existing) tx.createIfNotExists(metadataDocument(metadataId, type, source))
+  tx.patch(metadataId, (patch) =>
+    patch
+      .setIfMissing({ translations: [source] })
+      .insert('after', 'translations[-1]', [translationReference(lang, translationId, type)]),
+  )
+  return existing ? `add ${lang} to ${metadataId}` : `new metadata ${metadataId}`
+}
 
 async function listFiles(lang: string, type: string) {
   const dir = path.join(workDir(lang), type)
@@ -144,8 +173,8 @@ async function readStrings(file: string): Promise<Strings> {
 /** English id → its translation, for every category and testimonial already translated. */
 async function translatedReferences(metadata: MetadataDocument[], lang: string) {
   const translated = new Map<string, Translated>()
-  for (const { schemaTypes, translations = [] } of metadata) {
-    const type = schemaTypes?.[0]
+  for (const { schemaTypes, translations } of metadata) {
+    const [type] = schemaTypes
     if (!REMAPPED_TYPES.includes(type)) continue
     const source = translations.find(({ _key }) => _key === DEFAULT_LANGUAGE)?.value._ref
     const translation = translations.find(({ _key }) => _key === lang)?.value._ref

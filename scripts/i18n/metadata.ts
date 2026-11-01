@@ -1,5 +1,5 @@
 /**
- * The document-internationalization plugin's data shapes, copied from its source
+ * The document-internationalization plugin's metadata, built as its source builds it,
  * so the pipeline writes exactly what the Studio's Translations menu writes:
  *
  * - `node_modules/@sanity/document-internationalization/src/utils/createReference.ts`
@@ -8,21 +8,11 @@
  *
  * `sanity.config.ts` leaves `weakReferences` off, so references are strengthened on publish.
  */
+import { isReference } from 'sanity'
+import type { MetadataDocument, TranslationReference } from '@sanity/document-internationalization'
 
+// Not exported by the plugin (`METADATA_SCHEMA_NAME` in constants.ts).
 export const METADATA_TYPE = 'translation.metadata'
-
-export type TranslationReference = {
-  _key: string
-  _type: 'internationalizedArrayReferenceValue'
-  value: { _type: 'reference'; _ref: string; _weak: true; _strengthenOnPublish: { type: string } }
-}
-
-export type MetadataDocument = {
-  _id: string
-  _type: typeof METADATA_TYPE
-  schemaTypes: string[]
-  translations: TranslationReference[]
-}
 
 /** One entry of `translations`: keyed by language, a weak reference to the published id. */
 export function translationReference(
@@ -59,7 +49,7 @@ export function remapReferences<T>(value: T, translated: Map<string, Translated>
   if (typeof value !== 'object' || value === null) return value
 
   const object = value as Record<string, unknown>
-  const target = typeof object._ref === 'string' ? translated.get(object._ref) : undefined
+  const target = isReference(object) ? translated.get(object._ref) : undefined
   if (target) {
     const reference: Record<string, unknown> = { ...object, _ref: target.id }
     delete reference._weak

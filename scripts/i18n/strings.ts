@@ -7,10 +7,16 @@
  * translated file can be applied back to the same English document later.
  */
 import {
+  isArraySchemaType,
+  isBlockSchemaType,
+  isKeyedObject,
+  isObjectSchemaType,
   pathToString,
+  stringToPath,
   type ArraySchemaType,
-  type ObjectSchemaType,
+  type BlockSchemaType,
   type Path,
+  type PathSegment,
   type SchemaType,
 } from 'sanity'
 
@@ -38,55 +44,53 @@ const SKIP_FIELDS = new Set([
   // sanitypress-utils alignment fields: enum values behind a custom input, without `options.list`.
   'alignItems',
   'textAlign',
-  // Business details are always read from the English `site` document (ADR 0002).
-  'localBusiness',
 ])
 
-/** Field paths per document type that stay as they are, such as person names. */
+/** Fields per document type that stay as they are, with everything inside them. */
 const SKIP_PATHS: Record<string, string[]> = {
+  // Business details are always read from the English `site` document (ADR 0002).
+  site: ['localBusiness'],
+  // Person names aren't translated.
   testimonial: ['author.name'],
 }
 
 type Visit = (key: string, text: string) => string
 
-function isType(type: SchemaType | undefined, name: string): boolean {
-  for (let t = type; t; t = t.type) if (t.name === name) return true
+function isType(type: SchemaType | undefined, names: Set<string>): boolean {
+  for (let t = type; t; t = t.type) if (names.has(t.name)) return true
   return false
 }
 
-const isTranslatable = (type: SchemaType) =>
-  (isType(type, 'string') || isType(type, 'text')) && !type.options?.list
+const TEXT_TYPES = new Set(['string', 'text'])
+
+const segment = (item: unknown, index: number): PathSegment =>
+  isKeyedObject(item) ? { _key: item._key } : index
 
 function walk(value: unknown, type: SchemaType, path: Path, visit: Visit): unknown {
-  if (value === null || value === undefined) return value
-  if ([...SKIP_TYPES].some((name) => isType(type, name))) return value
+  if (value === null || value === undefined || isType(type, SKIP_TYPES)) return value
 
   if (type.jsonType === 'string') {
-    if (typeof value !== 'string' || !value.trim() || !isTranslatable(type)) return value
-    return visit(pathToString(path), value)
+    const translatable = isType(type, TEXT_TYPES) && !type.options?.list
+    return translatable && typeof value === 'string' && value.trim()
+      ? visit(pathToString(path), value)
+      : value
   }
 
-  if (type.jsonType === 'array') {
+  if (isArraySchemaType(type)) {
     if (!Array.isArray(value) || type.options?.list) return value
     return value.map((item, index) => {
-      const member = memberType(type as ArraySchemaType, item)
-      if (!member) return item
-      const segment = isKeyed(item) ? { _key: item._key } : index
-      return walk(item, member, [...path, segment], visit)
+      const member = memberType(type, item)
+      return member ? walk(item, member, [...path, segment(item, index)], visit) : item
     })
   }
 
-  if (type.jsonType === 'object') {
-    if (typeof value !== 'object') return value
-    if (isType(type, 'block'))
-      return walkBlock(value as Block, type as ObjectSchemaType, path, visit)
+  if (isObjectSchemaType(type) && typeof value === 'object') {
+    if (isBlockSchemaType(type)) return walkBlock(value as Block, type, path, visit)
 
     const result: Record<string, unknown> = { ...(value as Record<string, unknown>) }
-    for (const field of (type as ObjectSchemaType).fields ?? []) {
-      if (SKIP_FIELDS.has(field.name)) continue
-      if (field.name in result) {
-        result[field.name] = walk(result[field.name], field.type, [...path, field.name], visit)
-      }
+    for (const field of type.fields) {
+      if (SKIP_FIELDS.has(field.name) || !(field.name in result)) continue
+      result[field.name] = walk(result[field.name], field.type, [...path, field.name], visit)
     }
     return result
   }
@@ -94,40 +98,28 @@ function walk(value: unknown, type: SchemaType, path: Path, visit: Visit): unkno
   return value
 }
 
-type Block = { children?: { _type: string; _key?: string; text?: string }[]; markDefs?: unknown[] }
+type Span = { _type: string; _key?: string; text?: string }
+type Block = { children?: Span[]; markDefs?: unknown[] }
 
 /** Portable Text block: span texts, plus fields of inline objects and annotations. */
-function walkBlock(block: Block, type: ObjectSchemaType, path: Path, visit: Visit): Block {
+function walkBlock(block: Block, type: BlockSchemaType, path: Path, visit: Visit): Block {
   const field = (name: string) => type.fields.find((f) => f.name === name)?.type as ArraySchemaType
   const children = field('children')
-  const markDefs = field('markDefs')
 
   return {
     ...block,
     children: block.children?.map((child, index) => {
-      const childPath = [...path, 'children', child._key ? { _key: child._key } : index]
+      const childPath = [...path, 'children', segment(child, index)]
       if (child._type === 'span') {
         return typeof child.text === 'string' && child.text.trim()
           ? { ...child, text: visit(pathToString([...childPath, 'text']), child.text) }
           : child
       }
-      const member = children && memberType(children, child)
-      return member ? (walk(child, member, childPath, visit) as typeof child) : child
+      const member = memberType(children, child)
+      return member ? (walk(child, member, childPath, visit) as Span) : child
     }),
-    ...(block.markDefs && markDefs
-      ? {
-          markDefs: walk(block.markDefs, markDefs, [...path, 'markDefs'], visit) as unknown[],
-        }
-      : {}),
+    markDefs: walk(block.markDefs, field('markDefs'), [...path, 'markDefs'], visit) as unknown[],
   }
-}
-
-function isKeyed(item: unknown): item is { _key: string } {
-  return (
-    typeof item === 'object' &&
-    item !== null &&
-    typeof (item as { _key?: unknown })._key === 'string'
-  )
 }
 
 function memberType(type: ArraySchemaType, item: unknown): SchemaType | undefined {
@@ -138,23 +130,20 @@ function memberType(type: ArraySchemaType, item: unknown): SchemaType | undefine
     : type.of.find((member) => member.jsonType === typeof item)
 }
 
-function walkDocument<T extends { _type: string }>(
-  doc: T,
-  type: ObjectSchemaType,
-  visit: Visit,
-): T {
-  const skip = new Set(SKIP_PATHS[doc._type] ?? [])
-  const guarded: Visit = (key, text) => (skip.has(stripKeys(key)) ? text : visit(key, text))
+function walkDocument<T extends { _type: string }>(doc: T, type: SchemaType, visit: Visit): T {
+  const skipped = SKIP_PATHS[doc._type] ?? []
+  const guarded: Visit = (key, text) => {
+    // Field names only: `faq[_key=="x"].question` → `faq.question`.
+    const fields = stringToPath(key)
+      .filter((s) => typeof s === 'string')
+      .join('.')
+    return skipped.some((p) => fields === p || fields.startsWith(`${p}.`)) ? text : visit(key, text)
+  }
   return walk(doc, type, [], guarded) as T
 }
 
-/** `author.name` for `author.name`, `faq[_key=="x"].question` → `faq.question`. */
-function stripKeys(key: string) {
-  return key.replace(/\[[^\]]*\]/g, '')
-}
-
 /** Every translatable string in `doc`, keyed by its path. */
-export function flatten(doc: { _type: string }, type: ObjectSchemaType): Strings {
+export function flatten(doc: { _type: string }, type: SchemaType): Strings {
   const strings: Strings = {}
   walkDocument(doc, type, (key, text) => {
     strings[key] = text
@@ -170,7 +159,7 @@ export function flatten(doc: { _type: string }, type: ObjectSchemaType): Strings
  */
 export function unflatten<T extends { _type: string }>(
   doc: T,
-  type: ObjectSchemaType,
+  type: SchemaType,
   translations: Strings,
 ) {
   const missing: string[] = []

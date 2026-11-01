@@ -5,7 +5,8 @@ import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { parseArgs } from 'node:util'
 import { createClient } from 'next-sanity'
-import { createSchema, type ObjectSchemaType } from 'sanity'
+import { codeInput } from '@sanity/code-input'
+import { createSchema, type ObjectSchemaType, type SchemaTypeDefinition } from 'sanity'
 import { DEFAULT_LANGUAGE, supportedLanguages } from '@/lib/languages'
 import { schemaTypes } from '@/sanity/schemaTypes'
 import { translatableTypes } from '@/sanity/schemaTypes/utils/language'
@@ -69,13 +70,10 @@ export const client = createClient({
 /** English originals are always the published version. */
 export const published = client.withConfig({ perspective: 'published' })
 
-// `code` comes from the @sanity/code-input plugin, not `schemaTypes`. Code is never exported, so a stub is enough.
+// `code` comes from the @sanity/code-input plugin, not `schemaTypes`.
 const schema = createSchema({
   name: 'default',
-  types: [
-    ...schemaTypes,
-    { name: 'code', type: 'object', fields: [{ name: 'code', type: 'text' }] },
-  ],
+  types: [...schemaTypes, ...(codeInput().schema?.types as SchemaTypeDefinition[])],
 })
 
 export function documentType(name: string) {
