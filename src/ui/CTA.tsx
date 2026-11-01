@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import LocalizedLink from '@/ui/LocalizedLink'
 import resolveUrl from '@/lib/resolveUrl'
 import { stegaClean } from 'next-sanity'
 import { cn } from '@/lib/utils'
@@ -65,7 +65,7 @@ export default function CTA({
   if (link?.type === 'internal' && link.internal)
     return (
       <Button asChild {...buttonProps}>
-        <Link
+        <LocalizedLink
           href={resolveUrl(link.internal, {
             base: false,
             params: link.params,
@@ -73,7 +73,7 @@ export default function CTA({
           {...rest}
         >
           {content}
-        </Link>
+        </LocalizedLink>
       </Button>
     )
 

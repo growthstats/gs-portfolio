@@ -7,7 +7,7 @@ import CTAList from '@/ui/CTAList'
 import Toggle from './Toggle'
 import { cn } from '@/lib/utils'
 import css from './Header.module.css'
-import type { Lang } from '@/lib/i18n'
+import { localizePath, type Lang } from '@/lib/i18n'
 
 export default async function Header({ lang }: { lang: Lang }) {
   const { title, logo, ctas } = await getSite(lang)
@@ -25,7 +25,10 @@ export default async function Header({ lang }: { lang: Lang }) {
     >
       <div className={cn(css.header, 'mx-auto grid max-w-screen-xl items-center gap-x-6 p-4')}>
         <div className="[grid-area:logo]">
-          <Link className={cn('h4 md:h3 grid', logo?.image && 'max-w-3xs')} href="/">
+          <Link
+            className={cn('h4 md:h3 grid', logo?.image && 'max-w-3xs')}
+            href={localizePath('/', lang)}
+          >
             {logoImage ? (
               <Img
                 className="inline-block max-h-[1.2em] w-auto"
