@@ -50,6 +50,17 @@ export function localizePath(path: string, lang: Lang = DEFAULT_LANG) {
   return path === '/' ? `/${lang}` : `/${lang}${path}`
 }
 
+/**
+ * Localizes an English href, keeping its query or hash: `/?a=1` → `/de?a=1`.
+ * Anything that isn't a root-relative path (`https:`, `mailto:`, `//cdn`, `#top`) is returned as is.
+ */
+export function localizeHref(href: string, lang: Lang = DEFAULT_LANG) {
+  if (!href.startsWith('/') || href.startsWith('//')) return href
+  const end = href.search(/[?#]/)
+  if (end === -1) return localizePath(href, lang)
+  return localizePath(href.slice(0, end), lang) + href.slice(end)
+}
+
 /** Site settings singleton per language: `site` for English, `site-<lang>` for the rest (ADR 0002). */
 export function siteDocumentId(lang: string) {
   return lang === DEFAULT_LANG ? 'site' : `site-${lang}`

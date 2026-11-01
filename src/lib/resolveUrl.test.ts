@@ -37,4 +37,13 @@ describe('resolveUrl', () => {
     ).toBe('/de/services#faq')
     expect(resolveUrl(page('page', 'services'), { base: false, language: 'fr' })).toBe('/services')
   })
+
+  it('localizes params that continue the path', () => {
+    expect(
+      resolveUrl(page('page', 'index'), { base: false, language: 'de', params: 'services' }),
+    ).toBe('/de/services')
+    expect(resolveUrl(page('page', 'index'), { base: false, language: 'de', params: '?a=1' })).toBe(
+      '/de?a=1',
+    )
+  })
 })
