@@ -18,7 +18,7 @@ type SectionProps = {
 }
 
 export default async function Section({ data, dataSanity, renderModule }: Readonly<SectionProps>) {
-  const { headingBadge, icon, module } = data
+  const { _type, _key, options, headingBadge, icon, module } = data
 
   const badge = sanitizeString(headingBadge)
   const iconName = sanitizeString(icon)
@@ -35,7 +35,7 @@ export default async function Section({ data, dataSanity, renderModule }: Readon
     : []
 
   return (
-    <section {...moduleProps(data)} data-sanity={dataSanity}>
+    <section {...moduleProps({ _type, _key, options })} data-sanity={dataSanity}>
       <div className="section space-y-8">
         <div className="mx-auto flex w-full max-w-4xl flex-col items-center gap-4 text-center">
           {(IconComponent || badge) && (
