@@ -51,12 +51,14 @@
     margin: 1.75rem 0;
   }
 
+  /* Block margins only: the inline margins belong to the image's
+     `full-bleed` and `mx-auto` utilities, which this unlayered CSS would beat. */
   & img {
-    margin: 1.75rem 0;
+    margin-block: 1.75rem;
   }
 
   & figure {
-    margin: 2rem 0;
+    margin-block: 2rem;
   }
 
   & hr {
