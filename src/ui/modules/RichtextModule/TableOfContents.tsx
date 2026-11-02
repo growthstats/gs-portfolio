@@ -3,6 +3,7 @@
 import { useEffect } from 'react'
 import { cn, slug } from '@/lib/utils'
 import { stegaClean } from 'next-sanity'
+import { useDictionary } from '@/i18n/DictionaryProvider'
 import css from './TableOfContents.module.css'
 
 export default function TableOfContents({
@@ -13,6 +14,8 @@ export default function TableOfContents({
     style: string
   }[]
 }>) {
+  const { richtext } = useDictionary()
+
   useEffect(() => {
     if (typeof document === 'undefined') return
 
@@ -49,7 +52,9 @@ export default function TableOfContents({
 
   return (
     <details className={cn(css.root, 'group accordion max-lg:bg-ink/3 max-lg:p-3')} open>
-      <summary className="font-bold lg:group-open:after:invisible">Table of Contents</summary>
+      <summary className="font-bold lg:group-open:after:invisible">
+        {richtext.tableOfContents}
+      </summary>
 
       <ol className="anim-fade-to-b mt-2 leading-tight">
         {headings?.map(({ text, style }, key) => (
