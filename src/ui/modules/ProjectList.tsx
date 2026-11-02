@@ -66,7 +66,7 @@ export default function ProjectList({
               {project.ctas && project.ctas.length > 0 && (
                 <div className="flex flex-wrap items-center justify-center gap-2">
                   {project.ctas.map((cta, i) => (
-                    <CTA key={i} {...cta} className="text-xs" />
+                    <CTA key={i} link={cta.link} style={cta.style} className="text-xs" />
                   ))}
                 </div>
               )}
@@ -86,7 +86,7 @@ export default function ProjectList({
 
               {project.ctaEnabled && project.cta && (
                 <div className="pt-2">
-                  <CTA {...project.cta} />
+                  <CTA link={project.cta.link} style={project.cta.style} />
                 </div>
               )}
             </article>
