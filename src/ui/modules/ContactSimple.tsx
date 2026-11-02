@@ -90,12 +90,15 @@ export default function ContactSimple({ title, excerpt, ctas = [] }: Readonly<Co
             {ctas.map((cta) => (
               <CTA
                 className="shadow-(--shadow-badge) max-sm:w-full"
-                {...cta}
+                link={cta?.link}
                 style={cta?.style ?? 'default'}
                 key={cta?._key}
               >
-                <CustomIcon />
-                {cta.link?.label}
+                {/* One child: CTA hands it to a client Link, which warns on an unkeyed array */}
+                <>
+                  <CustomIcon />
+                  {cta.link?.label}
+                </>
               </CTA>
             ))}
           </div>
