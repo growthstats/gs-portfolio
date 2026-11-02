@@ -166,6 +166,15 @@ const de = {
   languageSwitcher: {
     label: 'Sprache',
   },
+  richtext: {
+    tableOfContents: 'Inhaltsverzeichnis',
+    imageSource: 'Quelle',
+  },
+  draftMode: {
+    label: 'Entwurfsmodus',
+    globalModules: 'Globale Module',
+    disable: 'Entwurfsmodus beenden',
+  },
   fallbackNotice: {
     message: 'Diese Seite ist noch nicht auf Deutsch verfügbar. Sie sehen die englische Version.',
     dismiss: 'Hinweis schließen',

@@ -39,7 +39,7 @@ export default function PostPreviewLarge({
 
         <div className="mx-auto max-w-lg space-y-4">
           <Heading as="h2" variant="h2" className="md:h1">
-            <Link href={resolveUrl(post, { base: false })}>
+            <Link href={resolveUrl(post, { base: false, language: lang })}>
               <span className="absolute inset-0" />
               {displayTitle}
             </Link>

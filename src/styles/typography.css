@@ -1,23 +1,30 @@
 @layer utilities {
-	.eyebrow {
-		@apply uppercase tracking-eyebrow text-sm font-semibold opacity-80;
-	}
+  .eyebrow {
+    @apply tracking-eyebrow text-sm font-semibold uppercase opacity-80;
+  }
 
-	.subtitle {
-		@apply text-base leading-subtitle md:text-lg md:leading-8 opacity-90;
-	}
+  .subtitle {
+    @apply leading-subtitle text-base opacity-90 md:text-lg md:leading-8;
+  }
 
-	.section-badge {
-		@apply inline-flex items-center gap-1 rounded-full border border-ink/20 bg-ink/5 px-2 py-0.5 text-xs font-medium tracking-wide transition-colors;
-	}
+  .section-badge {
+    @apply border-ink/20 bg-ink/5 inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-xs font-medium tracking-wide transition-colors;
+  }
 
-	.text-balance {
-		text-wrap: balance;
-	}
+  .text-balance {
+    text-wrap: balance;
+  }
 
-	@supports not (text-wrap: balance) {
-		.text-balance {
-			text-wrap: pretty;
-		}
-	}
+  /* German compounds (Suchmaschinenoptimierung) can be wider than a phone. Hyphenate
+     them, and break anywhere as a last resort where the browser has no German dictionary. */
+  :lang(de) :is(h1, h2, h3, h4, h5, h6) {
+    hyphens: auto;
+    overflow-wrap: anywhere;
+  }
+
+  @supports not (text-wrap: balance) {
+    .text-balance {
+      text-wrap: pretty;
+    }
+  }
 }
