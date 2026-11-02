@@ -163,6 +163,15 @@ const en = {
   languageSwitcher: {
     label: 'Language',
   },
+  richtext: {
+    tableOfContents: 'Table of Contents',
+    imageSource: 'Source',
+  },
+  draftMode: {
+    label: 'Draft Mode',
+    globalModules: 'Global modules',
+    disable: 'Disable Draft Mode',
+  },
   fallbackNotice: {
     // Never shown in English, the fallback language; kept for the `Dictionary` shape.
     message: `This page hasn't been translated yet, so it's shown in English.`,

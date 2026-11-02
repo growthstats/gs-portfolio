@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { VscSymbolField, VscBeakerStop } from 'react-icons/vsc'
 import { createDataAttribute, stegaClean } from 'next-sanity'
 import { parseLangFromPath } from '@/lib/i18n'
+import { useDictionary } from '@/i18n/DictionaryProvider'
 
 export default function DraftModeControls({
   globalModules,
@@ -16,6 +17,7 @@ export default function DraftModeControls({
   // if (!['live', 'unknown'].includes(environment)) return null
 
   const pathname = usePathname()
+  const { draftMode } = useDictionary()
 
   const filteredGlobalModules = globalModules
     ?.filter(({ path, excludePaths: ex }) => {
@@ -28,7 +30,7 @@ export default function DraftModeControls({
 
   return (
     <details className="frosted-glass fixed right-4 bottom-0 rounded-t bg-amber-200/90 text-xs shadow-xl not-hover:opacity-50 open:opacity-100">
-      <summary className="p-2">Draft Mode</summary>
+      <summary className="p-2">{draftMode.label}</summary>
 
       <menu className="anim-fade-to-r p-2 pt-0">
         {filteredGlobalModules?.map(({ _id, path }) => {
@@ -45,7 +47,7 @@ export default function DraftModeControls({
                 data-sanity={attr().toString()}
               >
                 <VscSymbolField className="shrink-0" />
-                Global modules (<code>{path}</code>)
+                {draftMode.globalModules} (<code>{path}</code>)
               </button>
             </li>
           )
@@ -59,7 +61,7 @@ export default function DraftModeControls({
             href="/api/draft-mode/disable"
           >
             <VscBeakerStop className="shrink-0" />
-            Disable Draft Mode
+            {draftMode.disable}
           </a>
         </li>
       </menu>

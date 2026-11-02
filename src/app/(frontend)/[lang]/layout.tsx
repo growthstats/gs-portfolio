@@ -17,6 +17,8 @@ import { notFound } from 'next/navigation'
 import { enabledLanguages, isEnabledLanguage } from '@/lib/i18n'
 import { getDictionary } from '@/i18n'
 import DictionaryProvider from '@/i18n/DictionaryProvider'
+import { NotFoundProvider } from '@/ui/NotFoundContent'
+import NotFoundModules from '@/ui/NotFoundModules'
 
 export function generateStaticParams() {
   return enabledLanguages.map((lang) => ({ lang }))
@@ -48,7 +50,9 @@ export default async function RootLayout({
             <Announcement />
             <Header lang={lang} />
             <main id="main-content" role="main" tabIndex={-1}>
-              {children}
+              <NotFoundProvider content={<NotFoundModules lang={lang} />}>
+                {children}
+              </NotFoundProvider>
             </main>
             <Footer lang={lang} />
 
