@@ -38,7 +38,8 @@ export async function generateMetadata({ params }: Props) {
   return processMetadata(page)
 }
 
-export async function generateStaticParams({ params: { lang } }: { params: { lang: Lang } }) {
+// Next types `lang` as a plain string here; it is only passed to GROQ.
+export async function generateStaticParams({ params: { lang } }: { params: { lang: string } }) {
   // Each language's own documents, plus the English ones it renders as fallbacks.
   const slugs = await client.fetch<string[]>(
     groq`array::unique(*[
