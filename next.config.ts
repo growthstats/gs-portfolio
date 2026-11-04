@@ -13,6 +13,9 @@ const client = createClient({
 })
 
 export default {
+  // Memoizes components automatically; `eslint-plugin-react-hooks` flags code it can't compile.
+  reactCompiler: true,
+
   images: {
     dangerouslyAllowSVG: true,
     remotePatterns: [
