@@ -55,7 +55,11 @@ function Crumb({
   const content = (
     <>
       <span itemProp="name" hidden={hidden}>
-        {stegaClean(children || link?.label || link?.internal?.title || link?.external)}
+        {
+          stegaClean(
+            children || link?.label || link?.internal?.title || link?.external,
+          ) as React.ReactNode
+        }
       </span>
       <meta itemProp="position" content={position.toString()} />
     </>

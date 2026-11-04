@@ -17,12 +17,14 @@ import {
   withTranslationLinks,
   type LocalizedResult,
 } from '@/sanity/lib/localized'
-import { DEFAULT_LANG, type Lang } from '@/lib/i18n'
+import { DEFAULT_LANG, isEnabledLanguage, type Lang } from '@/lib/i18n'
 import { cache } from 'react'
 import errors from '@/lib/errors'
 
 export default async function Page({ params }: Props) {
   const { lang, slug } = await params
+  // Next types route params as strings; the proxy only lets enabled languages through.
+  if (!isEnabledLanguage(lang)) notFound()
   const post = await getPost({ lang, slug })
   if (!post) notFound()
   return (
@@ -40,7 +42,7 @@ export async function generateMetadata({ params }: Props) {
   return processMetadata(post)
 }
 
-export async function generateStaticParams({ params: { lang } }: { params: { lang: Lang } }) {
+export async function generateStaticParams({ params: { lang } }: { params: { lang: string } }) {
   // Each language's own documents, plus the English ones it renders as fallbacks.
   const slugs = await client.fetch<string[]>(
     groq`array::unique(*[
@@ -55,6 +57,7 @@ export async function generateStaticParams({ params: { lang } }: { params: { lan
 }
 
 function getPost({ lang, slug }: Params) {
+  if (!isEnabledLanguage(lang)) notFound()
   return fetchPost(lang, slug.join('/'))
 }
 
@@ -102,7 +105,7 @@ const fetchPost = cache(async (lang: Lang, slug: string) => {
   return post && withTranslationLinks(post)
 })
 
-type Params = { lang: Lang; slug: string[] }
+type Params = { lang: string; slug: string[] }
 
 type Props = {
   params: Promise<Params>

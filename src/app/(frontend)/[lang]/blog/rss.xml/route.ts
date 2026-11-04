@@ -5,15 +5,17 @@ import resolveUrl from '@/lib/resolveUrl'
 import { Feed } from 'feed'
 import { escapeHTML, toHTML } from '@portabletext/to-html'
 import { urlFor } from '@/sanity/lib/image'
-import { enabledLanguages, type Lang } from '@/lib/i18n'
+import { enabledLanguages, isEnabledLanguage } from '@/lib/i18n'
 import { IN_LANGUAGE, SITE } from '@/sanity/lib/localized'
 
 export function generateStaticParams() {
   return enabledLanguages.map((lang) => ({ lang }))
 }
 
-export async function GET(_request: Request, { params }: { params: Promise<{ lang: Lang }> }) {
+export async function GET(_request: Request, { params }: { params: Promise<{ lang: string }> }) {
   const { lang } = await params
+  // Next types route params as strings; the proxy only lets enabled languages through.
+  if (!isEnabledLanguage(lang)) return new Response('Not found', { status: 404 })
 
   const { blog, posts, copyright } = await fetchSanityLive<{
     blog: Sanity.Page
