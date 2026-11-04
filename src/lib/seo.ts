@@ -1,5 +1,5 @@
 import { stegaClean } from 'next-sanity'
-import resolveUrl from './resolveUrl'
+import resolveUrl, { type UrlSource } from './resolveUrl'
 import { BASE_URL } from './env'
 import { DEFAULT_LANG, isSupportedLanguage, type Lang } from './i18n'
 
@@ -10,7 +10,7 @@ export const OG_LOCALES: Record<Lang, string> = {
 }
 
 /** A document's language; documents written before the backfill count as English. */
-export function documentLanguage(doc: { language?: string }): Lang {
+export function documentLanguage(doc: { language?: string | null }): Lang {
   const language = stegaClean(doc.language)
   return isSupportedLanguage(language) ? language : DEFAULT_LANG
 }
@@ -19,7 +19,7 @@ export function documentLanguage(doc: { language?: string }): Lang {
  * A document's absolute URL in its own language. A fallback is the English
  * document, so its canonical is the English URL (ADR 0002).
  */
-export function canonicalUrl(doc: Sanity.PageBase) {
+export function canonicalUrl(doc: UrlSource & { language?: string | null }) {
   return BASE_URL + resolveUrl(doc, { base: false, language: documentLanguage(doc) })
 }
 

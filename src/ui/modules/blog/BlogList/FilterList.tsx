@@ -1,3 +1,4 @@
+import type { BlogPostPreview } from '@/sanity/queries/blog.groq'
 import { Suspense } from 'react'
 import Filter from './Filter'
 import { cn } from '@/lib/utils'
@@ -5,7 +6,7 @@ import { getDictionary } from '@/i18n'
 import type { Lang } from '@/lib/i18n'
 
 /** Filters by the categories the listed posts show. */
-export default function FilterList({ lang, posts }: { lang: Lang; posts: Sanity.BlogPost[] }) {
+export default function FilterList({ lang, posts }: { lang: Lang; posts: BlogPostPreview[] }) {
   const { blog } = getDictionary(lang)
 
   const categories = [
@@ -15,7 +16,7 @@ export default function FilterList({ lang, posts }: { lang: Lang; posts: Sanity.
         .filter(Boolean)
         .map((category) => [category._id, category]),
     ).values(),
-  ].sort((a, b) => a.title.localeCompare(b.title))
+  ].sort((a, b) => (a.title ?? '').localeCompare(b.title ?? ''))
 
   return (
     <fieldset>
@@ -49,8 +50,8 @@ export default function FilterList({ lang, posts }: { lang: Lang; posts: Sanity.
             {categories.map((category) => (
               <Filter
                 key={category._id ?? category.title}
-                label={category.title}
-                value={category.slug?.current ?? category.title}
+                label={category.title ?? undefined}
+                value={category.slug?.current ?? category.title ?? undefined}
               />
             ))}
           </Suspense>

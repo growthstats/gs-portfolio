@@ -1,3 +1,4 @@
+import type { BlogPostPreview } from '@/sanity/queries/blog.groq'
 import Link from 'next/link'
 
 import resolveUrl from '@/lib/resolveUrl'
@@ -13,25 +14,25 @@ import type { Lang } from '@/lib/i18n'
 export default function PostPreviewLarge({
   lang,
   post,
-}: Readonly<{ lang: Lang; post: Sanity.BlogPost }>) {
+}: Readonly<{ lang: Lang; post: BlogPostPreview }>) {
   if (!post) return null
   const { blog } = getDictionary(lang)
-  const displayTitle = post.title || post.metadata.title
+  const displayTitle = post.title || post.metadata?.title
 
   return (
     <div className="group relative isolate overflow-hidden rounded-2xl p-4 shadow-(--shadow-card) md:p-5">
       <div className="grid items-center gap-x-8 gap-y-4 md:grid-cols-2">
-        <figure className="bg-ink/5 relative aspect-video overflow-hidden rounded-2xl md:self-start">
+        <figure className="relative aspect-video overflow-hidden rounded-2xl bg-ink/5 md:self-start">
           <Img
             className="aspect-video w-full object-cover transition-all group-hover:scale-105 group-hover:brightness-110"
-            image={post.metadata.image}
+            image={post.metadata?.image}
             width={800}
             alt={displayTitle}
             loading="eager"
           />
 
           {post.featured && (
-            <span className="action absolute top-0 right-4 rounded-t-none py-1 text-xs shadow-md">
+            <span className="absolute top-0 right-4 action rounded-t-none py-1 text-xs shadow-md">
               {blog.featured}
             </span>
           )}
@@ -45,7 +46,7 @@ export default function PostPreviewLarge({
             </Link>
           </Heading>
 
-          <p className="line-clamp-4 max-md:text-sm">{post.metadata.description}</p>
+          <p className="line-clamp-4 max-md:text-sm">{post.metadata?.description}</p>
 
           <div className="flex flex-wrap gap-x-4">
             <Date value={post.publishDate} />

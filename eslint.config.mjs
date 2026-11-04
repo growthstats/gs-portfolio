@@ -4,7 +4,7 @@ import nextTypescript from "eslint-config-next/typescript";
 
 export default defineConfig([
   {
-    ignores: [".claude/**", ".next/**"],
+    ignores: [".claude/**", ".next/**", "src/sanity/sanity.types.ts"],
   },
   ...nextVitals,
   ...nextTypescript,

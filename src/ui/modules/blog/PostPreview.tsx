@@ -1,3 +1,4 @@
+import type { BlogPostPreview } from '@/sanity/queries/blog.groq'
 import resolveUrl from '@/lib/resolveUrl'
 import { cn } from '@/lib/utils'
 import Date from '@/ui/Date'
@@ -11,13 +12,13 @@ export default function PostPreview({
   post,
   skeleton,
 }: Readonly<{
-  post?: Sanity.BlogPost
+  post?: BlogPostPreview
   skeleton?: boolean
 }>) {
   if (!post && !skeleton) return null
 
   const primaryCategory = post?.categories?.[0]
-  const displayTitle = post?.title || post?.metadata.title
+  const displayTitle = post?.title || post?.metadata?.title
 
   return (
     <figure
@@ -30,7 +31,7 @@ export default function PostPreview({
       <div className="relative">
         <Img
           className="aspect-video w-full rounded-2xl object-cover shadow-(--shadow-card) transition-all group-hover:scale-105 group-hover:brightness-110"
-          image={post?.metadata.image}
+          image={post?.metadata?.image}
           width={520}
           alt={displayTitle}
         />
@@ -42,17 +43,17 @@ export default function PostPreview({
               <Category value={primaryCategory} linked />
             </span>
           ) : skeleton ? (
-            <span className="skeleton-2 inline-block h-6 w-20 rounded-full" />
+            <span className="inline-block skeleton-2 h-6 w-20 rounded-full" />
           ) : null}
         </div>
       </div>
 
       {/* META ROW */}
-      <div className="text-ink/80 mt-4 flex items-center justify-between gap-4 text-sm">
+      <div className="mt-4 flex items-center justify-between gap-4 text-sm text-ink/80">
         <Authors authors={post?.authors} skeleton={skeleton} className="flex items-center gap-2" />
         <div className="text-right">
           {skeleton ? (
-            <span className="skeleton-2 inline-block h-4 w-16 rounded-full" />
+            <span className="inline-block skeleton-2 h-4 w-16 rounded-full" />
           ) : (
             <Date value={post?.publishDate} />
           )}

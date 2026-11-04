@@ -33,6 +33,12 @@ jobs:
 
       - run: npm ci
 
+      # Fails when a schema or `defineQuery` change wasn't followed by `npm run typegen`.
+      - name: Sanity types are up to date
+        run: |
+          npm run typegen
+          git diff --exit-code -- src/sanity/schema.json src/sanity/sanity.types.ts
+
       - name: Lint
         run: npm run lint
 

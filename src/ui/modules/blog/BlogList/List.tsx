@@ -1,5 +1,6 @@
 'use client'
 
+import type { BlogPostPreview } from '@/sanity/queries/blog.groq'
 import PostPreview from '../PostPreview'
 import { useBlogFilters } from '../store'
 import { filterPosts } from './filterPosts'
@@ -9,7 +10,7 @@ export default function List({
   posts,
   ...props
 }: {
-  posts: Sanity.BlogPost[]
+  posts: BlogPostPreview[]
 } & React.ComponentProps<'ul'>) {
   const filtered = filterPosts(posts, useBlogFilters())
   const { blog } = useDictionary()

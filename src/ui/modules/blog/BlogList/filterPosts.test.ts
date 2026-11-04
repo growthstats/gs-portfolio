@@ -1,3 +1,4 @@
+import type { BlogPostPreview } from '@/sanity/queries/blog.groq'
 import { describe, expect, it } from 'vitest'
 import { filterPosts } from './filterPosts'
 
@@ -6,10 +7,10 @@ const post = (id: string, category: string, author: string) =>
     _id: id,
     categories: [{ slug: { current: category } }],
     authors: [{ slug: { current: author } }],
-  }) as unknown as Sanity.BlogPost
+  }) as unknown as BlogPostPreview
 
 const posts = [post('a', 'seo', 'ana'), post('b', 'ads', 'ana'), post('c', 'seo', 'ben')]
-const ids = (result: Sanity.BlogPost[]) => result.map((p) => p._id)
+const ids = (result: BlogPostPreview[]) => result.map((p) => p._id)
 
 describe('filterPosts', () => {
   it('keeps every post with no filters', () => {
