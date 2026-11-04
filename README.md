@@ -65,12 +65,6 @@ In your new Sanity Studio, publish the **required** `site` and `page` documents.
 
 Read the [Getting Started docs](https://sanitypress.dev/docs/getting-started) for more information.
 
-Alternatively, you can import the [demo site](https://demo.sanitypress.dev) dataset:
-
-```sh
-sanity dataset import src/sanity/demo.tar.gz
-```
-
 ### 4. Set up deployments
 
 #### 1. Create a GitHub repository
