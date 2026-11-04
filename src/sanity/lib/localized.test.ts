@@ -154,6 +154,49 @@ describe('localizedRef and localizedRefs', () => {
   })
 })
 
+describe('after the document-internationalization v6 migration', () => {
+  // The migration moves the language from `_key` to `language` and gives each entry a random key.
+  const migrated = dataset.map((doc) =>
+    'translations' in doc
+      ? {
+          ...doc,
+          translations: doc.translations.map(({ _key, ...entry }, i) => ({
+            ...entry,
+            _key: `k${i}`,
+            language: _key,
+          })),
+        }
+      : doc,
+  )
+
+  it('finds translations by their language field', async () => {
+    const slugs = (lang: string) =>
+      query(`*[_type == 'page' && ${IN_LANGUAGE}] | order(_id) { _id }._id`, lang, migrated)
+
+    expect(await slugs('de')).toEqual(['about-en', 'legacy', 'pricing-en', 'services-de'])
+    expect(await slugs('en')).toEqual(['about-en', 'legacy', 'pricing-en', 'services-en'])
+  })
+
+  it('lists translation languages and follows references', async () => {
+    expect(
+      await query(`*[_id == 'services-de'][0]{ ${LOCALIZED_FIELDS} }`, 'de', migrated),
+    ).toEqual({
+      isFallback: false,
+      translations: [
+        { lang: 'en', slug: 'services' },
+        { lang: 'de', slug: 'services' },
+      ],
+    })
+    expect(
+      await query(
+        `*[_id == 'site'][0]{ 'menu': ${localizedRef('headerMenu')}.title }`,
+        'de',
+        migrated,
+      ),
+    ).toEqual({ menu: 'Menü' })
+  })
+})
+
 describe('withTranslationLinks', () => {
   const doc = (translations: { lang: string; slug?: string }[]) =>
     ({ _type: 'page', isFallback: false, translations }) as unknown as Sanity.PageBase & {

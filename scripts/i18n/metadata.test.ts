@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  languageOf,
   metadataDocument,
   remapReferences,
   translationReference,
@@ -9,7 +10,8 @@ import {
 describe('translationReference', () => {
   it('matches the plugin’s createReference with strengthening on publish', () => {
     expect(translationReference('de', 'abc', 'page')).toEqual({
-      _key: 'de',
+      language: 'de',
+      _key: expect.any(String),
       _type: 'internationalizedArrayReferenceValue',
       value: {
         _type: 'reference',
@@ -28,6 +30,13 @@ describe('translationReference', () => {
       schemaTypes: ['page'],
       translations: [source],
     })
+  })
+})
+
+describe('languageOf', () => {
+  it('reads the language field, or the key of an entry from before the v6 migration', () => {
+    expect(languageOf({ _key: 'x1y2', language: 'de' })).toBe('de')
+    expect(languageOf({ _key: 'de' })).toBe('de')
   })
 })
 

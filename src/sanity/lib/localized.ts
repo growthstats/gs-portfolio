@@ -12,12 +12,18 @@ import { DEFAULT_LANG, isEnabledLanguage, localizePath } from '@/lib/i18n'
 /** A document's language; documents written before the backfill count as English. */
 export const LANGUAGE = groq`coalesce(language, '${DEFAULT_LANG}')`
 
-/** The plugin's translation entries for the document whose id `id` evaluates to. */
+/**
+ * The plugin's translation entries for the document whose id `id` evaluates to.
+ * document-internationalization v6 stores each entry's language in `language`
+ * with a random `_key`; entries written before its migration hold it in `_key`.
+ * Both are read until the migration has run on every dataset (ADR 0005, #118).
+ */
 const translationsOf = (id: string) =>
   groq`*[_type == 'translation.metadata' && references(${id})][0].translations`
 
 /** The `$lang` translation of the document whose id `id` evaluates to, or null. */
-const translationOf = (id: string) => groq`${translationsOf(id)}[_key == $lang][0].value->`
+const translationOf = (id: string) =>
+  groq`${translationsOf(id)}[language == $lang || _key == $lang][0].value->`
 
 /**
  * Filter: the document is in `$lang`, or it is English and has no `$lang`
@@ -51,7 +57,7 @@ export const LOCALIZED_FIELDS = groq`
 	'isFallback': ${LANGUAGE} != $lang,
 	'translations': coalesce(
 		${translationsOf('^._id')}[defined(value->)]{
-			'lang': _key,
+			'lang': coalesce(language, _key),
 			'slug': value->metadata.slug.current
 		},
 		[{ 'lang': ${LANGUAGE}, 'slug': metadata.slug.current }]
