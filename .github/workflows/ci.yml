@@ -48,6 +48,6 @@ jobs:
           key: next-${{ hashFiles('package-lock.json') }}-${{ hashFiles('src/**', '*.ts', '*.mjs') }}
           restore-keys: next-${{ hashFiles('package-lock.json') }}-
 
-      # Lint already ran above; next build still type-checks
+      # next build type-checks but no longer lints (Next 16); lint ran above
       - name: Build
-        run: npm run build -- --no-lint
+        run: npm run build

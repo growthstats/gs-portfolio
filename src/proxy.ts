@@ -1,8 +1,8 @@
-import { NextResponse, type NextRequest, type MiddlewareConfig } from 'next/server'
+import { NextResponse, type NextRequest, type ProxyConfig } from 'next/server'
 import { DEFAULT_LANG, isEnabledLanguage, parseLangFromPath } from './lib/i18n'
 
 // Pure pathname work (ADR 0001): no Sanity fetch, no cookies, no geo.
-export default function middleware(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl
   const { lang, path } = parseLangFromPath(pathname)
 
@@ -20,7 +20,7 @@ export default function middleware(request: NextRequest) {
   return NextResponse.next()
 }
 
-export const config: MiddlewareConfig = {
+export const config: ProxyConfig = {
   matcher: [
     // Everything except API routes, the Studio, Next internals and files with an extension…
     '/((?!api|admin|_next|_vercel|sitemap\\.xml|robots\\.txt|llms\\.txt|.*\\..*).*)',

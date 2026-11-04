@@ -27,3 +27,4 @@ The root layout has no `lang` param, so the header, footer and `<html lang>` can
 - The existing cookie switcher (`LanguageSwitcher/actions.ts`) and the per-request `getTranslations()` call in middleware are deleted.
 - The `/:lang/blog/:slug` rewrite in `next.config.ts` goes away; blog URLs become `/de/blog/<slug>` natively.
 - Middleware gets cheaper than today, since there is no Sanity request per page view.
+- Since Next 16 the middleware file is `src/proxy.ts` and runs on the Node.js runtime (#121); the routing rules above are unchanged.
