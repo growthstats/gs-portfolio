@@ -32,7 +32,7 @@ export default async function RootLayout({
   params: Promise<{ lang: string }>
 }) {
   const { lang } = await params
-  // Middleware already 404s disabled prefixes; this catches paths it skips, like `/foo.php`.
+  // The proxy already 404s disabled prefixes; this catches paths it skips, like `/foo.php`.
   if (!isEnabledLanguage(lang)) notFound()
   const gaId = process.env.NEXT_PUBLIC_GA_ID
 
