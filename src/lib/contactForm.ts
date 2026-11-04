@@ -11,7 +11,8 @@ export function createContactFormSchema(errors: ContactFormErrors) {
   return z.object({
     name: z.string().trim().min(1, errors.nameRequired).max(200, tooLong(200)),
     phone: z.string().trim().min(6, errors.phoneRequired).max(40, tooLong(40)),
-    email: z.string().trim().email(errors.emailInvalid).max(320, tooLong(320)),
+    // z.email() checks before any later .trim(), so trim first and pipe into it.
+    email: z.string().trim().max(320, tooLong(320)).pipe(z.email(errors.emailInvalid)),
     // Optional; accepts bare domains like "example.com" as well as full URLs.
     website: z
       .string()

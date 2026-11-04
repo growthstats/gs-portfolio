@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { z } from 'zod'
 import { getDictionary } from '@/i18n'
 import { createContactFormSchema } from './contactForm'
 
@@ -12,7 +13,7 @@ const lead = {
 
 function errorsFor(lang: 'en' | 'de', values: Record<string, string>) {
   const result = createContactFormSchema(getDictionary(lang).contactForm.errors).safeParse(values)
-  return result.success ? {} : result.error.flatten().fieldErrors
+  return result.success ? {} : z.flattenError(result.error).fieldErrors
 }
 
 describe('createContactFormSchema', () => {
@@ -30,6 +31,17 @@ describe('createContactFormSchema', () => {
   it('reports errors in German', () => {
     expect(errorsFor('de', { ...lead, website: 'not a site' })).toEqual({
       website: ['Bitte geben Sie eine gültige Website ein'],
+    })
+  })
+
+  it('trims the email before checking it', () => {
+    const schema = createContactFormSchema(getDictionary('en').contactForm.errors)
+    expect(schema.parse({ ...lead, email: '  ada@example.com ' }).email).toBe('ada@example.com')
+  })
+
+  it('reports an overlong email by its length', () => {
+    expect(errorsFor('en', { ...lead, email: `${'a'.repeat(320)}@example.com` })).toEqual({
+      email: ['Must be at most 320 characters'],
     })
   })
 
