@@ -1,9 +1,10 @@
+import type { BlogPostPreview } from '@/sanity/queries/blog.groq'
 import { BASE_URL } from '@/lib/env'
 import { canonicalUrl, documentLanguage } from '@/lib/seo'
 import { stegaClean } from 'next-sanity'
 import JsonLd from './JsonLd'
 
-export default function BlogListSchema({ posts }: { posts: Sanity.BlogPost[] }) {
+export default function BlogListSchema({ posts }: { posts: BlogPostPreview[] }) {
   const blogPost = (posts ?? [])
     .map((post) => {
       const url = canonicalUrl(post)

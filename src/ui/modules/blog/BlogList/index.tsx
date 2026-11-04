@@ -1,12 +1,12 @@
-import { groq, stegaClean } from 'next-sanity'
+import { stegaClean } from 'next-sanity'
 import { Suspense } from 'react'
 
 import type { Lang } from '@/lib/i18n'
 import moduleProps from '@/lib/moduleProps'
 import { cn } from '@/lib/utils'
 import { fetchSanityLive } from '@/sanity/lib/fetch'
-import { IMAGE_QUERY } from '@/sanity/lib/queries'
-import { IN_LANGUAGE, localizedRefs } from '@/sanity/lib/localized'
+import { BLOG_LIST_QUERY } from '@/sanity/queries/blog.groq'
+import type { BLOG_LIST_QUERY_RESULT } from '@/sanity/sanity.types'
 import FilterList from '@/ui/modules/blog/BlogList/FilterList'
 import Pretitle from '@/ui/Pretitle'
 import CTAList from '@/ui/CTAList'
@@ -38,31 +38,13 @@ export default async function BlogList({
   filteredCategory: Sanity.BlogCategory
 }> &
   Sanity.Module) {
-  const posts = await fetchSanityLive<Sanity.BlogPost[]>({
-    query: groq`
-			*[
-				_type == 'blog.post'
-				&& ${IN_LANGUAGE}
-				${!!filteredCategory ? `&& $filteredCategory in ${localizedRefs('categories')}._id` : ''}
-			]|order(
-				${showFeaturedPostsFirst ? 'featured desc, ' : ''}
-				publishDate desc
-			)
-			${limit ? `[0...${limit}]` : ''}
-			{
-				...,
-				'categories': ${localizedRefs('categories')},
-				authors[]->,
-				metadata{
-					...,
-					image { ${IMAGE_QUERY} }
-				}
-			}
-		`,
+  const posts = await fetchSanityLive<BLOG_LIST_QUERY_RESULT>({
+    query: BLOG_LIST_QUERY,
     params: {
       lang,
       filteredCategory: filteredCategory?._id || '',
-      limit: limit ?? 0,
+      featuredFirst: !!showFeaturedPostsFirst,
+      last: limit ? limit - 1 : -1,
     },
   })
 

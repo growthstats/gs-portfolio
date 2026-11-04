@@ -15,7 +15,7 @@ function getFormatter(lang: Lang) {
   return formatters.get(lang)!
 }
 
-export default function FormattedDate({ value }: { value?: string }) {
+export default function FormattedDate({ value }: { value?: string | null }) {
   const lang = useLang()
   if (!value) return null
 

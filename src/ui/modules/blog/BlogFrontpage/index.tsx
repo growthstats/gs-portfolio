@@ -1,10 +1,10 @@
-import { groq, stegaClean } from 'next-sanity'
+import { stegaClean } from 'next-sanity'
 import { Suspense } from 'react'
 
 import type { Lang } from '@/lib/i18n'
 import { fetchSanityLive } from '@/sanity/lib/fetch'
-import { IMAGE_QUERY } from '@/sanity/lib/queries'
-import { IN_LANGUAGE, localizedRefs } from '@/sanity/lib/localized'
+import { BLOG_FRONTPAGE_QUERY } from '@/sanity/queries/blog.groq'
+import type { BLOG_FRONTPAGE_QUERY_RESULT } from '@/sanity/sanity.types'
 
 import FilterList from '../BlogList/FilterList'
 import PostPreview from '../PostPreview'
@@ -25,26 +25,8 @@ export default async function BlogFrontpage({
     itemsPerPage: number
   }>
 >) {
-  const posts = await fetchSanityLive<Sanity.BlogPost[]>({
-    query: groq`
-			*[
-				_type == 'blog.post'
-				&& ${IN_LANGUAGE}
-			]|order(publishDate desc){
-				_type,
-				_id,
-				title,
-				featured,
-				'categories': ${localizedRefs('categories')},
-				authors[]->,
-				publishDate,
-				language,
-				metadata {
-					...,
-					image { ${IMAGE_QUERY} }
-				},
-			}
-		`,
+  const posts = await fetchSanityLive<BLOG_FRONTPAGE_QUERY_RESULT>({
+    query: BLOG_FRONTPAGE_QUERY,
     params: { lang },
   })
 

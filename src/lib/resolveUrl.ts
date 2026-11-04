@@ -2,8 +2,14 @@ import { BLOG_DIR } from './env'
 import { isSupportedLanguage, localizeHref } from './i18n'
 import { stegaClean } from 'next-sanity'
 
+/** What a URL is built from: a page or post, from hand-written types or a TypeGen result. */
+export type UrlSource = {
+  _type?: string
+  metadata?: { slug?: { current?: string } | null } | null
+}
+
 export default function resolveUrl(
-  page?: Sanity.PageBase,
+  page?: UrlSource | null,
   {
     base = true,
     params,

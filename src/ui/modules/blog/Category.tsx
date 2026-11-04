@@ -3,12 +3,15 @@ import { Badge } from '@/components/ui/badge'
 import LocalizedLink from '@/ui/LocalizedLink'
 import { filterHref } from './filterHref'
 
+/** A category as the blog shows it: `Sanity.BlogCategory`, or a TypeGen query result. */
+export type CategoryValue = { title?: string | null; slug?: { current?: string } | null }
+
 export default function Category({
   value,
   label,
   linked,
 }: {
-  value?: Sanity.BlogCategory
+  value?: CategoryValue | null
   label?: string
   linked?: boolean
 }) {
@@ -19,7 +22,7 @@ export default function Category({
 
   return linked ? (
     <Badge variant={'secondary'}>
-      <LocalizedLink href={filterHref('category', value?.slug.current)} {...props} />
+      <LocalizedLink href={filterHref('category', value?.slug?.current)} {...props} />
     </Badge>
   ) : (
     <div {...props} />

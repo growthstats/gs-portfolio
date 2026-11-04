@@ -67,6 +67,19 @@ defineField({
 }),
 ```
 
+### Typed GROQ queries (TypeGen)
+
+Query result types are generated from the schema and the queries, not written by hand. The blog list queries are the first ones moved; [Sanity.d.ts](mdc:src/types/Sanity.d.ts) still covers the rest until they follow.
+
+- Put the query in a module-level constant wrapped in `defineQuery`, in `src/sanity/queries/<area>.groq.ts`. See [blog.groq.ts](mdc:src/sanity/queries/blog.groq.ts). TypeGen only finds queries assigned to top-level variables, not ones written inline in a `fetchSanityLive({ query })` call.
+- The query must be static: no `${condition ? … : ''}`. Use params for what varies, e.g. `($filteredCategory == '' || …)`, `select($featuredFirst => featured, false)`, and `[0..$last]` with `-1` for no limit.
+- Interpolating constants and expression-bodied helpers (`IN_LANGUAGE`, `localizedRefs('categories')`) is fine. TypeGen can't resolve block-bodied functions, `.map()`, or a helper that passes its own parameter on to another helper.
+- Mark fragments that aren't complete queries with `// @sanity-typegen-ignore` on the line directly above, with nothing else in that comment.
+- Run `npm run typegen` after changing a query or the schema, and commit `src/sanity/schema.json` and `src/sanity/sanity.types.ts`. CI fails when they're out of date.
+- Pass the generated `<NAME>_RESULT` type to `fetchSanityLive<…>()`. It can't be inferred, because interpolated queries are typed as plain `string`.
+- Project only the fields the components read, and narrow references by `_type` (`(…)[_type == 'blog.category']{ _id, title, slug }`), or the result type becomes a union of every document type.
+- Shared components should accept the fields they read (e.g. `CategoryValue`, `UrlSource`, `ImgSource`), so both generated and hand-written types fit.
+
 ## Handling Specific Requests
 
 ### A new module

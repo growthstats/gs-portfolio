@@ -1,9 +1,17 @@
-import { Img } from '@/ui/Img'
+import { Img, type ImgSource } from '@/ui/Img'
 import { GoPerson } from 'react-icons/go'
 import { cn } from '@/lib/utils'
 import type { ComponentProps } from 'react'
 import LocalizedLink from '@/ui/LocalizedLink'
 import { filterHref } from './filterHref'
+
+/** An author as the blog shows them: `Sanity.Person`, or a TypeGen query result. */
+export type AuthorValue = {
+  _id?: string
+  name?: string | null
+  slug?: { current?: string } | null
+  image?: ImgSource | null
+}
 
 export default function Authors({
   authors,
@@ -12,7 +20,7 @@ export default function Authors({
   className,
   ...props
 }: {
-  authors?: Sanity.Person[]
+  authors?: AuthorValue[] | null
   skeleton?: boolean
   linked?: boolean
 } & ComponentProps<'ul'>) {
@@ -29,14 +37,19 @@ export default function Authors({
   )
 }
 
-function Author({ author, linked }: { author?: Sanity.Person; linked?: boolean }) {
+function Author({ author, linked }: { author?: AuthorValue; linked?: boolean }) {
   const content = (
     <>
-      <span className="bg-accent/3 grid aspect-square w-[1.7em] shrink-0 place-content-center overflow-hidden rounded-full">
+      <span className="grid aspect-square w-[1.7em] shrink-0 place-content-center overflow-hidden rounded-full bg-accent/3">
         {author?.image ? (
-          <Img className="aspect-square" image={author.image} width={60} alt={author.name} />
+          <Img
+            className="aspect-square"
+            image={author.image}
+            width={60}
+            alt={author.name ?? undefined}
+          />
         ) : (
-          <GoPerson className="text-accent/20 text-xl" />
+          <GoPerson className="text-xl text-accent/20" />
         )}
       </span>
 
