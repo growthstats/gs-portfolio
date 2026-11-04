@@ -2,13 +2,13 @@ name: CI
 
 on:
   pull_request:
-    branches: [develop]
+    branches: [develop, 'epic/**']
   push:
-    branches: [develop]
+    branches: [develop, 'epic/**']
 
 concurrency:
   group: ci-${{ github.ref }}
-  # Only PR runs are superseded; every push to develop gets checked
+  # Only PR runs are superseded; every push to develop or an epic branch gets checked
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
