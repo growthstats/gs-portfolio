@@ -2,7 +2,8 @@
 
 import { useState } from 'react'
 import { BASE_URL } from '@/lib/env'
-import { Box, Button, Flex, Popover, Spinner } from '@sanity/ui'
+import { Box, Button, Flex, Spinner } from '@sanity/ui'
+import { Popover } from '@sanity/ui/popover'
 import { VscEye, VscEyeClosed } from 'react-icons/vsc'
 
 export default function PreviewOG({ title }: { title?: string }) {
