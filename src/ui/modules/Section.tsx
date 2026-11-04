@@ -2,6 +2,7 @@ import moduleProps from '@/lib/moduleProps'
 import { stegaClean } from 'next-sanity'
 import { Sparkles } from 'lucide-react'
 import dynamicIconImports from 'lucide-react/dynamicIconImports'
+import { toPascalCase } from '@/lib/lucideIconName'
 import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
 import { Badge } from '@/components/ui/badge'
@@ -112,13 +113,22 @@ export async function loadIcon(name: string): Promise<LucideIcon> {
   return loader
 }
 
-function resolveIconImporter(name: string) {
-  const iconImports: Partial<Record<string, () => Promise<{ default: LucideIcon }>>> =
-    dynamicIconImports
+const iconImports: Partial<Record<string, () => Promise<{ default: LucideIcon }>>> =
+  dynamicIconImports
 
-  const candidates = createIconCandidates(name)
-  for (const key of candidates) {
-    const importer = iconImports[key]
+// The Studio stores PascalCase names (see lucideIconOptions), which can't be turned back into
+// slugs reliably: `Settings2` is `settings-2`, `ArrowDown01` is `arrow-down-0-1`. Index the
+// slugs by their PascalCase form instead.
+let slugsByPascalName: Map<string, string> | undefined
+
+export function resolveIconImporter(name: string) {
+  slugsByPascalName ??= new Map(
+    Object.keys(dynamicIconImports).map((slug) => [toPascalCase(slug), slug]),
+  )
+
+  for (const candidate of createIconCandidates(name)) {
+    const key = iconImports[candidate] ? candidate : slugsByPascalName.get(candidate)
+    const importer = key && iconImports[key]
     if (importer) {
       return { key, importer }
     }
