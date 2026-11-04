@@ -1,6 +1,6 @@
 ---
 name: work-issue
-description: Take one gs-portfolio GitHub issue from ready-for-agent to merged into develop. Checks blockers, claims it, implements in its own worktree, simplifies, reviews, opens the PR, fixes CI, checks the change in a local browser, merges, and logs the session and its duration in the vault. Use when the user says "/work-issue <n>" or "work on issue <n>".
+description: Take one gs-portfolio GitHub issue from ready-for-agent to merged into develop (or into its epic branch). Checks blockers, claims it, implements in its own worktree, simplifies, reviews, opens the PR, fixes CI, checks the change in a local browser, merges, and logs the session and its duration in the vault. Use when the user says "/work-issue <n>" or "work on issue <n>".
 ---
 
 # Work an issue
@@ -20,7 +20,8 @@ Never run `gh auth switch`, and never use the work account.
 1. `gh issue view <n> --comments --json title,body,labels,state,comments`.
 2. **Stop** if it isn't labelled `ready-for-agent`, or is already `in-progress`.
 3. For each `Blocked by #m` line in the body, check `gh issue view <m> --json state`. **Stop** if any blocker is still open, and name it.
-4. Read `CONTEXT.md` and every ADR the issue links from `docs/adr/`. Use the glossary's terms in code, commits and the PR.
+4. Find the **base branch**: the `Base branch: <name>` line in the body, or `develop` if there is none. **Stop** if it names anything other than `develop` or an `epic/*` branch, or if `git ls-remote --exit-code --heads origin <base>` finds no such branch. Every later step that says "the base branch" means this one.
+5. Read `CONTEXT.md` and every ADR the issue links from `docs/adr/`. Use the glossary's terms in code, commits and the PR. For an epic branch, also read [ADR 0005](../../../docs/adr/0005-epic-branches.md).
 
 ## 2. Claim
 
@@ -29,7 +30,8 @@ Never run `gh auth switch`, and never use the work account.
 
 ## 3. Set up a worktree
 
-1. If this session isn't already in its own worktree, create one from `origin/develop` on branch `<type>/<n>-<short-slug>` (`feat`, `fix` or `chore`).
+1. If this session isn't already in its own worktree, create one from `origin/<base branch>` on branch `<type>/<n>-<short-slug>` (`feat`, `fix` or `chore`). If the session is already in a worktree, make sure the branch starts from `origin/<base branch>`.
+   - **Epic base:** if `git rev-list --count origin/<base branch>..origin/develop` isn't 0, merge `origin/develop` into your branch first (`git merge --no-ff origin/develop`, never rebase), resolve any conflicts, and say so in the PR. That keeps the epic close to `develop` (ADR 0005).
 2. Link the env file: `ln -s /Users/atharvacm/technowizard/gs-portfolio/.env .env`. Never print its contents, and never commit it.
 3. `npm ci`.
 4. Write `.claude/launch.json` with one `dev` configuration: `npm run dev -- -p <port>`, where the port is `3000 + <n>`. Every parallel agent gets its own port.
@@ -75,7 +77,7 @@ Do not rely on a Vercel preview; previews are off for feature branches.
 
 ## 8. Pull request
 
-1. Push the branch and open a PR into `develop`:
+1. Push the branch and open a PR into the base branch (`gh pr create --base <base branch>`):
    - Title in Conventional Commit form.
    - Body: what changed and why, `Closes #<n>`, and the verification you did. No attribution lines.
 2. Bind it with the ccd_pr tools (`get_status`, then `bind_pr` if needed).
@@ -90,10 +92,11 @@ Do not rely on a Vercel preview; previews are off for feature branches.
 
 1. Once every check is green and the PR is mergeable, merge with `scripts/agent/merge-pr.sh <pr>`.
    - Run it exactly like that, as its own Bash call: no `GH_TOKEN=` prefix (the script sets it), no `bash` in front, no pipe, no `&&` or `;`. The permission rule only matches that exact shape; anything else is blocked as a merge without review.
-   - It is the only merge command allowed without a prompt. It refuses a PR that doesn't target `develop`, isn't mergeable or has a check that isn't green, and merges only the commit the checks ran on.
+   - It is the only merge command allowed without a prompt. It refuses a PR that doesn't target `develop` or an `epic/*` branch, merges an epic branch itself, isn't mergeable or has a check that isn't green, and merges only the commit the checks ran on.
    - Don't call `gh pr merge` yourself, and never pass `--auto`; in this repo it merges instantly.
-   - Never merge into `main`. Releases are done by a human.
-2. Close the issue by hand with a comment linking the PR. Closing keywords only fire on merges into `main`, so a merge into `develop` never closes it.
+   - Never merge into `main`, and never merge an epic branch into `develop`. Both are done by a human.
+2. Close the issue by hand with a comment linking the PR. Closing keywords only fire on merges into `main`, so a merge into `develop` or an epic branch never closes it.
+3. If the issue belongs to an epic, tick its box in the epic issue's checklist (`gh issue edit <epic> --body-file ...`, after re-reading the body).
 
 ## 11. Log
 
