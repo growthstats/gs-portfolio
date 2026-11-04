@@ -10,6 +10,7 @@ import { DEFAULT_LANG, isEnabledLanguage, localizePath } from '@/lib/i18n'
  */
 
 /** A document's language; documents written before the backfill count as English. */
+// @sanity-typegen-ignore
 export const LANGUAGE = groq`coalesce(language, '${DEFAULT_LANG}')`
 
 /**
@@ -21,27 +22,34 @@ export const LANGUAGE = groq`coalesce(language, '${DEFAULT_LANG}')`
 const translationsOf = (id: string) =>
   groq`*[_type == 'translation.metadata' && references(${id})][0].translations`
 
-/** The `$lang` translation of the document whose id `id` evaluates to, or null. */
+/**
+ * The `$lang` translation of the document whose id `id` evaluates to, or null.
+ * Repeats `translationsOf` rather than calling it: TypeGen can't follow a parameter
+ * passed on to another function, and every typed query reaches this through {@link IN_LANGUAGE}.
+ */
 const translationOf = (id: string) =>
-  groq`${translationsOf(id)}[language == $lang || _key == $lang][0].value->`
+  groq`*[_type == 'translation.metadata' && references(${id})][0].translations[language == $lang || _key == $lang][0].value->`
 
 /**
  * Filter: the document is in `$lang`, or it is English and has no `$lang`
  * translation. Keeps one document per translation group; an unlinked German
  * copy of an English document passes too, so single lookups add {@link PREFER_LANGUAGE}.
  */
+// @sanity-typegen-ignore
 export const IN_LANGUAGE = groq`(
 	${LANGUAGE} == $lang
 	|| (${LANGUAGE} == '${DEFAULT_LANG}' && !defined(${translationOf('^._id')}))
 )`
 
 /** Pipe: sorts `$lang` documents first. */
+// @sanity-typegen-ignore
 export const PREFER_LANGUAGE = groq`order(select(${LANGUAGE} == $lang => 0, 1))`
 
 /**
  * Site settings in `$lang`: `site-<lang>` when it exists, else the English
  * `site` (see `siteDocumentId`). Not linked by `translation.metadata`.
  */
+// @sanity-typegen-ignore
 export const SITE = groq`coalesce(*[_id == 'site-' + $lang][0], *[_id == 'site'][0])`
 
 /** Projection: dereferences the reference `field` in `$lang`, else the referenced document. */
@@ -53,6 +61,7 @@ export const localizedRefs = (field: string) =>
   groq`${field}[]{ 'doc': coalesce(${translationOf('^._ref')}, @->) }.doc`
 
 /** Projection fields that {@link withTranslationLinks} turns into `isFallback` and `translations`. */
+// @sanity-typegen-ignore
 export const LOCALIZED_FIELDS = groq`
 	'isFallback': ${LANGUAGE} != $lang,
 	'translations': coalesce(
