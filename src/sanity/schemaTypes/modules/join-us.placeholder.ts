@@ -1,5 +1,5 @@
 import { defineField, defineType } from 'sanity'
-import { AddUserIcon } from '@sanity/icons'
+import { AddUserIcon } from '@sanity/icons/AddUser'
 
 export default defineType({
   name: 'join-us.placeholder',
