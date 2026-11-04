@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef, useState } from 'react'
+import { useMemo, useState, type BaseSyntheticEvent } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Button } from '@/components/ui/button'
@@ -10,7 +10,6 @@ import { useDictionary } from '@/i18n/DictionaryProvider'
 export default function ContactForm() {
   const { contactForm } = useDictionary()
   const schema = useMemo(() => createContactFormSchema(contactForm.errors), [contactForm.errors])
-  const honeypotRef = useRef<HTMLInputElement>(null)
   const [submitStatus, setSubmitStatus] = useState<{
     type: 'success' | 'error'
     message: string
@@ -32,13 +31,15 @@ export default function ContactForm() {
     },
   })
 
-  const onSubmit = async (values: ContactFormValues) => {
+  const onSubmit = async (values: ContactFormValues, event?: BaseSyntheticEvent) => {
     setSubmitStatus(null)
+    const form = event?.target instanceof HTMLFormElement ? event.target : undefined
+    const honeypot = form ? new FormData(form).get(HONEYPOT_FIELD) : null
 
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
-        body: JSON.stringify({ ...values, [HONEYPOT_FIELD]: honeypotRef.current?.value }),
+        body: JSON.stringify({ ...values, [HONEYPOT_FIELD]: honeypot ?? '' }),
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -61,7 +62,6 @@ export default function ContactForm() {
     <form className="space-y-6" onSubmit={handleSubmit(onSubmit)} noValidate>
       {/* Honeypot: hidden from people and assistive tech, filled by naive bots */}
       <input
-        ref={honeypotRef}
         type="text"
         name={HONEYPOT_FIELD}
         tabIndex={-1}
@@ -79,7 +79,7 @@ export default function ContactForm() {
             id="contact-name"
             type="text"
             placeholder={contactForm.placeholders.name}
-            className="input w-full rounded-md px-4 py-2 text-sm shadow-(--shadow-card) focus:border-neutral-400"
+            className="w-full input rounded-md px-4 py-2 text-sm shadow-(--shadow-card) focus:border-neutral-400"
             aria-invalid={!!errors.name}
             {...register('name')}
           />
@@ -94,7 +94,7 @@ export default function ContactForm() {
             id="contact-phone"
             type="tel"
             placeholder={contactForm.placeholders.phone}
-            className="input w-full rounded-md px-4 py-2 text-sm shadow-(--shadow-card) focus:border-neutral-400"
+            className="w-full input rounded-md px-4 py-2 text-sm shadow-(--shadow-card) focus:border-neutral-400"
             aria-invalid={!!errors.phone}
             {...register('phone')}
           />
@@ -111,7 +111,7 @@ export default function ContactForm() {
             id="contact-email"
             type="email"
             placeholder={contactForm.placeholders.email}
-            className="input w-full rounded-md px-4 py-2 text-sm shadow-(--shadow-card) focus:border-neutral-400"
+            className="w-full input rounded-md px-4 py-2 text-sm shadow-(--shadow-card) focus:border-neutral-400"
             aria-invalid={!!errors.email}
             {...register('email')}
           />
@@ -129,7 +129,7 @@ export default function ContactForm() {
             inputMode="url"
             autoComplete="url"
             placeholder={contactForm.placeholders.website}
-            className="input w-full rounded-md px-4 py-2 text-sm shadow-(--shadow-card) focus:border-neutral-400"
+            className="w-full input rounded-md px-4 py-2 text-sm shadow-(--shadow-card) focus:border-neutral-400"
             aria-invalid={!!errors.website}
             {...register('website')}
           />
@@ -144,7 +144,7 @@ export default function ContactForm() {
         <textarea
           id="contact-message"
           rows={4}
-          className="input w-full resize-none rounded-md px-4 py-2 text-sm shadow-(--shadow-card) focus:border-neutral-400"
+          className="w-full resize-none input rounded-md px-4 py-2 text-sm shadow-(--shadow-card) focus:border-neutral-400"
           aria-invalid={!!errors.message}
           {...register('message')}
         />

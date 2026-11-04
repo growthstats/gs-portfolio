@@ -1,10 +1,11 @@
 'use client'
 
-import { ComponentProps, useEffect, useRef, useState } from 'react'
+import { ComponentProps, useEffect, useRef } from 'react'
 import moduleProps from '@/lib/moduleProps'
 
 /**
- * @description If the code includes a <script> tag, ensure the script is re-run on each render
+ * Renders code that contains a `<script>`. Scripts in `innerHTML` never run, so the code is
+ * appended as a parsed fragment after mount, and replaced whenever it changes.
  */
 export default function WithScript({
   code,
@@ -12,16 +13,14 @@ export default function WithScript({
   ...props
 }: Sanity.CustomHTML['html'] & Sanity.Module & ComponentProps<'section'>) {
   const ref = useRef<HTMLElement>(null)
-  const [firstRender, setFirstRender] = useState(true)
 
   useEffect(() => {
-    if (firstRender) {
-      setFirstRender(false)
-    } else {
-      const parsed = document.createRange().createContextualFragment(code)
-      ref.current?.appendChild(parsed)
-    }
-  }, [ref.current, code])
+    const section = ref.current
+    if (!section) return
+
+    section.appendChild(document.createRange().createContextualFragment(code))
+    return () => section.replaceChildren()
+  }, [code])
 
   return <section ref={ref} className={className} {...moduleProps(props)} />
 }
