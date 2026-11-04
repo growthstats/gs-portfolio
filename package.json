@@ -4,6 +4,9 @@
   "description": "An impressive Sanity.io starter template with Next.js 15 and Tailwind 4",
   "author": "nuotsu <mitchell@nuotsu.dev> (https://nuotsu.dev)",
   "license": "ISC",
+  "engines": {
+    "node": "24.x"
+  },
   "scripts": {
     "dev": "next dev",
     "dev:turbopack": "next dev --turbopack",
