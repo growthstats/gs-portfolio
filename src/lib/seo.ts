@@ -49,7 +49,7 @@ export function buildAlternates(doc: Sanity.Localized<Sanity.PageBase>) {
 
 /** A blog post's publish and modified dates, falling back to the document's own timestamps. */
 export function postDates(post: Sanity.BlogPost) {
-  const published = post.publishDate || post._createdAt
+  const published = stegaClean(post.publishDate) || post._createdAt
   return { published, modified: post._updatedAt || published }
 }
 
