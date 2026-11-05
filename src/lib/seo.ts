@@ -46,3 +46,16 @@ export function buildAlternates(doc: Sanity.Localized<Sanity.PageBase>) {
       .map((t) => OG_LOCALES[t.lang]),
   }
 }
+
+/** A blog post's publish and modified dates, falling back to the document's own timestamps. */
+export function postDates(post: Sanity.BlogPost) {
+  const published = post.publishDate || post._createdAt
+  return { published, modified: post._updatedAt || published }
+}
+
+/** The names of a blog post's authors, without stega markers or missing references. */
+export function postAuthorNames(post: Sanity.BlogPost): string[] {
+  return (post.authors ?? [])
+    .map((author) => stegaClean(author?.name))
+    .filter((name): name is string => Boolean(name))
+}
