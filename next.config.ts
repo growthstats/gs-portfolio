@@ -2,6 +2,7 @@ import { createClient, groq } from 'next-sanity'
 import { projectId, dataset, apiVersion } from '@/sanity/lib/env'
 // import { token } from '@/lib/sanity/token'
 import { BLOG_DIR } from '@/lib/env'
+import { indexRedirects, isIndexable } from '@/lib/indexing'
 import { sanity } from 'next-sanity/live/cache-life'
 import type { NextConfig } from 'next'
 
@@ -36,7 +37,7 @@ export default {
   },
 
   async redirects() {
-    return await client.fetch(groq`*[_type == 'redirect']{
+    const sanityRedirects = await client.fetch(groq`*[_type == 'redirect']{
 			source,
 			'destination': select(
 				destination.type == 'internal' =>
@@ -48,6 +49,8 @@ export default {
 			),
 			permanent
 		}`)
+
+    return [...indexRedirects(), ...sanityRedirects]
   },
 
   async headers() {
@@ -74,6 +77,10 @@ export default {
         source: '/:path*',
         headers: securityHeaders,
       },
+      // Keep the `develop` deploy, previews and local dev out of search results.
+      ...(isIndexable()
+        ? []
+        : [{ source: '/:path*', headers: [{ key: 'X-Robots-Tag', value: 'noindex' }] }]),
       {
         // Long-lived caching for immutable static assets
         source: '/:all*(svg|jpg|jpeg|png|gif|webp|avif|ico|woff|woff2|ttf|otf)',
