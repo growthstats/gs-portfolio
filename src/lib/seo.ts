@@ -59,3 +59,12 @@ export function postAuthorNames(post: Sanity.BlogPost): string[] {
     .map((author) => stegaClean(author?.name))
     .filter((name): name is string => Boolean(name))
 }
+
+/**
+ * The `.md` copy of a URL or path: `/services` → `/services.md`. A homepage
+ * (`/`, `/de`) has no slug to append to, so it gets `index.md`.
+ */
+export function markdownUrl(url: string, { isHome = false } = {}) {
+  const trimmed = url.replace(/\/$/, '')
+  return isHome ? `${trimmed}/index.md` : `${trimmed}.md`
+}

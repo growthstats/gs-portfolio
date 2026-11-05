@@ -17,6 +17,20 @@ const base = {
 const page = (fields: Record<string, unknown>) =>
   ({ ...base, ...fields }) as unknown as Sanity.Localized<Sanity.PageBase>
 
+describe('processMetadata alternates', () => {
+  it('links the Markdown copy of the page', async () => {
+    const { alternates } = await processMetadata(page({ _type: 'page' }))
+    expect(alternates?.types).toMatchObject({ 'text/markdown': 'https://example.com/hello.md' })
+  })
+
+  it('leaves it out for a hidden page, which has no Markdown copy', async () => {
+    const { alternates } = await processMetadata(
+      page({ _type: 'page', metadata: { ...base.metadata, noIndex: true } }),
+    )
+    expect(alternates?.types).not.toHaveProperty('text/markdown')
+  })
+})
+
 describe('processMetadata openGraph', () => {
   it('marks a blog post as an article with its dates and authors', async () => {
     const { openGraph } = await processMetadata(

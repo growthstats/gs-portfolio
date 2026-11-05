@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { buildAlternates, documentLanguage } from './seo'
+import { buildAlternates, documentLanguage, markdownUrl } from './seo'
 
 vi.hoisted(() => {
   process.env.NEXT_PUBLIC_BASE_URL = 'https://example.com'
@@ -93,5 +93,22 @@ describe('documentLanguage', () => {
     expect(documentLanguage({ language: 'de' })).toBe('de')
     expect(documentLanguage({})).toBe('en')
     expect(documentLanguage({ language: 'xx' })).toBe('en')
+  })
+})
+
+describe('markdownUrl', () => {
+  it('appends .md to a page URL', () => {
+    expect(markdownUrl('https://example.com/de/services')).toBe(
+      'https://example.com/de/services.md',
+    )
+  })
+
+  it('uses index.md for a homepage', () => {
+    expect(markdownUrl('https://example.com/', { isHome: true })).toBe(
+      'https://example.com/index.md',
+    )
+    expect(markdownUrl('https://example.com/de', { isHome: true })).toBe(
+      'https://example.com/de/index.md',
+    )
   })
 })

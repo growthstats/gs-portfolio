@@ -1,80 +1,9 @@
-import { fetchSanityLive } from '@/sanity/lib/fetch'
-import { groq, stegaClean } from 'next-sanity'
-import { BASE_URL, BLOG_DIR } from '@/lib/env'
-import { DEFAULT_LANG } from '@/lib/i18n'
-import { LANGUAGE, SITE } from '@/sanity/lib/localized'
-
-type Entry = { title?: string; slug?: string; desc?: string }
-
-const clean = (v?: string) => stegaClean(v)?.trim() || undefined
-
-function line(baseUrl: string, { title, desc }: Entry) {
-  if (!title || !baseUrl) return null
-  return desc ? `- [${title}](${baseUrl}): ${desc}` : `- [${title}](${baseUrl})`
-}
+import { BASE_URL } from '@/lib/env'
+import { llmsTxt } from '@/lib/agentIndex'
+import { fetchAgentIndex } from '@/sanity/lib/agentIndex'
 
 export async function GET() {
-  const data = await fetchSanityLive<{
-    siteTitle?: string
-    siteDesc?: string
-    pages?: Entry[]
-    posts?: Entry[]
-  }>({
-    // English only: the file lists unprefixed URLs.
-    query: groq`{
-      'siteTitle': ${SITE}.title,
-      'siteDesc': *[_type == 'page' && metadata.slug.current == 'index' && ${LANGUAGE} == $lang][0].metadata.description,
-      'pages': *[
-        _type == 'page' &&
-        ${LANGUAGE} == $lang &&
-        metadata.noIndex != true &&
-        !(metadata.slug.current in ['404', 'index'])
-      ]|order(metadata.slug.current){
-        'title': coalesce(metadata.title, title),
-        'slug': metadata.slug.current,
-        'desc': metadata.description,
-      },
-      'posts': *[_type == 'blog.post' && ${LANGUAGE} == $lang && metadata.noIndex != true]|order(publishDate desc){
-        'title': coalesce(title, metadata.title),
-        'slug': metadata.slug.current,
-        'desc': metadata.description,
-      }
-    }`,
-    params: { lang: DEFAULT_LANG },
-  })
-
-  const siteTitle = clean(data.siteTitle) || 'Growth Stats'
-  const siteDesc = clean(data.siteDesc)
-
-  const pageLines = (data.pages ?? [])
-    .filter((p) => clean(p.slug) && !clean(p.slug)!.includes('*'))
-    .map((p) =>
-      line(`${BASE_URL}/${clean(p.slug)}`, { ...p, title: clean(p.title), desc: clean(p.desc) }),
-    )
-    .filter(Boolean)
-
-  const postLines = (data.posts ?? [])
-    .map((p) =>
-      line(`${BASE_URL}/${BLOG_DIR}/${clean(p.slug) ?? ''}`, {
-        ...p,
-        title: clean(p.title),
-        desc: clean(p.desc),
-      }),
-    )
-    .filter(Boolean)
-
-  const body = [
-    `# ${siteTitle}`,
-    ...(siteDesc ? ['', `> ${siteDesc}`] : []),
-    ...(pageLines.length ? ['', '## Pages', ...pageLines] : []),
-    ...(postLines.length ? ['', '## Blog', ...postLines] : []),
-    '',
-    '## Optional',
-    `- [Sitemap](${BASE_URL}/sitemap.xml)`,
-    '',
-  ].join('\n')
-
-  return new Response(body, {
+  return new Response(llmsTxt(BASE_URL, await fetchAgentIndex()), {
     headers: {
       'Content-Type': 'text/plain; charset=utf-8',
       'Cache-Control': 'public, max-age=3600, s-maxage=3600',
