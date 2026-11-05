@@ -90,6 +90,16 @@ const TEXT_FIELDS = new Set([
   'role',
 ])
 
+/** Copy fields that head the item they belong to. */
+const HEADING_FIELDS = new Set([
+  'pretitle',
+  'title',
+  'subtitle',
+  'headingBadge',
+  'name',
+  'question',
+])
+
 /** Fields never worth descending into: references to other pages, images, styling. */
 const SKIPPED_FIELDS = new Set([
   'metadata',
@@ -118,7 +128,11 @@ function collectText(value: unknown, key: string | undefined, out: string[]) {
     return
   }
   if (value && typeof value === 'object') {
-    for (const [field, child] of Object.entries(value)) {
+    // Headings first, so a card reads "title, then text" whatever the query's field order.
+    const fields = Object.entries(value).sort(
+      ([a], [b]) => Number(!HEADING_FIELDS.has(a)) - Number(!HEADING_FIELDS.has(b)),
+    )
+    for (const [field, child] of fields) {
       if (field.startsWith('_') || SKIPPED_FIELDS.has(field)) continue
       collectText(child, field, out)
     }

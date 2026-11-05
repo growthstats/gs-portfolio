@@ -111,6 +111,15 @@ describe('moduleToMd', () => {
     ).toBe('Welcome\n\n# Grow faster\n\nBook a call')
   })
 
+  it("puts each item's title before its text", () => {
+    expect(
+      moduleToMd({
+        _type: 'service-list',
+        services: [{ summary: 'Audits and keyword planning.', title: 'SEO' }],
+      }),
+    ).toBe('SEO\n\nAudits and keyword planning.')
+  })
+
   it('walks nested items such as stats and FAQs', () => {
     expect(
       moduleToMd({
