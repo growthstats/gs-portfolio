@@ -52,7 +52,8 @@ export async function generateStaticParams({ params: { lang } }: { params: { lan
     { lang },
   )
 
-  return slugs.map((slug) => ({ slug: slug.split('/') }))
+  // The homepage has no slug segments.
+  return [{ slug: undefined }, ...slugs.map((slug) => ({ slug: slug.split('/') }))]
 }
 
 function getPage({ lang, slug }: Params) {

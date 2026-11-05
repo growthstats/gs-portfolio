@@ -2,6 +2,7 @@ import { createClient, groq } from 'next-sanity'
 import { projectId, dataset, apiVersion } from '@/sanity/lib/env'
 // import { token } from '@/lib/sanity/token'
 import { BLOG_DIR } from '@/lib/env'
+import { sanity } from 'next-sanity/live/cache-life'
 import type { NextConfig } from 'next'
 
 const client = createClient({
@@ -15,6 +16,10 @@ const client = createClient({
 export default {
   // Memoizes components automatically; `eslint-plugin-react-hooks` flags code it can't compile.
   reactCompiler: true,
+
+  // Published content stays cached until Sanity Live or the `/api/revalidate` webhook expires it.
+  cacheComponents: true,
+  cacheLife: { default: sanity },
 
   images: {
     dangerouslyAllowSVG: true,
