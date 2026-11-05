@@ -36,6 +36,16 @@ export default {
     ],
   },
 
+  // Markdown copies of pages and posts (#138). The proxy skips paths with a dot,
+  // so `/services.md` and `/de/blog/post.md` are mapped here. Real files and
+  // routes such as `/agents.md` win over these (they run after the filesystem).
+  async rewrites() {
+    return [
+      { source: '/:slug.md', destination: '/api/md/:slug' },
+      { source: '/:path+/:slug.md', destination: '/api/md/:path+/:slug' },
+    ]
+  },
+
   async redirects() {
     const sanityRedirects = await client.fetch(groq`*[_type == 'redirect']{
 			source,

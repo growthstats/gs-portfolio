@@ -1,5 +1,6 @@
+import { stegaClean } from 'next-sanity'
 import { BASE_URL, BLOG_DIR, vercelPreview } from './env'
-import { buildAlternates, postAuthorNames, postDates } from './seo'
+import { buildAlternates, markdownUrl, postAuthorNames, postDates } from './seo'
 import type { Metadata } from 'next'
 
 const isBlogPost = (page: Sanity.PageBase): page is Sanity.BlogPost => page._type === 'blog.post'
@@ -47,6 +48,10 @@ export default async function processMetadata(
       // The feed stays English-only.
       types: {
         'application/rss+xml': `/${BLOG_DIR}/rss.xml`,
+        // The page's Markdown copy, for LLM crawlers and agents (#138).
+        'text/markdown': markdownUrl(canonical, {
+          isHome: stegaClean(page.metadata.slug?.current) === 'index',
+        }),
       },
     },
   }
