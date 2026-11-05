@@ -33,6 +33,7 @@ export default defineType({
             withFilename: true,
           },
         }),
+        { type: 'table' },
         { type: 'custom-html' },
       ],
       group: 'content',

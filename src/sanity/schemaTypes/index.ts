@@ -25,6 +25,7 @@ import link from './objects/link'
 import linkList from './objects/link.list'
 import metadata from './objects/metadata'
 import moduleOptions from './objects/module-options'
+import table from './objects/table'
 
 // modules
 import accordionList from './modules/accordion-list'
@@ -90,6 +91,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   linkList,
   metadata,
   moduleOptions,
+  table,
 
   // modules
   aboutPlaceholder,
