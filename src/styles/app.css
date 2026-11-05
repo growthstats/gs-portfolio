@@ -298,22 +298,22 @@
 }
 
 @utility h1 {
-  @apply h-base text-h1 leading-h1 tracking-h1;
+  @apply text-h1 leading-h1 h-base tracking-h1;
 }
 @utility h2 {
-  @apply h-base text-h2 leading-h2;
+  @apply text-h2 leading-h2 h-base;
 }
 @utility h3 {
-  @apply h-base text-h3 leading-h3;
+  @apply text-h3 leading-h3 h-base;
 }
 @utility h4 {
-  @apply h-base text-h4 leading-h4;
+  @apply text-h4 leading-h4 h-base;
 }
 @utility h5 {
-  @apply h-base text-h5 leading-h5;
+  @apply text-h5 leading-h5 h-base;
 }
 @utility h6 {
-  @apply h-base text-h6 leading-h6;
+  @apply text-h6 leading-h6 h-base;
 }
 
 @utility technical {
@@ -327,7 +327,7 @@
 }
 
 @utility text-gradient {
-  @apply from-accent/50 to-accent bg-linear-to-br bg-clip-text text-transparent;
+  @apply bg-linear-to-br from-accent/50 to-accent bg-clip-text text-transparent;
 }
 
 /* ctas, links */
@@ -343,15 +343,15 @@
 }
 
 @utility action {
-  @apply action-base bg-accent rounded border border-transparent text-balance text-white;
+  @apply action-base rounded border border-transparent bg-accent text-balance text-white;
 }
 
 @utility action-outline {
-  @apply action-base border-accent/10 bg-canvas/50 rounded border text-balance;
+  @apply action-base rounded border border-accent/10 bg-canvas/50 text-balance;
 }
 
 @utility ghost {
-  @apply action-base frosted-glass hover:bg-accent/3 rounded;
+  @apply action-base rounded frosted-glass hover:bg-accent/3;
 }
 
 @utility link {
@@ -359,7 +359,7 @@
 }
 
 @utility input {
-  @apply border-ink/10 rounded border p-[.25em] text-start;
+  @apply rounded border border-ink/10 p-[.25em] text-start;
 }
 
 /* utilities */
@@ -511,7 +511,7 @@
   }
 
   & :not(pre) > code {
-    @apply bg-ink/10 rounded px-1;
+    @apply rounded bg-ink/10 px-1;
   }
 
   & pre {
@@ -520,16 +520,17 @@
   }
 
   & blockquote {
-    @apply border-accent/10 border-s-2 ps-4;
+    @apply border-s-2 border-accent/10 ps-4;
   }
 
-  & table {
+  /* Tables pasted as custom HTML; Portable Text tables style themselves (`RichtextModule/Table`). */
+  & table:not([data-pt-table]) {
     display: block;
     overflow-x: auto;
     text-wrap: balance;
     line-height: initial;
 
-    @apply max-md:full-bleed min-w-full;
+    @apply min-w-full max-md:full-bleed;
 
     & th,
     td {
@@ -555,13 +556,13 @@
 /* skeleton */
 
 @utility skeleton {
-  @apply bg-ink/3 h-[1lh];
+  @apply h-[1lh] bg-ink/3;
 }
 @utility skeleton-2 {
-  @apply bg-ink/3 h-[2lh];
+  @apply h-[2lh] bg-ink/3;
 }
 @utility skeleton-3 {
-  @apply bg-ink/3 h-[3lh];
+  @apply h-[3lh] bg-ink/3;
 }
 
 /* components */

@@ -4,6 +4,7 @@ import { draftMode } from 'next/headers'
 
 import { dev } from '@/lib/env'
 import { fetchSanityLive, SanityLive } from '@/sanity/lib/fetch'
+import { refreshDrafts } from '@/sanity/lib/refreshDrafts'
 
 import DraftModeControls from './DraftModeControls'
 
@@ -12,7 +13,11 @@ export default async function VisualEditingControls() {
 
   return (
     <>
-      <SanityLive includeDrafts={isEnabled || dev} />
+      <SanityLive
+        includeDrafts={isEnabled || dev}
+        // Draft mode skips the cache, so a refresh is enough there.
+        action={dev && !isEnabled ? refreshDrafts : undefined}
+      />
 
       {isEnabled && (
         <>

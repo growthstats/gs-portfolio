@@ -5288,6 +5288,9 @@ export type RichtextModule = {
       } & Code)
     | ({
         _key: string
+      } & Table)
+    | ({
+        _key: string
       } & CustomHtml)
   >
   tableOfContents?: boolean
@@ -6280,6 +6283,38 @@ export type AboutPlaceholder = {
   options?: ModuleOptions
 }
 
+export type Table = {
+  _type: 'table'
+  caption?: string
+  headerRows?: number
+  rows?: Array<{
+    cells?: Array<{
+      value?: Array<{
+        children?: Array<{
+          marks?: Array<string>
+          text?: string
+          _type: 'span'
+          _key: string
+        }>
+        style?: 'normal'
+        listItem?: 'bullet' | 'number'
+        markDefs?: Array<{
+          href?: string
+          _type: 'link'
+          _key: string
+        }>
+        level?: number
+        _type: 'block'
+        _key: string
+      }>
+      _type: 'cell'
+      _key: string
+    }>
+    _type: 'row'
+    _key: string
+  }>
+}
+
 export type ModuleOptions = {
   _type: 'module-options'
   hidden?: boolean
@@ -7088,6 +7123,9 @@ export type BlogPost = {
       } & Code)
     | ({
         _key: string
+      } & Table)
+    | ({
+        _key: string
       } & CustomHtml)
   >
   categories?: Array<
@@ -7404,6 +7442,7 @@ export type AllSanitySchemaTypes =
   | BlogFrontpage
   | AccordionList
   | AboutPlaceholder
+  | Table
   | ModuleOptions
   | Metadata
   | LinkList

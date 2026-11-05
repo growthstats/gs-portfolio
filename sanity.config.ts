@@ -13,6 +13,7 @@ import { documentInternationalization } from '@sanity/document-internationalizat
 import { schemaTypes } from './src/sanity/schemaTypes'
 import { translatableTypes } from './src/sanity/schemaTypes/utils/language'
 import resolveUrl from '@/lib/resolveUrl'
+import PortableTextPlugins from './src/sanity/portableTextPlugins'
 
 const singletonTypes = new Set(['site'])
 
@@ -50,6 +51,11 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
+  },
+  form: {
+    components: {
+      portableText: { plugins: PortableTextPlugins },
+    },
   },
   document: {
     // Singletons are opened from the desk only, never from a "create" menu. Their templates
