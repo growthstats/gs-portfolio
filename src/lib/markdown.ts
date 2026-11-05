@@ -100,7 +100,11 @@ const HEADING_FIELDS = new Set([
   'question',
 ])
 
-/** Fields never worth descending into: references to other pages, images, styling. */
+/**
+ * Fields never worth descending into: referenced pages (a link's `internal`),
+ * images, styling, and derived data such as a rich text module's `headings`,
+ * which repeats its content.
+ */
 const SKIPPED_FIELDS = new Set([
   'metadata',
   'internal',
@@ -109,7 +113,7 @@ const SKIPPED_FIELDS = new Set([
   'images',
   'logo',
   'icon',
-  'link',
+  'headings',
 ])
 
 function collectText(value: unknown, key: string | undefined, out: string[]) {
@@ -150,7 +154,8 @@ export function moduleToMd(module: unknown): string {
   return out.filter((text, i) => text !== out[i - 1]).join('\n\n')
 }
 
-const clean = (value?: string | null) => stegaClean(value)?.trim() || undefined
+/** Text without stega markers or surrounding space; empty becomes undefined. */
+export const clean = (value?: string | null) => stegaClean(value)?.trim() || undefined
 
 const join = (parts: (string | undefined | false)[]) => parts.filter(Boolean).join('\n\n') + '\n'
 

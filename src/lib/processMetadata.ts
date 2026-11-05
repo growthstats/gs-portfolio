@@ -48,9 +48,11 @@ export default async function processMetadata(
       // The feed stays English-only.
       types: {
         'application/rss+xml': `/${BLOG_DIR}/rss.xml`,
-        // The page's Markdown copy, for LLM crawlers and agents (#138).
-        'text/markdown': markdownUrl(canonical, {
-          isHome: stegaClean(page.metadata.slug?.current) === 'index',
+        // The page's Markdown copy, for LLM crawlers and agents (#138). Hidden pages have none.
+        ...(!noIndex && {
+          'text/markdown': markdownUrl(canonical, {
+            isHome: stegaClean(page.metadata.slug?.current) === 'index',
+          }),
         }),
       },
     },

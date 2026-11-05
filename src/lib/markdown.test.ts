@@ -104,7 +104,7 @@ describe('moduleToMd', () => {
         content: [block('h1', 'Grow faster')],
         layout: 'center',
         ctas: [
-          { link: { label: 'ignored', internal: { title: 'Other page' } }, text: 'Book a call' },
+          { link: { label: 'Book a call', internal: { title: 'Other page' } }, style: 'primary' },
         ],
         image: { alt: 'decorative' },
       }),
@@ -118,6 +118,16 @@ describe('moduleToMd', () => {
         services: [{ summary: 'Audits and keyword planning.', title: 'SEO' }],
       }),
     ).toBe('SEO\n\nAudits and keyword planning.')
+  })
+
+  it("doesn't repeat a rich text module's table of contents", () => {
+    expect(
+      moduleToMd({
+        _type: 'richtext-module',
+        content: [block('h2', 'Intro'), block('normal', 'Text')],
+        headings: [{ style: 'h2', text: 'Intro' }],
+      }),
+    ).toBe('## Intro\n\nText')
   })
 
   it('walks nested items such as stats and FAQs', () => {

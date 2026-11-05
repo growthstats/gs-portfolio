@@ -22,6 +22,13 @@ describe('processMetadata alternates', () => {
     const { alternates } = await processMetadata(page({ _type: 'page' }))
     expect(alternates?.types).toMatchObject({ 'text/markdown': 'https://example.com/hello.md' })
   })
+
+  it('leaves it out for a hidden page, which has no Markdown copy', async () => {
+    const { alternates } = await processMetadata(
+      page({ _type: 'page', metadata: { ...base.metadata, noIndex: true } }),
+    )
+    expect(alternates?.types).not.toHaveProperty('text/markdown')
+  })
 })
 
 describe('processMetadata openGraph', () => {

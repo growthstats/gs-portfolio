@@ -1,6 +1,5 @@
-import { stegaClean } from 'next-sanity'
 import { BLOG_DIR } from './env'
-import { linkList } from './markdown'
+import { clean, linkList } from './markdown'
 import { markdownUrl } from './seo'
 
 /*
@@ -16,8 +15,6 @@ export type AgentIndex = {
   pages?: AgentIndexEntry[]
   posts?: AgentIndexEntry[]
 }
-
-const clean = (value?: string) => stegaClean(value)?.trim() || undefined
 
 /** Each entry as a link to its `.md` copy. */
 function entries(baseUrl: string, items: AgentIndexEntry[] = [], dir = '') {
