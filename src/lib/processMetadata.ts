@@ -1,6 +1,23 @@
 import { BASE_URL, BLOG_DIR, vercelPreview } from './env'
-import { buildAlternates } from './seo'
+import { buildAlternates, postAuthorNames, postDates } from './seo'
 import type { Metadata } from 'next'
+
+const isBlogPost = (page: Sanity.PageBase): page is Sanity.BlogPost => page._type === 'blog.post'
+
+/** `article` with dates and authors for blog posts, `website` for everything else. */
+function openGraphType(page: Sanity.PageBase) {
+  if (!isBlogPost(page)) return { type: 'website' } as const
+
+  const { published, modified } = postDates(page)
+  const authors = postAuthorNames(page)
+
+  return {
+    type: 'article',
+    publishedTime: published,
+    modifiedTime: modified,
+    ...(authors.length && { authors }),
+  } as const
+}
 
 export default async function processMetadata(
   page: Sanity.Localized<Sanity.PageBase>,
@@ -13,7 +30,7 @@ export default async function processMetadata(
     title,
     description,
     openGraph: {
-      type: 'website',
+      ...openGraphType(page),
       url: canonical,
       title,
       description,
