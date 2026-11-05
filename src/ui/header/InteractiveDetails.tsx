@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, type ComponentProps } from 'react'
+import { useState, type ComponentProps } from 'react'
 import { useMatchMedia } from '@/lib/useMatchMedia'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
@@ -43,11 +43,14 @@ export default function InteractiveDetails({
       }
     : {}
 
-  // Close after navigation
+  // Close after navigation. Compared during render rather than in an effect, so the
+  // closed state shows on the same render as the new page.
   const pathname = usePathname()
-  useEffect(() => {
+  const [lastPathname, setLastPathname] = useState(pathname)
+  if (pathname !== lastPathname) {
+    setLastPathname(pathname)
     if (closeAfterNavigate) setOpen(false)
-  }, [pathname])
+  }
 
   return (
     <details

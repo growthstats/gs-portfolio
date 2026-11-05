@@ -17,15 +17,16 @@ export default function Scheduler({
 }>) {
   const [isActive, setIsActive] = useState(() => isActiveAt(new Date(), start, end))
 
+  // Re-checks every second, so a changed start or end (live editing) also applies within a second.
   useEffect(() => {
-    setIsActive(isActiveAt(new Date(), start, end))
     if (!start && !end) return
 
-    const interval = setInterval(() => setIsActive(isActiveAt(new Date(), start, end)), 1000) // check every second
+    const interval = setInterval(() => setIsActive(isActiveAt(new Date(), start, end)), 1000)
     return () => clearInterval(interval)
   }, [start, end])
 
-  if (!isActive) return null
+  // Without a schedule it's always active, even if a schedule was just removed.
+  if ((start || end) && !isActive) return null
 
   return children
 }

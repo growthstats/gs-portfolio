@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import clsx from 'clsx'
 import { Badge } from '@/components/ui/badge'
 import {
@@ -70,18 +70,13 @@ export default function Faq({
   generateSchema = true,
 }: Readonly<FaqProps>) {
   const { common } = useDictionary()
-  const [openItemKey, setOpenItemKey] = useState<string | null>(
-    () => items.find((item) => item.open)?._key ?? null,
-  )
-
-  useEffect(() => {
-    setOpenItemKey((current) => {
-      if (current && items.some((item) => item._key === current)) {
-        return current
-      }
-      return items.find((item) => item.open)?._key ?? null
-    })
-  }, [items])
+  // `undefined` until the visitor opens or closes an item. Until then, and whenever the chosen
+  // item is gone (live editing), the item marked `open` in the Studio is open.
+  const [chosenKey, setOpenItemKey] = useState<string | null>()
+  const openItemKey =
+    chosenKey === null || items.some((item) => item._key === chosenKey)
+      ? chosenKey
+      : (items.find((item) => item.open)?._key ?? null)
 
   const schemaMarkup =
     generateSchema && items.length
@@ -155,8 +150,9 @@ export default function Faq({
           <Accordion
             type="single"
             collapsible
-            value={openItemKey ?? undefined}
-            onValueChange={(val: string | undefined) => setOpenItemKey(val ?? null)}
+            value={openItemKey ?? ''}
+            // Radix reports closing the open item as ''.
+            onValueChange={(val: string) => setOpenItemKey(val || null)}
             aria-label={accessibleAccordion ? common.faq : undefined}
           >
             {items.map((item) => {
@@ -176,7 +172,7 @@ export default function Faq({
                     aria-controls={panelId}
                     className={clsx(
                       'flex w-full items-center justify-between px-6 py-5 text-left transition-all duration-200 focus:outline-none',
-                      'focus-visible:ring-primary/60 hover:no-underline focus-visible:ring-2 focus-visible:ring-offset-2',
+                      'hover:no-underline focus-visible:ring-2 focus-visible:ring-primary/60 focus-visible:ring-offset-2',
                       'rounded-[20px]',
                       'relative z-0',
                     )}
