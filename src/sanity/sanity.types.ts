@@ -7294,6 +7294,32 @@ export type Code = {
   highlightedLines?: Array<number>
 }
 
+export type MediaFolderReference = {
+  _ref: string
+  _type: 'reference'
+  _weak?: boolean
+  [internalGroqTypeReferenceTo]?: 'media.folder'
+}
+
+export type MediaFolder = {
+  _id: string
+  _type: 'media.folder'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  name?: string
+  parent?: MediaFolderReference
+}
+
+export type MediaTag = {
+  _id: string
+  _type: 'media.tag'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  name?: Slug
+}
+
 export type SanityImagePaletteSwatch = {
   _type: 'sanity.imagePaletteSwatch'
   background?: string
@@ -7476,6 +7502,9 @@ export type AllSanitySchemaTypes =
   | Page
   | Reputation
   | Code
+  | MediaFolderReference
+  | MediaFolder
+  | MediaTag
   | SanityImagePaletteSwatch
   | SanityImagePalette
   | SanityImageDimensions

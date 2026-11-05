@@ -10,6 +10,7 @@ import { visionTool } from '@sanity/vision'
 import { codeInput } from '@sanity/code-input'
 import { supportedLanguages } from '@/lib/i18n'
 import { documentInternationalization } from '@sanity/document-internationalization'
+import { media } from 'sanity-plugin-media'
 import { schemaTypes } from './src/sanity/schemaTypes'
 import { translatableTypes } from './src/sanity/schemaTypes/utils/language'
 import resolveUrl from '@/lib/resolveUrl'
@@ -43,6 +44,8 @@ export default defineConfig({
     }),
     visionTool({ defaultApiVersion: apiVersion }),
     codeInput(),
+    // A Media tool, and a media browser in every image and file field's "Select".
+    media(),
     documentInternationalization({
       supportedLanguages,
       schemaTypes: translatableTypes,
