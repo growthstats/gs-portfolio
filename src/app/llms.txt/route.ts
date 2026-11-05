@@ -1,11 +1,8 @@
-import { fetchSanity } from '@/sanity/lib/fetch'
+import { fetchSanityLive } from '@/sanity/lib/fetch'
 import { groq, stegaClean } from 'next-sanity'
 import { BASE_URL, BLOG_DIR } from '@/lib/env'
 import { DEFAULT_LANG } from '@/lib/i18n'
 import { LANGUAGE, SITE } from '@/sanity/lib/localized'
-
-export const dynamic = 'force-static'
-export const revalidate = 3600
 
 type Entry = { title?: string; slug?: string; desc?: string }
 
@@ -17,7 +14,7 @@ function line(baseUrl: string, { title, desc }: Entry) {
 }
 
 export async function GET() {
-  const data = await fetchSanity<{
+  const data = await fetchSanityLive<{
     siteTitle?: string
     siteDesc?: string
     pages?: Entry[]

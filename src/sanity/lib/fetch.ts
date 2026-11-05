@@ -1,51 +1,9 @@
-'use server'
-
 import { client } from '@/sanity/lib/client'
 import { token } from '@/sanity/lib/token'
 import { dev } from '@/lib/env'
 import { draftMode } from 'next/headers'
-import { type QueryOptions, type QueryParams } from 'next-sanity'
+import { type QueryParams } from 'next-sanity'
 import { defineLive } from 'next-sanity/live'
-
-type SanityNextOptions = QueryOptions['next']
-
-export async function fetchSanity<T = unknown>({
-  query,
-  params = {},
-  next,
-}: {
-  query: string
-  params?: Partial<QueryParams>
-  next?: SanityNextOptions
-}) {
-  const preview = dev || (await draftMode()).isEnabled
-  const prodTags = ['sanity', ...(next?.tags ?? [])]
-
-  return client.fetch<T>(
-    query,
-    params,
-    preview
-      ? {
-          stega: true,
-          perspective: 'drafts',
-          useCdn: false,
-          token,
-          next: {
-            revalidate: 0,
-            ...next,
-          },
-        }
-      : {
-          perspective: 'published',
-          useCdn: true,
-          next: {
-            revalidate: 3600, // every hour
-            ...next,
-            tags: prodTags,
-          },
-        },
-  )
-}
 
 export const { sanityFetch, SanityLive } = defineLive({
   client,
@@ -53,17 +11,30 @@ export const { sanityFetch, SanityLive } = defineLive({
   browserToken: token,
 })
 
-type SanityFetchArgs = Parameters<typeof sanityFetch>[0] & {
-  next?: SanityNextOptions
+type FetchArgs = {
+  query: string
+  params?: Partial<QueryParams>
 }
 
-export async function fetchSanityLive<T = unknown>(args: SanityFetchArgs) {
-  const preview = dev || (await draftMode()).isEnabled
+// `draftMode()` can't be read inside `'use cache'`, so what it decides is passed in and joins the
+// cache key. The `sanity` tag is what `/api/revalidate` expires when a document is published.
+async function cachedFetch({
+  query,
+  params = {},
+  perspective,
+  stega,
+}: FetchArgs & { perspective: 'drafts' | 'published'; stega: boolean }) {
+  'use cache'
+  const { data } = await sanityFetch({ query, params, perspective, stega, tags: ['sanity'] })
+  return data
+}
 
-  const { data } = await sanityFetch({
+export async function fetchSanityLive<T = unknown>(args: FetchArgs) {
+  const { isEnabled } = await draftMode()
+
+  return (await cachedFetch({
     ...args,
-    perspective: preview ? 'drafts' : 'published',
-  })
-
-  return data as T
+    perspective: isEnabled || dev ? 'drafts' : 'published',
+    stega: isEnabled,
+  })) as T
 }

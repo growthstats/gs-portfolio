@@ -1,9 +1,17 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useSyncExternalStore } from 'react'
 
 export function isActiveAt(now: Date, start?: string, end?: string) {
   return (!start || new Date(start) < now) && (!end || new Date(end) > now)
+}
+
+const noSubscription = () => () => {}
+
+// Re-checks every second, so a changed start or end (live editing) also applies within a second.
+function subscribeToClock(onChange: () => void) {
+  const interval = setInterval(onChange, 1000)
+  return () => clearInterval(interval)
 }
 
 export default function Scheduler({
@@ -15,18 +23,14 @@ export default function Scheduler({
   end: string
   children: React.ReactNode
 }>) {
-  const [isActive, setIsActive] = useState(() => isActiveAt(new Date(), start, end))
+  const hasSchedule = !!(start || end)
 
-  // Re-checks every second, so a changed start or end (live editing) also applies within a second.
-  useEffect(() => {
-    if (!start && !end) return
+  const isActive = useSyncExternalStore(
+    hasSchedule ? subscribeToClock : noSubscription,
+    () => isActiveAt(new Date(), start, end),
+    // The prerendered page outlives any time it could check, so scheduled content appears on the client.
+    () => !hasSchedule,
+  )
 
-    const interval = setInterval(() => setIsActive(isActiveAt(new Date(), start, end)), 1000)
-    return () => clearInterval(interval)
-  }, [start, end])
-
-  // Without a schedule it's always active, even if a schedule was just removed.
-  if ((start || end) && !isActive) return null
-
-  return children
+  return isActive ? children : null
 }
