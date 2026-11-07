@@ -11,6 +11,7 @@ import type {
 import Image from './Image'
 import Code from './Code'
 import Admonition from './Admonition'
+import Table from './Table'
 import CustomHTML from '@/ui/modules/CustomHTML'
 
 type BlockProps = PortableTextComponentProps<PortableTextBlock>
@@ -29,7 +30,7 @@ export default function Content({
   children,
 }: { value: Sanity.PortableText } & React.ComponentProps<'div'>) {
   return (
-    <div className={cn('richtext mx-auto w-full [&>:first-child]:!mt-0', className)}>
+    <div className={cn('mx-auto w-full richtext [&>:first-child]:!mt-0', className)}>
       <PortableText
         value={value}
         components={{
@@ -38,6 +39,7 @@ export default function Content({
             image: Image,
             admonition: Admonition,
             code: Code,
+            table: Table,
             'custom-html': ({ value }) => (
               <CustomHTML
                 className="has-[table]:md:[grid-column:bleed] has-[table]:md:mx-auto"

@@ -8,23 +8,36 @@
  *
  * `sanity.config.ts` leaves `weakReferences` off, so references are strengthened on publish.
  */
+import { randomKey } from '@sanity/util/content'
 import { isReference } from 'sanity'
 import type { MetadataDocument, TranslationReference } from '@sanity/document-internationalization'
 
 // Not exported by the plugin (`METADATA_SCHEMA_NAME` in constants.ts).
 export const METADATA_TYPE = 'translation.metadata'
 
-/** One entry of `translations`: keyed by language, a weak reference to the published id. */
+/**
+ * One entry of `translations`: a weak reference to the published id, its language in
+ * `language` under a random `_key` (document-internationalization v6).
+ */
 export function translationReference(
   language: string,
   id: string,
   type: string,
 ): TranslationReference {
   return {
-    _key: language,
+    language,
+    _key: randomKey(),
     _type: 'internationalizedArrayReferenceValue',
     value: { _type: 'reference', _ref: id, _weak: true, _strengthenOnPublish: { type } },
   }
+}
+
+/**
+ * An entry's language. Entries written before the v6 migration hold it in `_key`
+ * and have no `language` field.
+ */
+export function languageOf(entry: Pick<TranslationReference, '_key'> & { language?: string }) {
+  return entry.language || entry._key
 }
 
 /** A new metadata document, as the plugin creates it before adding the translation. */

@@ -7,6 +7,8 @@ import { escapeHTML, toHTML } from '@portabletext/to-html'
 import { urlFor } from '@/sanity/lib/image'
 import { enabledLanguages, isEnabledLanguage } from '@/lib/i18n'
 import { IN_LANGUAGE, SITE } from '@/sanity/lib/localized'
+import type { Table } from '@/sanity/sanity.types'
+import tableToHTML from '@/lib/tableToHTML'
 
 export function generateStaticParams() {
   return enabledLanguages.map((lang) => ({ lang }))
@@ -87,6 +89,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ lan
               return `<dl><dt>${title}</dt><dd>${toHTML(content)}</dd></dl>`
             },
             code: ({ value }) => `<pre><code>${escapeHTML(value.code)}</code></pre>`,
+            table: ({ value }: { value: Table }) => tableToHTML(value),
             'custom-html': () => '',
           },
         },

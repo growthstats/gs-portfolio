@@ -1,5 +1,5 @@
 import { stegaClean } from 'next-sanity'
-import resolveUrl from './resolveUrl'
+import resolveUrl, { type UrlSource } from './resolveUrl'
 import { BASE_URL } from './env'
 import { DEFAULT_LANG, isSupportedLanguage, type Lang } from './i18n'
 
@@ -10,7 +10,7 @@ export const OG_LOCALES: Record<Lang, string> = {
 }
 
 /** A document's language; documents written before the backfill count as English. */
-export function documentLanguage(doc: { language?: string }): Lang {
+export function documentLanguage(doc: { language?: string | null }): Lang {
   const language = stegaClean(doc.language)
   return isSupportedLanguage(language) ? language : DEFAULT_LANG
 }
@@ -19,7 +19,7 @@ export function documentLanguage(doc: { language?: string }): Lang {
  * A document's absolute URL in its own language. A fallback is the English
  * document, so its canonical is the English URL (ADR 0002).
  */
-export function canonicalUrl(doc: Sanity.PageBase) {
+export function canonicalUrl(doc: UrlSource & { language?: string | null }) {
   return BASE_URL + resolveUrl(doc, { base: false, language: documentLanguage(doc) })
 }
 
@@ -45,4 +45,26 @@ export function buildAlternates(doc: Sanity.Localized<Sanity.PageBase>) {
       .filter((t) => t.lang !== lang)
       .map((t) => OG_LOCALES[t.lang]),
   }
+}
+
+/** A blog post's publish and modified dates, falling back to the document's own timestamps. */
+export function postDates(post: Sanity.BlogPost) {
+  const published = stegaClean(post.publishDate) || post._createdAt
+  return { published, modified: post._updatedAt || published }
+}
+
+/** The names of a blog post's authors, without stega markers or missing references. */
+export function postAuthorNames(post: Sanity.BlogPost): string[] {
+  return (post.authors ?? [])
+    .map((author) => stegaClean(author?.name))
+    .filter((name): name is string => Boolean(name))
+}
+
+/**
+ * The `.md` copy of a URL or path: `/services` → `/services.md`. A homepage
+ * (`/`, `/de`) has no slug to append to, so it gets `index.md`.
+ */
+export function markdownUrl(url: string, { isHome = false } = {}) {
+  const trimmed = url.replace(/\/$/, '')
+  return isHome ? `${trimmed}/index.md` : `${trimmed}.md`
 }

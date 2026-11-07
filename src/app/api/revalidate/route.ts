@@ -27,7 +27,8 @@ export async function POST(req: NextRequest) {
   const docType = body?._type || body?.transaction?.documentIds?.[0]?.split('.')[1]
   if (docType) tags.add(`sanity:${docType}`)
 
-  tags.forEach((tag) => revalidateTag(tag))
+  // A webhook can't use `updateTag`; `expire: 0` drops the data now, as the one-argument call did before Next 16.
+  tags.forEach((tag) => revalidateTag(tag, { expire: 0 }))
 
   // If you have paths to revalidate, add them here. Example:
   // if (docType === 'page' && body?.slug?.current) revalidatePath(`/${body.slug.current}`)

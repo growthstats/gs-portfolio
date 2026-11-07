@@ -1,0 +1,50 @@
+.scroller:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+.track {
+  display: flex;
+  align-items: flex-end;
+  width: max-content;
+  /* Centres a row that fits; a row that overflows starts at the left and scrolls. */
+  margin-inline: auto;
+}
+
+/* Spacing on the figures, not a `gap`: the track has to be exactly two copies wide to loop. */
+.track > figure {
+  margin-inline-end: 0.5rem;
+}
+
+.auto {
+  margin-inline: 0;
+  will-change: translate;
+  animation: scroll var(--duration) linear infinite;
+
+  &:hover,
+  .scroller:focus-visible & {
+    animation-play-state: paused;
+  }
+}
+
+.reverse {
+  animation-direction: reverse;
+}
+
+@keyframes scroll {
+  to {
+    translate: -50% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auto {
+    animation: none;
+    will-change: auto;
+  }
+
+  /* Without the loop, the copy only repeats the row at the end of the scroll. */
+  .copy {
+    display: none;
+  }
+}

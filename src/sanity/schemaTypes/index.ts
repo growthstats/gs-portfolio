@@ -25,6 +25,7 @@ import link from './objects/link'
 import linkList from './objects/link.list'
 import metadata from './objects/metadata'
 import moduleOptions from './objects/module-options'
+import table from './objects/table'
 
 // modules
 import accordionList from './modules/accordion-list'
@@ -44,6 +45,7 @@ import flagList from './modules/flag-list'
 import hero from './modules/hero'
 import heroSaas from './modules/hero.saas'
 import heroSplit from './modules/hero.split'
+import imageGallery from './modules/image-gallery'
 import letsTalkPlaceholder from './modules/lets-talk-placeholder'
 import logoList from './modules/logo-list'
 import personList from './modules/person-list'
@@ -90,6 +92,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   linkList,
   metadata,
   moduleOptions,
+  table,
 
   // modules
   aboutPlaceholder,
@@ -110,6 +113,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   hero,
   heroSaas,
   heroSplit,
+  imageGallery,
   joinUsPlaceholder,
   letsTalkPlaceholder,
   logoList,

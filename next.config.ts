@@ -1,7 +1,9 @@
 import { createClient, groq } from 'next-sanity'
 import { projectId, dataset, apiVersion } from '@/sanity/lib/env'
 // import { token } from '@/lib/sanity/token'
-import { BLOG_DIR } from '@/lib/env'
+import { BLOG_DIR, dev } from '@/lib/env'
+import { indexRedirects, isIndexable } from '@/lib/indexing'
+import { sanity } from 'next-sanity/live/cache-life'
 import type { NextConfig } from 'next'
 
 const client = createClient({
@@ -13,6 +15,13 @@ const client = createClient({
 })
 
 export default {
+  // Memoizes components automatically; `eslint-plugin-react-hooks` flags code it can't compile.
+  reactCompiler: true,
+
+  // Published content stays cached until Sanity Live or the `/api/revalidate` webhook expires it.
+  cacheComponents: true,
+  cacheLife: { default: sanity },
+
   images: {
     dangerouslyAllowSVG: true,
     remotePatterns: [
@@ -27,8 +36,18 @@ export default {
     ],
   },
 
+  // Markdown copies of pages and posts (#138). The proxy skips paths with a dot,
+  // so `/services.md` and `/de/blog/post.md` are mapped here. Real files and
+  // routes such as `/agents.md` win over these (they run after the filesystem).
+  async rewrites() {
+    return [
+      { source: '/:slug.md', destination: '/api/md/:slug' },
+      { source: '/:path+/:slug.md', destination: '/api/md/:path+/:slug' },
+    ]
+  },
+
   async redirects() {
-    return await client.fetch(groq`*[_type == 'redirect']{
+    const sanityRedirects = await client.fetch(groq`*[_type == 'redirect']{
 			source,
 			'destination': select(
 				destination.type == 'internal' =>
@@ -40,6 +59,8 @@ export default {
 			),
 			permanent
 		}`)
+
+    return [...indexRedirects(), ...sanityRedirects]
   },
 
   async headers() {
@@ -58,7 +79,9 @@ export default {
       },
       // Auto-upgrade any http:// subresource to https:// (fixes mixed content
       // from CMS content). This directive only upgrades — it blocks nothing.
-      { key: 'Content-Security-Policy', value: 'upgrade-insecure-requests' },
+      // Not in `next dev`: on http://localhost it breaks the redirect from
+      // `/api/draft-mode/enable`, so the Studio's preview can't connect.
+      ...(dev ? [] : [{ key: 'Content-Security-Policy', value: 'upgrade-insecure-requests' }]),
     ]
 
     return [
@@ -66,6 +89,10 @@ export default {
         source: '/:path*',
         headers: securityHeaders,
       },
+      // Keep the `develop` deploy, previews and local dev out of search results.
+      ...(isIndexable()
+        ? []
+        : [{ source: '/:path*', headers: [{ key: 'X-Robots-Tag', value: 'noindex' }] }]),
       {
         // Long-lived caching for immutable static assets
         source: '/:all*(svg|jpg|jpeg|png|gif|webp|avif|ico|woff|woff2|ttf|otf)',

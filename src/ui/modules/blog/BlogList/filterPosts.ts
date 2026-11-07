@@ -1,7 +1,8 @@
+import type { BlogPostPreview } from '@/sanity/queries/blog.groq'
 import type { useBlogFilters } from '../store'
 
 export function filterPosts(
-  posts: Sanity.BlogPost[],
+  posts: BlogPostPreview[],
   { category, author }: Pick<ReturnType<typeof useBlogFilters>, 'category' | 'author'>,
 ) {
   return posts.filter(

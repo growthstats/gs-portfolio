@@ -50,7 +50,7 @@ Never run `gh auth switch`, and never use the work account.
 
 ## 5. Check locally
 
-Run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build`. All four must pass. Build with Node 22 (`.nvmrc`); on Node 26 `sanity manifest extract` fails during the build.
+Run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build`. All four must pass. Build with Node 24 (`.nvmrc`); on Node 26 `sanity manifest extract` fails during the build.
 
 ## 6. Simplify and review
 

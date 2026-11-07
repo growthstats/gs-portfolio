@@ -1,5 +1,6 @@
 'use client'
 
+import type { BlogPostPreview } from '@/sanity/queries/blog.groq'
 import { usePagination } from '@/lib/usePagination'
 import List from '../BlogList/List'
 import { filterPosts } from '../BlogList/filterPosts'
@@ -9,7 +10,7 @@ export default function Paginated({
   posts,
   itemsPerPage = 6,
 }: {
-  posts: Sanity.BlogPost[]
+  posts: BlogPostPreview[]
   itemsPerPage?: number
 }) {
   const filters = useBlogFilters()
@@ -19,8 +20,7 @@ export default function Paginated({
   })
 
   function scrollToList() {
-    if (typeof window !== 'undefined')
-      document.querySelector('#blog-list')?.scrollIntoView({ behavior: 'smooth' })
+    if (typeof window !== 'undefined') document.querySelector('#blog-list')?.scrollIntoView()
   }
 
   return (
@@ -32,7 +32,7 @@ export default function Paginated({
       />
 
       <Pagination
-        className="frosted-glass bg-canvas sticky bottom-0 flex items-center justify-center gap-4 p-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] tabular-nums"
+        className="sticky bottom-0 flex items-center justify-center gap-4 bg-canvas p-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] tabular-nums frosted-glass"
         buttonClassName="hover:underline disabled:opacity-20"
         onClick={scrollToList}
       />

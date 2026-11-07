@@ -149,6 +149,9 @@ const de = {
     typePage: 'Seite',
     google: 'Auf Google suchen',
   },
+  imageGallery: {
+    label: 'Bildergalerie',
+  },
   testimonial: {
     source: 'Quelle',
     sourceLabel: 'Quelle des Testimonials',

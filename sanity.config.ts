@@ -1,19 +1,20 @@
 'use client'
 
-import pkg from './package.json'
 import { defineConfig } from 'sanity'
 import { projectId, dataset, apiVersion } from '@/sanity/lib/env'
 import { structure } from './src/sanity/structure'
 import { presentation } from './src/sanity/presentation'
-import { icon, infoWidget } from 'sanitypress-utils'
+import { icon } from 'sanitypress-utils'
 import { dashboardTool, projectInfoWidget, projectUsersWidget } from '@sanity/dashboard'
 import { visionTool } from '@sanity/vision'
 import { codeInput } from '@sanity/code-input'
 import { supportedLanguages } from '@/lib/i18n'
 import { documentInternationalization } from '@sanity/document-internationalization'
+import { media } from 'sanity-plugin-media'
 import { schemaTypes } from './src/sanity/schemaTypes'
 import { translatableTypes } from './src/sanity/schemaTypes/utils/language'
 import resolveUrl from '@/lib/resolveUrl'
+import PortableTextPlugins from './src/sanity/portableTextPlugins'
 
 const singletonTypes = new Set(['site'])
 
@@ -39,10 +40,12 @@ export default defineConfig({
     dashboardTool({
       name: 'info',
       title: 'Info',
-      widgets: [projectInfoWidget(), projectUsersWidget(), infoWidget({ version: pkg.version })],
+      widgets: [projectInfoWidget(), projectUsersWidget()],
     }),
     visionTool({ defaultApiVersion: apiVersion }),
     codeInput(),
+    // A Media tool, and a media browser in every image and file field's "Select".
+    media(),
     documentInternationalization({
       supportedLanguages,
       schemaTypes: translatableTypes,
@@ -51,6 +54,11 @@ export default defineConfig({
 
   schema: {
     types: schemaTypes,
+  },
+  form: {
+    components: {
+      portableText: { plugins: PortableTextPlugins },
+    },
   },
   document: {
     // Singletons are opened from the desk only, never from a "create" menu. Their templates

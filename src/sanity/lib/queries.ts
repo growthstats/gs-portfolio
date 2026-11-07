@@ -6,6 +6,7 @@ import { createSectionModuleQuery } from '@/sanity/queries/modules/section.groq'
 import { IN_LANGUAGE, localizedRef, SITE } from './localized'
 import { cache } from 'react'
 
+// @sanity-typegen-ignore
 export const LINK_QUERY = groq`
 	...,
 	internal->{
@@ -15,6 +16,7 @@ export const LINK_QUERY = groq`
 	}
 `
 
+// @sanity-typegen-ignore
 const NAVIGATION_QUERY = groq`
 	title,
 	items[]{
@@ -24,22 +26,26 @@ const NAVIGATION_QUERY = groq`
 	}
 `
 
+// @sanity-typegen-ignore
 export const IMAGE_QUERY = groq`
 	...,
 	'lqip': @.asset->metadata.lqip
 `
 
+// @sanity-typegen-ignore
 const ASSET_IMG_QUERY = groq`
 	...,
 	image { ${IMAGE_QUERY} }
 `
 
+// @sanity-typegen-ignore
 export const CTA_QUERY = groq`
 	...,
 	link{ ${LINK_QUERY} },
 	style
 `
 
+// @sanity-typegen-ignore
 export const REPUTATION_QUERY = groq`
 	_type == 'reputation-block' => { reputation-> }
 `
@@ -127,6 +133,12 @@ const MODULES_BASE_PROJECTION = `
 			}
 		}
 	},
+	_type == 'image-gallery' => {
+		rows[]{
+			...,
+			images[]{ ${IMAGE_QUERY} }
+		}
+	},
 	_type == 'logo-list' => { logos[]-> },
 	_type == 'project-list' => {
 		projects[]{
@@ -194,6 +206,7 @@ const MODULES_BASE_PROJECTION = `
   },
 `
 
+// @sanity-typegen-ignore
 export const MODULES_QUERY = groq`
 	${MODULES_BASE_PROJECTION}
 	_type == 'section' => {
@@ -201,6 +214,7 @@ export const MODULES_QUERY = groq`
 	},
 `
 
+// @sanity-typegen-ignore
 export const GLOBAL_MODULE_PATH_QUERY = groq`
 	string::startsWith($slug, path)
 	&& select(

@@ -1,5 +1,5 @@
 import { BASE_URL } from '@/lib/env'
-import { canonicalUrl, documentLanguage } from '@/lib/seo'
+import { canonicalUrl, documentLanguage, postAuthorNames, postDates } from '@/lib/seo'
 import { stegaClean } from 'next-sanity'
 import JsonLd from './JsonLd'
 
@@ -9,13 +9,8 @@ export default function BlogPostSchema({ post }: { post: Sanity.BlogPost }) {
   const headline = stegaClean(post.metadata?.title || post.title)
   const description = stegaClean(post.metadata?.description)
   const image = post.metadata?.ogimage
-  const datePublished = post.publishDate || post._createdAt
-  const dateModified = post._updatedAt || datePublished
-
-  const authors = (post.authors ?? [])
-    .map((a) => stegaClean(a?.name))
-    .filter(Boolean)
-    .map((name) => ({ '@type': 'Person', name }))
+  const { published: datePublished, modified: dateModified } = postDates(post)
+  const authors = postAuthorNames(post).map((name) => ({ '@type': 'Person', name }))
 
   const schema = {
     '@context': 'https://schema.org',

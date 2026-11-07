@@ -1,16 +1,29 @@
 .track > * {
-	--ox: calc((var(--count) - var(--index)) * 100%);
-	--dx: calc((var(--index) + 1) * -100%);
+  --ox: calc((var(--count) - var(--index)) * 100%);
+  --dx: calc((var(--index) + 1) * -100%);
 
-	translate: var(--ox) 0;
-	animation: scroll var(--dur) linear infinite;
-	animation-delay: calc(
-		var(--dur) / var(--count) * var(--index) - var(--count) * 2s
-	);
+  translate: var(--ox) 0;
+  animation: scroll var(--dur) linear infinite;
+  animation-delay: calc(var(--dur) / var(--count) * var(--index) - var(--count) * 2s);
 }
 
 @keyframes scroll {
-	to {
-		translate: var(--dx) 0;
-	}
+  to {
+    translate: var(--dx) 0;
+  }
+}
+
+/* static, wrapped row: one run of the marquee would leave the logos at --ox, off-screen */
+@media (prefers-reduced-motion: reduce) {
+  .track {
+    flex-wrap: wrap;
+    justify-content: center;
+    column-gap: 1rem;
+    mask: none;
+  }
+
+  .track > * {
+    translate: none;
+    animation: none;
+  }
 }

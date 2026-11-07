@@ -29,6 +29,7 @@ import {
 } from './cli'
 import {
   METADATA_TYPE,
+  languageOf,
   metadataDocument,
   remapReferences,
   translationReference,
@@ -65,7 +66,7 @@ run(async () => {
   const metadataOf = new Map(
     metadata.flatMap((doc) =>
       doc.translations
-        .filter(({ _key }) => _key === DEFAULT_LANG)
+        .filter((entry) => languageOf(entry) === DEFAULT_LANG)
         .map(({ value }) => [value._ref, doc] as const),
     ),
   )
@@ -103,7 +104,7 @@ run(async () => {
       note = 'site settings, no metadata'
     } else {
       const existing = metadataOf.get(id)
-      const linked = existing?.translations.find(({ _key }) => _key === lang)?.value._ref
+      const linked = existing?.translations.find((entry) => languageOf(entry) === lang)?.value._ref
       translationId = linked ?? randomUUID()
       note = linked ? 'already linked' : link(tx, { id, type, lang, translationId, existing })
     }
@@ -188,8 +189,8 @@ async function translatedReferences(metadata: MetadataDocument[], lang: string) 
   for (const { schemaTypes, translations } of metadata) {
     const [type] = schemaTypes
     if (!REMAPPED_TYPES.includes(type)) continue
-    const source = translations.find(({ _key }) => _key === DEFAULT_LANG)?.value._ref
-    const translation = translations.find(({ _key }) => _key === lang)?.value._ref
+    const source = translations.find((entry) => languageOf(entry) === DEFAULT_LANG)?.value._ref
+    const translation = translations.find((entry) => languageOf(entry) === lang)?.value._ref
     if (source && translation) translated.set(source, { id: translation, type, published: false })
   }
 
