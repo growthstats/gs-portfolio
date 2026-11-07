@@ -1,4 +1,4 @@
-import { getSite } from '@/sanity/lib/queries'
+import { getSite } from '@/sanity/lib/site'
 import Navigation from './Navigation'
 import Social from '@/ui/Social'
 import LanguageSwitcher from '@/ui/LanguageSwitcher'
@@ -16,7 +16,7 @@ export default async function Footer({ lang }: { lang: Lang }) {
     <footer className="bg-ring/10 text-primary" role="contentinfo">
       <div className="section flex flex-wrap justify-between gap-x-12 gap-y-8 max-sm:flex-col">
         <div className="flex flex-col gap-3 self-stretch">
-          <Link className="h3 md:h2 max-w-max" href={localizePath('/', lang)}>
+          <Link className="max-w-max h3 md:h2" href={localizePath('/', lang)}>
             {logoImage ? (
               <Img className="max-h-[1.5em] w-auto" image={logoImage} alt={logo?.name || title} />
             ) : (
@@ -39,7 +39,7 @@ export default async function Footer({ lang }: { lang: Lang }) {
       </div>
 
       {copyright && (
-        <div className="border-canvas/20 mx-auto flex max-w-screen-xl flex-wrap justify-center gap-x-6 gap-y-2 border-t p-4 pb-[max(1rem,env(safe-area-inset-bottom))] text-sm [&_a:hover]:underline">
+        <div className="mx-auto flex max-w-screen-xl flex-wrap justify-center gap-x-6 gap-y-2 border-t border-canvas/20 p-4 pb-[max(1rem,env(safe-area-inset-bottom))] text-sm [&_a:hover]:underline">
           <PortableText value={copyright ?? []} />
         </div>
       )}

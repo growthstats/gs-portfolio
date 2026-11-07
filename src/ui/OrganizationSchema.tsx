@@ -1,4 +1,4 @@
-import { getSite } from '@/sanity/lib/queries'
+import { getSite } from '@/sanity/lib/site'
 import { DEFAULT_LANG } from '@/lib/i18n'
 import { urlFor } from '@/sanity/lib/image'
 import { BASE_URL } from '@/lib/env'
@@ -15,7 +15,7 @@ export default async function OrganizationSchema() {
 
   const sameAs = (site.social?.items ?? [])
     .flatMap((item) => ('links' in item ? (item.links ?? []) : [item]))
-    .map((link) => stegaClean((link as Sanity.Link).external))
+    .map((link) => stegaClean(link.external))
     .filter((url): url is string => !!url && /^https?:\/\//.test(url))
 
   const schema = {

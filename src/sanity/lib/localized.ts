@@ -50,11 +50,14 @@ export const PREFER_LANGUAGE = groq`order(select(${LANGUAGE} == $lang => 0, 1))`
  * `site` (see `siteDocumentId`). Not linked by `translation.metadata`.
  */
 // @sanity-typegen-ignore
-export const SITE = groq`coalesce(*[_id == 'site-' + $lang][0], *[_id == 'site'][0])`
+export const SITE = groq`coalesce(*[_type == 'site' && _id == 'site-' + $lang][0], *[_type == 'site' && _id == 'site'][0])`
 
-/** Projection: dereferences the reference `field` in `$lang`, else the referenced document. */
+/**
+ * Projection: dereferences the reference `field` in `$lang`, else the referenced document.
+ * Spells out {@link translationOf} because TypeGen can't follow `field` passed on to it.
+ */
 export const localizedRef = (field: string) =>
-  groq`coalesce(${translationOf(`^.${field}._ref`)}, ${field}->)`
+  groq`coalesce(*[_type == 'translation.metadata' && references(^.${field}._ref)][0].translations[language == $lang || _key == $lang][0].value->, ${field}->)`
 
 /** Projection: dereferences each reference in the array `field` in `$lang`. */
 export const localizedRefs = (field: string) =>

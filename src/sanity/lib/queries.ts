@@ -1,10 +1,6 @@
-import { fetchSanityLive } from './fetch'
 import { groq } from 'next-sanity'
-import errors from '@/lib/errors'
-import { DEFAULT_LANG, type Lang } from '@/lib/i18n'
 import { createSectionModuleQuery } from '@/sanity/queries/modules/section.groq'
-import { IN_LANGUAGE, localizedRef, SITE } from './localized'
-import { cache } from 'react'
+import { IN_LANGUAGE, localizedRef } from './localized'
 
 // @sanity-typegen-ignore
 export const LINK_QUERY = groq`
@@ -13,16 +9,6 @@ export const LINK_QUERY = groq`
 		_type,
 		title,
 		metadata
-	}
-`
-
-// @sanity-typegen-ignore
-const NAVIGATION_QUERY = groq`
-	title,
-	items[]{
-		${LINK_QUERY},
-		link{ ${LINK_QUERY} },
-		links[]{ ${LINK_QUERY} }
 	}
 `
 
@@ -239,32 +225,3 @@ export function withGlobalModules(modules: string, pathFilter = 'false') {
 		+ ${globalModules(`path == '*'`, 'after')}
 	)`
 }
-
-/**
- * Site settings in `lang`: `site-<lang>` when it exists, else `site` (ADR 0002).
- * Menus follow their references to the `lang` translation. Business details
- * for structured data always come from the English `site`: call it without `lang`.
- */
-export function getSite(lang: Lang = DEFAULT_LANG) {
-  return fetchSite(lang)
-}
-
-const fetchSite = cache(async (lang: Lang) => {
-  const site = await fetchSanityLive<Sanity.Site>({
-    query: groq`
-			${SITE}{
-				...,
-				ctas[]{ ${CTA_QUERY} },
-				'headerMenu': ${localizedRef('headerMenu')}{ ${NAVIGATION_QUERY} },
-				'footerMenu': ${localizedRef('footerMenu')}{ ${NAVIGATION_QUERY} },
-				social->{ ${NAVIGATION_QUERY} },
-				'ogimage': ogimage.asset->url
-			}
-		`,
-    params: { lang },
-  })
-
-  if (!site) throw new Error(errors.missingSiteSettings)
-
-  return site
-})
