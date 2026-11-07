@@ -1,7 +1,7 @@
 import { createClient, groq } from 'next-sanity'
 import { projectId, dataset, apiVersion } from '@/sanity/lib/env'
 // import { token } from '@/lib/sanity/token'
-import { BLOG_DIR } from '@/lib/env'
+import { BLOG_DIR, dev } from '@/lib/env'
 import { indexRedirects, isIndexable } from '@/lib/indexing'
 import { sanity } from 'next-sanity/live/cache-life'
 import type { NextConfig } from 'next'
@@ -79,7 +79,9 @@ export default {
       },
       // Auto-upgrade any http:// subresource to https:// (fixes mixed content
       // from CMS content). This directive only upgrades — it blocks nothing.
-      { key: 'Content-Security-Policy', value: 'upgrade-insecure-requests' },
+      // Not in `next dev`: on http://localhost it breaks the redirect from
+      // `/api/draft-mode/enable`, so the Studio's preview can't connect.
+      ...(dev ? [] : [{ key: 'Content-Security-Policy', value: 'upgrade-insecure-requests' }]),
     ]
 
     return [
