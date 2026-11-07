@@ -7678,11 +7678,728 @@ export type BLOG_LIST_QUERY_RESULT = Array<{
   } | null
 }>
 
+// Source: src/sanity/queries/site.groq.ts
+// Variable: SITE_QUERY
+// Query: coalesce(*[_type == 'site' && _id == 'site-' + $lang][0], *[_type == 'site' && _id == 'site'][0]){		...,		ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },		'headerMenu': coalesce(*[_type == 'translation.metadata' && references(^.headerMenu._ref)][0].translations[language == $lang || _key == $lang][0].value->, headerMenu->){ 	title,	items[]{			...,	internal->{		_type,		title,		metadata	},		link{ 	...,	internal->{		_type,		title,		metadata	} },		links[]{ 	...,	internal->{		_type,		title,		metadata	} }	} },		'footerMenu': coalesce(*[_type == 'translation.metadata' && references(^.footerMenu._ref)][0].translations[language == $lang || _key == $lang][0].value->, footerMenu->){ 	title,	items[]{			...,	internal->{		_type,		title,		metadata	},		link{ 	...,	internal->{		_type,		title,		metadata	} },		links[]{ 	...,	internal->{		_type,		title,		metadata	} }	} },		social->{ 	title,	items[]{			...,	internal->{		_type,		title,		metadata	},		link{ 	...,	internal->{		_type,		title,		metadata	} },		links[]{ 	...,	internal->{		_type,		title,		metadata	} }	} },		'ogimage': ogimage.asset->url	}
+export type SITE_QUERY_RESULT =
+  | {
+      _id: string
+      _type: 'site'
+      _createdAt: string
+      _updatedAt: string
+      _rev: string
+      title?: string
+      blurb?: Array<{
+        children?: Array<{
+          marks?: Array<string>
+          text?: string
+          _type: 'span'
+          _key: string
+        }>
+        style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
+        listItem?: never
+        markDefs?: Array<{
+          href?: string
+          _type: 'link'
+          _key: string
+        }>
+        level?: number
+        _type: 'block'
+        _key: string
+      }>
+      logo?: {
+        name?: string
+        image?: {
+          default?: {
+            asset?: SanityImageAssetReference
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            _type: 'image'
+          }
+          light?: {
+            asset?: SanityImageAssetReference
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            _type: 'image'
+          }
+          dark?: {
+            asset?: SanityImageAssetReference
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            _type: 'image'
+          }
+        }
+        _type: 'logo'
+      }
+      announcements?: Array<
+        {
+          _key: string
+        } & AnnouncementReference
+      >
+      copyright?: Array<{
+        children?: Array<{
+          marks?: Array<string>
+          text?: string
+          _type: 'span'
+          _key: string
+        }>
+        style?: 'normal'
+        listItem?: never
+        markDefs?: Array<{
+          href?: string
+          _type: 'link'
+          _key: string
+        }>
+        level?: number
+        _type: 'block'
+        _key: string
+      }>
+      ctas: Array<{
+        _key: string
+        _type: 'cta'
+        link: {
+          _type: 'link'
+          label?: string
+          type?: 'external' | 'internal'
+          internal:
+            | {
+                _type: 'blog.post'
+                title: string | null
+                metadata: Metadata | null
+              }
+            | {
+                _type: 'page'
+                title: string | null
+                metadata: Metadata | null
+              }
+            | null
+          external?: string
+          params?: string
+        } | null
+        style: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary' | null
+      }> | null
+      headerMenu:
+        | {
+            title: null
+            items: null
+          }
+        | {
+            title: string | null
+            items: null
+          }
+        | {
+            title: string | null
+            items: Array<
+              | {
+                  _key: string
+                  _type: 'link.list'
+                  link: {
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  } | null
+                  links: Array<{
+                    _key: string
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  }> | null
+                  internal: null
+                }
+              | {
+                  _key: string
+                  _type: 'link'
+                  label?: string
+                  type?: 'external' | 'internal'
+                  internal:
+                    | {
+                        _type: 'blog.post'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | {
+                        _type: 'page'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | null
+                  external?: string
+                  params?: string
+                  link: null
+                  links: null
+                }
+            > | null
+          }
+        | null
+      footerMenu:
+        | {
+            title: null
+            items: null
+          }
+        | {
+            title: string | null
+            items: null
+          }
+        | {
+            title: string | null
+            items: Array<
+              | {
+                  _key: string
+                  _type: 'link.list'
+                  link: {
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  } | null
+                  links: Array<{
+                    _key: string
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  }> | null
+                  internal: null
+                }
+              | {
+                  _key: string
+                  _type: 'link'
+                  label?: string
+                  type?: 'external' | 'internal'
+                  internal:
+                    | {
+                        _type: 'blog.post'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | {
+                        _type: 'page'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | null
+                  external?: string
+                  params?: string
+                  link: null
+                  links: null
+                }
+            > | null
+          }
+        | null
+      social: {
+        title: string | null
+        items: Array<
+          | {
+              _key: string
+              _type: 'link.list'
+              link: {
+                _type: 'link'
+                label?: string
+                type?: 'external' | 'internal'
+                internal:
+                  | {
+                      _type: 'blog.post'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | {
+                      _type: 'page'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | null
+                external?: string
+                params?: string
+              } | null
+              links: Array<{
+                _key: string
+                _type: 'link'
+                label?: string
+                type?: 'external' | 'internal'
+                internal:
+                  | {
+                      _type: 'blog.post'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | {
+                      _type: 'page'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | null
+                external?: string
+                params?: string
+              }> | null
+              internal: null
+            }
+          | {
+              _key: string
+              _type: 'link'
+              label?: string
+              type?: 'external' | 'internal'
+              internal:
+                | {
+                    _type: 'blog.post'
+                    title: string | null
+                    metadata: Metadata | null
+                  }
+                | {
+                    _type: 'page'
+                    title: string | null
+                    metadata: Metadata | null
+                  }
+                | null
+              external?: string
+              params?: string
+              link: null
+              links: null
+            }
+        > | null
+      } | null
+      localBusiness?: {
+        telephone?: string
+        email?: string
+        priceRange?: string
+        streetAddress?: string
+        addressLocality?: string
+        addressRegion?: string
+        postalCode?: string
+        addressCountry?: string
+        geo?: {
+          latitude?: number
+          longitude?: number
+        }
+        openingHours?: Array<{
+          days?: Array<string>
+          opens?: string
+          closes?: string
+          _key: string
+        }>
+      }
+      language?: string
+      ogimage: null
+    }
+  | {
+      _id: 'site'
+      _type: 'site'
+      _createdAt: string
+      _updatedAt: string
+      _rev: string
+      title?: string
+      blurb?: Array<{
+        children?: Array<{
+          marks?: Array<string>
+          text?: string
+          _type: 'span'
+          _key: string
+        }>
+        style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
+        listItem?: never
+        markDefs?: Array<{
+          href?: string
+          _type: 'link'
+          _key: string
+        }>
+        level?: number
+        _type: 'block'
+        _key: string
+      }>
+      logo?: {
+        name?: string
+        image?: {
+          default?: {
+            asset?: SanityImageAssetReference
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            _type: 'image'
+          }
+          light?: {
+            asset?: SanityImageAssetReference
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            _type: 'image'
+          }
+          dark?: {
+            asset?: SanityImageAssetReference
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            _type: 'image'
+          }
+        }
+        _type: 'logo'
+      }
+      announcements?: Array<
+        {
+          _key: string
+        } & AnnouncementReference
+      >
+      copyright?: Array<{
+        children?: Array<{
+          marks?: Array<string>
+          text?: string
+          _type: 'span'
+          _key: string
+        }>
+        style?: 'normal'
+        listItem?: never
+        markDefs?: Array<{
+          href?: string
+          _type: 'link'
+          _key: string
+        }>
+        level?: number
+        _type: 'block'
+        _key: string
+      }>
+      ctas: Array<{
+        _key: string
+        _type: 'cta'
+        link: {
+          _type: 'link'
+          label?: string
+          type?: 'external' | 'internal'
+          internal:
+            | {
+                _type: 'blog.post'
+                title: string | null
+                metadata: Metadata | null
+              }
+            | {
+                _type: 'page'
+                title: string | null
+                metadata: Metadata | null
+              }
+            | null
+          external?: string
+          params?: string
+        } | null
+        style: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary' | null
+      }> | null
+      headerMenu:
+        | {
+            title: null
+            items: null
+          }
+        | {
+            title: string | null
+            items: null
+          }
+        | {
+            title: string | null
+            items: Array<
+              | {
+                  _key: string
+                  _type: 'link.list'
+                  link: {
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  } | null
+                  links: Array<{
+                    _key: string
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  }> | null
+                  internal: null
+                }
+              | {
+                  _key: string
+                  _type: 'link'
+                  label?: string
+                  type?: 'external' | 'internal'
+                  internal:
+                    | {
+                        _type: 'blog.post'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | {
+                        _type: 'page'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | null
+                  external?: string
+                  params?: string
+                  link: null
+                  links: null
+                }
+            > | null
+          }
+        | null
+      footerMenu:
+        | {
+            title: null
+            items: null
+          }
+        | {
+            title: string | null
+            items: null
+          }
+        | {
+            title: string | null
+            items: Array<
+              | {
+                  _key: string
+                  _type: 'link.list'
+                  link: {
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  } | null
+                  links: Array<{
+                    _key: string
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  }> | null
+                  internal: null
+                }
+              | {
+                  _key: string
+                  _type: 'link'
+                  label?: string
+                  type?: 'external' | 'internal'
+                  internal:
+                    | {
+                        _type: 'blog.post'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | {
+                        _type: 'page'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | null
+                  external?: string
+                  params?: string
+                  link: null
+                  links: null
+                }
+            > | null
+          }
+        | null
+      social: {
+        title: string | null
+        items: Array<
+          | {
+              _key: string
+              _type: 'link.list'
+              link: {
+                _type: 'link'
+                label?: string
+                type?: 'external' | 'internal'
+                internal:
+                  | {
+                      _type: 'blog.post'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | {
+                      _type: 'page'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | null
+                external?: string
+                params?: string
+              } | null
+              links: Array<{
+                _key: string
+                _type: 'link'
+                label?: string
+                type?: 'external' | 'internal'
+                internal:
+                  | {
+                      _type: 'blog.post'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | {
+                      _type: 'page'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | null
+                external?: string
+                params?: string
+              }> | null
+              internal: null
+            }
+          | {
+              _key: string
+              _type: 'link'
+              label?: string
+              type?: 'external' | 'internal'
+              internal:
+                | {
+                    _type: 'blog.post'
+                    title: string | null
+                    metadata: Metadata | null
+                  }
+                | {
+                    _type: 'page'
+                    title: string | null
+                    metadata: Metadata | null
+                  }
+                | null
+              external?: string
+              params?: string
+              link: null
+              links: null
+            }
+        > | null
+      } | null
+      localBusiness?: {
+        telephone?: string
+        email?: string
+        priceRange?: string
+        streetAddress?: string
+        addressLocality?: string
+        addressRegion?: string
+        postalCode?: string
+        addressCountry?: string
+        geo?: {
+          latitude?: number
+          longitude?: number
+        }
+        openingHours?: Array<{
+          days?: Array<string>
+          opens?: string
+          closes?: string
+          _key: string
+        }>
+      }
+      language?: string
+      ogimage: null
+    }
+  | null
+
 // Query TypeMap
 declare global {
   interface SanityQueries {
     "\n\t*[\n\t\t_type == 'blog.post'\n\t\t&& (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)\n\t] | order(publishDate desc) { \n\t_type,\n\t_id,\n\t_createdAt,\n\t_updatedAt,\n\ttitle,\n\tfeatured,\n\tpublishDate,\n\tlanguage,\n\t'categories': (categories[]{ 'doc': coalesce(*[_type == 'translation.metadata' && references(^._ref)][0].translations[language == $lang || _key == $lang][0].value->, @->) }.doc)[_type == 'blog.category']{ _id, title, slug },\n\tauthors[]->,\n\tmetadata {\n\t\t...,\n\t\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n\t\t'ogimage': image.asset->url + '?w=1200'\n\t}\n }\n": BLOG_FRONTPAGE_QUERY_RESULT
     "\n\t*[\n\t\t_type == 'blog.post'\n\t\t&& (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)\n\t\t&& ($filteredCategory == '' || $filteredCategory in categories[]{ 'doc': coalesce(*[_type == 'translation.metadata' && references(^._ref)][0].translations[language == $lang || _key == $lang][0].value->, @->) }.doc._id)\n\t] | order(select($featuredFirst => featured, false) desc, publishDate desc)\n\t[0..$last] { \n\t_type,\n\t_id,\n\t_createdAt,\n\t_updatedAt,\n\ttitle,\n\tfeatured,\n\tpublishDate,\n\tlanguage,\n\t'categories': (categories[]{ 'doc': coalesce(*[_type == 'translation.metadata' && references(^._ref)][0].translations[language == $lang || _key == $lang][0].value->, @->) }.doc)[_type == 'blog.category']{ _id, title, slug },\n\tauthors[]->,\n\tmetadata {\n\t\t...,\n\t\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n\t\t'ogimage': image.asset->url + '?w=1200'\n\t}\n }\n": BLOG_LIST_QUERY_RESULT
+    "\n\tcoalesce(*[_type == 'site' && _id == 'site-' + $lang][0], *[_type == 'site' && _id == 'site'][0]){\n\t\t...,\n\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t'headerMenu': coalesce(*[_type == 'translation.metadata' && references(^.headerMenu._ref)][0].translations[language == $lang || _key == $lang][0].value->, headerMenu->){ \n\ttitle,\n\titems[]{\n\t\t\n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\t\tlinks[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t}\n },\n\t\t'footerMenu': coalesce(*[_type == 'translation.metadata' && references(^.footerMenu._ref)][0].translations[language == $lang || _key == $lang][0].value->, footerMenu->){ \n\ttitle,\n\titems[]{\n\t\t\n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\t\tlinks[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t}\n },\n\t\tsocial->{ \n\ttitle,\n\titems[]{\n\t\t\n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\t\tlinks[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t}\n },\n\t\t'ogimage': ogimage.asset->url\n\t}\n": SITE_QUERY_RESULT
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

@@ -1,4 +1,4 @@
-import { getSite } from '@/sanity/lib/queries'
+import { getSite } from '@/sanity/lib/site'
 import { DEFAULT_LANG } from '@/lib/i18n'
 import { urlFor } from '@/sanity/lib/image'
 import { BASE_URL } from '@/lib/env'

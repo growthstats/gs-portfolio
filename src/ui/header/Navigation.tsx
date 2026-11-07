@@ -1,4 +1,4 @@
-import { getSite } from '@/sanity/lib/queries'
+import { getSite } from '@/sanity/lib/site'
 import CTA from '@/ui/CTA'
 import LinkList from './LinkList'
 import { cn } from '@/lib/utils'
@@ -11,7 +11,7 @@ export default async function Menu({ lang }: { lang: Lang }) {
 
   return (
     <nav
-      className="max-md:anim-fade-to-r max-md:header-closed:hidden flex gap-y-2 [grid-area:nav] max-md:my-4 max-md:flex-col md:justify-center md:gap-x-2"
+      className="flex gap-y-2 [grid-area:nav] max-md:my-4 max-md:anim-fade-to-r max-md:flex-col md:justify-center md:gap-x-2 max-md:header-closed:hidden"
       role="navigation"
     >
       {headerMenu?.items?.map((item, key) => {
