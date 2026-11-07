@@ -7,11 +7,11 @@ import { markdownUrl } from './seo'
  * Fetched by `fetchAgentIndex` in `src/sanity/lib/agentIndex.ts`.
  */
 
-export type AgentIndexEntry = { title?: string; slug?: string; desc?: string }
+export type AgentIndexEntry = { title?: string | null; slug?: string | null; desc?: string | null }
 
 export type AgentIndex = {
-  siteTitle?: string
-  siteDesc?: string
+  siteTitle?: string | null
+  siteDesc?: string | null
   pages?: AgentIndexEntry[]
   posts?: AgentIndexEntry[]
 }

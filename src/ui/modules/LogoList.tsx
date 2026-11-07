@@ -1,10 +1,11 @@
 import { fetchSanityLive } from '@/sanity/lib/fetch'
-import { groq } from 'next-sanity'
 import Pretitle from '@/ui/Pretitle'
 import { Img } from '@/ui/Img'
 import { cn } from '@/lib/utils'
 import css from './LogoList.module.css'
 import PortableText from '@/ui/PortableText'
+import { LOGOS_QUERY } from '@/sanity/queries/logo.groq'
+import type { LOGOS_QUERY_RESULT } from '@/sanity/sanity.types'
 
 export default async function LogoList({
   pretitle,
@@ -17,7 +18,7 @@ export default async function LogoList({
   Partial<{
     pretitle: string
     intro: Sanity.PortableText
-    logos: Sanity.Logo[]
+    logos: LOGOS_QUERY_RESULT
     logoType: 'default' | 'light' | 'dark'
     autoScroll?: boolean
     duration?: number
@@ -25,14 +26,14 @@ export default async function LogoList({
 >) {
   const allLogos =
     logos ||
-    (await fetchSanityLive<Sanity.Logo[]>({
-      query: groq`*[_type == 'logo']|order(name)`,
+    (await fetchSanityLive<LOGOS_QUERY_RESULT>({
+      query: LOGOS_QUERY,
     }))
 
   return (
     <section className="section space-y-8">
       {(pretitle || intro) && (
-        <header className="richtext mx-auto max-w-screen-sm text-center text-balance">
+        <header className="mx-auto max-w-screen-sm richtext text-center text-balance">
           <Pretitle>{pretitle}</Pretitle>
           {intro && <PortableText value={intro ?? []} />}
         </header>
@@ -42,7 +43,7 @@ export default async function LogoList({
         className={cn(
           'mx-auto flex items-center gap-y-8 pb-4',
           autoScroll
-            ? `${css.track} overflow-fade max-w-max overflow-hidden`
+            ? `${css.track} max-w-max overflow-hidden overflow-fade`
             : 'flex-wrap justify-center gap-x-4',
         )}
         style={

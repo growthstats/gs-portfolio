@@ -1,10 +1,11 @@
 import { useQueryState } from 'nuqs'
 import { create } from 'zustand'
 import { search } from './actions'
+import type { SEARCH_QUERY_RESULT } from '@/sanity/sanity.types'
 
 export type SearchScope = 'all' | 'pages' | 'path' | 'blog posts' | undefined
 
-export type SearchResults = Sanity.PageBase[]
+export type SearchResults = SEARCH_QUERY_RESULT
 
 export const useQuery = () => {
   const [query, setQuery] = useQueryState('query', {

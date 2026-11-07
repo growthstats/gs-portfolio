@@ -110,15 +110,6 @@ declare global {
       end?: string
     }
 
-    interface Logo extends SanityDocument {
-      name: string
-      image?: Partial<{
-        default: Image
-        light: Image
-        dark: Image
-      }>
-    }
-
     interface Person extends SanityDocument {
       name: string
       image?: Image
