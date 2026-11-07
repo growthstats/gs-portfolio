@@ -6,7 +6,7 @@ import processMetadata from '@/lib/processMetadata'
 import { client } from '@/sanity/lib/client'
 import { groq } from 'next-sanity'
 import { fetchSanityLive } from '@/sanity/lib/fetch'
-import { MODULES_QUERY, GLOBAL_MODULE_PATH_QUERY, withGlobalModules } from '@/sanity/lib/queries'
+import { PAGE_MODULES_QUERY } from '@/sanity/lib/queries'
 import {
   IN_LANGUAGE,
   LANGUAGE,
@@ -70,7 +70,7 @@ const fetchPage = cache(async (lang: Lang, slug: string) => {
 			&& ${IN_LANGUAGE}
 		] | ${PREFER_LANGUAGE}[0]{
 			...,
-			'modules': ${withGlobalModules(`modules[]{ ${MODULES_QUERY} }`, GLOBAL_MODULE_PATH_QUERY)},
+			'modules': ${PAGE_MODULES_QUERY},
 			metadata {
 				...,
 				'ogimage': image.asset->url + '?w=1200'

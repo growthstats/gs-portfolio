@@ -52,9 +52,13 @@ export const PREFER_LANGUAGE = groq`order(select(${LANGUAGE} == $lang => 0, 1))`
 // @sanity-typegen-ignore
 export const SITE = groq`coalesce(*[_id == 'site-' + $lang][0], *[_id == 'site'][0])`
 
-/** Projection: dereferences the reference `field` in `$lang`, else the referenced document. */
+/**
+ * Projection: dereferences the reference `field` in `$lang`, else the referenced document.
+ * Repeats `translationOf`'s query rather than calling it: TypeGen can't follow a parameter
+ * passed on to another function.
+ */
 export const localizedRef = (field: string) =>
-  groq`coalesce(${translationOf(`^.${field}._ref`)}, ${field}->)`
+  groq`coalesce(*[_type == 'translation.metadata' && references(^.${field}._ref)][0].translations[language == $lang || _key == $lang][0].value->, ${field}->)`
 
 /** Projection: dereferences each reference in the array `field` in `$lang`. */
 export const localizedRefs = (field: string) =>
@@ -76,11 +80,11 @@ export const LOCALIZED_FIELDS = groq`
 /** A document as fetched with {@link LOCALIZED_FIELDS}. */
 export type LocalizedResult<T> = T & {
   isFallback: boolean
-  translations: { lang: string; slug?: string }[]
+  translations: { lang: string; slug?: string | null }[]
 }
 
 /** Turns the fetched `translations` into a URL path per enabled language. */
-export function withTranslationLinks<T extends Sanity.PageBase>(
+export function withTranslationLinks<T extends { _type: string }>(
   doc: LocalizedResult<T>,
 ): Sanity.Localized<T> {
   const translations = doc.translations

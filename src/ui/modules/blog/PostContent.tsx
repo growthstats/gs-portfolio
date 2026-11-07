@@ -12,17 +12,21 @@ import Social from '@/ui/Social'
 import { BASE_URL } from '@/lib/env'
 import resolveUrl from '@/lib/resolveUrl'
 import Faq from '@/ui/modules/Faq'
+import type { ComponentProps } from 'react'
 import type { Lang } from '@/lib/i18n'
+import type { BlogPost } from '@/sanity/queries/blog.groq'
 
+// TypeGen types Portable Text `children` as optional, so `body` and `faq` are cast where they reach
+// components typed with `PortableTextBlock`.
 export default function PostContent({
   lang,
   post,
   ...props
-}: { lang: Lang; post?: Sanity.BlogPost & { faq?: Sanity.FaqModule } } & Sanity.Module) {
+}: { lang: Lang; post?: BlogPost } & Sanity.Module) {
   if (!post) return null
 
   const showTOC = !post.hideTableOfContents || !!post.headings?.length
-  const displayTitle = post.title || post.metadata.title
+  const displayTitle = post.title || post.metadata?.title
   const shareUrl = post.metadata?.slug?.current
     ? BASE_URL + resolveUrl(post, { base: false, language: lang })
     : BASE_URL
@@ -58,7 +62,7 @@ export default function PostContent({
         <figure className={cn(css.headerImg, 'relative mx-auto max-w-[710px] rounded-xl')}>
           <picture>
             <Img
-              image={post.metadata.image}
+              image={post.metadata?.image}
               className="relative aspect-video rounded-xl object-cover"
             />
           </picture>
@@ -67,17 +71,20 @@ export default function PostContent({
 
       <div className={cn('section grid gap-8', showTOC && 'lg:grid-cols-[auto_1fr]')}>
         {showTOC && (
-          <aside className="lg:sticky-below-header mx-auto w-full max-w-lg self-start [--offset:1rem] lg:w-3xs">
+          <aside className="mx-auto w-full max-w-lg self-start [--offset:1rem] lg:sticky-below-header lg:w-3xs">
             <TableOfContents headings={post.headings} />
           </aside>
         )}
 
         <div className="space-y-12">
-          <Content value={post.body} className={cn(css.body, 'ml-0 grid max-w-[780px]')}>
+          <Content
+            value={(post.body ?? []) as Sanity.PortableText}
+            className={cn(css.body, 'ml-0 grid max-w-[780px]')}
+          >
             <hr />
           </Content>
 
-          {post.faq && <Faq {...post.faq} />}
+          {post.faq && <Faq {...(post.faq as ComponentProps<typeof Faq>)} />}
         </div>
       </div>
     </article>

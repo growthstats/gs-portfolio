@@ -1,7 +1,7 @@
 import Modules from '@/ui/modules'
 import { fetchSanityLive } from '@/sanity/lib/fetch'
 import { groq } from 'next-sanity'
-import { MODULES_QUERY, withGlobalModules } from '@/sanity/lib/queries'
+import { NOT_FOUND_MODULES_QUERY } from '@/sanity/lib/queries'
 import { IN_LANGUAGE, PREFER_LANGUAGE } from '@/sanity/lib/localized'
 import type { Lang } from '@/lib/i18n'
 
@@ -16,7 +16,7 @@ export async function get404(lang: Lang) {
   return await fetchSanityLive<Sanity.Page>({
     query: groq`*[_type == 'page' && metadata.slug.current == '404' && ${IN_LANGUAGE}] | ${PREFER_LANGUAGE}[0]{
 			...,
-			'modules': ${withGlobalModules(`modules[]{ ${MODULES_QUERY} }`)}
+			'modules': ${NOT_FOUND_MODULES_QUERY}
 		}`,
     params: { lang },
   })

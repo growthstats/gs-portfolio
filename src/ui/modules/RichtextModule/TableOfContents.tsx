@@ -9,10 +9,12 @@ import css from './TableOfContents.module.css'
 export default function TableOfContents({
   headings,
 }: Readonly<{
-  headings?: {
-    text: string
-    style: string
-  }[]
+  headings?:
+    | {
+        text: string
+        style: string | null
+      }[]
+    | null
 }>) {
   const { richtext } = useDictionary()
 
@@ -56,10 +58,10 @@ export default function TableOfContents({
         {richtext.tableOfContents}
       </summary>
 
-      <ol className="anim-fade-to-b mt-2 leading-tight">
+      <ol className="mt-2 anim-fade-to-b leading-tight">
         {headings?.map(({ text, style }, key) => (
           <li
-            className={cn('border-ink/10 border-s transition-all', css.item)}
+            className={cn('border-s border-ink/10 transition-all', css.item)}
             data-toc-item={slug(text)}
             key={key}
           >

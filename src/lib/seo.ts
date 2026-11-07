@@ -9,6 +9,14 @@ export const OG_LOCALES: Record<Lang, string> = {
   de: 'de_DE',
 }
 
+/** What the SEO helpers read from a blog post: `Sanity.Page` has none of the post fields. */
+export type PostSeoSource = {
+  _createdAt: string
+  _updatedAt?: string
+  publishDate?: string | null
+  authors?: ({ name?: string | null } | null)[] | null
+}
+
 /** A document's language; documents written before the backfill count as English. */
 export function documentLanguage(doc: { language?: string | null }): Lang {
   const language = stegaClean(doc.language)
@@ -29,7 +37,9 @@ export function canonicalUrl(doc: UrlSource & { language?: string | null }) {
  * language, so a fallback (the English document under `/de/`) canonicalises
  * to the English URL, and `translations` has no German entry to link to.
  */
-export function buildAlternates(doc: Sanity.Localized<Sanity.PageBase>) {
+export function buildAlternates(
+  doc: UrlSource & { language?: string | null; translations: Sanity.TranslationLink[] },
+) {
   const lang = documentLanguage(doc)
 
   const languages: Record<string, string> = Object.fromEntries(
@@ -48,13 +58,13 @@ export function buildAlternates(doc: Sanity.Localized<Sanity.PageBase>) {
 }
 
 /** A blog post's publish and modified dates, falling back to the document's own timestamps. */
-export function postDates(post: Sanity.BlogPost) {
+export function postDates(post: PostSeoSource) {
   const published = stegaClean(post.publishDate) || post._createdAt
   return { published, modified: post._updatedAt || published }
 }
 
 /** The names of a blog post's authors, without stega markers or missing references. */
-export function postAuthorNames(post: Sanity.BlogPost): string[] {
+export function postAuthorNames(post: PostSeoSource): string[] {
   return (post.authors ?? [])
     .map((author) => stegaClean(author?.name))
     .filter((name): name is string => Boolean(name))
