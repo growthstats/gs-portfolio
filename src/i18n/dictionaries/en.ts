@@ -146,6 +146,9 @@ const en = {
     typePage: 'Page',
     google: 'Search on Google',
   },
+  imageGallery: {
+    label: 'Image gallery',
+  },
   testimonial: {
     source: 'Source',
     sourceLabel: 'Source of testimonial',

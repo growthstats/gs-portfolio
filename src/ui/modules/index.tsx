@@ -14,6 +14,7 @@ import FlagList from './FlagList'
 import Hero from './Hero'
 import HeroSplit from './HeroSplit'
 import HeroSaaS from './HeroSaaS'
+import ImageGallery from './ImageGallery'
 import JoinUsPlaceholder from './JoinUsPlaceholder'
 import LetsTalkPlaceholder from './LetsTalkPlaceholder'
 import LogoList from './LogoList'
@@ -56,6 +57,7 @@ export const MODULE_MAP = {
   hero: Hero,
   'hero.saas': HeroSaaS,
   'hero.split': HeroSplit,
+  'image-gallery': ImageGallery,
   'join-us.placeholder': JoinUsPlaceholder,
   'lets-talk-placeholder': LetsTalkPlaceholder,
   'logo-list': LogoList,
