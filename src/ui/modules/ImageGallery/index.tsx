@@ -11,15 +11,12 @@ import type { Lang } from '@/lib/i18n'
 
 function Figure({ image, copy }: { image: GalleryImage; copy?: boolean }) {
   return (
-    <figure
-      className={cn('relative shrink-0 snap-center', copy && css.copy)}
-      aria-hidden={copy || undefined}
-    >
+    <figure className={cn('relative shrink-0', copy && css.copy)} aria-hidden={copy || undefined}>
       <Img
         className="h-56 w-auto max-w-none rounded-lg object-cover md:h-75"
         image={image}
         height={600}
-        sizes="(max-width: 768px) 70vw, 400px"
+        sizes="(max-width: 768px) 100vw, 800px"
         alt={copy ? '' : stegaClean(image.alt)}
       />
       {image.caption && (
@@ -57,11 +54,7 @@ export default function ImageGallery({
           ({ key, images, reverse }) => (
             // Focusable so the row scrolls with the arrow keys; focus pauses any auto-scroll.
             <div
-              className={cn(
-                css.scroller,
-                'no-scrollbar overflow-x-auto max-md:full-bleed',
-                !autoScroll && 'snap-x',
-              )}
+              className={cn(css.scroller, 'no-scrollbar overflow-x-auto max-md:full-bleed')}
               role="region"
               aria-label={label}
               tabIndex={0}
