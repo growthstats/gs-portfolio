@@ -133,6 +133,12 @@ const MODULES_BASE_PROJECTION = `
 			}
 		}
 	},
+	_type == 'image-gallery' => {
+		rows[]{
+			...,
+			images[]{ ${IMAGE_QUERY} }
+		}
+	},
 	_type == 'logo-list' => { logos[]-> },
 	_type == 'project-list' => {
 		projects[]{

@@ -262,6 +262,18 @@ declare global {
       title: string
     }
 
+    interface ImageGalleryModule extends Module {
+      pretitle?: string
+      intro?: PortableText
+      rows?: {
+        _key: string
+        images?: (Image & { caption?: string; lqip?: string | null })[]
+      }[]
+      autoScroll?: boolean
+      duration?: number
+      alternateScrollDirection?: boolean
+    }
+
     type FAQItem = {
       _key: string
       question: string

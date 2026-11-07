@@ -5499,6 +5499,58 @@ export type JoinUsPlaceholder = {
   options?: ModuleOptions
 }
 
+export type ImageGallery = {
+  _type: 'image-gallery'
+  options?: ModuleOptions
+  pretitle?: string
+  intro?: Array<{
+    children?: Array<{
+      marks?: Array<string>
+      text?: string
+      _type: 'span'
+      _key: string
+    }>
+    style?:
+      | 'normal'
+      | 'display-hero'
+      | 'display-xxl'
+      | 'display-xl'
+      | 'h1'
+      | 'h2'
+      | 'h3'
+      | 'h4'
+      | 'h5'
+      | 'h6'
+      | 'blockquote'
+    listItem?: 'bullet' | 'number'
+    markDefs?: Array<{
+      href?: string
+      _type: 'link'
+      _key: string
+    }>
+    level?: number
+    _type: 'block'
+    _key: string
+  }>
+  rows?: Array<{
+    images?: Array<{
+      asset?: SanityImageAssetReference
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      alt?: string
+      caption?: string
+      _type: 'image'
+      _key: string
+    }>
+    _type: 'row'
+    _key: string
+  }>
+  autoScroll?: boolean
+  duration?: number
+  alternateScrollDirection?: boolean
+}
+
 export type ReputationReference = {
   _ref: string
   _type: 'reference'
@@ -6856,6 +6908,9 @@ export type GlobalModule = {
       } & HeroSplit)
     | ({
         _key: string
+      } & ImageGallery)
+    | ({
+        _key: string
       } & JoinUsPlaceholder)
     | ({
         _key: string
@@ -6961,6 +7016,9 @@ export type GlobalModule = {
     | ({
         _key: string
       } & HeroSplit)
+    | ({
+        _key: string
+      } & ImageGallery)
     | ({
         _key: string
       } & JoinUsPlaceholder)
@@ -7210,6 +7268,9 @@ export type Page = {
       } & HeroSplit)
     | ({
         _key: string
+      } & ImageGallery)
+    | ({
+        _key: string
       } & JoinUsPlaceholder)
     | ({
         _key: string
@@ -7448,6 +7509,7 @@ export type AllSanitySchemaTypes =
   | LogoList
   | LetsTalkPlaceholder
   | JoinUsPlaceholder
+  | ImageGallery
   | ReputationReference
   | HeroSplit
   | HeroSaas
