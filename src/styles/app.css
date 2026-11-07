@@ -720,3 +720,29 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  /* 0.01ms rather than 0 so animationend/transitionend still fire (Radix waits on them) */
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* own rule: browsers without ::details-content would drop the whole list above */
+  ::details-content {
+    transition-duration: 0.01ms !important;
+  }
+
+  /* the bar can't crawl without motion, so the toploader is skipped altogether */
+  #nprogress {
+    display: none;
+  }
+}
