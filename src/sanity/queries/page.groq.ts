@@ -51,6 +51,15 @@ export const NOT_FOUND_PAGE_QUERY = defineQuery(`
 	}
 `)
 
+/** Every global module's paths, for the draft mode controls. */
+export const GLOBAL_MODULES_QUERY = defineQuery(`
+	*[_type == 'global-module']{
+		_id,
+		path,
+		excludePaths[]
+	}
+`)
+
 /** A page as the page route fetches it, before its translation links are added. */
 export type PageResult = LocalizedResult<NonNullable<PAGE_QUERY_RESULT>>
 

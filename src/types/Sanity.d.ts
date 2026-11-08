@@ -2,18 +2,11 @@
 import type { SanityDocument } from 'next-sanity'
 
 /*
- * Hand-written types for the queries TypeGen doesn't type yet: the global-module query in
- * `VisualEditingControls` (#185) and the announcements query. Everything else uses the generated
- * types in `src/sanity/sanity.types.ts`; delete these as those queries move over.
+ * Hand-written types for the one query TypeGen doesn't type yet: the announcements query. Everything
+ * else uses the generated types in `src/sanity/sanity.types.ts`; delete these when it moves over.
  */
 declare global {
   namespace Sanity {
-    interface GlobalModule extends SanityDocument {
-      path: string
-      excludePaths?: string[]
-      modules?: Module[]
-    }
-
     interface Announcement extends SanityDocument {
       content: any
       cta?: Link

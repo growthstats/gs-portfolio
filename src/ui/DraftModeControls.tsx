@@ -7,11 +7,12 @@ import { VscSymbolField, VscBeakerStop } from 'react-icons/vsc'
 import { createDataAttribute, stegaClean } from 'next-sanity'
 import { parseLangFromPath } from '@/lib/i18n'
 import { useDictionary } from '@/i18n/DictionaryProvider'
+import type { GLOBAL_MODULES_QUERY_RESULT } from '@/sanity/sanity.types'
 
 export default function DraftModeControls({
   globalModules,
 }: Readonly<{
-  globalModules?: Sanity.GlobalModule[]
+  globalModules?: GLOBAL_MODULES_QUERY_RESULT
 }>) {
   // const environment = useDraftModeEnvironment()
   // if (!['live', 'unknown'].includes(environment)) return null
@@ -24,12 +25,12 @@ export default function DraftModeControls({
       const p = stegaClean(path)
       const curr = parseLangFromPath(pathname).path.replace(/^\//, '')
 
-      return p === '*' || (curr.startsWith(p) && !ex?.some((e) => curr.startsWith(e)))
+      return p === '*' || (p !== null && curr.startsWith(p) && !ex?.some((e) => curr.startsWith(e)))
     })
-    .sort((a, b) => a.path.localeCompare(b.path))
+    .sort((a, b) => (a.path ?? '').localeCompare(b.path ?? ''))
 
   return (
-    <details className="frosted-glass fixed right-4 bottom-0 rounded-t bg-amber-200/90 text-xs shadow-xl not-hover:opacity-50 open:opacity-100">
+    <details className="fixed right-4 bottom-0 rounded-t bg-amber-200/90 text-xs shadow-xl frosted-glass not-hover:opacity-50 open:opacity-100">
       <summary className="p-2">{draftMode.label}</summary>
 
       <menu className="anim-fade-to-r p-2 pt-0">
