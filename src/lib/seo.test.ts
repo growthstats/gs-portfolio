@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { buildAlternates, documentLanguage, markdownUrl } from './seo'
+import { buildAlternates, documentLanguage, markdownUrl, socialProfileUrls } from './seo'
 
 vi.hoisted(() => {
   process.env.NEXT_PUBLIC_BASE_URL = 'https://example.com'
@@ -110,5 +110,41 @@ describe('markdownUrl', () => {
     expect(markdownUrl('https://example.com/de', { isHome: true })).toBe(
       'https://example.com/de/index.md',
     )
+  })
+})
+
+describe('socialProfileUrls', () => {
+  it('keeps plain links, whose projection has links: null', () => {
+    expect(
+      socialProfileUrls([
+        { _type: 'link', external: 'https://www.linkedin.com/company/x', links: null },
+        { _type: 'link', external: 'https://x.com/x', links: null },
+      ]),
+    ).toEqual(['https://www.linkedin.com/company/x', 'https://x.com/x'])
+  })
+
+  it('flattens link lists', () => {
+    expect(
+      socialProfileUrls([
+        {
+          _type: 'link.list',
+          external: 'https://ignored.example',
+          links: [{ external: 'https://github.com/x' }, { external: 'http://example.org' }],
+        },
+        { _type: 'link.list', links: null },
+      ]),
+    ).toEqual(['https://github.com/x', 'http://example.org'])
+  })
+
+  it('drops non-http(s) and empty URLs', () => {
+    expect(
+      socialProfileUrls([
+        { _type: 'link', external: 'mailto:hi@example.com' },
+        { _type: 'link', external: '' },
+        { _type: 'link', external: null },
+        { _type: 'link' },
+      ]),
+    ).toEqual([])
+    expect(socialProfileUrls(undefined)).toEqual([])
   })
 })
