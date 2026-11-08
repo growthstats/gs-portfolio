@@ -4,18 +4,11 @@ import FallbackNotice from '@/ui/FallbackNotice'
 import WebPageSchema from '@/ui/WebPageSchema'
 import processMetadata from '@/lib/processMetadata'
 import { client } from '@/sanity/lib/client'
-import { groq } from 'next-sanity'
 import { fetchSanityLive } from '@/sanity/lib/fetch'
-import { PAGE_MODULES_QUERY } from '@/sanity/lib/queries'
-import {
-  IN_LANGUAGE,
-  LANGUAGE,
-  LOCALIZED_FIELDS,
-  PREFER_LANGUAGE,
-  withTranslationLinks,
-  type LocalizedResult,
-} from '@/sanity/lib/localized'
-import { DEFAULT_LANG, isEnabledLanguage, type Lang } from '@/lib/i18n'
+import { withTranslationLinks } from '@/sanity/lib/localized'
+import { PAGE_QUERY, PAGE_SLUGS_QUERY, type PageResult } from '@/sanity/queries/page.groq'
+import type { PAGE_SLUGS_QUERY_RESULT } from '@/sanity/sanity.types'
+import { isEnabledLanguage, type Lang } from '@/lib/i18n'
 import { cache } from 'react'
 import errors from '@/lib/errors'
 
@@ -42,18 +35,13 @@ export async function generateMetadata({ params }: Props) {
 
 export async function generateStaticParams({ params: { lang } }: { params: { lang: string } }) {
   // Each language's own documents, plus the English ones it renders as fallbacks.
-  const slugs = await client.fetch<string[]>(
-    groq`array::unique(*[
-			_type == 'page'
-			&& defined(metadata.slug.current)
-			&& !(metadata.slug.current in ['index'])
-			&& ${LANGUAGE} in [$lang, '${DEFAULT_LANG}']
-		].metadata.slug.current)`,
-    { lang },
-  )
+  const slugs = await client.fetch<PAGE_SLUGS_QUERY_RESULT>(PAGE_SLUGS_QUERY, { lang })
 
   // The homepage has no slug segments.
-  return [{ slug: undefined }, ...slugs.map((slug) => ({ slug: slug.split('/') }))]
+  return [
+    { slug: undefined },
+    ...slugs.flatMap((slug) => (slug ? [{ slug: slug.split('/') }] : [])),
+  ]
 }
 
 function getPage({ lang, slug }: Params) {
@@ -63,20 +51,8 @@ function getPage({ lang, slug }: Params) {
 
 // Keyed by strings so `Page` and `generateMetadata` share one fetch.
 const fetchPage = cache(async (lang: Lang, slug: string) => {
-  const page = await fetchSanityLive<LocalizedResult<Sanity.Page>>({
-    query: groq`*[
-			_type == 'page'
-			&& metadata.slug.current == $slug
-			&& ${IN_LANGUAGE}
-		] | ${PREFER_LANGUAGE}[0]{
-			...,
-			'modules': ${PAGE_MODULES_QUERY},
-			metadata {
-				...,
-				'ogimage': image.asset->url + '?w=1200'
-			},
-			${LOCALIZED_FIELDS}
-		}`,
+  const page = await fetchSanityLive<PageResult | null>({
+    query: PAGE_QUERY,
     params: { lang, slug },
   })
 
