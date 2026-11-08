@@ -29,15 +29,16 @@ import TabbedContent from './TabbedContent'
 import TeamPlaceholder from './TeamPlaceholder'
 import TestimonialList from './TestimonialList'
 import TestimonialFeatured from './TestimonialFeatured'
-import Section from './Section'
+import Section, { type SectionChild } from './Section'
 import Faq from './Faq'
 import ServiceDetails from './ServiceDetails'
 
 import dynamic from 'next/dynamic'
-import type { ReactNode } from 'react'
+import type { ComponentType, ReactNode } from 'react'
 import { createDataAttribute } from 'next-sanity'
 import type { Lang } from '@/lib/i18n'
 import type { BlogPost } from '@/sanity/queries/blog.groq'
+import type { ModuleOf, Page, PageModule } from '@/sanity/queries/page.groq'
 
 export const MODULE_MAP = {
   'about.placeholder': AboutPlaceholder,
@@ -78,6 +79,13 @@ export const MODULE_MAP = {
   'team.placeholder': TeamPlaceholder,
 } as const
 
+/**
+ * A module as any route's modules query returns it, a section's child, or a scheduled module
+ * (which the modules query doesn't project, so it arrives as stored).
+ */
+type RenderedModule =
+  PageModule | SectionChild | NonNullable<ModuleOf<'schedule-module'>['modules']>[number]
+
 export default function Modules({
   lang,
   modules,
@@ -86,11 +94,11 @@ export default function Modules({
 }: Readonly<{
   /** The page language, handed to every module so server modules can call `getDictionary(lang)`. */
   lang: Lang
-  modules?: (Sanity.Module | null)[] | null
-  page?: Sanity.Page
+  modules?: (RenderedModule | null)[] | null
+  page?: Page
   post?: BlogPost
 }>) {
-  const getAdditionalProps = (module: Sanity.Module) => {
+  const getAdditionalProps = (module: RenderedModule) => {
     switch (module._type) {
       case 'blog-post-content':
         return { post }
@@ -101,15 +109,13 @@ export default function Modules({
     }
   }
 
-  const renderModule = (module: Sanity.Module | null | undefined, path: string): ReactNode => {
-    if (!module) return null
-
-    const elementKey = module._key || (module as { _id?: string })?._id || `${module._type}-${path}`
+  const renderModule = (module: RenderedModule, path: string): ReactNode => {
+    const elementKey = module._key || `${module._type}-${path}`
 
     const dataAttribute = page?._id
       ? createDataAttribute({
           id: page._id,
-          type: page?._type,
+          type: page._type,
           path,
         }).toString()
       : undefined
@@ -117,7 +123,7 @@ export default function Modules({
     if (module._type === 'section') {
       return (
         <Section
-          data={module as Sanity.SectionModule}
+          data={module}
           dataSanity={dataAttribute}
           renderModule={(child, childIndex) => renderModule(child, `${path}.module[${childIndex}]`)}
           key={elementKey}
@@ -125,7 +131,8 @@ export default function Modules({
       )
     }
 
-    const Component = MODULE_MAP[module._type as keyof typeof MODULE_MAP]
+    const Component = MODULE_MAP[module._type as keyof typeof MODULE_MAP] as
+      ComponentType<Record<string, unknown>> | undefined
     if (!Component) return null
 
     return (

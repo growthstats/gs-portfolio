@@ -5,7 +5,6 @@ import { buttonVariants } from '@/components/ui/button'
 
 import type { PortableTextBlock } from '@portabletext/types'
 import type { SanityAssetDocument, SanityDocument } from 'next-sanity'
-import type { Lang } from '@/lib/i18n'
 
 declare global {
   namespace Sanity {
@@ -20,20 +19,6 @@ declare global {
     interface Page extends PageBase {
       readonly _type: 'page'
       modules?: Module[]
-    }
-
-    /** A published language version of a document and its URL path. */
-    interface TranslationLink {
-      lang: Lang
-      url: string
-    }
-
-    /** A document fetched for a language (ADR 0002). */
-    type Localized<T> = T & {
-      /** The English document, rendered because `lang` has no published translation. */
-      isFallback: boolean
-      /** Every enabled language the document is published in, its own included. */
-      translations: TranslationLink[]
     }
 
     interface GlobalModule extends SanityDocument {
@@ -195,17 +180,6 @@ declare global {
     // modules
 
     type PortableText = PortableTextBlock[]
-
-    type SectionChildModule = Module
-
-    interface SectionModule extends Module<'section'> {
-      headingBadge?: string
-      icon?: string
-      module?: (SectionChildModule | null)[] | null
-      pretitle?: string
-      subtitle?: string
-      title: string
-    }
 
     interface ImageGalleryModule extends Module {
       pretitle?: string

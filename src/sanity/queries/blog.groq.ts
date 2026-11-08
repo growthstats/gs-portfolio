@@ -7,6 +7,7 @@ import {
   LOCALIZED_FIELDS,
   PREFER_LANGUAGE,
   localizedRefs,
+  type Localized,
 } from '@/sanity/lib/localized'
 import type { BLOG_FRONTPAGE_QUERY_RESULT, BLOG_POST_QUERY_RESULT } from '@/sanity/sanity.types'
 
@@ -95,4 +96,4 @@ export const BLOG_POST_SLUGS_QUERY = defineQuery(`
 export type BlogPostPreview = BLOG_FRONTPAGE_QUERY_RESULT[number]
 
 /** A post as the post page fetches it. */
-export type BlogPost = Sanity.Localized<NonNullable<BLOG_POST_QUERY_RESULT>>
+export type BlogPost = Localized<NonNullable<BLOG_POST_QUERY_RESULT>>

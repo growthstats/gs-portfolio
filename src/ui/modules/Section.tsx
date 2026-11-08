@@ -8,14 +8,18 @@ import Text from '@/ui/Text'
 import { Badge } from '@/components/ui/badge'
 import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
+import type { ModuleOf } from '@/sanity/queries/page.groq'
+
+/** A module placed in a section, inline or as a reference. */
+export type SectionChild = NonNullable<NonNullable<ModuleOf<'section'>['module']>[number]>
 
 const FALLBACK_ICON: LucideIcon = Sparkles
 const ICON_CACHE = new Map<string, Promise<LucideIcon>>()
 
 type SectionProps = {
-  data: Sanity.SectionModule
+  data: ModuleOf<'section'>
   dataSanity?: string
-  renderModule?: (module: Sanity.Module, index: number) => ReactNode
+  renderModule?: (module: SectionChild, index: number) => ReactNode
 }
 
 export default async function Section({ data, dataSanity, renderModule }: Readonly<SectionProps>) {
@@ -28,7 +32,7 @@ export default async function Section({ data, dataSanity, renderModule }: Readon
   const title = sanitizeString(data.title) ?? ''
   const subtitle = sanitizeString(data.subtitle)
 
-  const childModules = Array.isArray(module) ? module.filter(isSanityModule) : []
+  const childModules = module?.filter((child): child is SectionChild => Boolean(child?._type)) ?? []
   const renderedChildren = renderModule
     ? childModules
         .map((child, index) => renderModule(child, index))
@@ -51,7 +55,7 @@ export default async function Section({ data, dataSanity, renderModule }: Readon
           )}
 
           {pretitle && (
-            <Text as="p" variant="technical" className="text-accent tracking-[0.4em]">
+            <Text as="p" variant="technical" className="tracking-[0.4em] text-accent">
               {pretitle}
             </Text>
           )}
@@ -63,7 +67,7 @@ export default async function Section({ data, dataSanity, renderModule }: Readon
           )}
 
           {subtitle && (
-            <Text as="p" variant="subtitle" className="text-ink/80 max-w-prose">
+            <Text as="p" variant="subtitle" className="max-w-prose text-ink/80">
               {subtitle}
             </Text>
           )}
@@ -155,9 +159,4 @@ function createIconCandidates(value: string) {
   return Array.from(
     new Set([trimmed, trimmed.toLowerCase(), base, base.toLowerCase(), slug]),
   ).filter(Boolean)
-}
-
-function isSanityModule(value: unknown): value is Sanity.Module {
-  if (!value || typeof value !== 'object') return false
-  return '_type' in value
 }

@@ -1,6 +1,6 @@
 import { groq } from 'next-sanity'
 import resolveSlug from '@/sanity/lib/resolveSlug'
-import { DEFAULT_LANG, isEnabledLanguage, localizePath } from '@/lib/i18n'
+import { DEFAULT_LANG, isEnabledLanguage, localizePath, type Lang } from '@/lib/i18n'
 
 /*
  * "This language, else English" (ADR 0002). Every fragment reads the `$lang`
@@ -82,18 +82,30 @@ export type LocalizedResult<T> = T & {
   translations: { lang: string; slug?: string | null }[]
 }
 
+/** A published language version of a document and its URL path. */
+export type TranslationLink = {
+  lang: Lang
+  url: string
+}
+
+/** A document fetched for a language (ADR 0002). */
+export type Localized<T> = T & {
+  /** The English document, rendered because `lang` has no published translation. */
+  isFallback: boolean
+  /** Every enabled language the document is published in, its own included. */
+  translations: TranslationLink[]
+}
+
 /** Turns the fetched `translations` into a URL path per enabled language. */
 export function withTranslationLinks<T extends { _type?: string }>(
   doc: LocalizedResult<T>,
-): Sanity.Localized<T> {
+): Localized<T> {
   const translations = doc.translations
-    .filter((t): t is { lang: Sanity.TranslationLink['lang']; slug: string } =>
-      Boolean(isEnabledLanguage(t.lang) && t.slug),
-    )
+    .filter((t): t is { lang: Lang; slug: string } => Boolean(isEnabledLanguage(t.lang) && t.slug))
     .map(({ lang, slug }) => ({
       lang,
       url: localizePath(resolveSlug({ _type: doc._type, internal: slug })!, lang),
     }))
 
-  return { ...doc, translations } as Sanity.Localized<T>
+  return { ...doc, translations } as Localized<T>
 }

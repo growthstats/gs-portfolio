@@ -2,7 +2,6 @@ import CTA from '@/ui/CTA'
 import { stegaClean } from 'next-sanity'
 import { getDictionary } from '@/i18n'
 import type { Lang } from '@/lib/i18n'
-import type { BlogPost } from '@/sanity/queries/blog.groq'
 
 export default async function Breadcrumbs({
   lang,
@@ -13,7 +12,8 @@ export default async function Breadcrumbs({
   Partial<{
     crumbs: Sanity.Link[]
     hideCurrent?: boolean
-    currentPage: Sanity.Page | BlogPost
+    /** The page or post the trail ends at. */
+    currentPage: { title?: string | null; metadata?: { title?: string | null } | null }
   }>
 > & { lang: Lang }) {
   const { common } = getDictionary(lang)

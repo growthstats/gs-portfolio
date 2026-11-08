@@ -14,6 +14,7 @@ import {
   localizedRefs,
   SITE,
   withTranslationLinks,
+  type LocalizedResult,
 } from './localized'
 
 const ref = (id: string) => ({ _type: 'reference', _ref: id })
@@ -199,10 +200,7 @@ describe('after the document-internationalization v6 migration', () => {
 
 describe('withTranslationLinks', () => {
   const doc = (translations: { lang: string; slug?: string }[]) =>
-    ({ _type: 'page', isFallback: false, translations }) as unknown as Sanity.PageBase & {
-      isFallback: boolean
-      translations: { lang: string; slug?: string }[]
-    }
+    ({ _type: 'page', isFallback: false, translations }) as LocalizedResult<{ _type: string }>
 
   it('builds language-prefixed paths for enabled languages', () => {
     expect(
