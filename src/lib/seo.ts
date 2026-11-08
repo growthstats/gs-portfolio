@@ -2,6 +2,7 @@ import { stegaClean } from 'next-sanity'
 import resolveUrl, { type UrlSource } from './resolveUrl'
 import { BASE_URL } from './env'
 import { DEFAULT_LANG, isSupportedLanguage, type Lang } from './i18n'
+import type { TranslationLink } from '@/sanity/lib/localized'
 
 /** `og:locale` per language. */
 export const OG_LOCALES: Record<Lang, string> = {
@@ -9,7 +10,7 @@ export const OG_LOCALES: Record<Lang, string> = {
   de: 'de_DE',
 }
 
-/** What the SEO helpers read from a blog post: `Sanity.Page` has none of the post fields. */
+/** What the SEO helpers read from a blog post: a page has none of the post fields. */
 export type PostSeoSource = {
   _createdAt: string
   _updatedAt?: string
@@ -38,7 +39,7 @@ export function canonicalUrl(doc: UrlSource & { language?: string | null }) {
  * to the English URL, and `translations` has no German entry to link to.
  */
 export function buildAlternates(
-  doc: UrlSource & { language?: string | null; translations: Sanity.TranslationLink[] },
+  doc: UrlSource & { language?: string | null; translations: TranslationLink[] },
 ) {
   const lang = documentLanguage(doc)
 

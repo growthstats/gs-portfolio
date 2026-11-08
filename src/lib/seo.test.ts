@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { buildAlternates, documentLanguage, markdownUrl, socialProfileUrls } from './seo'
+import type { TranslationLink } from '@/sanity/lib/localized'
 
 vi.hoisted(() => {
   process.env.NEXT_PUBLIC_BASE_URL = 'https://example.com'
@@ -9,7 +10,7 @@ const doc = (
   _type: string,
   slug: string,
   language: string | undefined,
-  translations: Sanity.TranslationLink[],
+  translations: TranslationLink[],
 ) =>
   ({
     _type,
@@ -17,10 +18,10 @@ const doc = (
     metadata: { slug: { current: slug } },
     isFallback: false,
     translations,
-  }) as unknown as Sanity.Localized<Sanity.PageBase>
+  }) as Parameters<typeof buildAlternates>[0]
 
 describe('buildAlternates', () => {
-  const both: Sanity.TranslationLink[] = [
+  const both: TranslationLink[] = [
     { lang: 'en', url: '/services' },
     { lang: 'de', url: '/de/services' },
   ]

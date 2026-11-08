@@ -15,7 +15,7 @@ const base = {
 }
 
 const page = (fields: Record<string, unknown>) =>
-  ({ ...base, ...fields }) as unknown as Sanity.Localized<Sanity.PageBase>
+  ({ ...base, ...fields }) as unknown as Parameters<typeof processMetadata>[0]
 
 describe('processMetadata alternates', () => {
   it('links the Markdown copy of the page', async () => {

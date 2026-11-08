@@ -2,12 +2,13 @@ import { stegaClean } from 'next-sanity'
 import { BASE_URL, BLOG_DIR, vercelPreview } from './env'
 import { buildAlternates, markdownUrl, postAuthorNames, postDates, type PostSeoSource } from './seo'
 import type { Metadata } from 'next'
+import type { TranslationLink } from '@/sanity/lib/localized'
 
-/** What page metadata is built from: `Sanity.Localized<Sanity.Page>`, or a TypeGen result. */
+/** What page metadata is built from: a page or post fetched for a language. */
 type MetadataSource = PostSeoSource & {
   _type: string
   language?: string | null
-  translations: Sanity.TranslationLink[]
+  translations: TranslationLink[]
   metadata?: {
     slug?: { current?: string } | null
     title?: string | null

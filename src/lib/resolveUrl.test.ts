@@ -1,11 +1,14 @@
 import { beforeAll, describe, expect, it, vi } from 'vitest'
+import type { UrlSource } from './resolveUrl'
 
 vi.hoisted(() => {
   process.env.NEXT_PUBLIC_BASE_URL = 'https://example.com'
 })
 
-const page = (_type: string, slug: string) =>
-  ({ _type, metadata: { slug: { current: slug } } }) as unknown as Sanity.PageBase
+const page = (_type: string, slug: string): UrlSource => ({
+  _type,
+  metadata: { slug: { current: slug } },
+})
 
 let resolveUrl: typeof import('./resolveUrl').default
 beforeAll(async () => {
