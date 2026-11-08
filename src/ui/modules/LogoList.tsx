@@ -6,6 +6,7 @@ import css from './LogoList.module.css'
 import PortableText from '@/ui/PortableText'
 import { LOGOS_QUERY } from '@/sanity/queries/logo.groq'
 import type { LOGOS_QUERY_RESULT } from '@/sanity/sanity.types'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default async function LogoList({
   pretitle,
@@ -14,16 +15,7 @@ export default async function LogoList({
   logoType = 'default',
   autoScroll,
   duration = 12,
-}: Readonly<
-  Partial<{
-    pretitle: string
-    intro: Sanity.PortableText
-    logos: LOGOS_QUERY_RESULT
-    logoType: 'default' | 'light' | 'dark'
-    autoScroll?: boolean
-    duration?: number
-  }>
->) {
+}: ModuleProps<'logo-list'>) {
   const allLogos =
     logos ||
     (await fetchSanityLive<LOGOS_QUERY_RESULT>({

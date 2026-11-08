@@ -2,6 +2,7 @@
 
 import { ComponentProps, useEffect, useRef } from 'react'
 import moduleProps from '@/lib/moduleProps'
+import type { ModuleOptions } from '@/sanity/sanity.types'
 
 /**
  * Renders code that contains a `<script>`. Scripts in `innerHTML` never run, so the code is
@@ -11,7 +12,12 @@ export default function WithScript({
   code,
   className,
   ...props
-}: Sanity.CustomHTML['html'] & Sanity.Module & ComponentProps<'section'>) {
+}: {
+  code: string
+  _type?: string
+  _key?: string
+  options?: ModuleOptions
+} & ComponentProps<'section'>) {
   const ref = useRef<HTMLElement>(null)
 
   useEffect(() => {

@@ -1,12 +1,16 @@
 import { Octokit } from 'octokit'
 import { stegaClean } from 'next-sanity'
 import { cacheLife } from 'next/cache'
+import type { Reputation } from '@/sanity/sanity.types'
+
+/** The fields the GitHub lookup reads. */
+type RepoSource = Pick<Reputation, 'repo' | 'limit'>
 
 const octokit = new Octokit({
   auth: process.env.NEXT_PUBLIC_GITHUB_TOKEN!,
 })
 
-export async function getRepoData(reputation?: Sanity.Reputation) {
+export async function getRepoData(reputation?: RepoSource | null) {
   if (!reputation) return {}
 
   const [owner, repo] = stegaClean(reputation.repo)?.split('/') ?? []
@@ -52,7 +56,7 @@ export async function getRepoData(reputation?: Sanity.Reputation) {
   }
 }
 
-export async function getCachedRepoData(reputation?: Sanity.Reputation) {
+export async function getCachedRepoData(reputation?: RepoSource | null) {
   'use cache'
   cacheLife('hours')
   return getRepoData(reputation)

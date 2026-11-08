@@ -7,6 +7,7 @@ import type {
   PortableTextComponentProps,
   PortableTextComponents,
 } from 'next-sanity'
+import type { PortableTextValue } from '@/ui/PortableText'
 
 import Image from './Image'
 import Code from './Code'
@@ -28,7 +29,7 @@ export default function Content({
   value,
   className,
   children,
-}: { value: Sanity.PortableText } & React.ComponentProps<'div'>) {
+}: { value: PortableTextValue } & React.ComponentProps<'div'>) {
   return (
     <div className={cn('mx-auto w-full richtext [&>:first-child]:!mt-0', className)}>
       <PortableText

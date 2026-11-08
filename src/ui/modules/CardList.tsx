@@ -5,6 +5,7 @@ import CTAList from '@/ui/CTAList'
 import { Img } from '@/ui/Img'
 import { cn } from '@/lib/utils'
 import PortableText from '@/ui/PortableText'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default function CardList({
   pretitle,
@@ -15,20 +16,7 @@ export default function CardList({
   columns = 3,
   visualSeparation,
   ...props
-}: Partial<{
-  pretitle: string
-  intro: Sanity.PortableText
-  ctas: Sanity.CTA[]
-  cards: Partial<{
-    image: Sanity.Image
-    content: Sanity.PortableText
-    ctas: Sanity.CTA[]
-  }>[]
-  layout: 'grid' | 'carousel'
-  columns: number
-  visualSeparation: boolean
-}> &
-  Sanity.Module) {
+}: ModuleProps<'card-list'>) {
   const isCarousel = stegaClean(layout) === 'carousel'
 
   return (
@@ -45,7 +33,7 @@ export default function CardList({
         className={cn(
           'items-stretch gap-8',
           isCarousel
-            ? 'carousel max-md:full-bleed md:overflow-fade-r pb-4 max-md:px-4'
+            ? 'carousel pb-4 max-md:full-bleed max-md:px-4 md:overflow-fade-r'
             : [
                 'grid *:h-full max-md:pb-4',
                 columns
@@ -63,7 +51,7 @@ export default function CardList({
       >
         {cards?.map((card, key) => (
           <article
-            className={cn('flex flex-col gap-2', visualSeparation && 'border-ink/10 border p-4')}
+            className={cn('flex flex-col gap-2', visualSeparation && 'border border-ink/10 p-4')}
             key={key}
           >
             {card.image && (
@@ -72,7 +60,7 @@ export default function CardList({
               </figure>
             )}
 
-            <div className="richtext grow">
+            <div className="grow richtext">
               {card.content && <PortableText value={card.content ?? []} />}
             </div>
             <CTAList className="mt-auto" ctas={card.ctas} />

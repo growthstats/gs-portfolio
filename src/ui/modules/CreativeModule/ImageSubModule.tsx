@@ -1,26 +1,21 @@
 import { Img } from '@/ui/Img'
 import { stegaClean } from 'next-sanity'
-
-export type ImageSubModuleType = Sanity.Module<'image'> &
-	Sanity.Image &
-	Partial<{
-		aspectRatio: string
-	}>
+import type { CreativeSubModule } from '.'
 
 export default function ImageSubModule({
-	module,
-	...props
+  module,
+  ...props
 }: {
-	module: ImageSubModuleType
+  module: CreativeSubModule<'image'>
 } & Omit<React.ComponentProps<typeof Img>, 'image'>) {
-	return (
-		<figure>
-			<Img
-				className="w-full object-cover"
-				style={{ aspectRatio: stegaClean(module.aspectRatio) }}
-				image={module}
-				{...props}
-			/>
-		</figure>
-	)
+  return (
+    <figure>
+      <Img
+        className="w-full object-cover"
+        style={{ aspectRatio: stegaClean(module.aspectRatio) }}
+        image={module}
+        {...props}
+      />
+    </figure>
+  )
 }

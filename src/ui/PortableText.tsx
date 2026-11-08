@@ -1,4 +1,5 @@
 import { PortableText as SanityPortableText } from 'next-sanity'
+import type { TypedObject } from '@portabletext/types'
 import type {
   PortableTextBlock,
   PortableTextComponentProps,
@@ -42,6 +43,12 @@ function mergeComponents(components?: PortableTextComponents): PortableTextCompo
 }
 
 type PortableTextProps = ComponentProps<typeof SanityPortableText>
+
+/**
+ * Portable Text as a module field holds it. TypeGen types block `children` as optional, which
+ * `PortableTextBlock` doesn't allow, so modules pass it on as typed objects.
+ */
+export type PortableTextValue = TypedObject[]
 
 export default function PortableText({ components, ...props }: Readonly<PortableTextProps>) {
   return <SanityPortableText {...props} components={mergeComponents(components)} />

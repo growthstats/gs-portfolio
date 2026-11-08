@@ -1,7 +1,6 @@
 import { stegaClean } from 'next-sanity'
 import { Suspense } from 'react'
 
-import type { Lang } from '@/lib/i18n'
 import moduleProps from '@/lib/moduleProps'
 import { cn } from '@/lib/utils'
 import { fetchSanityLive } from '@/sanity/lib/fetch'
@@ -15,6 +14,7 @@ import BlogListSchema from '@/ui/BlogListSchema'
 import PostPreview from '../PostPreview'
 import List from './List'
 import PortableText from '@/ui/PortableText'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default async function BlogList({
   lang,
@@ -27,17 +27,7 @@ export default async function BlogList({
   displayFilters,
   filteredCategory,
   ...props
-}: { lang: Lang } & Partial<{
-  pretitle: string
-  intro: Sanity.PortableText
-  ctas: Sanity.CTA[]
-  layout: 'grid' | 'carousel'
-  limit: number
-  showFeaturedPostsFirst: boolean
-  displayFilters: boolean
-  filteredCategory: Sanity.BlogCategory
-}> &
-  Sanity.Module) {
+}: ModuleProps<'blog-list'>) {
   const posts = await fetchSanityLive<BLOG_LIST_QUERY_RESULT>({
     query: BLOG_LIST_QUERY,
     params: {

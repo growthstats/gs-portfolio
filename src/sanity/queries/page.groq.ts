@@ -1,5 +1,5 @@
 import { defineQuery } from 'next-sanity'
-import { DEFAULT_LANG } from '@/lib/i18n'
+import { DEFAULT_LANG, type Lang } from '@/lib/i18n'
 import { NOT_FOUND_MODULES_QUERY, PAGE_MODULES_QUERY } from '@/sanity/lib/queries'
 import {
   IN_LANGUAGE,
@@ -9,6 +9,7 @@ import {
   type Localized,
   type LocalizedResult,
 } from '@/sanity/lib/localized'
+import type { BlogPost } from '@/sanity/queries/blog.groq'
 import type { NOT_FOUND_PAGE_QUERY_RESULT, PAGE_QUERY_RESULT } from '@/sanity/sanity.types'
 
 /** The page at `$slug` in `$lang`, else its English version, inside its global modules. */
@@ -56,11 +57,29 @@ export type PageResult = LocalizedResult<NonNullable<PAGE_QUERY_RESULT>>
 /** A page as the page route renders it. */
 export type Page = Localized<NonNullable<PAGE_QUERY_RESULT>>
 
-/** A module as the page query returns it: every module type the site renders. */
+/** A module in a page's own or global modules, as the page query returns it. */
 export type PageModule = NonNullable<NonNullable<NonNullable<PAGE_QUERY_RESULT>['modules']>[number]>
 
+/** A module placed in a section, inline or as a reference. Some types only occur here. */
+export type SectionChild = NonNullable<
+  NonNullable<Extract<PageModule, { _type: 'section' }>['module']>[number]
+>
+
+/** Every module type the site renders, at the top level or in a section. */
+export type ModuleType = PageModule['_type'] | SectionChild['_type']
+
 /** The module of type `T`, as the page query returns it. */
-export type ModuleOf<T extends PageModule['_type']> = Extract<PageModule, { _type: T }>
+export type ModuleOf<T extends ModuleType> = Extract<PageModule | SectionChild, { _type: T }>
+
+/** What `Modules` hands the component for a module of type `T`: its fields, and the extras. */
+export type ModuleProps<T extends ModuleType> = ModuleOf<T> & {
+  lang: Lang
+  'data-sanity'?: string
+} & (T extends 'blog-post-content'
+    ? { post?: BlogPost }
+    : T extends 'breadcrumbs'
+      ? { currentPage?: Page | BlogPost }
+      : Record<never, never>)
 
 /** The 404 page, when it exists. */
 export type NotFoundPage = NOT_FOUND_PAGE_QUERY_RESULT

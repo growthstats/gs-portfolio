@@ -2,20 +2,13 @@ import CTAList from '@/ui/CTAList'
 import Code from './RichtextModule/Code'
 import Reputation from '@/ui/Reputation'
 import PortableText from '@/ui/PortableText'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
-export default function Callout({
-  content,
-  ctas,
-}: Readonly<
-  Partial<{
-    content: Sanity.PortableText
-    ctas: Sanity.CTA[]
-  }>
->) {
+export default function Callout({ content, ctas }: ModuleProps<'callout'>) {
   return (
     <section className="section text-center">
-      <div className="section bg-accent/3 max-w-screen-lg rounded">
-        <div className="richtext mx-auto max-w-screen-sm text-balance">
+      <div className="section max-w-screen-lg rounded bg-accent/3">
+        <div className="mx-auto max-w-screen-sm richtext text-balance">
           {content && (
             <PortableText
               value={content ?? []}

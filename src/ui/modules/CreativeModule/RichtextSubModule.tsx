@@ -1,16 +1,11 @@
 import Pretitle from '@/ui/Pretitle'
 import PortableText from '@/ui/PortableText'
-
-export type RichtextSubModuleType = Sanity.Module<'richtext'> &
-  Partial<{
-    pretitle: string
-    content: Sanity.PortableText
-  }>
+import type { CreativeSubModule } from '.'
 
 export default function RichtextSubModule({
   module,
 }: Readonly<{
-  module: RichtextSubModuleType
+  module: CreativeSubModule<'richtext'>
 }>) {
   return (
     <div className="richtext">

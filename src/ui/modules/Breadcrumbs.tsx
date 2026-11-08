@@ -1,4 +1,4 @@
-import CTA from '@/ui/CTA'
+import CTA, { type LinkValue } from '@/ui/CTA'
 import { stegaClean } from 'next-sanity'
 import { getDictionary } from '@/i18n'
 import type { Lang } from '@/lib/i18n'
@@ -10,7 +10,7 @@ export default async function Breadcrumbs({
   currentPage,
 }: Readonly<
   Partial<{
-    crumbs: Sanity.Link[]
+    crumbs: LinkValue[] | null
     hideCurrent?: boolean
     /** The page or post the trail ends at. */
     currentPage: { title?: string | null; metadata?: { title?: string | null } | null }
@@ -48,7 +48,7 @@ function Crumb({
   hidden,
   withSeparator,
 }: {
-  link?: Omit<Sanity.Link, '_type'>
+  link?: LinkValue
   position: number
   hide?: boolean
   withSeparator?: boolean

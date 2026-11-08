@@ -2,10 +2,10 @@ import Pretitle from '@/ui/Pretitle'
 import { stegaClean } from 'next-sanity'
 import { Suspense } from 'react'
 import SearchForm from './SearchForm'
-import type { SearchScope } from './store'
 import CTAList from '@/ui/CTAList'
 import moduleProps from '@/lib/moduleProps'
 import PortableText from '@/ui/PortableText'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default function SearchModule({
   pretitle,
@@ -14,15 +14,7 @@ export default function SearchModule({
   scope,
   path,
   ...props
-}: Readonly<
-  Partial<{
-    pretitle: string
-    intro: Sanity.PortableText
-    ctas: Sanity.CTA[]
-    scope: SearchScope
-    path: string
-  }>
->) {
+}: ModuleProps<'search-module'>) {
   return (
     <section className="section space-y-8" {...moduleProps(props)}>
       {(pretitle || intro) && (

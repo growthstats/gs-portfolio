@@ -11,6 +11,9 @@ import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
 import { getHeadingConfig } from '@/ui/portableTextHeading'
 import { urlFor } from '@/sanity/lib/image'
+import type { CSSProperties } from 'react'
+import type { SanityImageSource } from '@sanity/image-url'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default function Hero({
   pretitle,
@@ -21,22 +24,17 @@ export default function Hero({
   textAlign: ta = 'center',
   alignItems: ai,
   ...props
-}: Partial<{
-  pretitle: string
-  content: Sanity.PortableText
-  ctas: Sanity.CTA[]
-  assets: Array<Sanity.Img | Sanity.HeroVideo>
-  overlayHeader?: boolean
-  textAlign: React.CSSProperties['textAlign']
-  alignItems: React.CSSProperties['alignItems']
-}> &
-  Sanity.Module) {
+}: ModuleProps<'hero'>) {
   const asset = assets?.[0]
   const isImage = asset?._type === 'img'
   const isVideo = asset?._type === 'video' && !!asset?.url
   const hasVisual = isImage || isVideo
   const videoPoster = isVideo && asset.poster?.image ? asset.poster?.image : undefined
-  const videoPosterUrl = videoPoster ? urlFor(videoPoster).width(2400).url() : undefined
+  const videoPosterUrl = videoPoster
+    ? urlFor(videoPoster as SanityImageSource)
+        .width(2400)
+        .url()
+    : undefined
 
   const textAlign = stegaClean(ta)
   const alignItems = stegaClean(ai)
@@ -45,7 +43,7 @@ export default function Hero({
   return (
     <section
       className={cn(
-        hasVisual && 'bg-ink grid overflow-hidden text-black *:col-span-full *:row-span-full',
+        hasVisual && 'grid overflow-hidden bg-ink text-black *:col-span-full *:row-span-full',
       )}
       style={
         pullUnderHeader
@@ -60,21 +58,21 @@ export default function Hero({
       {isImage && asset && (
         <ResponsiveImg
           img={asset}
-          className="max-h-fold size-full object-cover"
+          className="size-full max-h-fold object-cover"
           width={2400}
           draggable={false}
         />
       )}
       {isVideo && (
         <video
-          className="max-h-fold size-full object-cover"
+          className="size-full max-h-fold object-cover"
           autoPlay={asset.autoplay ?? true}
           loop={asset.loop ?? true}
           muted={asset.muted ?? true}
           playsInline
           poster={videoPosterUrl}
         >
-          <source src={asset.url} type={asset.mimeType || 'video/mp4'} />
+          <source src={asset.url ?? undefined} type={asset.mimeType || 'video/mp4'} />
           Your browser does not support the video tag.
         </video>
       )}
@@ -83,7 +81,7 @@ export default function Hero({
         <div className="section flex w-full flex-col text-balance">
           <div
             className={cn(
-              'richtext headings:text-balance relative isolate max-w-2xl',
+              'relative isolate max-w-2xl richtext headings:text-balance',
               isImage && 'text-shadow',
               {
                 'mb-8': alignItems === 'start',
@@ -94,7 +92,7 @@ export default function Hero({
                 'ms-auto': ['right', 'end'].includes(textAlign),
               },
             )}
-            style={{ textAlign }}
+            style={{ textAlign: textAlign as CSSProperties['textAlign'] }}
           >
             <Pretitle className={cn(isImage && 'text-white')}>{pretitle}</Pretitle>
 

@@ -5,26 +5,9 @@ import CTAList from '@/ui/CTAList'
 import Asset from '@/ui/modules/Asset'
 import { cn } from '@/lib/utils'
 import PortableText from '@/ui/PortableText'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
-export default function TabbedContent({
-  pretitle,
-  intro,
-  tabs,
-}: Readonly<
-  Partial<{
-    pretitle: string
-    intro: Sanity.PortableText
-    tabs: Partial<{
-      label: string
-      pretitle: string
-      content: Sanity.PortableText
-      ctas: Sanity.CTA[]
-      assets: Array<Sanity.Img | Sanity.Code | Sanity.CustomHTML>
-      assetOnRight: boolean
-      assetBelowContent: boolean
-    }>[]
-  }>
->) {
+export default function TabbedContent({ pretitle, intro, tabs }: ModuleProps<'tabbed-content'>) {
   return (
     <section className="section space-y-8">
       {(pretitle || intro) && (
@@ -47,7 +30,7 @@ export default function TabbedContent({
               <figure
                 className={cn(
                   'anim-fade-to-r',
-                  tab.assetOnRight && 'md:anim-fade-to-l md:order-last',
+                  tab.assetOnRight && 'md:order-last md:anim-fade-to-l',
                   tab.assetBelowContent && 'max-md:order-last',
                 )}
               >
@@ -56,7 +39,7 @@ export default function TabbedContent({
 
               <div
                 className={cn(
-                  'richtext anim-fade-to-r w-full',
+                  'w-full anim-fade-to-r richtext',
                   !tab.assetOnRight && 'md:anim-fade-to-l',
                 )}
               >

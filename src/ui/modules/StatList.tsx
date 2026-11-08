@@ -1,29 +1,22 @@
 import Pretitle from '@/ui/Pretitle'
 import { stegaClean } from 'next-sanity'
 import PortableText from '@/ui/PortableText'
+import type { CSSProperties } from 'react'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default function StatList({
   pretitle,
   intro,
   stats,
   textAlign: ta = 'center',
-}: Readonly<
-  Partial<{
-    pretitle: string
-    intro: Sanity.PortableText
-    stats: Partial<{
-      prefix: string
-      value: string
-      suffix: string
-      text: string
-    }>[]
-    textAlign: React.CSSProperties['textAlign']
-  }>
->) {
+}: ModuleProps<'stat-list'>) {
   const textAlign = stegaClean(ta)
 
   return (
-    <section className="section space-y-8" style={{ textAlign }}>
+    <section
+      className="section space-y-8"
+      style={{ textAlign: textAlign as CSSProperties['textAlign'] }}
+    >
       {(pretitle || intro) && (
         <header className="richtext text-center">
           <Pretitle>{pretitle}</Pretitle>

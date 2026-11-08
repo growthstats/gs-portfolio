@@ -1,12 +1,20 @@
 import moduleProps from '@/lib/moduleProps'
 import { stegaClean } from 'next-sanity'
-import CTAsSubModule, { type CTAsSubModuleType } from './CTAsSubModule'
-import CustomHTMLSubmodule, { type CustomHTMLSubmoduleType } from './CustomHTMLSubmodule'
+import CTAsSubModule from './CTAsSubModule'
+import CustomHTMLSubmodule from './CustomHTMLSubmodule'
 import Icon, { getPixels } from '@/ui/Icon'
-import ImageSubModule, { type ImageSubModuleType } from './ImageSubModule'
-import RichtextSubModule, { type RichtextSubModuleType } from './RichtextSubModule'
+import ImageSubModule from './ImageSubModule'
+import RichtextSubModule from './RichtextSubModule'
 import { cn } from '@/lib/utils'
 import PortableText from '@/ui/PortableText'
+import type { ModuleOf, ModuleProps } from '@/sanity/queries/page.groq'
+
+type SubModule = NonNullable<
+  NonNullable<NonNullable<ModuleOf<'creative-module'>['modules']>[number]['subModules']>[number]
+>
+
+/** A creative module's sub-module of type `T`, as the page query returns it. */
+export type CreativeSubModule<T extends SubModule['_type']> = Extract<SubModule, { _type: T }>
 
 export default function CreativeModule({
   intro,
@@ -16,25 +24,7 @@ export default function CreativeModule({
   textAlign: ta,
   alignItems: ai,
   ...props
-}: Readonly<
-  Partial<{
-    intro: Sanity.PortableText
-    modules: Partial<{
-      subModules: Array<
-        | ImageSubModuleType
-        | Sanity.Icon
-        | RichtextSubModuleType
-        | CTAsSubModuleType
-        | CustomHTMLSubmoduleType
-      >
-      colSpan: number
-    }>[]
-    columns: number
-    visualSeparation: boolean
-    textAlign: React.CSSProperties['textAlign']
-    alignItems: React.CSSProperties['alignItems']
-  }>
->) {
+}: ModuleProps<'creative-module'>) {
   const width = Math.round((1200 / (columns || modules?.length || 1)) * 1.5)
 
   const textAlign = stegaClean(ta)
@@ -44,7 +34,7 @@ export default function CreativeModule({
     <section {...moduleProps(props)}>
       <div className="section space-y-8">
         {intro && (
-          <header className="richtext mx-auto max-w-xl text-center text-balance">
+          <header className="mx-auto max-w-xl richtext text-center text-balance">
             {intro && <PortableText value={intro ?? []} />}
           </header>
         )}
@@ -66,7 +56,7 @@ export default function CreativeModule({
             <article
               className={cn('space-y-4', {
                 'md:col-(--col-span,1)': colSpan > 1,
-                'bg-accent/3 rounded p-6': visualSeparation,
+                'rounded bg-accent/3 p-6': visualSeparation,
                 'flex flex-col justify-center': alignItems === 'stretch',
               })}
               style={

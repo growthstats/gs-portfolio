@@ -30,7 +30,7 @@ const GENERIC_LINK_TEXT = new Set([
   'this link',
 ])
 
-/** The link fields a CTA reads: `Sanity.Link`, or a link from a TypeGen query result. */
+/** The link fields a CTA reads, as `LINK_QUERY` projects them. */
 export type LinkValue = {
   _type?: 'link'
   _key?: string
@@ -41,11 +41,12 @@ export type LinkValue = {
   params?: string
 }
 
-/** The CTA fields read here: `Sanity.CTA`, or a CTA from a TypeGen query result. */
+/** The CTA fields read here, as `CTA_QUERY` projects them. */
 export type CTAValue = {
   _key?: string
   link?: LinkValue | null
-  style?: Sanity.CTA['style'] | null
+  /** A button variant; anything else falls back to `default`. */
+  style?: string | null
 }
 
 export default function CTA({

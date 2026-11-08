@@ -8,10 +8,7 @@ import Text from '@/ui/Text'
 import { Badge } from '@/components/ui/badge'
 import type { LucideIcon } from 'lucide-react'
 import type { ReactNode } from 'react'
-import type { ModuleOf } from '@/sanity/queries/page.groq'
-
-/** A module placed in a section, inline or as a reference. */
-export type SectionChild = NonNullable<NonNullable<ModuleOf<'section'>['module']>[number]>
+import type { ModuleOf, SectionChild } from '@/sanity/queries/page.groq'
 
 const FALLBACK_ICON: LucideIcon = Sparkles
 const ICON_CACHE = new Map<string, Promise<LucideIcon>>()

@@ -8,12 +8,20 @@ import type { ComponentProps } from 'react'
 
 type ImgProps = { alt?: string } & Omit<ImageProps, 'src' | 'alt'>
 
-/** A Sanity image: `Sanity.Image`, or an image object from a TypeGen query result. */
+/** A Sanity image object, with the `lqip` that `IMAGE_QUERY` adds. */
 export type ImgSource = {
   asset?: unknown
   alt?: string
   loading?: 'lazy' | 'eager'
   lqip?: string | null
+}
+
+/** An `img` object: an image, art-directed variants, alt text and loading. */
+export type ImgValue = {
+  image?: ImgSource | null
+  responsive?: { image?: ImgSource | null; media?: string }[] | null
+  alt?: string
+  loading?: 'lazy' | 'eager'
 }
 
 export function Img({
@@ -50,11 +58,11 @@ export function Source({
   height: h,
   ...props
 }: {
-  image?: Sanity.Image
+  image?: ImgSource | null
 } & ComponentProps<'source'>) {
   if (!image?.asset) return null
 
-  const { src, width, height } = generateSrc(image, w, h)
+  const { src, width, height } = generateSrc(image as SanityImageSource, w, h)
   const { props: imageProps } = getImageProps({ src, width, height, alt: '' })
 
   if (stegaClean(image.loading) === 'eager') {
@@ -77,7 +85,7 @@ export function ResponsiveImg({
   pictureProps,
   ...props
 }: {
-  img?: Sanity.Img
+  img?: ImgValue | null
   pictureProps?: ComponentProps<'picture'>
 } & ImgProps) {
   if (!img) return null

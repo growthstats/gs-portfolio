@@ -5,7 +5,7 @@ import type { ComponentProps } from 'react'
 import LocalizedLink from '@/ui/LocalizedLink'
 import { filterHref } from './filterHref'
 
-/** An author as the blog shows them: `Sanity.Person`, or a TypeGen query result. */
+/** The author fields the blog reads. */
 export type AuthorValue = {
   _id?: string
   name?: string | null

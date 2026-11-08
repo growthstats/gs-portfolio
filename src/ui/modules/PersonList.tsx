@@ -3,20 +3,14 @@ import { stegaClean } from 'next-sanity'
 import { Img } from '@/ui/Img'
 import { cn } from '@/lib/utils'
 import PortableText from '@/ui/PortableText'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default function PersonList({
   pretitle,
   intro,
   people,
   layout,
-}: Readonly<
-  Partial<{
-    pretitle: string
-    intro: Sanity.PortableText
-    people: Sanity.Person[]
-    layout: 'grid' | 'carousel'
-  }>
->) {
+}: ModuleProps<'person-list'>) {
   const isCarousel = stegaClean(layout) === 'carousel'
 
   return (
@@ -32,7 +26,7 @@ export default function PersonList({
         className={cn(
           'items-start gap-8',
           isCarousel
-            ? 'carousel max-md:full-bleed md:overflow-fade-r pb-4 max-md:px-4'
+            ? 'carousel pb-4 max-md:full-bleed max-md:px-4 md:overflow-fade-r'
             : 'grid *:h-full max-md:pb-4 md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))]',
         )}
       >

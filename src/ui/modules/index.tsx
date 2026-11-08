@@ -29,7 +29,7 @@ import TabbedContent from './TabbedContent'
 import TeamPlaceholder from './TeamPlaceholder'
 import TestimonialList from './TestimonialList'
 import TestimonialFeatured from './TestimonialFeatured'
-import Section, { type SectionChild } from './Section'
+import Section from './Section'
 import Faq from './Faq'
 import ServiceDetails from './ServiceDetails'
 
@@ -38,7 +38,14 @@ import type { ComponentType, ReactNode } from 'react'
 import { createDataAttribute } from 'next-sanity'
 import type { Lang } from '@/lib/i18n'
 import type { BlogPost } from '@/sanity/queries/blog.groq'
-import type { ModuleOf, Page, PageModule } from '@/sanity/queries/page.groq'
+import type {
+  ModuleOf,
+  ModuleProps,
+  ModuleType,
+  Page,
+  PageModule,
+  SectionChild,
+} from '@/sanity/queries/page.groq'
 
 export const MODULE_MAP = {
   'about.placeholder': AboutPlaceholder,
@@ -77,7 +84,7 @@ export const MODULE_MAP = {
   'testimonial-list': TestimonialList,
   'testimonial.featured': TestimonialFeatured,
   'team.placeholder': TeamPlaceholder,
-} as const
+} as const satisfies { [T in ModuleType]?: ComponentType<ModuleProps<T>> }
 
 /**
  * A module as any route's modules query returns it, a section's child, or a scheduled module
@@ -131,6 +138,8 @@ export default function Modules({
       )
     }
 
+    // `MODULE_MAP` is checked against each module's generated type above. TypeScript can't relate
+    // the looked-up component to this module's props, and scheduled modules arrive unprojected.
     const Component = MODULE_MAP[module._type as keyof typeof MODULE_MAP] as
       ComponentType<Record<string, unknown>> | undefined
     if (!Component) return null

@@ -3,6 +3,7 @@ import TableOfContents from './TableOfContents'
 import Content from './Content'
 import { cn } from '@/lib/utils'
 import { stegaClean } from 'next-sanity'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default function RichtextModule({
   content,
@@ -11,17 +12,7 @@ export default function RichtextModule({
   stretch,
   headings,
   ...props
-}: Partial<{
-  content: Sanity.PortableText
-  tableOfContents: boolean
-  tocPosition: 'left' | 'right'
-  stretch: boolean
-  headings: {
-    style: string
-    text: string
-  }[]
-}> &
-  Sanity.Module) {
+}: ModuleProps<'richtext-module'>) {
   const tocRight = stegaClean(tocPosition) === 'right'
 
   return (
@@ -35,7 +26,7 @@ export default function RichtextModule({
       {tableOfContents && (
         <aside
           className={cn(
-            'lg:sticky-below-header mx-auto w-full max-w-lg self-start [--offset:1rem] lg:w-3xs',
+            'mx-auto w-full max-w-lg self-start [--offset:1rem] lg:sticky-below-header lg:w-3xs',
             tocRight && 'lg:order-last',
           )}
         >

@@ -13,7 +13,7 @@ import { documentInternationalization } from '@sanity/document-internationalizat
 import { media } from 'sanity-plugin-media'
 import { schemaTypes } from './src/sanity/schemaTypes'
 import { translatableTypes } from './src/sanity/schemaTypes/utils/language'
-import resolveUrl from '@/lib/resolveUrl'
+import resolveUrl, { type UrlSource } from '@/lib/resolveUrl'
 import PortableTextPlugins from './src/sanity/portableTextPlugins'
 
 const singletonTypes = new Set(['site'])
@@ -71,7 +71,7 @@ export default defineConfig({
 
     productionUrl: async (prev, { document }) => {
       if (['page', 'blog.post'].includes(document?._type)) {
-        return resolveUrl(document as Sanity.PageBase, { base: true })
+        return resolveUrl(document as UrlSource, { base: true })
       }
       return prev
     },

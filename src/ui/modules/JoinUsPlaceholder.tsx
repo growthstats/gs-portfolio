@@ -36,7 +36,7 @@ const JoinUsPlaceholder = ({ lang }: Readonly<{ lang: Lang }>) => {
         </Heading>
 
         {/* Description */}
-        <Text as="p" variant="body" className="text-ink/80 mt-4 max-w-xl">
+        <Text as="p" variant="body" className="mt-4 max-w-xl text-ink/80">
           {joinUs.text}
         </Text>
 
@@ -49,10 +49,7 @@ const JoinUsPlaceholder = ({ lang }: Readonly<{ lang: Lang }>) => {
             _type: 'link',
             label: joinUs.cta,
             type: 'internal',
-            internal: {
-              _type: 'page',
-              metadata: { slug: { current: 'contact' } },
-            } as unknown as Sanity.Page,
+            internal: { _type: 'page', metadata: { slug: { current: 'contact' } } },
           }}
         />
       </div>

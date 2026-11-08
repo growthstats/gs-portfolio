@@ -4,7 +4,7 @@ import CTAList from '@/ui/CTAList'
 import { cn, formatCurrency } from '@/lib/utils'
 import PortableText from '@/ui/PortableText'
 import { getDictionary, type Dictionary } from '@/i18n'
-import type { Lang } from '@/lib/i18n'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default function PricingList({
   lang,
@@ -12,12 +12,7 @@ export default function PricingList({
   intro,
   tiers,
   ...props
-}: { lang: Lang } & Partial<{
-  pretitle: string
-  intro: Sanity.PortableText
-  tiers: Sanity.Pricing[]
-}> &
-  Sanity.Module) {
+}: ModuleProps<'pricing-list'>) {
   const { pricing } = getDictionary(lang)
   const count = tiers?.length ?? 0
 
@@ -32,7 +27,7 @@ export default function PricingList({
 
       <div
         className={cn(
-          'carousel max-lg:full-bleed items-stretch gap-6 max-lg:px-4',
+          'carousel items-stretch gap-6 max-lg:full-bleed max-lg:px-4',
           count <= 3 ? 'md:grid-cols-[repeat(var(--col,1),1fr)]' : 'md:overflow-fade-r',
         )}
         style={{ '--col': count } as React.CSSProperties}
@@ -41,10 +36,10 @@ export default function PricingList({
           (tier) =>
             !!tier && (
               <article
-                className="border-ink/10 richtext space-y-4 rounded border p-4"
+                className="richtext space-y-4 rounded border border-ink/10 p-4"
                 key={tier._id}
               >
-                <div className="h3 flex flex-wrap items-center gap-x-4">
+                <div className="flex flex-wrap items-center gap-x-4 h3">
                   {tier.title}
 
                   <Pretitle className="ms-auto text-xs">{tier.highlight}</Pretitle>

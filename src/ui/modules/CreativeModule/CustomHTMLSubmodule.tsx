@@ -1,12 +1,11 @@
 import CustomHTML from '@/ui/modules/CustomHTML'
 
-export type CustomHTMLSubmoduleType = Sanity.CustomHTML &
-	Sanity.Module<'custom-html'>
+import type { CreativeSubModule } from '.'
 
 export default function CustomHTMLSubmodule({
-	module,
+  module,
 }: {
-	module: CustomHTMLSubmoduleType
+  module: CreativeSubModule<'custom-html'>
 }) {
-	return <CustomHTML {...module} />
+  return <CustomHTML {...module} />
 }

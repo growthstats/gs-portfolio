@@ -13,7 +13,6 @@ import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
 import Script from 'next/script'
 import type {
-  PortableTextBlock,
   PortableTextComponents,
   PortableTextComponentProps,
   PortableTextMarkComponentProps,
@@ -22,6 +21,8 @@ import { toPlainText } from '@portabletext/toolkit'
 import type { PortableTextLink } from '@portabletext/types'
 import PortableText from '@/ui/PortableText'
 import { useDictionary } from '@/i18n/DictionaryProvider'
+import type { Code as CodeValue } from '@/sanity/sanity.types'
+import type { PortableTextValue } from '@/ui/PortableText'
 
 // PortableText components override specifically for FAQ answers
 const portableComponents: PortableTextComponents = {
@@ -42,7 +43,7 @@ const portableComponents: PortableTextComponents = {
     },
   },
   types: {
-    code: ({ value }: PortableTextComponentProps<Sanity.Code>) => {
+    code: ({ value }: PortableTextComponentProps<CodeValue>) => {
       return (
         <pre className="overflow-auto rounded-md border p-3 text-sm">
           <code>{value?.code ?? ''}</code>
@@ -52,23 +53,33 @@ const portableComponents: PortableTextComponents = {
   },
 }
 
-interface FaqProps {
-  pretitle?: string
-  title?: string
-  description?: PortableTextBlock[]
-  items?: Sanity.FAQItem[]
-  accessibleAccordion?: boolean
-  generateSchema?: boolean
+/** A question and its answer. `open` opens it until the visitor picks another. */
+type FaqItemValue = {
+  _key: string
+  question?: string | null
+  answer?: PortableTextValue | null
+  open?: boolean
+}
+
+/** What the FAQ reads: the `faq` module, or a blog post's `faq` field. */
+type FaqProps = {
+  pretitle?: string | null
+  title?: string | null
+  description?: PortableTextValue | null
+  items?: FaqItemValue[] | null
+  accessibleAccordion?: boolean | null
+  generateSchema?: boolean | null
 }
 
 export default function Faq({
   pretitle,
   title,
   description,
-  items = [],
+  items: itemList,
   accessibleAccordion = true,
   generateSchema = true,
 }: Readonly<FaqProps>) {
+  const items = itemList ?? []
   const { common } = useDictionary()
   // `undefined` until the visitor opens or closes an item. Until then, and whenever the chosen
   // item is gone (live editing), the item marked `open` in the Studio is open.
