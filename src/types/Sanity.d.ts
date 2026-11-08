@@ -9,46 +9,6 @@ import type { Lang } from '@/lib/i18n'
 
 declare global {
   namespace Sanity {
-    // documents
-
-    interface Site extends SanityDocument {
-      // branding
-      title: string
-      blurb?: any
-      logo?: Logo
-      // info
-      announcements?: Announcement[]
-      copyright?: any
-      ogimage?: string
-      // navigation
-      ctas?: CTA[]
-      headerMenu?: Navigation
-      footerMenu?: Navigation
-      social?: Navigation
-      // business (structured data)
-      localBusiness?: {
-        telephone?: string
-        email?: string
-        priceRange?: string
-        streetAddress?: string
-        addressLocality?: string
-        addressRegion?: string
-        postalCode?: string
-        addressCountry?: string
-        geo?: { latitude?: number; longitude?: number }
-        openingHours?: {
-          days?: string[]
-          opens?: string
-          closes?: string
-        }[]
-      }
-    }
-
-    interface Navigation extends SanityDocument {
-      title: string
-      items?: (Link | LinkList)[]
-    }
-
     // pages
 
     interface PageBase extends SanityDocument {
@@ -108,15 +68,6 @@ declare global {
       cta?: Link
       start?: string
       end?: string
-    }
-
-    interface Logo extends SanityDocument {
-      name: string
-      image?: Partial<{
-        default: Image
-        light: Image
-        dark: Image
-      }>
     }
 
     interface Person extends SanityDocument {
@@ -219,12 +170,6 @@ declare global {
       internal?: Page | BlogPost
       external?: string
       params?: string
-    }
-
-    interface LinkList {
-      readonly _type: 'link.list'
-      link?: Link
-      links?: Link[]
     }
 
     interface Metadata {

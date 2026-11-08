@@ -20483,6 +20483,958 @@ export type BLOG_POST_QUERY_RESULT = {
 // Query: array::unique(*[		_type == 'blog.post'		&& defined(metadata.slug.current)		&& coalesce(language, 'en') in [$lang, 'en']	].metadata.slug.current)
 export type BLOG_POST_SLUGS_QUERY_RESULT = Array<string | null>
 
+// Source: src/sanity/queries/feeds.groq.ts
+// Variable: BLOG_RSS_QUERY
+// Query: {	'blog': *[_type == 'page' && metadata.slug.current == 'blog' && (	coalesce(language, 'en') == $lang	|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->)))][0]{		_type,		title,		metadata,		'image': metadata.image.asset->url,	},	'posts': *[_type == 'blog.post' && (	coalesce(language, 'en') == $lang	|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->)))]{		_type,		title,		body,		publishDate,		authors[]->,		metadata,		'image': metadata.image.asset->url,	},	'copyright': pt::text(coalesce(*[_type == 'site' && _id == 'site-' + $lang][0], *[_type == 'site' && _id == 'site'][0]).copyright)}
+export type BLOG_RSS_QUERY_RESULT = {
+  blog: {
+    _type: 'page'
+    title: string | null
+    metadata: Metadata | null
+    image: string | null
+  } | null
+  posts: Array<{
+    _type: 'blog.post'
+    title: string | null
+    body: Array<
+      | ({
+          _key: string
+        } & Code)
+      | ({
+          _key: string
+        } & CustomHtml)
+      | ({
+          _key: string
+        } & Table)
+      | {
+          tone?: 'caution' | 'important' | 'note' | 'tip' | 'warning'
+          title?: string
+          content?: Array<{
+            children?: Array<{
+              marks?: Array<string>
+              text?: string
+              _type: 'span'
+              _key: string
+            }>
+            style?:
+              | 'blockquote'
+              | 'display-hero'
+              | 'display-xl'
+              | 'display-xxl'
+              | 'h1'
+              | 'h2'
+              | 'h3'
+              | 'h4'
+              | 'h5'
+              | 'h6'
+              | 'normal'
+            listItem?: 'bullet' | 'number'
+            markDefs?: Array<{
+              href?: string
+              _type: 'link'
+              _key: string
+            }>
+            level?: number
+            _type: 'block'
+            _key: string
+          }>
+          _type: 'admonition'
+          _key: string
+        }
+      | {
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }
+      | {
+          asset?: SanityImageAssetReference
+          media?: unknown
+          hotspot?: SanityImageHotspot
+          crop?: SanityImageCrop
+          alt?: string
+          loading?: 'eager' | 'lazy'
+          caption?: string
+          source?: string
+          _type: 'image'
+          _key: string
+        }
+    > | null
+    publishDate: string | null
+    authors: Array<{
+      _id: string
+      _type: 'person'
+      _createdAt: string
+      _updatedAt: string
+      _rev: string
+      name?: string
+      slug?: Slug
+      image?: {
+        asset?: SanityImageAssetReference
+        media?: unknown
+        hotspot?: SanityImageHotspot
+        crop?: SanityImageCrop
+        _type: 'image'
+      }
+    }> | null
+    metadata: Metadata | null
+    image: string | null
+  }>
+  copyright: string
+}
+
+// Source: src/sanity/queries/feeds.groq.ts
+// Variable: AGENT_INDEX_QUERY
+// Query: {	'siteTitle': coalesce(*[_type == 'site' && _id == 'site-' + $lang][0], *[_type == 'site' && _id == 'site'][0]).title,	'siteDesc': *[_type == 'page' && metadata.slug.current == 'index' && coalesce(language, 'en') == $lang][0].metadata.description,	'pages': *[		_type == 'page' &&		coalesce(language, 'en') == $lang &&		metadata.noIndex != true &&		!(metadata.slug.current in ['404', 'index'])	]|order(metadata.slug.current){		'title': coalesce(metadata.title, title),		'slug': metadata.slug.current,		'desc': metadata.description,	},	'posts': *[_type == 'blog.post' && coalesce(language, 'en') == $lang && metadata.noIndex != true]|order(publishDate desc){		'title': coalesce(title, metadata.title),		'slug': metadata.slug.current,		'desc': metadata.description,	}}
+export type AGENT_INDEX_QUERY_RESULT = {
+  siteTitle: string | null
+  siteDesc: string | null
+  pages: Array<{
+    title: string | null
+    slug: string | null
+    desc: string | null
+  }>
+  posts: Array<{
+    title: string | null
+    slug: string | null
+    desc: string | null
+  }>
+}
+
+// Source: src/sanity/queries/feeds.groq.ts
+// Variable: SITEMAP_QUERY
+// Query: *[	_type in ['page', 'blog.post']	&& defined(metadata.slug.current)	&& !(metadata.slug.current in ['404'])	&& metadata.noIndex != true	&& coalesce(language, 'en') in $languages]|order(_type desc, metadata.slug.current){	_type,	_updatedAt,	language,	metadata { slug },		'isFallback': coalesce(language, 'en') != $lang,	'translations': coalesce(		*[_type == 'translation.metadata' && references(^._id)][0].translations[defined(value->)]{			'lang': coalesce(language, _key),			'slug': value->metadata.slug.current		},		[{ 'lang': coalesce(language, 'en'), 'slug': metadata.slug.current }]	)}
+export type SITEMAP_QUERY_RESULT = Array<
+  | {
+      _type: 'blog.post'
+      _updatedAt: string
+      language: string | null
+      metadata: {
+        slug: Slug | null
+      } | null
+      isFallback: boolean
+      translations:
+        | Array<{
+            lang: string
+            slug: string | null
+          }>
+        | Array<{
+            lang: string | 'en'
+            slug: string | null
+          }>
+    }
+  | {
+      _type: 'page'
+      _updatedAt: string
+      language: string | null
+      metadata: {
+        slug: Slug | null
+      } | null
+      isFallback: boolean
+      translations:
+        | Array<{
+            lang: string
+            slug: string | null
+          }>
+        | Array<{
+            lang: string | 'en'
+            slug: string | null
+          }>
+    }
+>
+
+// Source: src/sanity/queries/logo.groq.ts
+// Variable: LOGOS_QUERY
+// Query: *[_type == 'logo']|order(name)
+export type LOGOS_QUERY_RESULT = Array<{
+  _id: string
+  _type: 'logo'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  name?: string
+  image?: {
+    default?: {
+      asset?: SanityImageAssetReference
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      _type: 'image'
+    }
+    light?: {
+      asset?: SanityImageAssetReference
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      _type: 'image'
+    }
+    dark?: {
+      asset?: SanityImageAssetReference
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      _type: 'image'
+    }
+  }
+}>
+
+// Source: src/sanity/queries/search.groq.ts
+// Variable: SEARCH_QUERY
+// Query: *[	(		($scope == 'pages' && _type == 'page')		|| ($scope == 'path'			&& _type == 'page'			&& metadata.slug.current match $path			&& !(metadata.slug.current in ['404']))		|| ($scope == 'blog posts' && _type == 'blog.post')		|| (!($scope in ['pages', 'path', 'blog posts'])			&& _type in ['page', 'blog.post']			&& !(metadata.slug.current in ['404']))	) &&	[		body[].children[].text,		modules[].content[].children[].text,		modules[].intro[].children[].text,		title,		metadata.title,		metadata.description	] match $searchQuery]{	_id,	_type,	title,	metadata}
+export type SEARCH_QUERY_RESULT = Array<
+  | {
+      _id: string
+      _type: 'blog.post'
+      title: string | null
+      metadata: Metadata | null
+    }
+  | {
+      _id: string
+      _type: 'page'
+      title: string | null
+      metadata: Metadata | null
+    }
+>
+
+// Source: src/sanity/queries/site.groq.ts
+// Variable: SITE_QUERY
+// Query: coalesce(*[_type == 'site' && _id == 'site-' + $lang][0], *[_type == 'site' && _id == 'site'][0]){		...,		ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },		'headerMenu': coalesce(*[_type == 'translation.metadata' && references(^.headerMenu._ref)][0].translations[language == $lang || _key == $lang][0].value->, headerMenu->){ 	title,	items[]{			...,	internal->{		_type,		title,		metadata	},		link{ 	...,	internal->{		_type,		title,		metadata	} },		links[]{ 	...,	internal->{		_type,		title,		metadata	} }	} },		'footerMenu': coalesce(*[_type == 'translation.metadata' && references(^.footerMenu._ref)][0].translations[language == $lang || _key == $lang][0].value->, footerMenu->){ 	title,	items[]{			...,	internal->{		_type,		title,		metadata	},		link{ 	...,	internal->{		_type,		title,		metadata	} },		links[]{ 	...,	internal->{		_type,		title,		metadata	} }	} },		social->{ 	title,	items[]{			...,	internal->{		_type,		title,		metadata	},		link{ 	...,	internal->{		_type,		title,		metadata	} },		links[]{ 	...,	internal->{		_type,		title,		metadata	} }	} },		'ogimage': ogimage.asset->url	}
+export type SITE_QUERY_RESULT =
+  | {
+      _id: string
+      _type: 'site'
+      _createdAt: string
+      _updatedAt: string
+      _rev: string
+      title?: string
+      blurb?: Array<{
+        children?: Array<{
+          marks?: Array<string>
+          text?: string
+          _type: 'span'
+          _key: string
+        }>
+        style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
+        listItem?: never
+        markDefs?: Array<{
+          href?: string
+          _type: 'link'
+          _key: string
+        }>
+        level?: number
+        _type: 'block'
+        _key: string
+      }>
+      logo?: {
+        name?: string
+        image?: {
+          default?: {
+            asset?: SanityImageAssetReference
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            _type: 'image'
+          }
+          light?: {
+            asset?: SanityImageAssetReference
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            _type: 'image'
+          }
+          dark?: {
+            asset?: SanityImageAssetReference
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            _type: 'image'
+          }
+        }
+        _type: 'logo'
+      }
+      announcements?: Array<
+        {
+          _key: string
+        } & AnnouncementReference
+      >
+      copyright?: Array<{
+        children?: Array<{
+          marks?: Array<string>
+          text?: string
+          _type: 'span'
+          _key: string
+        }>
+        style?: 'normal'
+        listItem?: never
+        markDefs?: Array<{
+          href?: string
+          _type: 'link'
+          _key: string
+        }>
+        level?: number
+        _type: 'block'
+        _key: string
+      }>
+      ctas: Array<{
+        _key: string
+        _type: 'cta'
+        link: {
+          _type: 'link'
+          label?: string
+          type?: 'external' | 'internal'
+          internal:
+            | {
+                _type: 'blog.post'
+                title: string | null
+                metadata: Metadata | null
+              }
+            | {
+                _type: 'page'
+                title: string | null
+                metadata: Metadata | null
+              }
+            | null
+          external?: string
+          params?: string
+        } | null
+        style: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary' | null
+      }> | null
+      headerMenu:
+        | {
+            title: null
+            items: null
+          }
+        | {
+            title: string | null
+            items: null
+          }
+        | {
+            title: string | null
+            items: Array<
+              | {
+                  _key: string
+                  _type: 'link.list'
+                  link: {
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  } | null
+                  links: Array<{
+                    _key: string
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  }> | null
+                  internal: null
+                }
+              | {
+                  _key: string
+                  _type: 'link'
+                  label?: string
+                  type?: 'external' | 'internal'
+                  internal:
+                    | {
+                        _type: 'blog.post'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | {
+                        _type: 'page'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | null
+                  external?: string
+                  params?: string
+                  link: null
+                  links: null
+                }
+            > | null
+          }
+        | null
+      footerMenu:
+        | {
+            title: null
+            items: null
+          }
+        | {
+            title: string | null
+            items: null
+          }
+        | {
+            title: string | null
+            items: Array<
+              | {
+                  _key: string
+                  _type: 'link.list'
+                  link: {
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  } | null
+                  links: Array<{
+                    _key: string
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  }> | null
+                  internal: null
+                }
+              | {
+                  _key: string
+                  _type: 'link'
+                  label?: string
+                  type?: 'external' | 'internal'
+                  internal:
+                    | {
+                        _type: 'blog.post'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | {
+                        _type: 'page'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | null
+                  external?: string
+                  params?: string
+                  link: null
+                  links: null
+                }
+            > | null
+          }
+        | null
+      social: {
+        title: string | null
+        items: Array<
+          | {
+              _key: string
+              _type: 'link.list'
+              link: {
+                _type: 'link'
+                label?: string
+                type?: 'external' | 'internal'
+                internal:
+                  | {
+                      _type: 'blog.post'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | {
+                      _type: 'page'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | null
+                external?: string
+                params?: string
+              } | null
+              links: Array<{
+                _key: string
+                _type: 'link'
+                label?: string
+                type?: 'external' | 'internal'
+                internal:
+                  | {
+                      _type: 'blog.post'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | {
+                      _type: 'page'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | null
+                external?: string
+                params?: string
+              }> | null
+              internal: null
+            }
+          | {
+              _key: string
+              _type: 'link'
+              label?: string
+              type?: 'external' | 'internal'
+              internal:
+                | {
+                    _type: 'blog.post'
+                    title: string | null
+                    metadata: Metadata | null
+                  }
+                | {
+                    _type: 'page'
+                    title: string | null
+                    metadata: Metadata | null
+                  }
+                | null
+              external?: string
+              params?: string
+              link: null
+              links: null
+            }
+        > | null
+      } | null
+      localBusiness?: {
+        telephone?: string
+        email?: string
+        priceRange?: string
+        streetAddress?: string
+        addressLocality?: string
+        addressRegion?: string
+        postalCode?: string
+        addressCountry?: string
+        geo?: {
+          latitude?: number
+          longitude?: number
+        }
+        openingHours?: Array<{
+          days?: Array<string>
+          opens?: string
+          closes?: string
+          _key: string
+        }>
+      }
+      language?: string
+      ogimage: null
+    }
+  | {
+      _id: 'site'
+      _type: 'site'
+      _createdAt: string
+      _updatedAt: string
+      _rev: string
+      title?: string
+      blurb?: Array<{
+        children?: Array<{
+          marks?: Array<string>
+          text?: string
+          _type: 'span'
+          _key: string
+        }>
+        style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
+        listItem?: never
+        markDefs?: Array<{
+          href?: string
+          _type: 'link'
+          _key: string
+        }>
+        level?: number
+        _type: 'block'
+        _key: string
+      }>
+      logo?: {
+        name?: string
+        image?: {
+          default?: {
+            asset?: SanityImageAssetReference
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            _type: 'image'
+          }
+          light?: {
+            asset?: SanityImageAssetReference
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            _type: 'image'
+          }
+          dark?: {
+            asset?: SanityImageAssetReference
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            _type: 'image'
+          }
+        }
+        _type: 'logo'
+      }
+      announcements?: Array<
+        {
+          _key: string
+        } & AnnouncementReference
+      >
+      copyright?: Array<{
+        children?: Array<{
+          marks?: Array<string>
+          text?: string
+          _type: 'span'
+          _key: string
+        }>
+        style?: 'normal'
+        listItem?: never
+        markDefs?: Array<{
+          href?: string
+          _type: 'link'
+          _key: string
+        }>
+        level?: number
+        _type: 'block'
+        _key: string
+      }>
+      ctas: Array<{
+        _key: string
+        _type: 'cta'
+        link: {
+          _type: 'link'
+          label?: string
+          type?: 'external' | 'internal'
+          internal:
+            | {
+                _type: 'blog.post'
+                title: string | null
+                metadata: Metadata | null
+              }
+            | {
+                _type: 'page'
+                title: string | null
+                metadata: Metadata | null
+              }
+            | null
+          external?: string
+          params?: string
+        } | null
+        style: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary' | null
+      }> | null
+      headerMenu:
+        | {
+            title: null
+            items: null
+          }
+        | {
+            title: string | null
+            items: null
+          }
+        | {
+            title: string | null
+            items: Array<
+              | {
+                  _key: string
+                  _type: 'link.list'
+                  link: {
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  } | null
+                  links: Array<{
+                    _key: string
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  }> | null
+                  internal: null
+                }
+              | {
+                  _key: string
+                  _type: 'link'
+                  label?: string
+                  type?: 'external' | 'internal'
+                  internal:
+                    | {
+                        _type: 'blog.post'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | {
+                        _type: 'page'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | null
+                  external?: string
+                  params?: string
+                  link: null
+                  links: null
+                }
+            > | null
+          }
+        | null
+      footerMenu:
+        | {
+            title: null
+            items: null
+          }
+        | {
+            title: string | null
+            items: null
+          }
+        | {
+            title: string | null
+            items: Array<
+              | {
+                  _key: string
+                  _type: 'link.list'
+                  link: {
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  } | null
+                  links: Array<{
+                    _key: string
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  }> | null
+                  internal: null
+                }
+              | {
+                  _key: string
+                  _type: 'link'
+                  label?: string
+                  type?: 'external' | 'internal'
+                  internal:
+                    | {
+                        _type: 'blog.post'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | {
+                        _type: 'page'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | null
+                  external?: string
+                  params?: string
+                  link: null
+                  links: null
+                }
+            > | null
+          }
+        | null
+      social: {
+        title: string | null
+        items: Array<
+          | {
+              _key: string
+              _type: 'link.list'
+              link: {
+                _type: 'link'
+                label?: string
+                type?: 'external' | 'internal'
+                internal:
+                  | {
+                      _type: 'blog.post'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | {
+                      _type: 'page'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | null
+                external?: string
+                params?: string
+              } | null
+              links: Array<{
+                _key: string
+                _type: 'link'
+                label?: string
+                type?: 'external' | 'internal'
+                internal:
+                  | {
+                      _type: 'blog.post'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | {
+                      _type: 'page'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | null
+                external?: string
+                params?: string
+              }> | null
+              internal: null
+            }
+          | {
+              _key: string
+              _type: 'link'
+              label?: string
+              type?: 'external' | 'internal'
+              internal:
+                | {
+                    _type: 'blog.post'
+                    title: string | null
+                    metadata: Metadata | null
+                  }
+                | {
+                    _type: 'page'
+                    title: string | null
+                    metadata: Metadata | null
+                  }
+                | null
+              external?: string
+              params?: string
+              link: null
+              links: null
+            }
+        > | null
+      } | null
+      localBusiness?: {
+        telephone?: string
+        email?: string
+        priceRange?: string
+        streetAddress?: string
+        addressLocality?: string
+        addressRegion?: string
+        postalCode?: string
+        addressCountry?: string
+        geo?: {
+          latitude?: number
+          longitude?: number
+        }
+        openingHours?: Array<{
+          days?: Array<string>
+          opens?: string
+          closes?: string
+          _key: string
+        }>
+      }
+      language?: string
+      ogimage: null
+    }
+  | null
+
 // Query TypeMap
 declare global {
   interface SanityQueries {
@@ -20490,6 +21442,12 @@ declare global {
     "\n\t*[\n\t\t_type == 'blog.post'\n\t\t&& (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)\n\t\t&& ($filteredCategory == '' || $filteredCategory in categories[]{ 'doc': coalesce(*[_type == 'translation.metadata' && references(^._ref)][0].translations[language == $lang || _key == $lang][0].value->, @->) }.doc._id)\n\t] | order(select($featuredFirst => featured, false) desc, publishDate desc)\n\t[0..$last] { \n\t_type,\n\t_id,\n\t_createdAt,\n\t_updatedAt,\n\ttitle,\n\tfeatured,\n\tpublishDate,\n\tlanguage,\n\t'categories': (categories[]{ 'doc': coalesce(*[_type == 'translation.metadata' && references(^._ref)][0].translations[language == $lang || _key == $lang][0].value->, @->) }.doc)[_type == 'blog.category']{ _id, title, slug },\n\tauthors[]->,\n\tmetadata {\n\t\t...,\n\t\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n\t\t'ogimage': image.asset->url + '?w=1200'\n\t}\n }\n": BLOG_LIST_QUERY_RESULT
     "\n\t*[\n\t\t_type == 'blog.post'\n\t\t&& metadata.slug.current == $slug\n\t\t&& (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)\n\t] | order(select(coalesce(language, 'en') == $lang => 0, 1))[0]{\n\t\t...,\n\t\tbody[]{\n\t\t\t...,\n\t\t\t_type == 'image' => {\n\t\t\t\t\n\t...,\n\t'lqip': @.asset->metadata.lqip\n,\n\t\t\t\tasset->\n\t\t\t}\n\t\t},\n\t\t'readTime': length(string::split(pt::text(body), ' ')) / 200,\n\t\t'headings': body[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3']]{\n\t\t\tstyle,\n\t\t\t'text': pt::text(@)\n\t\t},\n\t\t'categories': (categories[]{ 'doc': coalesce(*[_type == 'translation.metadata' && references(^._ref)][0].translations[language == $lang || _key == $lang][0].value->, @->) }.doc)[_type == 'blog.category'],\n\t\tauthors[]->,\n\t\tmetadata {\n\t\t\t...,\n\t\t\t'ogimage': image.asset->url + '?w=1200'\n\t\t},\n\t\t'modules': (\n\t*[_type == 'global-module' && path == '*' && (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)].before[]{ \n\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t_type == 'section' => {\n\t\t...,\n\t\t\"module\": module[]{\n\t\t\t...select(\n\t\t\t\tdefined(_ref) => {\n\t\t\t\t\t\"_key\": coalesce(_key, _ref->_id),\n\t\t\t\t\t..._ref->{\n\t\t\t\t\t\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t\t\t\t\t}\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t\t\t\t}\n\t\t\t)\n\t\t}\n\t},\n }\n\t+ *[_type == 'global-module' && path == 'blog/' && (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)].before[]{ \n\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t_type == 'section' => {\n\t\t...,\n\t\t\"module\": module[]{\n\t\t\t...select(\n\t\t\t\tdefined(_ref) => {\n\t\t\t\t\t\"_key\": coalesce(_key, _ref->_id),\n\t\t\t\t\t..._ref->{\n\t\t\t\t\t\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t\t\t\t\t}\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t\t\t\t}\n\t\t\t)\n\t\t}\n\t},\n }\n\t+ *[_type == 'global-module' && path == 'blog/' && (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)].after[]{ \n\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t_type == 'section' => {\n\t\t...,\n\t\t\"module\": module[]{\n\t\t\t...select(\n\t\t\t\tdefined(_ref) => {\n\t\t\t\t\t\"_key\": coalesce(_key, _ref->_id),\n\t\t\t\t\t..._ref->{\n\t\t\t\t\t\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t\t\t\t\t}\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t\t\t\t}\n\t\t\t)\n\t\t}\n\t},\n }\n\t+ *[_type == 'global-module' && path == '*' && (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)].after[]{ \n\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t_type == 'section' => {\n\t\t...,\n\t\t\"module\": module[]{\n\t\t\t...select(\n\t\t\t\tdefined(_ref) => {\n\t\t\t\t\t\"_key\": coalesce(_key, _ref->_id),\n\t\t\t\t\t..._ref->{\n\t\t\t\t\t\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t\t\t\t\t}\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t\t\t\t}\n\t\t\t)\n\t\t}\n\t},\n }\n),\n\t\t\n\t'isFallback': coalesce(language, 'en') != $lang,\n\t'translations': coalesce(\n\t\t*[_type == 'translation.metadata' && references(^._id)][0].translations[defined(value->)]{\n\t\t\t'lang': coalesce(language, _key),\n\t\t\t'slug': value->metadata.slug.current\n\t\t},\n\t\t[{ 'lang': coalesce(language, 'en'), 'slug': metadata.slug.current }]\n\t)\n\n\t}\n": BLOG_POST_QUERY_RESULT
     "\n\tarray::unique(*[\n\t\t_type == 'blog.post'\n\t\t&& defined(metadata.slug.current)\n\t\t&& coalesce(language, 'en') in [$lang, 'en']\n\t].metadata.slug.current)\n": BLOG_POST_SLUGS_QUERY_RESULT
+    "{\n\t'blog': *[_type == 'page' && metadata.slug.current == 'blog' && (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)][0]{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata,\n\t\t'image': metadata.image.asset->url,\n\t},\n\t'posts': *[_type == 'blog.post' && (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)]{\n\t\t_type,\n\t\ttitle,\n\t\tbody,\n\t\tpublishDate,\n\t\tauthors[]->,\n\t\tmetadata,\n\t\t'image': metadata.image.asset->url,\n\t},\n\t'copyright': pt::text(coalesce(*[_type == 'site' && _id == 'site-' + $lang][0], *[_type == 'site' && _id == 'site'][0]).copyright)\n}": BLOG_RSS_QUERY_RESULT
+    "{\n\t'siteTitle': coalesce(*[_type == 'site' && _id == 'site-' + $lang][0], *[_type == 'site' && _id == 'site'][0]).title,\n\t'siteDesc': *[_type == 'page' && metadata.slug.current == 'index' && coalesce(language, 'en') == $lang][0].metadata.description,\n\t'pages': *[\n\t\t_type == 'page' &&\n\t\tcoalesce(language, 'en') == $lang &&\n\t\tmetadata.noIndex != true &&\n\t\t!(metadata.slug.current in ['404', 'index'])\n\t]|order(metadata.slug.current){\n\t\t'title': coalesce(metadata.title, title),\n\t\t'slug': metadata.slug.current,\n\t\t'desc': metadata.description,\n\t},\n\t'posts': *[_type == 'blog.post' && coalesce(language, 'en') == $lang && metadata.noIndex != true]|order(publishDate desc){\n\t\t'title': coalesce(title, metadata.title),\n\t\t'slug': metadata.slug.current,\n\t\t'desc': metadata.description,\n\t}\n}": AGENT_INDEX_QUERY_RESULT
+    "*[\n\t_type in ['page', 'blog.post']\n\t&& defined(metadata.slug.current)\n\t&& !(metadata.slug.current in ['404'])\n\t&& metadata.noIndex != true\n\t&& coalesce(language, 'en') in $languages\n]|order(_type desc, metadata.slug.current){\n\t_type,\n\t_updatedAt,\n\tlanguage,\n\tmetadata { slug },\n\t\n\t'isFallback': coalesce(language, 'en') != $lang,\n\t'translations': coalesce(\n\t\t*[_type == 'translation.metadata' && references(^._id)][0].translations[defined(value->)]{\n\t\t\t'lang': coalesce(language, _key),\n\t\t\t'slug': value->metadata.slug.current\n\t\t},\n\t\t[{ 'lang': coalesce(language, 'en'), 'slug': metadata.slug.current }]\n\t)\n\n}": SITEMAP_QUERY_RESULT
+    "*[_type == 'logo']|order(name)": LOGOS_QUERY_RESULT
+    "*[\n\t(\n\t\t($scope == 'pages' && _type == 'page')\n\t\t|| ($scope == 'path'\n\t\t\t&& _type == 'page'\n\t\t\t&& metadata.slug.current match $path\n\t\t\t&& !(metadata.slug.current in ['404']))\n\t\t|| ($scope == 'blog posts' && _type == 'blog.post')\n\t\t|| (!($scope in ['pages', 'path', 'blog posts'])\n\t\t\t&& _type in ['page', 'blog.post']\n\t\t\t&& !(metadata.slug.current in ['404']))\n\t) &&\n\t[\n\t\tbody[].children[].text,\n\t\tmodules[].content[].children[].text,\n\t\tmodules[].intro[].children[].text,\n\t\ttitle,\n\t\tmetadata.title,\n\t\tmetadata.description\n\t] match $searchQuery\n]{\n\t_id,\n\t_type,\n\ttitle,\n\tmetadata\n}": SEARCH_QUERY_RESULT
+    "\n\tcoalesce(*[_type == 'site' && _id == 'site-' + $lang][0], *[_type == 'site' && _id == 'site'][0]){\n\t\t...,\n\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t'headerMenu': coalesce(*[_type == 'translation.metadata' && references(^.headerMenu._ref)][0].translations[language == $lang || _key == $lang][0].value->, headerMenu->){ \n\ttitle,\n\titems[]{\n\t\t\n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\t\tlinks[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t}\n },\n\t\t'footerMenu': coalesce(*[_type == 'translation.metadata' && references(^.footerMenu._ref)][0].translations[language == $lang || _key == $lang][0].value->, footerMenu->){ \n\ttitle,\n\titems[]{\n\t\t\n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\t\tlinks[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t}\n },\n\t\tsocial->{ \n\ttitle,\n\titems[]{\n\t\t\n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\t\tlinks[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t}\n },\n\t\t'ogimage': ogimage.asset->url\n\t}\n": SITE_QUERY_RESULT
   }
 }
 // Lets @sanity/client releases that predate the global registry read it too

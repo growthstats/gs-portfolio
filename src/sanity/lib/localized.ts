@@ -50,12 +50,11 @@ export const PREFER_LANGUAGE = groq`order(select(${LANGUAGE} == $lang => 0, 1))`
  * `site` (see `siteDocumentId`). Not linked by `translation.metadata`.
  */
 // @sanity-typegen-ignore
-export const SITE = groq`coalesce(*[_id == 'site-' + $lang][0], *[_id == 'site'][0])`
+export const SITE = groq`coalesce(*[_type == 'site' && _id == 'site-' + $lang][0], *[_type == 'site' && _id == 'site'][0])`
 
 /**
  * Projection: dereferences the reference `field` in `$lang`, else the referenced document.
- * Repeats `translationOf`'s query rather than calling it: TypeGen can't follow a parameter
- * passed on to another function.
+ * Spells out {@link translationOf} because TypeGen can't follow `field` passed on to it.
  */
 export const localizedRef = (field: string) =>
   groq`coalesce(*[_type == 'translation.metadata' && references(^.${field}._ref)][0].translations[language == $lang || _key == $lang][0].value->, ${field}->)`
@@ -84,7 +83,7 @@ export type LocalizedResult<T> = T & {
 }
 
 /** Turns the fetched `translations` into a URL path per enabled language. */
-export function withTranslationLinks<T extends { _type: string }>(
+export function withTranslationLinks<T extends { _type?: string }>(
   doc: LocalizedResult<T>,
 ): Sanity.Localized<T> {
   const translations = doc.translations

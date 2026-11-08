@@ -1,7 +1,8 @@
-import { getSite } from '@/sanity/lib/queries'
+import { getSite } from '@/sanity/lib/site'
 import { DEFAULT_LANG } from '@/lib/i18n'
 import { urlFor } from '@/sanity/lib/image'
 import { BASE_URL } from '@/lib/env'
+import { socialProfileUrls } from '@/lib/seo'
 import { stegaClean } from 'next-sanity'
 import JsonLd from './JsonLd'
 
@@ -13,10 +14,7 @@ export default async function OrganizationSchema() {
   const logoImage = site.logo?.image?.default || site.logo?.image?.dark
   const logo = logoImage ? urlFor(logoImage).url() : undefined
 
-  const sameAs = (site.social?.items ?? [])
-    .flatMap((item) => ('links' in item ? (item.links ?? []) : [item]))
-    .map((link) => stegaClean((link as Sanity.Link).external))
-    .filter((url): url is string => !!url && /^https?:\/\//.test(url))
+  const sameAs = socialProfileUrls(site.social?.items)
 
   const schema = {
     '@context': 'https://schema.org',

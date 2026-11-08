@@ -37,7 +37,7 @@ export default function SearchForm({
 
   return (
     <search className={cn(css.root, 'relative', className)} {...props}>
-      <label className="input focus-within:border-ink/50 relative z-[2] flex items-center gap-2">
+      <label className="relative z-[2] flex items-center gap-2 input focus-within:border-ink/50">
         <VscSearch />
 
         <input
@@ -60,15 +60,15 @@ export default function SearchForm({
       </label>
 
       {query && (
-        <div className={cn(css.results, 'anim-fade-to-b absolute inset-x-0 top-full z-[1]')}>
-          <div className="frosted-glass bg-canvas border-ink/10 mt-1 max-h-[20em] space-y-2 overflow-y-auto rounded border py-2 shadow-md *:px-3">
+        <div className={cn(css.results, 'absolute inset-x-0 top-full z-[1] anim-fade-to-b')}>
+          <div className="mt-1 max-h-[20em] space-y-2 overflow-y-auto rounded border border-ink/10 bg-canvas py-2 shadow-md frosted-glass *:px-3">
             {loading ? (
-              <Loading className="text-ink/50 justify-center p-4 text-sm">
+              <Loading className="justify-center p-4 text-sm text-ink/50">
                 {search.searching}
               </Loading>
             ) : (
               <>
-                <p className="text-ink/50 text-center text-sm">
+                <p className="text-center text-sm text-ink/50">
                   <span className="line-clamp-1">
                     {plural(lang, results.length, search.resultsFor)}{' '}
                     <output>&quot;{query}&quot;</output>
@@ -87,10 +87,10 @@ export default function SearchForm({
                           }
                         >
                           <span className="line-clamp-1 grow group-hover:underline">
-                            {result.title || result.metadata.title}
+                            {result.title || result.metadata?.title}
                           </span>
 
-                          <small className="technical text-accent/50 shrink-0 text-xs">
+                          <small className="shrink-0 text-xs technical text-accent/50">
                             {result._type === 'blog.post' ? search.typeBlog : search.typePage}
                           </small>
                         </a>

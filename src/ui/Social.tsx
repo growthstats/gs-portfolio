@@ -1,4 +1,4 @@
-import { getSite } from '@/sanity/lib/queries'
+import { getSite } from '@/sanity/lib/site'
 import CTA from './CTA'
 import { cn } from '@/lib/utils'
 import {
@@ -64,7 +64,7 @@ export default async function Social({ lang, className, shareUrl, shareText }: S
                 <Icon
                   url={item.external}
                   aria-label={
-                    shareUrl ? format(common.shareOn, { platform: item.label }) : item.label
+                    shareUrl ? format(common.shareOn, { platform: item.label ?? '' }) : item.label
                   }
                 />
               </CTA>

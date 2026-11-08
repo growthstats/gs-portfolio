@@ -1,14 +1,15 @@
 'use client'
 
 import { usePathname } from 'next/navigation'
-import CTA from '@/ui/CTA'
+import CTA, { type LinkValue } from '@/ui/CTA'
 import resolveUrl from '@/lib/resolveUrl'
 import { localizePath, parseLangFromPath, type Lang } from '@/lib/i18n'
 import { useLang } from '@/i18n/DictionaryProvider'
 import { stegaClean } from 'next-sanity'
+import type { SITE_QUERY_RESULT } from '@/sanity/sanity.types'
 
 type FooterNavigationProps = {
-  footerMenu?: Sanity.Navigation | null
+  footerMenu: NonNullable<SITE_QUERY_RESULT>['footerMenu']
 }
 
 function normalizePathname(pathname: string) {
@@ -19,7 +20,7 @@ function normalizePathname(pathname: string) {
   return normalized || '/'
 }
 
-function getLinkPathname(link?: Sanity.Link, language?: Lang) {
+function getLinkPathname(link?: LinkValue | null, language?: Lang) {
   if (!link) return null
 
   if (link.type === 'internal' && link.internal) {
@@ -48,7 +49,7 @@ export default function Menu({ footerMenu }: FooterNavigationProps) {
   const { path } = parseLangFromPath(normalizePathname(pathname))
   const currentPath = localizePath(path, language)
 
-  const isCurrentLink = (link?: Sanity.Link) => getLinkPathname(link, language) === currentPath
+  const isCurrentLink = (link?: LinkValue | null) => getLinkPathname(link, language) === currentPath
 
   return (
     <nav className="flex flex-wrap items-start gap-x-12 gap-y-6 max-sm:flex-col">
@@ -56,7 +57,7 @@ export default function Menu({ footerMenu }: FooterNavigationProps) {
         switch (item._type) {
           case 'link':
             if (isCurrentLink(item)) return null
-            return <CTA className="hover:link text-primary" link={item} key={key} />
+            return <CTA className="text-primary hover:link" link={item} key={key} />
 
           case 'link.list': {
             const headerIsCurrent = isCurrentLink(item.link)
@@ -67,7 +68,7 @@ export default function Menu({ footerMenu }: FooterNavigationProps) {
             return (
               <div className="space-y-2 text-start" key={key}>
                 {!headerIsCurrent && item.link && (
-                  <div className="technical text-canvas/50 text-xs">
+                  <div className="text-xs technical text-canvas/50">
                     <CTA link={item.link} style="link" className="text-primary">
                       {stegaClean(item.link?.label) || item.link?.internal?.title}
                     </CTA>
@@ -79,7 +80,7 @@ export default function Menu({ footerMenu }: FooterNavigationProps) {
                     {filteredLinks.map((link, key) => (
                       <li key={key}>
                         <CTA
-                          className="text-primary inline-block py-px hover:underline"
+                          className="inline-block py-px text-primary hover:underline"
                           link={link}
                           style="link"
                         />
