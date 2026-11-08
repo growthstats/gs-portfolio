@@ -165,25 +165,31 @@ function header(title?: string | null, description?: string | null) {
   return [`# ${clean(title) ?? ''}`, desc && `> ${desc}`]
 }
 
-export type MarkdownPage = {
+export function pageToMd({
+  title,
+  description,
+  modules,
+}: {
   title?: string | null
   description?: string | null
   modules?: unknown[] | null
-}
-
-export function pageToMd({ title, description, modules }: MarkdownPage): string {
+}): string {
   return join([...header(title, description), ...(modules ?? []).map(moduleToMd)])
 }
 
-export type MarkdownPost = {
+export function postToMd({
+  title,
+  description,
+  publishDate,
+  authors,
+  body,
+}: {
   title?: string | null
   description?: string | null
   publishDate?: string | null
   authors?: (string | null)[] | null
   body?: Block[] | null
-}
-
-export function postToMd({ title, description, publishDate, authors, body }: MarkdownPost): string {
+}): string {
   const names = (authors ?? []).map(clean).filter(Boolean)
   const byline = [
     clean(publishDate) && `Published: ${clean(publishDate)}`,

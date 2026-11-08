@@ -1,4 +1,3 @@
-import { groq } from 'next-sanity'
 import { BASE_URL, BLOG_DIR } from '@/lib/env'
 import {
   DEFAULT_LANG,
@@ -7,11 +6,19 @@ import {
   parseLangFromPath,
   type Lang,
 } from '@/lib/i18n'
-import { linkList, pageToMd, postToMd, type MarkdownPage, type MarkdownPost } from '@/lib/markdown'
+import { linkList, pageToMd, postToMd } from '@/lib/markdown'
 import { markdownUrl } from '@/lib/seo'
 import { fetchSanityLive } from '@/sanity/lib/fetch'
-import { IN_LANGUAGE, PREFER_LANGUAGE } from '@/sanity/lib/localized'
-import { MODULES_QUERY } from '@/sanity/lib/queries'
+import {
+  MARKDOWN_BLOG_INDEX_QUERY,
+  MARKDOWN_PAGE_QUERY,
+  MARKDOWN_POST_QUERY,
+} from '@/sanity/queries/markdown.groq'
+import type {
+  MARKDOWN_BLOG_INDEX_QUERY_RESULT,
+  MARKDOWN_PAGE_QUERY_RESULT,
+  MARKDOWN_POST_QUERY_RESULT,
+} from '@/sanity/sanity.types'
 
 /*
  * Markdown copies of pages and posts (#138). `next.config.ts` rewrites
@@ -51,18 +58,8 @@ const notFound = () =>
   })
 
 async function pageMd(lang: Lang, slug: string) {
-  const page = await fetchSanityLive<MarkdownPage | null>({
-    query: groq`*[
-			_type == 'page'
-			&& metadata.slug.current == $slug
-			&& !(metadata.slug.current in ['404'])
-			&& metadata.noIndex != true
-			&& ${IN_LANGUAGE}
-		] | ${PREFER_LANGUAGE}[0]{
-			'title': coalesce(metadata.title, title),
-			'description': metadata.description,
-			modules[]{ ${MODULES_QUERY} },
-		}`,
+  const page = await fetchSanityLive<MARKDOWN_PAGE_QUERY_RESULT>({
+    query: MARKDOWN_PAGE_QUERY,
     params: { lang, slug },
   })
 
@@ -70,22 +67,8 @@ async function pageMd(lang: Lang, slug: string) {
 }
 
 async function postMd(lang: Lang, slug: string) {
-  const post = await fetchSanityLive<MarkdownPost | null>({
-    query: groq`*[
-			_type == 'blog.post'
-			&& metadata.slug.current == $slug
-			&& metadata.noIndex != true
-			&& ${IN_LANGUAGE}
-		] | ${PREFER_LANGUAGE}[0]{
-			'title': coalesce(title, metadata.title),
-			'description': metadata.description,
-			publishDate,
-			'authors': authors[]->name,
-			body[]{
-				...,
-				_type == 'image' => { 'src': asset->url, alt, caption },
-			},
-		}`,
+  const post = await fetchSanityLive<MARKDOWN_POST_QUERY_RESULT>({
+    query: MARKDOWN_POST_QUERY,
     params: { lang, slug },
   })
 
@@ -94,27 +77,8 @@ async function postMd(lang: Lang, slug: string) {
 
 /** The blog page's own copy, then a link to every post's Markdown copy. */
 async function blogIndexMd(lang: Lang) {
-  const { page, posts } = await fetchSanityLive<{
-    page: MarkdownPage | null
-    posts: { title?: string; slug?: string; description?: string }[]
-  }>({
-    query: groq`{
-			'page': *[_type == 'page' && metadata.slug.current == $blog && ${IN_LANGUAGE}] | ${PREFER_LANGUAGE}[0]{
-				'title': coalesce(metadata.title, title),
-				'description': metadata.description,
-				modules[]{ ${MODULES_QUERY} },
-			},
-			'posts': *[
-				_type == 'blog.post'
-				&& defined(metadata.slug.current)
-				&& metadata.noIndex != true
-				&& ${IN_LANGUAGE}
-			] | order(publishDate desc){
-				'title': coalesce(title, metadata.title),
-				'slug': metadata.slug.current,
-				'description': metadata.description,
-			}
-		}`,
+  const { page, posts } = await fetchSanityLive<MARKDOWN_BLOG_INDEX_QUERY_RESULT>({
+    query: MARKDOWN_BLOG_INDEX_QUERY,
     params: { lang, blog: BLOG_DIR },
   })
 
