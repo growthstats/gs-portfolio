@@ -69,7 +69,7 @@ defineField({
 
 ### Typed GROQ queries (TypeGen)
 
-Query result types are generated from the schema and the queries, not written by hand. [Sanity.d.ts](mdc:src/types/Sanity.d.ts) only covers the few queries that haven't moved yet.
+Query result types are generated from the schema and the queries, not written by hand.
 
 - Put the query in a module-level constant wrapped in `defineQuery`, in `src/sanity/queries/<area>.groq.ts`. See [blog.groq.ts](mdc:src/sanity/queries/blog.groq.ts). TypeGen only finds queries assigned to top-level variables, not ones written inline in a `fetchSanityLive({ query })` call.
 - The query must be static: no `${condition ? … : ''}`. Use params for what varies, e.g. `($filteredCategory == '' || …)`, `select($featuredFirst => featured, false)`, and `[0..$last]` with `-1` for no limit.

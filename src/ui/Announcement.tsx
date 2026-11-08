@@ -1,16 +1,13 @@
 import { fetchSanityLive } from '@/sanity/lib/fetch'
-import { groq } from 'next-sanity'
-import { LINK_QUERY } from '@/sanity/lib/queries'
+import { ANNOUNCEMENTS_QUERY } from '@/sanity/queries/announcement.groq'
+import type { ANNOUNCEMENTS_QUERY_RESULT } from '@/sanity/sanity.types'
 import Scheduler from './Scheduler'
 import CTA from '@/ui/CTA'
 import PortableText from '@/ui/PortableText'
 
 export default async function Announcement() {
-  const announcements = await fetchSanityLive<(Sanity.Announcement & Sanity.Module)[]>({
-    query: groq`*[_type == 'site'][0].announcements[]->{
-			...,
-			cta{ ${LINK_QUERY} },
-		}`,
+  const announcements = await fetchSanityLive<ANNOUNCEMENTS_QUERY_RESULT>({
+    query: ANNOUNCEMENTS_QUERY,
   })
 
   if (!announcements) return null
@@ -21,13 +18,13 @@ export default async function Announcement() {
         <Scheduler start={start} end={end} key={_id}>
           <aside
             id="announcement"
-            className="bg-accent text-canvas flex flex-col items-center justify-center gap-2 p-2 text-center text-balance max-md:text-sm md:flex-row md:gap-x-6"
+            className="flex flex-col items-center justify-center gap-2 bg-accent p-2 text-center text-balance text-canvas max-md:text-sm md:flex-row md:gap-x-6"
           >
             <div className="anim-fade-to-r [&_a]:link">
               {content && <PortableText value={content ?? []} />}
             </div>
 
-            <CTA className="link anim-fade-to-l shrink" link={cta} />
+            <CTA className="shrink anim-fade-to-l link" link={cta} />
           </aside>
         </Scheduler>
       ))}

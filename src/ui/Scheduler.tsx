@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from 'react'
 
-export function isActiveAt(now: Date, start?: string, end?: string) {
+export function isActiveAt(now: Date, start?: string | null, end?: string | null) {
   return (!start || new Date(start) < now) && (!end || new Date(end) > now)
 }
 
@@ -19,8 +19,8 @@ export default function Scheduler({
   end,
   children,
 }: Partial<{
-  start: string
-  end: string
+  start: string | null
+  end: string | null
   children: React.ReactNode
 }>) {
   const hasSchedule = !!(start || end)
