@@ -79,11 +79,11 @@ export const LOCALIZED_FIELDS = groq`
 /** A document as fetched with {@link LOCALIZED_FIELDS}. */
 export type LocalizedResult<T> = T & {
   isFallback: boolean
-  translations: { lang: string; slug?: string }[]
+  translations: { lang: string; slug?: string | null }[]
 }
 
 /** Turns the fetched `translations` into a URL path per enabled language. */
-export function withTranslationLinks<T extends Sanity.PageBase>(
+export function withTranslationLinks<T extends { _type?: string }>(
   doc: LocalizedResult<T>,
 ): Sanity.Localized<T> {
   const translations = doc.translations

@@ -29,7 +29,9 @@ export function canonicalUrl(doc: UrlSource & { language?: string | null }) {
  * language, so a fallback (the English document under `/de/`) canonicalises
  * to the English URL, and `translations` has no German entry to link to.
  */
-export function buildAlternates(doc: Sanity.Localized<Sanity.PageBase>) {
+export function buildAlternates(
+  doc: UrlSource & { language?: string | null; translations: Sanity.TranslationLink[] },
+) {
   const lang = documentLanguage(doc)
 
   const languages: Record<string, string> = Object.fromEntries(

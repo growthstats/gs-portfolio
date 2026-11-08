@@ -1,13 +1,11 @@
 import { fetchSanityLive } from '@/sanity/lib/fetch'
-import { groq } from 'next-sanity'
-import { BLOG_DIR } from '@/lib/env'
 import resolveUrl from '@/lib/resolveUrl'
 import { Feed } from 'feed'
 import { escapeHTML, toHTML } from '@portabletext/to-html'
 import { urlFor } from '@/sanity/lib/image'
 import { enabledLanguages, isEnabledLanguage } from '@/lib/i18n'
-import { IN_LANGUAGE, SITE } from '@/sanity/lib/localized'
-import type { Table } from '@/sanity/sanity.types'
+import { BLOG_RSS_QUERY } from '@/sanity/queries/feeds.groq'
+import type { BLOG_RSS_QUERY_RESULT, Table } from '@/sanity/sanity.types'
 import tableToHTML from '@/lib/tableToHTML'
 
 export function generateStaticParams() {
@@ -19,29 +17,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ lan
   // Next types route params as strings; the proxy only lets enabled languages through.
   if (!isEnabledLanguage(lang)) return new Response('Not found', { status: 404 })
 
-  const { blog, posts, copyright } = await fetchSanityLive<{
-    blog: Sanity.Page
-    posts: Array<Sanity.BlogPost & { image?: string }>
-    copyright: string
-  }>({
-    query: groq`{
-			'blog': *[_type == 'page' && metadata.slug.current == '${BLOG_DIR}' && ${IN_LANGUAGE}][0]{
-				_type,
-				title,
-				metadata,
-				'image': metadata.image.asset->url,
-			},
-			'posts': *[_type == 'blog.post' && ${IN_LANGUAGE}]{
-				_type,
-				title,
-				body,
-				publishDate,
-				authors[]->,
-				metadata,
-				'image': metadata.image.asset->url,
-			},
-			'copyright': pt::text(${SITE}.copyright)
-		}`,
+  const { blog, posts, copyright } = await fetchSanityLive<BLOG_RSS_QUERY_RESULT>({
+    query: BLOG_RSS_QUERY,
     params: { lang },
   })
 
@@ -54,8 +31,8 @@ export async function GET(_request: Request, { params }: { params: Promise<{ lan
   const url = resolveUrl(blog, { language: lang })
 
   const feed = new Feed({
-    title: blog?.title || blog.metadata.title,
-    description: blog.metadata.description,
+    title: blog.title || blog.metadata?.title || '',
+    description: blog.metadata?.description ?? undefined,
     link: url,
     id: url,
     copyright,
@@ -66,17 +43,18 @@ export async function GET(_request: Request, { params }: { params: Promise<{ lan
 
   posts.map((post) => {
     const url = resolveUrl(post, { language: lang })
-    const displayTitle = post.title || post.metadata.title
+    const displayTitle = post.title || post.metadata?.title || ''
+    const published = new Date(post.publishDate ?? 0)
 
     return feed.addItem({
       title: escapeHTML(displayTitle),
-      description: post.metadata.description,
+      description: post.metadata?.description ?? undefined,
       id: url,
       link: url,
-      published: new Date(post.publishDate),
-      date: new Date(post.publishDate),
+      published,
+      date: published,
       author: post.authors?.map((author) => ({ name: author.name })),
-      content: toHTML(post.body, {
+      content: toHTML(post.body ?? [], {
         components: {
           types: {
             image: ({ value: { alt = '', caption, source, ...value } }) => {
@@ -94,7 +72,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ lan
           },
         },
       }),
-      image: post.image,
+      image: post.image ?? undefined,
     })
   })
 
