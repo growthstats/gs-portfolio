@@ -8,6 +8,10 @@ describe('isActiveAt', () => {
     expect(isActiveAt(now)).toBe(true)
   })
 
+  it('treats a null start or end as unset', () => {
+    expect(isActiveAt(now, null, null)).toBe(true)
+  })
+
   it('is active between start and end', () => {
     expect(isActiveAt(now, '2026-06-01T00:00:00Z', '2026-07-01T00:00:00Z')).toBe(true)
   })
