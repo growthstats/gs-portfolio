@@ -2,8 +2,9 @@ import { BASE_URL } from '@/lib/env'
 import { canonicalUrl, documentLanguage, postAuthorNames, postDates } from '@/lib/seo'
 import { stegaClean } from 'next-sanity'
 import JsonLd from './JsonLd'
+import type { BlogPost } from '@/sanity/queries/blog.groq'
 
-export default function BlogPostSchema({ post }: { post: Sanity.BlogPost }) {
+export default function BlogPostSchema({ post }: { post: BlogPost }) {
   const url = canonicalUrl(post)
   const inLanguage = documentLanguage(post)
   const headline = stegaClean(post.metadata?.title || post.title)

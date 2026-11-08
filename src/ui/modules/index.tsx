@@ -37,6 +37,7 @@ import dynamic from 'next/dynamic'
 import type { ReactNode } from 'react'
 import { createDataAttribute } from 'next-sanity'
 import type { Lang } from '@/lib/i18n'
+import type { BlogPost } from '@/sanity/queries/blog.groq'
 
 export const MODULE_MAP = {
   'about.placeholder': AboutPlaceholder,
@@ -85,9 +86,9 @@ export default function Modules({
 }: Readonly<{
   /** The page language, handed to every module so server modules can call `getDictionary(lang)`. */
   lang: Lang
-  modules?: Sanity.Module[]
+  modules?: (Sanity.Module | null)[] | null
   page?: Sanity.Page
-  post?: Sanity.BlogPost
+  post?: BlogPost
 }>) {
   const getAdditionalProps = (module: Sanity.Module) => {
     switch (module._type) {

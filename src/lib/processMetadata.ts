@@ -1,13 +1,25 @@
 import { stegaClean } from 'next-sanity'
 import { BASE_URL, BLOG_DIR, vercelPreview } from './env'
-import { buildAlternates, markdownUrl, postAuthorNames, postDates } from './seo'
+import { buildAlternates, markdownUrl, postAuthorNames, postDates, type PostSeoSource } from './seo'
 import type { Metadata } from 'next'
 
-const isBlogPost = (page: Sanity.PageBase): page is Sanity.BlogPost => page._type === 'blog.post'
+/** What page metadata is built from: `Sanity.Localized<Sanity.Page>`, or a TypeGen result. */
+type MetadataSource = PostSeoSource & {
+  _type: string
+  language?: string | null
+  translations: Sanity.TranslationLink[]
+  metadata?: {
+    slug?: { current?: string } | null
+    title?: string | null
+    description?: string | null
+    ogimage?: string | null
+    noIndex?: boolean | null
+  } | null
+}
 
 /** `article` with dates and authors for blog posts, `website` for everything else. */
-function openGraphType(page: Sanity.PageBase) {
-  if (!isBlogPost(page)) return { type: 'website' } as const
+function openGraphType(page: MetadataSource) {
+  if (page._type !== 'blog.post') return { type: 'website' } as const
 
   const { published, modified } = postDates(page)
   const authors = postAuthorNames(page)
@@ -20,11 +32,12 @@ function openGraphType(page: Sanity.PageBase) {
   } as const
 }
 
-export default async function processMetadata(
-  page: Sanity.Localized<Sanity.PageBase>,
-): Promise<Metadata> {
+export default async function processMetadata(page: MetadataSource): Promise<Metadata> {
   const { canonical, languages, locale, alternateLocales } = buildAlternates(page)
-  const { title, description, ogimage, noIndex } = page.metadata
+  const metadata = page.metadata
+  const title = metadata?.title ?? undefined
+  const description = metadata?.description ?? undefined
+  const noIndex = metadata?.noIndex
 
   return {
     metadataBase: new URL(BASE_URL),
@@ -37,7 +50,7 @@ export default async function processMetadata(
       description,
       locale,
       alternateLocale: alternateLocales,
-      images: ogimage || `${BASE_URL}/api/og?title=${encodeURIComponent(title)}`,
+      images: metadata?.ogimage || `${BASE_URL}/api/og?title=${encodeURIComponent(title ?? '')}`,
     },
     robots: {
       index: noIndex || vercelPreview ? false : undefined,
@@ -51,7 +64,7 @@ export default async function processMetadata(
         // The page's Markdown copy, for LLM crawlers and agents (#138). Hidden pages have none.
         ...(!noIndex && {
           'text/markdown': markdownUrl(canonical, {
-            isHome: stegaClean(page.metadata.slug?.current) === 'index',
+            isHome: stegaClean(metadata?.slug?.current) === 'index',
           }),
         }),
       },

@@ -1,5 +1,5 @@
 import { groq } from 'next-sanity'
-import { createSectionModuleQuery } from '@/sanity/queries/modules/section.groq'
+import { BLOG_DIR } from '@/lib/env'
 import { IN_LANGUAGE, localizedRef } from './localized'
 
 // @sanity-typegen-ignore
@@ -196,7 +196,20 @@ const MODULES_BASE_PROJECTION = `
 export const MODULES_QUERY = groq`
 	${MODULES_BASE_PROJECTION}
 	_type == 'section' => {
-		${createSectionModuleQuery(MODULES_BASE_PROJECTION)}
+		...,
+		"module": module[]{
+			...select(
+				defined(_ref) => {
+					"_key": coalesce(_key, _ref->_id),
+					..._ref->{
+						${MODULES_BASE_PROJECTION}
+					}
+				},
+				{
+					${MODULES_BASE_PROJECTION}
+				}
+			)
+		}
 	},
 `
 
@@ -209,19 +222,41 @@ export const GLOBAL_MODULE_PATH_QUERY = groq`
 	)
 `
 
-/**
- * `modules` wrapped in the global modules in `$lang`: the site-wide ones (`path == '*'`)
- * outermost, then those matching `pathFilter`.
+/*
+ * A document's modules wrapped in the global modules in `$lang`: the site-wide ones
+ * (`path == '*'`) outermost, then those for the document's path. One constant per route
+ * rather than a helper taking the path filter: TypeGen only follows literal arguments.
  */
-export function withGlobalModules(modules: string, pathFilter = 'false') {
-  const globalModules = (filter: string, position: 'before' | 'after') =>
-    groq`*[_type == 'global-module' && ${filter} && ${IN_LANGUAGE}].${position}[]{ ${MODULES_QUERY} }`
 
-  return groq`(
-		${globalModules(`path == '*'`, 'before')}
-		+ ${globalModules(`path != '*' && ${pathFilter}`, 'before')}
-		+ ${modules}
-		+ ${globalModules(`path != '*' && ${pathFilter}`, 'after')}
-		+ ${globalModules(`path == '*'`, 'after')}
-	)`
-}
+// @sanity-typegen-ignore
+const SITE_MODULES_BEFORE = groq`*[_type == 'global-module' && path == '*' && ${IN_LANGUAGE}].before[]{ ${MODULES_QUERY} }`
+
+// @sanity-typegen-ignore
+const SITE_MODULES_AFTER = groq`*[_type == 'global-module' && path == '*' && ${IN_LANGUAGE}].after[]{ ${MODULES_QUERY} }`
+
+/** A page's `modules` inside the global modules whose path matches `$slug`. */
+// @sanity-typegen-ignore
+export const PAGE_MODULES_QUERY = groq`(
+	${SITE_MODULES_BEFORE}
+	+ *[_type == 'global-module' && path != '*' && ${GLOBAL_MODULE_PATH_QUERY} && ${IN_LANGUAGE}].before[]{ ${MODULES_QUERY} }
+	+ modules[]{ ${MODULES_QUERY} }
+	+ *[_type == 'global-module' && path != '*' && ${GLOBAL_MODULE_PATH_QUERY} && ${IN_LANGUAGE}].after[]{ ${MODULES_QUERY} }
+	+ ${SITE_MODULES_AFTER}
+)`
+
+/** The 404 page's `modules`, inside the site-wide global modules only. */
+// @sanity-typegen-ignore
+export const NOT_FOUND_MODULES_QUERY = groq`(
+	${SITE_MODULES_BEFORE}
+	+ modules[]{ ${MODULES_QUERY} }
+	+ ${SITE_MODULES_AFTER}
+)`
+
+/** A blog post has no modules of its own: the blog template's global modules render it. */
+// @sanity-typegen-ignore
+export const BLOG_POST_MODULES_QUERY = groq`(
+	${SITE_MODULES_BEFORE}
+	+ *[_type == 'global-module' && path == '${BLOG_DIR}/' && ${IN_LANGUAGE}].before[]{ ${MODULES_QUERY} }
+	+ *[_type == 'global-module' && path == '${BLOG_DIR}/' && ${IN_LANGUAGE}].after[]{ ${MODULES_QUERY} }
+	+ ${SITE_MODULES_AFTER}
+)`

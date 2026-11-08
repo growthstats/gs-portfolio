@@ -7678,6 +7678,12811 @@ export type BLOG_LIST_QUERY_RESULT = Array<{
   } | null
 }>
 
+// Source: src/sanity/queries/blog.groq.ts
+// Variable: BLOG_POST_QUERY
+// Query: *[		_type == 'blog.post'		&& metadata.slug.current == $slug		&& (	coalesce(language, 'en') == $lang	|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->)))	] | order(select(coalesce(language, 'en') == $lang => 0, 1))[0]{		...,		body[]{			...,			_type == 'image' => {					...,	'lqip': @.asset->metadata.lqip,				asset->			}		},		'readTime': length(string::split(pt::text(body), ' ')) / 200,		'headings': body[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3']]{			style,			'text': pt::text(@)		},		'categories': (categories[]{ 'doc': coalesce(*[_type == 'translation.metadata' && references(^._ref)][0].translations[language == $lang || _key == $lang][0].value->, @->) }.doc)[_type == 'blog.category'],		authors[]->,		metadata {			...,			'ogimage': image.asset->url + '?w=1200'		},		'modules': (	*[_type == 'global-module' && path == '*' && (	coalesce(language, 'en') == $lang	|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->)))].before[]{ 		...,	ctas[]{		...,		link{ 	...,	internal->{		_type,		title,		metadata	} }	},	_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },	_type == 'breadcrumbs' => { crumbs[]{ 	...,	internal->{		_type,		title,		metadata	} } },	_type == 'callout' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		}	},	_type == 'card-list' => {		cards[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'creative-module' => {		modules[]{			...,			subModules[]{				...,				ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }			}		}	},	_type == 'hero' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.saas' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.split' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'image-gallery' => {		rows[]{			...,			images[]{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'logo-list' => { logos[]-> },	_type == 'project-list' => {		projects[]{			...,			cta{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },			asset{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'person-list' => { people[]-> },	_type == 'pricing-list' => {		tiers[]->{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'richtext-module' => {		content[]{			...,			_type == 'image' => { 	...,	'lqip': @.asset->metadata.lqip }		},		'headings': select(			tableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{				style,				'text': pt::text(@)			}		),	},	_type == 'service-details' => {		features[]{			...,			img{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'tabbed-content' => {		tabs[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'testimonial.featured' => { testimonial-> },	_type == 'testimonial-list' => { testimonials[]-> },	_type == 'faq' => {		pretitle,		title,		description,		items[]{		  _key,		  question,		  answer		},		accessibleAccordion,		generateSchema	  },  _type == 'service-list' => {	  services[]{		  _key,		  title,		  description,		  layout,      keywords,      icon,      image{ 	...,	'lqip': @.asset->metadata.lqip },      ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },    }  },	_type == 'section' => {		...,		"module": module[]{			...select(				defined(_ref) => {					"_key": coalesce(_key, _ref->_id),					..._ref->{							...,	ctas[]{		...,		link{ 	...,	internal->{		_type,		title,		metadata	} }	},	_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },	_type == 'breadcrumbs' => { crumbs[]{ 	...,	internal->{		_type,		title,		metadata	} } },	_type == 'callout' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		}	},	_type == 'card-list' => {		cards[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'creative-module' => {		modules[]{			...,			subModules[]{				...,				ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }			}		}	},	_type == 'hero' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.saas' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.split' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'image-gallery' => {		rows[]{			...,			images[]{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'logo-list' => { logos[]-> },	_type == 'project-list' => {		projects[]{			...,			cta{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },			asset{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'person-list' => { people[]-> },	_type == 'pricing-list' => {		tiers[]->{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'richtext-module' => {		content[]{			...,			_type == 'image' => { 	...,	'lqip': @.asset->metadata.lqip }		},		'headings': select(			tableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{				style,				'text': pt::text(@)			}		),	},	_type == 'service-details' => {		features[]{			...,			img{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'tabbed-content' => {		tabs[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'testimonial.featured' => { testimonial-> },	_type == 'testimonial-list' => { testimonials[]-> },	_type == 'faq' => {		pretitle,		title,		description,		items[]{		  _key,		  question,		  answer		},		accessibleAccordion,		generateSchema	  },  _type == 'service-list' => {	  services[]{		  _key,		  title,		  description,		  layout,      keywords,      icon,      image{ 	...,	'lqip': @.asset->metadata.lqip },      ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },    }  },					}				},				{						...,	ctas[]{		...,		link{ 	...,	internal->{		_type,		title,		metadata	} }	},	_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },	_type == 'breadcrumbs' => { crumbs[]{ 	...,	internal->{		_type,		title,		metadata	} } },	_type == 'callout' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		}	},	_type == 'card-list' => {		cards[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'creative-module' => {		modules[]{			...,			subModules[]{				...,				ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }			}		}	},	_type == 'hero' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.saas' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.split' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'image-gallery' => {		rows[]{			...,			images[]{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'logo-list' => { logos[]-> },	_type == 'project-list' => {		projects[]{			...,			cta{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },			asset{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'person-list' => { people[]-> },	_type == 'pricing-list' => {		tiers[]->{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'richtext-module' => {		content[]{			...,			_type == 'image' => { 	...,	'lqip': @.asset->metadata.lqip }		},		'headings': select(			tableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{				style,				'text': pt::text(@)			}		),	},	_type == 'service-details' => {		features[]{			...,			img{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'tabbed-content' => {		tabs[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'testimonial.featured' => { testimonial-> },	_type == 'testimonial-list' => { testimonials[]-> },	_type == 'faq' => {		pretitle,		title,		description,		items[]{		  _key,		  question,		  answer		},		accessibleAccordion,		generateSchema	  },  _type == 'service-list' => {	  services[]{		  _key,		  title,		  description,		  layout,      keywords,      icon,      image{ 	...,	'lqip': @.asset->metadata.lqip },      ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },    }  },				}			)		}	}, }	+ *[_type == 'global-module' && path == 'blog/' && (	coalesce(language, 'en') == $lang	|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->)))].before[]{ 		...,	ctas[]{		...,		link{ 	...,	internal->{		_type,		title,		metadata	} }	},	_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },	_type == 'breadcrumbs' => { crumbs[]{ 	...,	internal->{		_type,		title,		metadata	} } },	_type == 'callout' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		}	},	_type == 'card-list' => {		cards[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'creative-module' => {		modules[]{			...,			subModules[]{				...,				ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }			}		}	},	_type == 'hero' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.saas' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.split' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'image-gallery' => {		rows[]{			...,			images[]{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'logo-list' => { logos[]-> },	_type == 'project-list' => {		projects[]{			...,			cta{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },			asset{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'person-list' => { people[]-> },	_type == 'pricing-list' => {		tiers[]->{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'richtext-module' => {		content[]{			...,			_type == 'image' => { 	...,	'lqip': @.asset->metadata.lqip }		},		'headings': select(			tableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{				style,				'text': pt::text(@)			}		),	},	_type == 'service-details' => {		features[]{			...,			img{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'tabbed-content' => {		tabs[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'testimonial.featured' => { testimonial-> },	_type == 'testimonial-list' => { testimonials[]-> },	_type == 'faq' => {		pretitle,		title,		description,		items[]{		  _key,		  question,		  answer		},		accessibleAccordion,		generateSchema	  },  _type == 'service-list' => {	  services[]{		  _key,		  title,		  description,		  layout,      keywords,      icon,      image{ 	...,	'lqip': @.asset->metadata.lqip },      ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },    }  },	_type == 'section' => {		...,		"module": module[]{			...select(				defined(_ref) => {					"_key": coalesce(_key, _ref->_id),					..._ref->{							...,	ctas[]{		...,		link{ 	...,	internal->{		_type,		title,		metadata	} }	},	_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },	_type == 'breadcrumbs' => { crumbs[]{ 	...,	internal->{		_type,		title,		metadata	} } },	_type == 'callout' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		}	},	_type == 'card-list' => {		cards[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'creative-module' => {		modules[]{			...,			subModules[]{				...,				ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }			}		}	},	_type == 'hero' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.saas' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.split' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'image-gallery' => {		rows[]{			...,			images[]{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'logo-list' => { logos[]-> },	_type == 'project-list' => {		projects[]{			...,			cta{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },			asset{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'person-list' => { people[]-> },	_type == 'pricing-list' => {		tiers[]->{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'richtext-module' => {		content[]{			...,			_type == 'image' => { 	...,	'lqip': @.asset->metadata.lqip }		},		'headings': select(			tableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{				style,				'text': pt::text(@)			}		),	},	_type == 'service-details' => {		features[]{			...,			img{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'tabbed-content' => {		tabs[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'testimonial.featured' => { testimonial-> },	_type == 'testimonial-list' => { testimonials[]-> },	_type == 'faq' => {		pretitle,		title,		description,		items[]{		  _key,		  question,		  answer		},		accessibleAccordion,		generateSchema	  },  _type == 'service-list' => {	  services[]{		  _key,		  title,		  description,		  layout,      keywords,      icon,      image{ 	...,	'lqip': @.asset->metadata.lqip },      ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },    }  },					}				},				{						...,	ctas[]{		...,		link{ 	...,	internal->{		_type,		title,		metadata	} }	},	_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },	_type == 'breadcrumbs' => { crumbs[]{ 	...,	internal->{		_type,		title,		metadata	} } },	_type == 'callout' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		}	},	_type == 'card-list' => {		cards[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'creative-module' => {		modules[]{			...,			subModules[]{				...,				ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }			}		}	},	_type == 'hero' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.saas' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.split' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'image-gallery' => {		rows[]{			...,			images[]{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'logo-list' => { logos[]-> },	_type == 'project-list' => {		projects[]{			...,			cta{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },			asset{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'person-list' => { people[]-> },	_type == 'pricing-list' => {		tiers[]->{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'richtext-module' => {		content[]{			...,			_type == 'image' => { 	...,	'lqip': @.asset->metadata.lqip }		},		'headings': select(			tableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{				style,				'text': pt::text(@)			}		),	},	_type == 'service-details' => {		features[]{			...,			img{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'tabbed-content' => {		tabs[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'testimonial.featured' => { testimonial-> },	_type == 'testimonial-list' => { testimonials[]-> },	_type == 'faq' => {		pretitle,		title,		description,		items[]{		  _key,		  question,		  answer		},		accessibleAccordion,		generateSchema	  },  _type == 'service-list' => {	  services[]{		  _key,		  title,		  description,		  layout,      keywords,      icon,      image{ 	...,	'lqip': @.asset->metadata.lqip },      ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },    }  },				}			)		}	}, }	+ *[_type == 'global-module' && path == 'blog/' && (	coalesce(language, 'en') == $lang	|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->)))].after[]{ 		...,	ctas[]{		...,		link{ 	...,	internal->{		_type,		title,		metadata	} }	},	_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },	_type == 'breadcrumbs' => { crumbs[]{ 	...,	internal->{		_type,		title,		metadata	} } },	_type == 'callout' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		}	},	_type == 'card-list' => {		cards[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'creative-module' => {		modules[]{			...,			subModules[]{				...,				ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }			}		}	},	_type == 'hero' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.saas' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.split' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'image-gallery' => {		rows[]{			...,			images[]{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'logo-list' => { logos[]-> },	_type == 'project-list' => {		projects[]{			...,			cta{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },			asset{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'person-list' => { people[]-> },	_type == 'pricing-list' => {		tiers[]->{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'richtext-module' => {		content[]{			...,			_type == 'image' => { 	...,	'lqip': @.asset->metadata.lqip }		},		'headings': select(			tableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{				style,				'text': pt::text(@)			}		),	},	_type == 'service-details' => {		features[]{			...,			img{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'tabbed-content' => {		tabs[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'testimonial.featured' => { testimonial-> },	_type == 'testimonial-list' => { testimonials[]-> },	_type == 'faq' => {		pretitle,		title,		description,		items[]{		  _key,		  question,		  answer		},		accessibleAccordion,		generateSchema	  },  _type == 'service-list' => {	  services[]{		  _key,		  title,		  description,		  layout,      keywords,      icon,      image{ 	...,	'lqip': @.asset->metadata.lqip },      ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },    }  },	_type == 'section' => {		...,		"module": module[]{			...select(				defined(_ref) => {					"_key": coalesce(_key, _ref->_id),					..._ref->{							...,	ctas[]{		...,		link{ 	...,	internal->{		_type,		title,		metadata	} }	},	_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },	_type == 'breadcrumbs' => { crumbs[]{ 	...,	internal->{		_type,		title,		metadata	} } },	_type == 'callout' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		}	},	_type == 'card-list' => {		cards[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'creative-module' => {		modules[]{			...,			subModules[]{				...,				ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }			}		}	},	_type == 'hero' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.saas' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.split' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'image-gallery' => {		rows[]{			...,			images[]{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'logo-list' => { logos[]-> },	_type == 'project-list' => {		projects[]{			...,			cta{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },			asset{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'person-list' => { people[]-> },	_type == 'pricing-list' => {		tiers[]->{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'richtext-module' => {		content[]{			...,			_type == 'image' => { 	...,	'lqip': @.asset->metadata.lqip }		},		'headings': select(			tableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{				style,				'text': pt::text(@)			}		),	},	_type == 'service-details' => {		features[]{			...,			img{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'tabbed-content' => {		tabs[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'testimonial.featured' => { testimonial-> },	_type == 'testimonial-list' => { testimonials[]-> },	_type == 'faq' => {		pretitle,		title,		description,		items[]{		  _key,		  question,		  answer		},		accessibleAccordion,		generateSchema	  },  _type == 'service-list' => {	  services[]{		  _key,		  title,		  description,		  layout,      keywords,      icon,      image{ 	...,	'lqip': @.asset->metadata.lqip },      ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },    }  },					}				},				{						...,	ctas[]{		...,		link{ 	...,	internal->{		_type,		title,		metadata	} }	},	_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },	_type == 'breadcrumbs' => { crumbs[]{ 	...,	internal->{		_type,		title,		metadata	} } },	_type == 'callout' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		}	},	_type == 'card-list' => {		cards[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'creative-module' => {		modules[]{			...,			subModules[]{				...,				ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }			}		}	},	_type == 'hero' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.saas' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.split' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'image-gallery' => {		rows[]{			...,			images[]{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'logo-list' => { logos[]-> },	_type == 'project-list' => {		projects[]{			...,			cta{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },			asset{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'person-list' => { people[]-> },	_type == 'pricing-list' => {		tiers[]->{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'richtext-module' => {		content[]{			...,			_type == 'image' => { 	...,	'lqip': @.asset->metadata.lqip }		},		'headings': select(			tableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{				style,				'text': pt::text(@)			}		),	},	_type == 'service-details' => {		features[]{			...,			img{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'tabbed-content' => {		tabs[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'testimonial.featured' => { testimonial-> },	_type == 'testimonial-list' => { testimonials[]-> },	_type == 'faq' => {		pretitle,		title,		description,		items[]{		  _key,		  question,		  answer		},		accessibleAccordion,		generateSchema	  },  _type == 'service-list' => {	  services[]{		  _key,		  title,		  description,		  layout,      keywords,      icon,      image{ 	...,	'lqip': @.asset->metadata.lqip },      ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },    }  },				}			)		}	}, }	+ *[_type == 'global-module' && path == '*' && (	coalesce(language, 'en') == $lang	|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->)))].after[]{ 		...,	ctas[]{		...,		link{ 	...,	internal->{		_type,		title,		metadata	} }	},	_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },	_type == 'breadcrumbs' => { crumbs[]{ 	...,	internal->{		_type,		title,		metadata	} } },	_type == 'callout' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		}	},	_type == 'card-list' => {		cards[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'creative-module' => {		modules[]{			...,			subModules[]{				...,				ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }			}		}	},	_type == 'hero' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.saas' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.split' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'image-gallery' => {		rows[]{			...,			images[]{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'logo-list' => { logos[]-> },	_type == 'project-list' => {		projects[]{			...,			cta{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },			asset{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'person-list' => { people[]-> },	_type == 'pricing-list' => {		tiers[]->{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'richtext-module' => {		content[]{			...,			_type == 'image' => { 	...,	'lqip': @.asset->metadata.lqip }		},		'headings': select(			tableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{				style,				'text': pt::text(@)			}		),	},	_type == 'service-details' => {		features[]{			...,			img{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'tabbed-content' => {		tabs[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'testimonial.featured' => { testimonial-> },	_type == 'testimonial-list' => { testimonials[]-> },	_type == 'faq' => {		pretitle,		title,		description,		items[]{		  _key,		  question,		  answer		},		accessibleAccordion,		generateSchema	  },  _type == 'service-list' => {	  services[]{		  _key,		  title,		  description,		  layout,      keywords,      icon,      image{ 	...,	'lqip': @.asset->metadata.lqip },      ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },    }  },	_type == 'section' => {		...,		"module": module[]{			...select(				defined(_ref) => {					"_key": coalesce(_key, _ref->_id),					..._ref->{							...,	ctas[]{		...,		link{ 	...,	internal->{		_type,		title,		metadata	} }	},	_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },	_type == 'breadcrumbs' => { crumbs[]{ 	...,	internal->{		_type,		title,		metadata	} } },	_type == 'callout' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		}	},	_type == 'card-list' => {		cards[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'creative-module' => {		modules[]{			...,			subModules[]{				...,				ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }			}		}	},	_type == 'hero' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.saas' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.split' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'image-gallery' => {		rows[]{			...,			images[]{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'logo-list' => { logos[]-> },	_type == 'project-list' => {		projects[]{			...,			cta{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },			asset{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'person-list' => { people[]-> },	_type == 'pricing-list' => {		tiers[]->{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'richtext-module' => {		content[]{			...,			_type == 'image' => { 	...,	'lqip': @.asset->metadata.lqip }		},		'headings': select(			tableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{				style,				'text': pt::text(@)			}		),	},	_type == 'service-details' => {		features[]{			...,			img{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'tabbed-content' => {		tabs[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'testimonial.featured' => { testimonial-> },	_type == 'testimonial-list' => { testimonials[]-> },	_type == 'faq' => {		pretitle,		title,		description,		items[]{		  _key,		  question,		  answer		},		accessibleAccordion,		generateSchema	  },  _type == 'service-list' => {	  services[]{		  _key,		  title,		  description,		  layout,      keywords,      icon,      image{ 	...,	'lqip': @.asset->metadata.lqip },      ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },    }  },					}				},				{						...,	ctas[]{		...,		link{ 	...,	internal->{		_type,		title,		metadata	} }	},	_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },	_type == 'breadcrumbs' => { crumbs[]{ 	...,	internal->{		_type,		title,		metadata	} } },	_type == 'callout' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		}	},	_type == 'card-list' => {		cards[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'creative-module' => {		modules[]{			...,			subModules[]{				...,				ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }			}		}	},	_type == 'hero' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.saas' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'hero.split' => {		content[]{			...,				_type == 'reputation-block' => { reputation-> }		},		assets[]{			...,			_type == 'img' => { 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } },			_type == 'video' => {				'url': file.asset->url,				'mimeType': file.asset->mimeType,				autoplay,				loop,				muted,				poster{ 	...,	image { 	...,	'lqip': @.asset->metadata.lqip } }			}		}	},	_type == 'image-gallery' => {		rows[]{			...,			images[]{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'logo-list' => { logos[]-> },	_type == 'project-list' => {		projects[]{			...,			cta{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },			asset{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'person-list' => { people[]-> },	_type == 'pricing-list' => {		tiers[]->{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'richtext-module' => {		content[]{			...,			_type == 'image' => { 	...,	'lqip': @.asset->metadata.lqip }		},		'headings': select(			tableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{				style,				'text': pt::text(@)			}		),	},	_type == 'service-details' => {		features[]{			...,			img{ 	...,	'lqip': @.asset->metadata.lqip }		}	},	_type == 'tabbed-content' => {		tabs[]{			...,			ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style }		}	},	_type == 'testimonial.featured' => { testimonial-> },	_type == 'testimonial-list' => { testimonials[]-> },	_type == 'faq' => {		pretitle,		title,		description,		items[]{		  _key,		  question,		  answer		},		accessibleAccordion,		generateSchema	  },  _type == 'service-list' => {	  services[]{		  _key,		  title,		  description,		  layout,      keywords,      icon,      image{ 	...,	'lqip': @.asset->metadata.lqip },      ctas[]{ 	...,	link{ 	...,	internal->{		_type,		title,		metadata	} },	style },    }  },				}			)		}	}, }),			'isFallback': coalesce(language, 'en') != $lang,	'translations': coalesce(		*[_type == 'translation.metadata' && references(^._id)][0].translations[defined(value->)]{			'lang': coalesce(language, _key),			'slug': value->metadata.slug.current		},		[{ 'lang': coalesce(language, 'en'), 'slug': metadata.slug.current }]	)	}
+export type BLOG_POST_QUERY_RESULT = {
+  _id: string
+  _type: 'blog.post'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title?: string
+  body: Array<
+    | {
+        tone?: 'caution' | 'important' | 'note' | 'tip' | 'warning'
+        title?: string
+        content?: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }>
+        _type: 'admonition'
+        _key: string
+      }
+    | {
+        children?: Array<{
+          marks?: Array<string>
+          text?: string
+          _type: 'span'
+          _key: string
+        }>
+        style?:
+          | 'blockquote'
+          | 'display-hero'
+          | 'display-xl'
+          | 'display-xxl'
+          | 'h1'
+          | 'h2'
+          | 'h3'
+          | 'h4'
+          | 'h5'
+          | 'h6'
+          | 'normal'
+        listItem?: 'bullet' | 'number'
+        markDefs?: Array<{
+          href?: string
+          _type: 'link'
+          _key: string
+        }>
+        level?: number
+        _type: 'block'
+        _key: string
+      }
+    | {
+        _key: string
+        _type: 'code'
+        language?: string
+        filename?: string
+        code?: string
+        highlightedLines?: Array<number>
+      }
+    | {
+        _key: string
+        _type: 'custom-html'
+        options?: ModuleOptions
+        className?: string
+        html?: Code
+        css?: Code
+      }
+    | {
+        asset: {
+          _id: string
+          _type: 'sanity.imageAsset'
+          _createdAt: string
+          _updatedAt: string
+          _rev: string
+          originalFilename?: string
+          label?: string
+          title?: string
+          description?: string
+          altText?: string
+          sha1hash?: string
+          extension?: string
+          mimeType?: string
+          size?: number
+          assetId?: string
+          uploadId?: string
+          path?: string
+          url?: string
+          metadata?: SanityImageMetadata
+          source?: SanityAssetSourceData
+        } | null
+        media?: unknown
+        hotspot?: SanityImageHotspot
+        crop?: SanityImageCrop
+        alt?: string
+        loading?: 'eager' | 'lazy'
+        caption?: string
+        source?: string
+        _type: 'image'
+        _key: string
+        lqip: string | null
+      }
+    | {
+        _key: string
+        _type: 'table'
+        caption?: string
+        headerRows?: number
+        rows?: Array<{
+          cells?: Array<{
+            value?: Array<{
+              children?: Array<{
+                marks?: Array<string>
+                text?: string
+                _type: 'span'
+                _key: string
+              }>
+              style?: 'normal'
+              listItem?: 'bullet' | 'number'
+              markDefs?: Array<{
+                href?: string
+                _type: 'link'
+                _key: string
+              }>
+              level?: number
+              _type: 'block'
+              _key: string
+            }>
+            _type: 'cell'
+            _key: string
+          }>
+          _type: 'row'
+          _key: string
+        }>
+      }
+  > | null
+  categories: Array<{
+    _id: string
+    _type: 'blog.category'
+    _createdAt: string
+    _updatedAt: string
+    _rev: string
+    title?: string
+    slug?: Slug
+    language?: string
+  }> | null
+  authors: Array<{
+    _id: string
+    _type: 'person'
+    _createdAt: string
+    _updatedAt: string
+    _rev: string
+    name?: string
+    slug?: Slug
+    image?: {
+      asset?: SanityImageAssetReference
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      _type: 'image'
+    }
+  }> | null
+  faq?: Faq
+  publishDate?: string
+  featured?: boolean
+  hideTableOfContents?: boolean
+  metadata: {
+    _type: 'metadata'
+    slug?: Slug
+    title?: string
+    description?: string
+    image?: {
+      asset?: SanityImageAssetReference
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      _type: 'image'
+    }
+    noIndex?: boolean
+    ogimage: string | null
+  } | null
+  language?: string
+  readTime: number
+  headings: Array<{
+    style:
+      | 'blockquote'
+      | 'display-hero'
+      | 'display-xl'
+      | 'display-xxl'
+      | 'h1'
+      | 'h2'
+      | 'h3'
+      | 'h4'
+      | 'h5'
+      | 'h6'
+      | 'normal'
+      | null
+    text: string
+  }> | null
+  modules: Array<
+    | {
+        _key: string
+        _type: 'about.placeholder'
+        options?: ModuleOptions
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'accordion-list'
+        options?: ModuleOptions
+        pretitle?: string
+        intro?: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }>
+        items?: Array<{
+          summary?: string
+          content?: Array<
+            | ({
+                _key: string
+              } & Code)
+            | ({
+                _key: string
+              } & CustomHtml)
+            | {
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }
+            | {
+                asset?: SanityImageAssetReference
+                media?: unknown
+                hotspot?: SanityImageHotspot
+                crop?: SanityImageCrop
+                alt?: string
+                loading?: 'eager' | 'lazy'
+                caption?: string
+                source?: string
+                _type: 'image'
+                _key: string
+              }
+          >
+          open?: boolean
+          _type: 'accordion'
+          _key: string
+        }>
+        layout?: 'horizontal' | 'vertical'
+        connect?: boolean
+        generateSchema?: boolean
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'blog-frontpage'
+        mainPost?: 'featured' | 'recent'
+        showFeaturedPostsFirst?: boolean
+        itemsPerPage?: number
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'blog-list'
+        options?: ModuleOptions
+        pretitle?: string
+        intro?: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }>
+        ctas: Array<{
+          _key: string
+          _type: 'cta'
+          link: {
+            _type: 'link'
+            label?: string
+            type?: 'external' | 'internal'
+            internal:
+              | {
+                  _type: 'blog.post'
+                  title: string | null
+                  metadata: Metadata | null
+                }
+              | {
+                  _type: 'page'
+                  title: string | null
+                  metadata: Metadata | null
+                }
+              | null
+            external?: string
+            params?: string
+          } | null
+          style?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+        }> | null
+        layout?: 'carousel' | 'grid'
+        showFeaturedPostsFirst?: boolean
+        displayFilters?: boolean
+        limit?: number
+        filteredCategory:
+          | {
+              _id: string
+              _type: 'blog.category'
+              _createdAt: string
+              _updatedAt: string
+              _rev: string
+              title?: string
+              slug?: Slug
+              language?: string
+            }
+          | {
+              _id: string
+              _type: 'blog.post'
+              _createdAt: string
+              _updatedAt: string
+              _rev: string
+              title?: string
+              body?: Array<
+                | ({
+                    _key: string
+                  } & Code)
+                | ({
+                    _key: string
+                  } & CustomHtml)
+                | ({
+                    _key: string
+                  } & Table)
+                | {
+                    tone?: 'caution' | 'important' | 'note' | 'tip' | 'warning'
+                    title?: string
+                    content?: Array<{
+                      children?: Array<{
+                        marks?: Array<string>
+                        text?: string
+                        _type: 'span'
+                        _key: string
+                      }>
+                      style?:
+                        | 'blockquote'
+                        | 'display-hero'
+                        | 'display-xl'
+                        | 'display-xxl'
+                        | 'h1'
+                        | 'h2'
+                        | 'h3'
+                        | 'h4'
+                        | 'h5'
+                        | 'h6'
+                        | 'normal'
+                      listItem?: 'bullet' | 'number'
+                      markDefs?: Array<{
+                        href?: string
+                        _type: 'link'
+                        _key: string
+                      }>
+                      level?: number
+                      _type: 'block'
+                      _key: string
+                    }>
+                    _type: 'admonition'
+                    _key: string
+                  }
+                | {
+                    children?: Array<{
+                      marks?: Array<string>
+                      text?: string
+                      _type: 'span'
+                      _key: string
+                    }>
+                    style?:
+                      | 'blockquote'
+                      | 'display-hero'
+                      | 'display-xl'
+                      | 'display-xxl'
+                      | 'h1'
+                      | 'h2'
+                      | 'h3'
+                      | 'h4'
+                      | 'h5'
+                      | 'h6'
+                      | 'normal'
+                    listItem?: 'bullet' | 'number'
+                    markDefs?: Array<{
+                      href?: string
+                      _type: 'link'
+                      _key: string
+                    }>
+                    level?: number
+                    _type: 'block'
+                    _key: string
+                  }
+                | {
+                    asset?: SanityImageAssetReference
+                    media?: unknown
+                    hotspot?: SanityImageHotspot
+                    crop?: SanityImageCrop
+                    alt?: string
+                    loading?: 'eager' | 'lazy'
+                    caption?: string
+                    source?: string
+                    _type: 'image'
+                    _key: string
+                  }
+              >
+              categories?: Array<
+                {
+                  _key: string
+                } & BlogCategoryReference
+              >
+              authors?: Array<
+                {
+                  _key: string
+                } & PersonReference
+              >
+              faq?: Faq
+              publishDate?: string
+              featured?: boolean
+              hideTableOfContents?: boolean
+              metadata?: Metadata
+              language?: string
+            }
+          | {
+              _id: string
+              _type: 'global-module'
+              _createdAt: string
+              _updatedAt: string
+              _rev: string
+              path?: string
+              excludePaths?: Array<string>
+              before?: Array<
+                | ({
+                    _key: string
+                  } & AboutPlaceholder)
+                | ({
+                    _key: string
+                  } & AccordionList)
+                | ({
+                    _key: string
+                  } & BlogFrontpage)
+                | ({
+                    _key: string
+                  } & BlogList)
+                | ({
+                    _key: string
+                  } & BlogPostContent)
+                | ({
+                    _key: string
+                  } & BrandHeroPlaceholder)
+                | ({
+                    _key: string
+                  } & Breadcrumbs)
+                | ({
+                    _key: string
+                  } & Callout)
+                | ({
+                    _key: string
+                  } & CardList)
+                | ({
+                    _key: string
+                  } & ContactPlaceholder)
+                | ({
+                    _key: string
+                  } & ContactSimple)
+                | ({
+                    _key: string
+                  } & CreativeModule)
+                | ({
+                    _key: string
+                  } & CustomHtml)
+                | ({
+                    _key: string
+                  } & Faq)
+                | ({
+                    _key: string
+                  } & FlagList)
+                | ({
+                    _key: string
+                  } & HeroSaas)
+                | ({
+                    _key: string
+                  } & HeroSplit)
+                | ({
+                    _key: string
+                  } & Hero)
+                | ({
+                    _key: string
+                  } & ImageGallery)
+                | ({
+                    _key: string
+                  } & JoinUsPlaceholder)
+                | ({
+                    _key: string
+                  } & LetsTalkPlaceholder)
+                | ({
+                    _key: string
+                  } & LogoList)
+                | ({
+                    _key: string
+                  } & PersonList)
+                | ({
+                    _key: string
+                  } & PricingList)
+                | ({
+                    _key: string
+                  } & RichtextModule)
+                | ({
+                    _key: string
+                  } & ScheduleModule)
+                | ({
+                    _key: string
+                  } & SearchModule)
+                | ({
+                    _key: string
+                  } & Section)
+                | ({
+                    _key: string
+                  } & ServiceDetails)
+                | ({
+                    _key: string
+                  } & ServiceList)
+                | ({
+                    _key: string
+                  } & StatList)
+                | ({
+                    _key: string
+                  } & StepList)
+                | ({
+                    _key: string
+                  } & TabbedContent)
+                | ({
+                    _key: string
+                  } & TeamPlaceholder)
+                | ({
+                    _key: string
+                  } & TestimonialList)
+                | ({
+                    _key: string
+                  } & TestimonialFeatured)
+              >
+              after?: Array<
+                | ({
+                    _key: string
+                  } & AboutPlaceholder)
+                | ({
+                    _key: string
+                  } & AccordionList)
+                | ({
+                    _key: string
+                  } & BlogFrontpage)
+                | ({
+                    _key: string
+                  } & BlogList)
+                | ({
+                    _key: string
+                  } & BlogPostContent)
+                | ({
+                    _key: string
+                  } & BrandHeroPlaceholder)
+                | ({
+                    _key: string
+                  } & Breadcrumbs)
+                | ({
+                    _key: string
+                  } & Callout)
+                | ({
+                    _key: string
+                  } & CardList)
+                | ({
+                    _key: string
+                  } & ContactPlaceholder)
+                | ({
+                    _key: string
+                  } & ContactSimple)
+                | ({
+                    _key: string
+                  } & CreativeModule)
+                | ({
+                    _key: string
+                  } & CustomHtml)
+                | ({
+                    _key: string
+                  } & Faq)
+                | ({
+                    _key: string
+                  } & FlagList)
+                | ({
+                    _key: string
+                  } & HeroSaas)
+                | ({
+                    _key: string
+                  } & HeroSplit)
+                | ({
+                    _key: string
+                  } & Hero)
+                | ({
+                    _key: string
+                  } & ImageGallery)
+                | ({
+                    _key: string
+                  } & JoinUsPlaceholder)
+                | ({
+                    _key: string
+                  } & LetsTalkPlaceholder)
+                | ({
+                    _key: string
+                  } & LogoList)
+                | ({
+                    _key: string
+                  } & PersonList)
+                | ({
+                    _key: string
+                  } & PricingList)
+                | ({
+                    _key: string
+                  } & RichtextModule)
+                | ({
+                    _key: string
+                  } & ScheduleModule)
+                | ({
+                    _key: string
+                  } & SearchModule)
+                | ({
+                    _key: string
+                  } & Section)
+                | ({
+                    _key: string
+                  } & ServiceDetails)
+                | ({
+                    _key: string
+                  } & ServiceList)
+                | ({
+                    _key: string
+                  } & StatList)
+                | ({
+                    _key: string
+                  } & StepList)
+                | ({
+                    _key: string
+                  } & TabbedContent)
+                | ({
+                    _key: string
+                  } & TeamPlaceholder)
+                | ({
+                    _key: string
+                  } & TestimonialList)
+                | ({
+                    _key: string
+                  } & TestimonialFeatured)
+              >
+              language?: string
+            }
+          | {
+              _id: string
+              _type: 'navigation'
+              _createdAt: string
+              _updatedAt: string
+              _rev: string
+              title?: string
+              items?: Array<
+                | ({
+                    _key: string
+                  } & LinkList)
+                | ({
+                    _key: string
+                  } & Link)
+              >
+              language?: string
+            }
+          | {
+              _id: string
+              _type: 'page'
+              _createdAt: string
+              _updatedAt: string
+              _rev: string
+              title?: string
+              modules?: Array<
+                | ({
+                    _key: string
+                  } & AboutPlaceholder)
+                | ({
+                    _key: string
+                  } & AccordionList)
+                | ({
+                    _key: string
+                  } & BlogFrontpage)
+                | ({
+                    _key: string
+                  } & BlogList)
+                | ({
+                    _key: string
+                  } & BlogPostContent)
+                | ({
+                    _key: string
+                  } & BrandHeroPlaceholder)
+                | ({
+                    _key: string
+                  } & Breadcrumbs)
+                | ({
+                    _key: string
+                  } & Callout)
+                | ({
+                    _key: string
+                  } & CardList)
+                | ({
+                    _key: string
+                  } & ContactPlaceholder)
+                | ({
+                    _key: string
+                  } & ContactSimple)
+                | ({
+                    _key: string
+                  } & CreativeModule)
+                | ({
+                    _key: string
+                  } & CustomHtml)
+                | ({
+                    _key: string
+                  } & Faq)
+                | ({
+                    _key: string
+                  } & FlagList)
+                | ({
+                    _key: string
+                  } & HeroSaas)
+                | ({
+                    _key: string
+                  } & HeroSplit)
+                | ({
+                    _key: string
+                  } & Hero)
+                | ({
+                    _key: string
+                  } & ImageGallery)
+                | ({
+                    _key: string
+                  } & JoinUsPlaceholder)
+                | ({
+                    _key: string
+                  } & LetsTalkPlaceholder)
+                | ({
+                    _key: string
+                  } & LogoList)
+                | ({
+                    _key: string
+                  } & PersonList)
+                | ({
+                    _key: string
+                  } & PricingList)
+                | ({
+                    _key: string
+                  } & RichtextModule)
+                | ({
+                    _key: string
+                  } & ScheduleModule)
+                | ({
+                    _key: string
+                  } & SearchModule)
+                | ({
+                    _key: string
+                  } & Section)
+                | ({
+                    _key: string
+                  } & ServiceDetails)
+                | ({
+                    _key: string
+                  } & ServiceList)
+                | ({
+                    _key: string
+                  } & StatList)
+                | ({
+                    _key: string
+                  } & StepList)
+                | ({
+                    _key: string
+                  } & TabbedContent)
+                | ({
+                    _key: string
+                  } & TeamPlaceholder)
+                | ({
+                    _key: string
+                  } & TestimonialList)
+                | ({
+                    _key: string
+                  } & TestimonialFeatured)
+              >
+              metadata?: Metadata
+              language?: string
+            }
+          | {
+              _id: string
+              _type: 'site'
+              _createdAt: string
+              _updatedAt: string
+              _rev: string
+              title?: string
+              blurb?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
+                listItem?: never
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              logo?: {
+                name?: string
+                image?: {
+                  default?: {
+                    asset?: SanityImageAssetReference
+                    media?: unknown
+                    hotspot?: SanityImageHotspot
+                    crop?: SanityImageCrop
+                    _type: 'image'
+                  }
+                  light?: {
+                    asset?: SanityImageAssetReference
+                    media?: unknown
+                    hotspot?: SanityImageHotspot
+                    crop?: SanityImageCrop
+                    _type: 'image'
+                  }
+                  dark?: {
+                    asset?: SanityImageAssetReference
+                    media?: unknown
+                    hotspot?: SanityImageHotspot
+                    crop?: SanityImageCrop
+                    _type: 'image'
+                  }
+                }
+                _type: 'logo'
+              }
+              announcements?: Array<
+                {
+                  _key: string
+                } & AnnouncementReference
+              >
+              copyright?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?: 'normal'
+                listItem?: never
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              ctas?: Array<
+                {
+                  _key: string
+                } & Cta
+              >
+              headerMenu?: NavigationReference
+              footerMenu?: NavigationReference
+              social?: NavigationReference
+              localBusiness?: {
+                telephone?: string
+                email?: string
+                priceRange?: string
+                streetAddress?: string
+                addressLocality?: string
+                addressRegion?: string
+                postalCode?: string
+                addressCountry?: string
+                geo?: {
+                  latitude?: number
+                  longitude?: number
+                }
+                openingHours?: Array<{
+                  days?: Array<string>
+                  opens?: string
+                  closes?: string
+                  _key: string
+                }>
+              }
+              language?: string
+            }
+          | {
+              _id: string
+              _type: 'testimonial'
+              _createdAt: string
+              _updatedAt: string
+              _rev: string
+              content?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              source?: string
+              author?: {
+                name?: string
+                title?: string
+                image?: {
+                  asset?: SanityImageAssetReference
+                  media?: unknown
+                  hotspot?: SanityImageHotspot
+                  crop?: SanityImageCrop
+                  _type: 'image'
+                }
+              }
+              language?: string
+            }
+          | null
+      }
+    | {
+        _key: string
+        _type: 'blog-post-content'
+        options?: ModuleOptions
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'brand-hero.placeholder'
+        options?: ModuleOptions
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'breadcrumbs'
+        crumbs: Array<{
+          _key: string
+          _type: 'link'
+          label?: string
+          type?: 'external' | 'internal'
+          internal:
+            | {
+                _type: 'blog.post'
+                title: string | null
+                metadata: Metadata | null
+              }
+            | {
+                _type: 'page'
+                title: string | null
+                metadata: Metadata | null
+              }
+            | null
+          external?: string
+          params?: string
+        }> | null
+        hideCurrent?: boolean
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'callout'
+        content: Array<
+          | {
+              children?: Array<{
+                marks?: Array<string>
+                text?: string
+                _type: 'span'
+                _key: string
+              }>
+              style?:
+                | 'blockquote'
+                | 'display-hero'
+                | 'display-xl'
+                | 'display-xxl'
+                | 'h1'
+                | 'h2'
+                | 'h3'
+                | 'h4'
+                | 'h5'
+                | 'h6'
+                | 'normal'
+              listItem?: 'bullet' | 'number'
+              markDefs?: Array<{
+                href?: string
+                _type: 'link'
+                _key: string
+              }>
+              level?: number
+              _type: 'block'
+              _key: string
+            }
+          | {
+              _key: string
+              _type: 'code'
+              language?: string
+              filename?: string
+              code?: string
+              highlightedLines?: Array<number>
+            }
+          | {
+              reputation: {
+                _id: string
+                _type: 'reputation'
+                _createdAt: string
+                _updatedAt: string
+                _rev: string
+                title?: string
+                subtitle?: string
+                repo?: string
+                showForks?: boolean
+                limit?: number
+                avatars?: Array<{
+                  asset?: SanityImageAssetReference
+                  media?: unknown
+                  hotspot?: SanityImageHotspot
+                  crop?: SanityImageCrop
+                  alt?: string
+                  _type: 'image'
+                  _key: string
+                }>
+              } | null
+              _type: 'reputation-block'
+              _key: string
+            }
+        > | null
+        ctas: Array<{
+          _key: string
+          _type: 'cta'
+          link: {
+            _type: 'link'
+            label?: string
+            type?: 'external' | 'internal'
+            internal:
+              | {
+                  _type: 'blog.post'
+                  title: string | null
+                  metadata: Metadata | null
+                }
+              | {
+                  _type: 'page'
+                  title: string | null
+                  metadata: Metadata | null
+                }
+              | null
+            external?: string
+            params?: string
+          } | null
+          style?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+        }> | null
+      }
+    | {
+        _key: string
+        _type: 'card-list'
+        options?: ModuleOptions
+        pretitle?: string
+        intro?: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }>
+        ctas: Array<{
+          _key: string
+          _type: 'cta'
+          link: {
+            _type: 'link'
+            label?: string
+            type?: 'external' | 'internal'
+            internal:
+              | {
+                  _type: 'blog.post'
+                  title: string | null
+                  metadata: Metadata | null
+                }
+              | {
+                  _type: 'page'
+                  title: string | null
+                  metadata: Metadata | null
+                }
+              | null
+            external?: string
+            params?: string
+          } | null
+          style?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+        }> | null
+        cards: Array<{
+          image?: CardImage
+          content?: Array<{
+            children?: Array<{
+              marks?: Array<string>
+              text?: string
+              _type: 'span'
+              _key: string
+            }>
+            style?:
+              | 'blockquote'
+              | 'display-hero'
+              | 'display-xl'
+              | 'display-xxl'
+              | 'h1'
+              | 'h2'
+              | 'h3'
+              | 'h4'
+              | 'h5'
+              | 'h6'
+              | 'normal'
+            listItem?: 'bullet' | 'number'
+            markDefs?: Array<{
+              href?: string
+              _type: 'link'
+              _key: string
+            }>
+            level?: number
+            _type: 'block'
+            _key: string
+          }>
+          ctas: Array<{
+            _key: string
+            _type: 'cta'
+            link: {
+              _type: 'link'
+              label?: string
+              type?: 'external' | 'internal'
+              internal:
+                | {
+                    _type: 'blog.post'
+                    title: string | null
+                    metadata: Metadata | null
+                  }
+                | {
+                    _type: 'page'
+                    title: string | null
+                    metadata: Metadata | null
+                  }
+                | null
+              external?: string
+              params?: string
+            } | null
+            style: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary' | null
+          }> | null
+          _type: 'card'
+          _key: string
+        }> | null
+        layout?: 'carousel' | 'grid'
+        columns?: number
+        visualSeparation?: boolean
+      }
+    | {
+        _key: string
+        _type: 'contact.placeholder'
+        options?: ModuleOptions
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'contact.simple'
+        options?: ModuleOptions
+        title?: string
+        excerpt?: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }>
+        ctas: Array<{
+          _key: string
+          _type: 'cta'
+          link: {
+            _type: 'link'
+            label?: string
+            type?: 'external' | 'internal'
+            internal:
+              | {
+                  _type: 'blog.post'
+                  title: string | null
+                  metadata: Metadata | null
+                }
+              | {
+                  _type: 'page'
+                  title: string | null
+                  metadata: Metadata | null
+                }
+              | null
+            external?: string
+            params?: string
+          } | null
+          style?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+        }> | null
+      }
+    | {
+        _key: string
+        _type: 'creative-module'
+        options?: ModuleOptions
+        intro?: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }>
+        modules: Array<{
+          subModules: Array<
+            | {
+                ctas: Array<{
+                  _key: string
+                  _type: 'cta'
+                  link: {
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  } | null
+                  style:
+                    'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary' | null
+                }> | null
+                _type: 'ctas'
+                _key: string
+              }
+            | {
+                _key: string
+                _type: 'custom-html'
+                options?: ModuleOptions
+                className?: string
+                html?: Code
+                css?: Code
+                ctas: null
+              }
+            | {
+                _key: string
+                _type: 'icon'
+                image?: {
+                  asset?: SanityImageAssetReference
+                  media?: unknown
+                  hotspot?: SanityImageHotspot
+                  crop?: SanityImageCrop
+                  _type: 'image'
+                }
+                ic0n?: string
+                size?: string
+                ctas: null
+              }
+            | {
+                asset?: SanityImageAssetReference
+                media?: unknown
+                hotspot?: SanityImageHotspot
+                crop?: SanityImageCrop
+                alt?: string
+                aspectRatio?: string
+                _type: 'image'
+                _key: string
+                ctas: null
+              }
+            | {
+                pretitle?: string
+                content?: Array<{
+                  children?: Array<{
+                    marks?: Array<string>
+                    text?: string
+                    _type: 'span'
+                    _key: string
+                  }>
+                  style?:
+                    | 'blockquote'
+                    | 'display-hero'
+                    | 'display-xl'
+                    | 'display-xxl'
+                    | 'h1'
+                    | 'h2'
+                    | 'h3'
+                    | 'h4'
+                    | 'h5'
+                    | 'h6'
+                    | 'normal'
+                  listItem?: 'bullet' | 'number'
+                  markDefs?: Array<{
+                    href?: string
+                    _type: 'link'
+                    _key: string
+                  }>
+                  level?: number
+                  _type: 'block'
+                  _key: string
+                }>
+                _type: 'richtext'
+                _key: string
+                ctas: null
+              }
+          > | null
+          colSpan?: number
+          _type: 'module'
+          _key: string
+        }> | null
+        columns?: number
+        visualSeparation?: boolean
+        alignItems?: string
+        textAlign?: string
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'custom-html'
+        options?: ModuleOptions
+        className?: string
+        html?: Code
+        css?: Code
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'faq'
+        options?: ModuleOptions
+        pretitle: string | null
+        title: string | null
+        description: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }> | null
+        items: Array<{
+          _key: string
+          question: string | null
+          answer: Array<
+            | ({
+                _key: string
+              } & Code)
+            | {
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }
+          > | null
+        }> | null
+        accessibleAccordion: boolean | null
+        generateSchema: boolean | null
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'flag-list'
+        pretitle?: string
+        intro?: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }>
+        items?: Array<{
+          icon?: Icon
+          content?: Array<{
+            children?: Array<{
+              marks?: Array<string>
+              text?: string
+              _type: 'span'
+              _key: string
+            }>
+            style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
+            listItem?: 'bullet' | 'number'
+            markDefs?: Array<{
+              href?: string
+              _type: 'link'
+              _key: string
+            }>
+            level?: number
+            _type: 'block'
+            _key: string
+          }>
+          _type: 'flag'
+          _key: string
+        }>
+        iconPosition?: 'left' | 'top'
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'hero.saas'
+        options?: ModuleOptions
+        pretitle?: string
+        content: Array<
+          | {
+              children?: Array<{
+                marks?: Array<string>
+                text?: string
+                _type: 'span'
+                _key: string
+              }>
+              style?:
+                | 'blockquote'
+                | 'display-hero'
+                | 'display-xl'
+                | 'display-xxl'
+                | 'h1'
+                | 'h2'
+                | 'h3'
+                | 'h4'
+                | 'h5'
+                | 'h6'
+                | 'normal'
+              listItem?: 'bullet' | 'number'
+              markDefs?: Array<{
+                href?: string
+                _type: 'link'
+                _key: string
+              }>
+              level?: number
+              _type: 'block'
+              _key: string
+            }
+          | {
+              _key: string
+              _type: 'code'
+              language?: string
+              filename?: string
+              code?: string
+              highlightedLines?: Array<number>
+            }
+          | {
+              _key: string
+              _type: 'custom-html'
+              options?: ModuleOptions
+              className?: string
+              html?: Code
+              css?: Code
+            }
+          | {
+              reputation: {
+                _id: string
+                _type: 'reputation'
+                _createdAt: string
+                _updatedAt: string
+                _rev: string
+                title?: string
+                subtitle?: string
+                repo?: string
+                showForks?: boolean
+                limit?: number
+                avatars?: Array<{
+                  asset?: SanityImageAssetReference
+                  media?: unknown
+                  hotspot?: SanityImageHotspot
+                  crop?: SanityImageCrop
+                  alt?: string
+                  _type: 'image'
+                  _key: string
+                }>
+              } | null
+              _type: 'reputation-block'
+              _key: string
+            }
+        > | null
+        ctas: Array<{
+          _key: string
+          _type: 'cta'
+          link: {
+            _type: 'link'
+            label?: string
+            type?: 'external' | 'internal'
+            internal:
+              | {
+                  _type: 'blog.post'
+                  title: string | null
+                  metadata: Metadata | null
+                }
+              | {
+                  _type: 'page'
+                  title: string | null
+                  metadata: Metadata | null
+                }
+              | null
+            external?: string
+            params?: string
+          } | null
+          style?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+        }> | null
+        assets: Array<{
+          _key: string
+          _type: 'img'
+          image: {
+            asset?: SanityImageAssetReference
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            _type: 'image'
+            lqip: string | null
+          } | null
+          responsive?: Array<{
+            image?: ResponsiveImage
+            media?: string
+            _type: 'responsive'
+            _key: string
+          }>
+          alt?: string
+          loading?: 'eager' | 'lazy'
+        }> | null
+        assetFaded?: boolean
+      }
+    | {
+        _key: string
+        _type: 'hero.split'
+        pretitle?: string
+        content: Array<
+          | {
+              children?: Array<{
+                marks?: Array<string>
+                text?: string
+                _type: 'span'
+                _key: string
+              }>
+              style?:
+                | 'blockquote'
+                | 'display-hero'
+                | 'display-xl'
+                | 'display-xxl'
+                | 'h1'
+                | 'h2'
+                | 'h3'
+                | 'h4'
+                | 'h5'
+                | 'h6'
+                | 'normal'
+              listItem?: 'bullet' | 'number'
+              markDefs?: Array<{
+                href?: string
+                _type: 'link'
+                _key: string
+              }>
+              level?: number
+              _type: 'block'
+              _key: string
+            }
+          | {
+              _key: string
+              _type: 'custom-html'
+              options?: ModuleOptions
+              className?: string
+              html?: Code
+              css?: Code
+            }
+          | {
+              reputation: {
+                _id: string
+                _type: 'reputation'
+                _createdAt: string
+                _updatedAt: string
+                _rev: string
+                title?: string
+                subtitle?: string
+                repo?: string
+                showForks?: boolean
+                limit?: number
+                avatars?: Array<{
+                  asset?: SanityImageAssetReference
+                  media?: unknown
+                  hotspot?: SanityImageHotspot
+                  crop?: SanityImageCrop
+                  alt?: string
+                  _type: 'image'
+                  _key: string
+                }>
+              } | null
+              _type: 'reputation-block'
+              _key: string
+            }
+        > | null
+        ctas: Array<{
+          _key: string
+          _type: 'cta'
+          link: {
+            _type: 'link'
+            label?: string
+            type?: 'external' | 'internal'
+            internal:
+              | {
+                  _type: 'blog.post'
+                  title: string | null
+                  metadata: Metadata | null
+                }
+              | {
+                  _type: 'page'
+                  title: string | null
+                  metadata: Metadata | null
+                }
+              | null
+            external?: string
+            params?: string
+          } | null
+          style?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+        }> | null
+        assets: Array<
+          | {
+              _key: string
+              _type: 'code'
+              language?: string
+              filename?: string
+              code?: string
+              highlightedLines?: Array<number>
+            }
+          | {
+              _key: string
+              _type: 'custom-html'
+              options?: ModuleOptions
+              className?: string
+              html?: Code
+              css?: Code
+            }
+          | {
+              _key: string
+              _type: 'img'
+              image: {
+                asset?: SanityImageAssetReference
+                media?: unknown
+                hotspot?: SanityImageHotspot
+                crop?: SanityImageCrop
+                _type: 'image'
+                lqip: string | null
+              } | null
+              responsive?: Array<{
+                image?: ResponsiveImage
+                media?: string
+                _type: 'responsive'
+                _key: string
+              }>
+              alt?: string
+              loading?: 'eager' | 'lazy'
+            }
+        > | null
+        assetOnRight?: boolean
+        assetBelowContent?: boolean
+      }
+    | {
+        _key: string
+        _type: 'hero'
+        options?: ModuleOptions
+        pretitle?: string
+        content: Array<
+          | {
+              children?: Array<{
+                marks?: Array<string>
+                text?: string
+                _type: 'span'
+                _key: string
+              }>
+              style?:
+                | 'blockquote'
+                | 'display-hero'
+                | 'display-xl'
+                | 'display-xxl'
+                | 'h1'
+                | 'h2'
+                | 'h3'
+                | 'h4'
+                | 'h5'
+                | 'h6'
+                | 'normal'
+              listItem?: 'bullet' | 'number'
+              markDefs?: Array<{
+                href?: string
+                _type: 'link'
+                _key: string
+              }>
+              level?: number
+              _type: 'block'
+              _key: string
+            }
+          | {
+              _key: string
+              _type: 'custom-html'
+              options?: ModuleOptions
+              className?: string
+              html?: Code
+              css?: Code
+            }
+          | {
+              reputation: {
+                _id: string
+                _type: 'reputation'
+                _createdAt: string
+                _updatedAt: string
+                _rev: string
+                title?: string
+                subtitle?: string
+                repo?: string
+                showForks?: boolean
+                limit?: number
+                avatars?: Array<{
+                  asset?: SanityImageAssetReference
+                  media?: unknown
+                  hotspot?: SanityImageHotspot
+                  crop?: SanityImageCrop
+                  alt?: string
+                  _type: 'image'
+                  _key: string
+                }>
+              } | null
+              _type: 'reputation-block'
+              _key: string
+            }
+        > | null
+        ctas: Array<{
+          _key: string
+          _type: 'cta'
+          link: {
+            _type: 'link'
+            label?: string
+            type?: 'external' | 'internal'
+            internal:
+              | {
+                  _type: 'blog.post'
+                  title: string | null
+                  metadata: Metadata | null
+                }
+              | {
+                  _type: 'page'
+                  title: string | null
+                  metadata: Metadata | null
+                }
+              | null
+            external?: string
+            params?: string
+          } | null
+          style?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+        }> | null
+        assets: Array<
+          | {
+              _key: string
+              _type: 'img'
+              image: {
+                asset?: SanityImageAssetReference
+                media?: unknown
+                hotspot?: SanityImageHotspot
+                crop?: SanityImageCrop
+                _type: 'image'
+                lqip: string | null
+              } | null
+              responsive?: Array<{
+                image?: ResponsiveImage
+                media?: string
+                _type: 'responsive'
+                _key: string
+              }>
+              alt?: string
+              loading?: 'eager' | 'lazy'
+            }
+          | {
+              file?: VideoFile
+              poster: {
+                _type: 'img'
+                image: {
+                  asset?: SanityImageAssetReference
+                  media?: unknown
+                  hotspot?: SanityImageHotspot
+                  crop?: SanityImageCrop
+                  _type: 'image'
+                  lqip: string | null
+                } | null
+                responsive?: Array<{
+                  image?: ResponsiveImage
+                  media?: string
+                  _type: 'responsive'
+                  _key: string
+                }>
+                alt?: string
+                loading?: 'eager' | 'lazy'
+              } | null
+              autoplay: boolean | null
+              loop: boolean | null
+              muted: boolean | null
+              _type: 'video'
+              _key: string
+              url: string | null
+              mimeType: string | null
+            }
+        > | null
+        alignItems?: string
+        textAlign?: string
+        overlayHeader?: boolean
+      }
+    | {
+        _key: string
+        _type: 'image-gallery'
+        options?: ModuleOptions
+        pretitle?: string
+        intro?: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }>
+        rows: Array<{
+          images: Array<{
+            asset?: SanityImageAssetReference
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            alt?: string
+            caption?: string
+            _type: 'image'
+            _key: string
+            lqip: string | null
+          }> | null
+          _type: 'row'
+          _key: string
+        }> | null
+        autoScroll?: boolean
+        duration?: number
+        alternateScrollDirection?: boolean
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'join-us.placeholder'
+        options?: ModuleOptions
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'lets-talk-placeholder'
+        options?: ModuleOptions
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'logo-list'
+        pretitle?: string
+        intro?: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }>
+        logos: Array<{
+          _id: string
+          _type: 'logo'
+          _createdAt: string
+          _updatedAt: string
+          _rev: string
+          name?: string
+          image?: {
+            default?: {
+              asset?: SanityImageAssetReference
+              media?: unknown
+              hotspot?: SanityImageHotspot
+              crop?: SanityImageCrop
+              _type: 'image'
+            }
+            light?: {
+              asset?: SanityImageAssetReference
+              media?: unknown
+              hotspot?: SanityImageHotspot
+              crop?: SanityImageCrop
+              _type: 'image'
+            }
+            dark?: {
+              asset?: SanityImageAssetReference
+              media?: unknown
+              hotspot?: SanityImageHotspot
+              crop?: SanityImageCrop
+              _type: 'image'
+            }
+          }
+        }> | null
+        logoType?: 'dark' | 'default' | 'light'
+        autoScroll?: boolean
+        duration?: number
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'person-list'
+        pretitle?: string
+        intro?: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }>
+        people: Array<{
+          _id: string
+          _type: 'person'
+          _createdAt: string
+          _updatedAt: string
+          _rev: string
+          name?: string
+          slug?: Slug
+          image?: {
+            asset?: SanityImageAssetReference
+            media?: unknown
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            _type: 'image'
+          }
+        }> | null
+        layout?: 'carousel' | 'grid'
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'pricing-list'
+        options?: ModuleOptions
+        pretitle?: string
+        intro?: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }>
+        tiers: Array<{
+          _id: string
+          _type: 'pricing'
+          _createdAt: string
+          _updatedAt: string
+          _rev: string
+          title?: string
+          highlight?: string
+          price?: {
+            base?: number
+            strikethrough?: number
+            suffix?: string
+          }
+          ctas: Array<{
+            _key: string
+            _type: 'cta'
+            link: {
+              _type: 'link'
+              label?: string
+              type?: 'external' | 'internal'
+              internal:
+                | {
+                    _type: 'blog.post'
+                    title: string | null
+                    metadata: Metadata | null
+                  }
+                | {
+                    _type: 'page'
+                    title: string | null
+                    metadata: Metadata | null
+                  }
+                | null
+              external?: string
+              params?: string
+            } | null
+            style: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary' | null
+          }> | null
+          content?: Array<{
+            children?: Array<{
+              marks?: Array<string>
+              text?: string
+              _type: 'span'
+              _key: string
+            }>
+            style?:
+              | 'blockquote'
+              | 'display-hero'
+              | 'display-xl'
+              | 'display-xxl'
+              | 'h1'
+              | 'h2'
+              | 'h3'
+              | 'h4'
+              | 'h5'
+              | 'h6'
+              | 'normal'
+            listItem?: 'bullet' | 'number'
+            markDefs?: Array<{
+              href?: string
+              _type: 'link'
+              _key: string
+            }>
+            level?: number
+            _type: 'block'
+            _key: string
+          }>
+        }> | null
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'richtext-module'
+        options?: ModuleOptions
+        content: Array<
+          | {
+              tone?: 'caution' | 'important' | 'note' | 'tip' | 'warning'
+              title?: string
+              content?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              _type: 'admonition'
+              _key: string
+            }
+          | {
+              children?: Array<{
+                marks?: Array<string>
+                text?: string
+                _type: 'span'
+                _key: string
+              }>
+              style?:
+                | 'blockquote'
+                | 'display-hero'
+                | 'display-xl'
+                | 'display-xxl'
+                | 'h1'
+                | 'h2'
+                | 'h3'
+                | 'h4'
+                | 'h5'
+                | 'h6'
+                | 'normal'
+              listItem?: 'bullet' | 'number'
+              markDefs?: Array<{
+                href?: string
+                _type: 'link'
+                _key: string
+              }>
+              level?: number
+              _type: 'block'
+              _key: string
+            }
+          | {
+              _key: string
+              _type: 'code'
+              language?: string
+              filename?: string
+              code?: string
+              highlightedLines?: Array<number>
+            }
+          | {
+              _key: string
+              _type: 'custom-html'
+              options?: ModuleOptions
+              className?: string
+              html?: Code
+              css?: Code
+            }
+          | {
+              asset?: SanityImageAssetReference
+              media?: unknown
+              hotspot?: SanityImageHotspot
+              crop?: SanityImageCrop
+              alt?: string
+              loading?: 'eager' | 'lazy'
+              caption?: string
+              source?: string
+              _type: 'image'
+              _key: string
+              lqip: string | null
+            }
+          | {
+              _key: string
+              _type: 'table'
+              caption?: string
+              headerRows?: number
+              rows?: Array<{
+                cells?: Array<{
+                  value?: Array<{
+                    children?: Array<{
+                      marks?: Array<string>
+                      text?: string
+                      _type: 'span'
+                      _key: string
+                    }>
+                    style?: 'normal'
+                    listItem?: 'bullet' | 'number'
+                    markDefs?: Array<{
+                      href?: string
+                      _type: 'link'
+                      _key: string
+                    }>
+                    level?: number
+                    _type: 'block'
+                    _key: string
+                  }>
+                  _type: 'cell'
+                  _key: string
+                }>
+                _type: 'row'
+                _key: string
+              }>
+            }
+        > | null
+        tableOfContents?: boolean
+        tocPosition?: 'left' | 'right'
+        stretch?: boolean
+        ctas: null
+        headings: Array<{
+          style:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+            | null
+          text: string
+        }> | null
+      }
+    | {
+        _key: string
+        _type: 'schedule-module'
+        start?: string
+        end?: string
+        modules?: Array<
+          | ({
+              _key: string
+            } & Callout)
+          | ({
+              _key: string
+            } & CustomHtml)
+          | ({
+              _key: string
+            } & HeroSaas)
+          | ({
+              _key: string
+            } & HeroSplit)
+          | ({
+              _key: string
+            } & Hero)
+          | ({
+              _key: string
+            } & TestimonialFeatured)
+        >
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'search-module'
+        pretitle?: string
+        intro?: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }>
+        ctas: Array<{
+          _key: string
+          _type: 'cta'
+          link: {
+            _type: 'link'
+            label?: string
+            type?: 'external' | 'internal'
+            internal:
+              | {
+                  _type: 'blog.post'
+                  title: string | null
+                  metadata: Metadata | null
+                }
+              | {
+                  _type: 'page'
+                  title: string | null
+                  metadata: Metadata | null
+                }
+              | null
+            external?: string
+            params?: string
+          } | null
+          style?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+        }> | null
+        scope?: 'all' | 'blog posts' | 'pages' | 'path'
+        path?: string
+      }
+    | {
+        _key: string
+        _type: 'section'
+        options?: ModuleOptions
+        headingBadge?: string
+        icon?:
+          | ''
+          | 'AArrowDown'
+          | 'AArrowUp'
+          | 'Accessibility'
+          | 'Activity'
+          | 'ActivitySquare'
+          | 'Ad'
+          | 'Airplay'
+          | 'AirVent'
+          | 'ALargeSmall'
+          | 'AlarmCheck'
+          | 'AlarmClock'
+          | 'AlarmClockCheck'
+          | 'AlarmClockMinus'
+          | 'AlarmClockOff'
+          | 'AlarmClockPlus'
+          | 'AlarmMinus'
+          | 'AlarmPlus'
+          | 'AlarmSmoke'
+          | 'Album'
+          | 'AlertCircle'
+          | 'AlertOctagon'
+          | 'AlertTriangle'
+          | 'AlignCenter'
+          | 'AlignCenterHorizontal'
+          | 'AlignCenterVertical'
+          | 'AlignEndHorizontal'
+          | 'AlignEndVertical'
+          | 'AlignHorizontalDistributeCenter'
+          | 'AlignHorizontalDistributeEnd'
+          | 'AlignHorizontalDistributeStart'
+          | 'AlignHorizontalJustifyCenter'
+          | 'AlignHorizontalJustifyEnd'
+          | 'AlignHorizontalJustifyStart'
+          | 'AlignHorizontalSpaceAround'
+          | 'AlignHorizontalSpaceBetween'
+          | 'AlignJustify'
+          | 'AlignLeft'
+          | 'AlignRight'
+          | 'AlignStartHorizontal'
+          | 'AlignStartVertical'
+          | 'AlignVerticalDistributeCenter'
+          | 'AlignVerticalDistributeEnd'
+          | 'AlignVerticalDistributeStart'
+          | 'AlignVerticalJustifyCenter'
+          | 'AlignVerticalJustifyEnd'
+          | 'AlignVerticalJustifyStart'
+          | 'AlignVerticalSpaceAround'
+          | 'AlignVerticalSpaceBetween'
+          | 'Ambulance'
+          | 'Ampersand'
+          | 'Ampersands'
+          | 'Amphora'
+          | 'Anchor'
+          | 'Angle'
+          | 'Angry'
+          | 'Annoyed'
+          | 'Antenna'
+          | 'Anvil'
+          | 'Aperture'
+          | 'Apple'
+          | 'AppWindow'
+          | 'AppWindowMac'
+          | 'Archive'
+          | 'ArchiveArrowDown'
+          | 'ArchiveArrowUp'
+          | 'ArchiveRestore'
+          | 'ArchiveX'
+          | 'AreaChart'
+          | 'Armchair'
+          | 'ArmenianDram'
+          | 'ArrowBigDown'
+          | 'ArrowBigDownDash'
+          | 'ArrowBigLeft'
+          | 'ArrowBigLeftDash'
+          | 'ArrowBigRight'
+          | 'ArrowBigRightDash'
+          | 'ArrowBigUp'
+          | 'ArrowBigUpDash'
+          | 'ArrowDown'
+          | 'ArrowDown01'
+          | 'ArrowDown10'
+          | 'ArrowDownAz'
+          | 'ArrowDownAZ'
+          | 'ArrowDownCircle'
+          | 'ArrowDownFromLine'
+          | 'ArrowDownLeft'
+          | 'ArrowDownLeftFromCircle'
+          | 'ArrowDownLeftFromSquare'
+          | 'ArrowDownLeftSquare'
+          | 'ArrowDownNarrowWide'
+          | 'ArrowDownRight'
+          | 'ArrowDownRightFromCircle'
+          | 'ArrowDownRightFromSquare'
+          | 'ArrowDownRightSquare'
+          | 'ArrowDownSquare'
+          | 'ArrowDownToDot'
+          | 'ArrowDownToLine'
+          | 'ArrowDownUp'
+          | 'ArrowDownWideNarrow'
+          | 'ArrowDownZa'
+          | 'ArrowDownZA'
+          | 'ArrowLeft'
+          | 'ArrowLeftCircle'
+          | 'ArrowLeftFromLine'
+          | 'ArrowLeftRight'
+          | 'ArrowLeftSquare'
+          | 'ArrowLeftToLine'
+          | 'ArrowRight'
+          | 'ArrowRightCircle'
+          | 'ArrowRightFromLine'
+          | 'ArrowRightLeft'
+          | 'ArrowRightSquare'
+          | 'ArrowRightToLine'
+          | 'ArrowsUpFromLine'
+          | 'ArrowUp'
+          | 'ArrowUp01'
+          | 'ArrowUp10'
+          | 'ArrowUpAz'
+          | 'ArrowUpAZ'
+          | 'ArrowUpCircle'
+          | 'ArrowUpDown'
+          | 'ArrowUpFromDot'
+          | 'ArrowUpFromLine'
+          | 'ArrowUpLeft'
+          | 'ArrowUpLeftFromCircle'
+          | 'ArrowUpLeftFromSquare'
+          | 'ArrowUpLeftSquare'
+          | 'ArrowUpNarrowWide'
+          | 'ArrowUpRight'
+          | 'ArrowUpRightFromCircle'
+          | 'ArrowUpRightFromSquare'
+          | 'ArrowUpRightSquare'
+          | 'ArrowUpSquare'
+          | 'ArrowUpToLine'
+          | 'ArrowUpWideNarrow'
+          | 'ArrowUpZa'
+          | 'ArrowUpZA'
+          | 'Asterisk'
+          | 'AsteriskSquare'
+          | 'Astroid'
+          | 'Atom'
+          | 'AtSign'
+          | 'AudioLines'
+          | 'AudioLinesOff'
+          | 'AudioLinesX'
+          | 'AudioWaveform'
+          | 'Avocado'
+          | 'Award'
+          | 'Axe'
+          | 'Axis3d'
+          | 'Axis3D'
+          | 'AzerbaijaniManat'
+          | 'Baby'
+          | 'Backpack'
+          | 'Bacon'
+          | 'Badge'
+          | 'BadgeAlert'
+          | 'BadgeCent'
+          | 'BadgeCheck'
+          | 'BadgeDollarSign'
+          | 'BadgeEuro'
+          | 'BadgeExclamationPoint'
+          | 'BadgeHelp'
+          | 'BadgeIndianRupee'
+          | 'BadgeInfo'
+          | 'BadgeJapaneseYen'
+          | 'BadgeMinus'
+          | 'BadgePercent'
+          | 'BadgePlus'
+          | 'BadgePoundSterling'
+          | 'BadgeQuestionMark'
+          | 'BadgeRussianRuble'
+          | 'BadgeSwissFranc'
+          | 'BadgeTurkishLira'
+          | 'BadgeX'
+          | 'BaggageClaim'
+          | 'Balloon'
+          | 'BallWave'
+          | 'Ban'
+          | 'Banana'
+          | 'Bandage'
+          | 'BangladeshiTaka'
+          | 'Banknote'
+          | 'BanknoteArrowDown'
+          | 'BanknoteArrowUp'
+          | 'BanknoteCheck'
+          | 'BanknoteX'
+          | 'BarChart'
+          | 'BarChart2'
+          | 'BarChart3'
+          | 'BarChart4'
+          | 'BarChartBig'
+          | 'BarChartHorizontal'
+          | 'BarChartHorizontalBig'
+          | 'Barcode'
+          | 'Barrel'
+          | 'Baseline'
+          | 'Bath'
+          | 'Battery'
+          | 'BatteryCharging'
+          | 'BatteryExclamationPoint'
+          | 'BatteryFull'
+          | 'BatteryLow'
+          | 'BatteryMedium'
+          | 'BatteryPlus'
+          | 'BatteryWarning'
+          | 'Beaker'
+          | 'Bean'
+          | 'BeanOff'
+          | 'Bed'
+          | 'BedDouble'
+          | 'BedSingle'
+          | 'Beef'
+          | 'BeefOff'
+          | 'Beer'
+          | 'BeerOff'
+          | 'BelarusianRuble'
+          | 'Bell'
+          | 'BellCheck'
+          | 'BellDot'
+          | 'BellElectric'
+          | 'BellMinus'
+          | 'BellOff'
+          | 'BellPlus'
+          | 'BellRing'
+          | 'BetweenHorizonalEnd'
+          | 'BetweenHorizonalStart'
+          | 'BetweenHorizontalEnd'
+          | 'BetweenHorizontalStart'
+          | 'BetweenVerticalEnd'
+          | 'BetweenVerticalStart'
+          | 'BicepsFlexed'
+          | 'Bike'
+          | 'Binary'
+          | 'Binoculars'
+          | 'Biohazard'
+          | 'Bird'
+          | 'Birdhouse'
+          | 'Bitcoin'
+          | 'Blend'
+          | 'Blender'
+          | 'Blinds'
+          | 'Blocks'
+          | 'Bluetooth'
+          | 'BluetoothConnected'
+          | 'BluetoothOff'
+          | 'BluetoothSearching'
+          | 'Bold'
+          | 'Bolt'
+          | 'Bomb'
+          | 'Bone'
+          | 'BoneFracture'
+          | 'Book'
+          | 'BookA'
+          | 'BookAlert'
+          | 'BookAudio'
+          | 'BookBookmark'
+          | 'BookCheck'
+          | 'BookCopy'
+          | 'BookDashed'
+          | 'BookDown'
+          | 'BookExclamationPoint'
+          | 'BookHeadphones'
+          | 'BookHeart'
+          | 'BookImage'
+          | 'BookKey'
+          | 'BookLock'
+          | 'Bookmark'
+          | 'BookmarkCheck'
+          | 'BookMarked'
+          | 'BookmarkMinus'
+          | 'BookmarkOff'
+          | 'BookmarkPlus'
+          | 'BookmarkX'
+          | 'BookMinus'
+          | 'BookOpen'
+          | 'BookOpenCheck'
+          | 'BookOpenText'
+          | 'BookPlus'
+          | 'BookSearch'
+          | 'BookTemplate'
+          | 'BookText'
+          | 'BookType'
+          | 'BookUp'
+          | 'BookUp2'
+          | 'BookUser'
+          | 'BookX'
+          | 'BoomBox'
+          | 'Bot'
+          | 'BotMessageSquare'
+          | 'BotOff'
+          | 'BottleWine'
+          | 'BowArrow'
+          | 'Box'
+          | 'Boxes'
+          | 'BoxesLinked'
+          | 'BoxSelect'
+          | 'Braces'
+          | 'Brackets'
+          | 'Brain'
+          | 'BrainCircuit'
+          | 'BrainCog'
+          | 'BrainOff'
+          | 'BrickWall'
+          | 'BrickWallFire'
+          | 'BrickWallShield'
+          | 'Bridge'
+          | 'Briefcase'
+          | 'BriefcaseBusiness'
+          | 'BriefcaseConveyorBelt'
+          | 'BriefcaseMedical'
+          | 'BriefcasePlus'
+          | 'BringToFront'
+          | 'Broccoli'
+          | 'Broom'
+          | 'BroomSparkles'
+          | 'Brush'
+          | 'BrushCleaning'
+          | 'Bubbles'
+          | 'Bug'
+          | 'BugOff'
+          | 'BugPlay'
+          | 'Building'
+          | 'Building2'
+          | 'BuildingComplex'
+          | 'BuildingComplexPlus'
+          | 'Bus'
+          | 'BusFront'
+          | 'Cable'
+          | 'CableCar'
+          | 'Cake'
+          | 'CakeSlice'
+          | 'Calculator'
+          | 'Calendar'
+          | 'Calendar1'
+          | 'CalendarArrowDown'
+          | 'CalendarArrowLeft'
+          | 'CalendarArrowRight'
+          | 'CalendarArrowUp'
+          | 'CalendarCheck'
+          | 'CalendarCheck2'
+          | 'CalendarChevronsLeft'
+          | 'CalendarChevronsRight'
+          | 'CalendarClock'
+          | 'CalendarCog'
+          | 'CalendarDays'
+          | 'CalendarFold'
+          | 'CalendarHeart'
+          | 'CalendarMinus'
+          | 'CalendarMinus2'
+          | 'CalendarOff'
+          | 'CalendarPlus'
+          | 'CalendarPlus2'
+          | 'CalendarRange'
+          | 'Calendars'
+          | 'CalendarSearch'
+          | 'CalendarSync'
+          | 'CalendarX'
+          | 'CalendarX2'
+          | 'Camera'
+          | 'CameraOff'
+          | 'Can'
+          | 'CandlestickChart'
+          | 'Candy'
+          | 'CandyCane'
+          | 'CandyOff'
+          | 'Cannabis'
+          | 'CannabisOff'
+          | 'CanSoda'
+          | 'Captions'
+          | 'CaptionsOff'
+          | 'Car'
+          | 'Caravan'
+          | 'CarBattery'
+          | 'CardSim'
+          | 'CarFront'
+          | 'Carrot'
+          | 'CarTaxiFront'
+          | 'Carton'
+          | 'CartonOff'
+          | 'CaseLower'
+          | 'CaseSensitive'
+          | 'CaseUpper'
+          | 'CassetteTape'
+          | 'Cast'
+          | 'Castle'
+          | 'Cat'
+          | 'Cctv'
+          | 'CctvOff'
+          | 'Certificate'
+          | 'ChartArea'
+          | 'ChartBar'
+          | 'ChartBarBig'
+          | 'ChartBarDecreasing'
+          | 'ChartBarIncreasing'
+          | 'ChartBarStacked'
+          | 'ChartBellCurve'
+          | 'ChartCandlestick'
+          | 'ChartColumn'
+          | 'ChartColumnBig'
+          | 'ChartColumnDecreasing'
+          | 'ChartColumnIncreasing'
+          | 'ChartColumnStacked'
+          | 'ChartGantt'
+          | 'ChartLine'
+          | 'ChartNetwork'
+          | 'ChartNoAxesColumn'
+          | 'ChartNoAxesColumnDecreasing'
+          | 'ChartNoAxesColumnIncreasing'
+          | 'ChartNoAxesCombined'
+          | 'ChartNoAxesGantt'
+          | 'ChartPie'
+          | 'ChartQuadrant'
+          | 'ChartRadar'
+          | 'ChartScatter'
+          | 'ChartSpline'
+          | 'Check'
+          | 'CheckCheck'
+          | 'CheckCircle'
+          | 'CheckCircle2'
+          | 'CheckLine'
+          | 'CheckSquare'
+          | 'CheckSquare2'
+          | 'ChefHat'
+          | 'Cherry'
+          | 'ChessBishop'
+          | 'ChessKing'
+          | 'ChessKnight'
+          | 'ChessPawn'
+          | 'ChessQueen'
+          | 'ChessRook'
+          | 'ChevronDown'
+          | 'ChevronDownCircle'
+          | 'ChevronDownSquare'
+          | 'ChevronFirst'
+          | 'ChevronLast'
+          | 'ChevronLeft'
+          | 'ChevronLeftCircle'
+          | 'ChevronLeftSquare'
+          | 'ChevronRight'
+          | 'ChevronRightCircle'
+          | 'ChevronRightSquare'
+          | 'ChevronsDown'
+          | 'ChevronsDownUp'
+          | 'ChevronsLeft'
+          | 'ChevronsLeftRight'
+          | 'ChevronsLeftRightEllipsis'
+          | 'ChevronsRight'
+          | 'ChevronsRightLeft'
+          | 'ChevronsUp'
+          | 'ChevronsUpDown'
+          | 'ChevronUp'
+          | 'ChevronUpCircle'
+          | 'ChevronUpSquare'
+          | 'Church'
+          | 'Cigarette'
+          | 'CigaretteOff'
+          | 'Circle'
+          | 'CircleAlert'
+          | 'CircleArrowDown'
+          | 'CircleArrowLeft'
+          | 'CircleArrowOutDownLeft'
+          | 'CircleArrowOutDownRight'
+          | 'CircleArrowOutUpLeft'
+          | 'CircleArrowOutUpRight'
+          | 'CircleArrowRight'
+          | 'CircleArrowUp'
+          | 'CircleCheck'
+          | 'CircleCheckBig'
+          | 'CircleChevronDown'
+          | 'CircleChevronLeft'
+          | 'CircleChevronRight'
+          | 'CircleChevronsDown'
+          | 'CircleChevronsLeft'
+          | 'CircleChevronsRight'
+          | 'CircleChevronsUp'
+          | 'CircleChevronUp'
+          | 'CircleDashed'
+          | 'CircleDashedCheck'
+          | 'CircleDivide'
+          | 'CircleDollarSign'
+          | 'CircleDot'
+          | 'CircleDotDashed'
+          | 'CircleEllipsis'
+          | 'CircleEqual'
+          | 'CircleEuro'
+          | 'CircleExclamationPoint'
+          | 'CircleFadingArrowUp'
+          | 'CircleFadingPlay'
+          | 'CircleFadingPlus'
+          | 'CircleGauge'
+          | 'CircleHelp'
+          | 'CircleLetterA'
+          | 'CircleLetterB'
+          | 'CircleLetterC'
+          | 'CircleLetterD'
+          | 'CircleLetterE'
+          | 'CircleLetterF'
+          | 'CircleLetterG'
+          | 'CircleLetterH'
+          | 'CircleLetterI'
+          | 'CircleLetterJ'
+          | 'CircleLetterK'
+          | 'CircleLetterL'
+          | 'CircleLetterM'
+          | 'CircleLetterN'
+          | 'CircleLetterO'
+          | 'CircleLetterP'
+          | 'CircleLetterPOff'
+          | 'CircleLetterQ'
+          | 'CircleLetterR'
+          | 'CircleLetterS'
+          | 'CircleLetterT'
+          | 'CircleLetterU'
+          | 'CircleLetterV'
+          | 'CircleLetterW'
+          | 'CircleLetterX'
+          | 'CircleLetterY'
+          | 'CircleLetterZ'
+          | 'CircleMinus'
+          | 'CircleOff'
+          | 'CircleParking'
+          | 'CircleParkingOff'
+          | 'CirclePause'
+          | 'CirclePercent'
+          | 'CirclePile'
+          | 'CirclePlay'
+          | 'CirclePlus'
+          | 'CirclePoundSterling'
+          | 'CirclePower'
+          | 'CircleQuestionMark'
+          | 'CircleSlash'
+          | 'CircleSlash2'
+          | 'CircleSlashed'
+          | 'CircleSmall'
+          | 'CircleStar'
+          | 'CircleStop'
+          | 'CircleUser'
+          | 'CircleUserRound'
+          | 'CircleX'
+          | 'CircuitBoard'
+          | 'Citrus'
+          | 'Clapperboard'
+          | 'ClefAlto'
+          | 'ClefBass'
+          | 'ClefTreble'
+          | 'Clipboard'
+          | 'ClipboardCheck'
+          | 'ClipboardClock'
+          | 'ClipboardCopy'
+          | 'ClipboardEdit'
+          | 'ClipboardList'
+          | 'ClipboardMinus'
+          | 'ClipboardPaste'
+          | 'ClipboardPen'
+          | 'ClipboardPenLine'
+          | 'ClipboardPlus'
+          | 'ClipboardSignature'
+          | 'ClipboardType'
+          | 'ClipboardX'
+          | 'Clock'
+          | 'Clock1'
+          | 'Clock10'
+          | 'Clock11'
+          | 'Clock12'
+          | 'Clock2'
+          | 'Clock3'
+          | 'Clock4'
+          | 'Clock5'
+          | 'Clock6'
+          | 'Clock7'
+          | 'Clock8'
+          | 'Clock9'
+          | 'ClockAlert'
+          | 'ClockArrowDown'
+          | 'ClockArrowLeft'
+          | 'ClockArrowRight'
+          | 'ClockArrowUp'
+          | 'ClockCheck'
+          | 'ClockExclamationPoint'
+          | 'ClockFading'
+          | 'ClockPlus'
+          | 'ClosedCaption'
+          | 'Cloud'
+          | 'CloudAlert'
+          | 'CloudBackup'
+          | 'CloudCheck'
+          | 'CloudCog'
+          | 'CloudDownload'
+          | 'CloudDrizzle'
+          | 'CloudExclamationPoint'
+          | 'CloudFog'
+          | 'CloudHail'
+          | 'CloudLightning'
+          | 'CloudMoon'
+          | 'CloudMoonRain'
+          | 'CloudOff'
+          | 'CloudRain'
+          | 'CloudRainWind'
+          | 'CloudSnow'
+          | 'CloudSun'
+          | 'CloudSunRain'
+          | 'CloudSync'
+          | 'CloudUpload'
+          | 'Cloudy'
+          | 'Clover'
+          | 'Club'
+          | 'Code'
+          | 'Code2'
+          | 'CodeSquare'
+          | 'CodeXml'
+          | 'Coffee'
+          | 'Cog'
+          | 'Coins'
+          | 'Columns'
+          | 'Columns2'
+          | 'Columns3'
+          | 'Columns3Cog'
+          | 'Columns4'
+          | 'ColumnsSettings'
+          | 'Combine'
+          | 'Command'
+          | 'Compass'
+          | 'Component'
+          | 'Computer'
+          | 'ConciergeBell'
+          | 'Cone'
+          | 'Construction'
+          | 'Contact'
+          | 'Contact2'
+          | 'ContactRound'
+          | 'Container'
+          | 'Contrast'
+          | 'Cookie'
+          | 'CookingPot'
+          | 'Copy'
+          | 'CopyCheck'
+          | 'Copyleft'
+          | 'CopyMinus'
+          | 'CopyPlus'
+          | 'Copyright'
+          | 'CopySlash'
+          | 'CopyX'
+          | 'CornerDownLeft'
+          | 'CornerDownRight'
+          | 'CornerLeftDown'
+          | 'CornerLeftUp'
+          | 'CornerRightDown'
+          | 'CornerRightUp'
+          | 'CornerUpLeft'
+          | 'CornerUpRight'
+          | 'Cpu'
+          | 'CpuAi'
+          | 'CreativeCommons'
+          | 'CreditCard'
+          | 'CreditCardCheck'
+          | 'CreditCardMinus'
+          | 'CreditCardPlus'
+          | 'CreditCardReader'
+          | 'CreditCardX'
+          | 'Croissant'
+          | 'Crop'
+          | 'Cross'
+          | 'Crosshair'
+          | 'Crown'
+          | 'Cuboid'
+          | 'Cupcake'
+          | 'CupSoda'
+          | 'CurlyBraces'
+          | 'Currency'
+          | 'Cylinder'
+          | 'Dam'
+          | 'Database'
+          | 'DatabaseArrowDown'
+          | 'DatabaseArrowUp'
+          | 'DatabaseBackup'
+          | 'DatabaseCheck'
+          | 'DatabaseCog'
+          | 'DatabaseMinus'
+          | 'DatabasePlus'
+          | 'DatabaseSearch'
+          | 'DatabaseX'
+          | 'DatabaseZap'
+          | 'DecimalsArrowLeft'
+          | 'DecimalsArrowRight'
+          | 'Delete'
+          | 'Dessert'
+          | 'DiagramFlowHorizontal'
+          | 'DiagramFlowVertical'
+          | 'Diameter'
+          | 'Diamond'
+          | 'DiamondMinus'
+          | 'DiamondPercent'
+          | 'DiamondPlus'
+          | 'Dice1'
+          | 'Dice2'
+          | 'Dice3'
+          | 'Dice4'
+          | 'Dice5'
+          | 'Dice6'
+          | 'Dices'
+          | 'Diff'
+          | 'Disc'
+          | 'Disc2'
+          | 'Disc3'
+          | 'DiscAlbum'
+          | 'Divide'
+          | 'DivideCircle'
+          | 'DivideSquare'
+          | 'Dna'
+          | 'DnaOff'
+          | 'Dock'
+          | 'Dog'
+          | 'DollarSign'
+          | 'Dome'
+          | 'Donut'
+          | 'DoorClosed'
+          | 'DoorClosedCog'
+          | 'DoorClosedLocked'
+          | 'DoorClosedPackage'
+          | 'DoorOpen'
+          | 'DoorStairwell'
+          | 'Dot'
+          | 'DotSquare'
+          | 'Download'
+          | 'DownloadCloud'
+          | 'DraftingCompass'
+          | 'Drama'
+          | 'Drill'
+          | 'Drone'
+          | 'Droplet'
+          | 'DropletOff'
+          | 'Droplets'
+          | 'Drum'
+          | 'Drumstick'
+          | 'Dumbbell'
+          | 'Ear'
+          | 'Earbuds'
+          | 'EarbudsOff'
+          | 'EarOff'
+          | 'Earth'
+          | 'EarthLock'
+          | 'Eclipse'
+          | 'Edit'
+          | 'Edit2'
+          | 'Edit3'
+          | 'Egg'
+          | 'EggFried'
+          | 'EggOff'
+          | 'EighthNote'
+          | 'EighthNotes'
+          | 'Eject'
+          | 'Ellipse'
+          | 'Ellipsis'
+          | 'EllipsisVertical'
+          | 'EmiratiDirham'
+          | 'Engine'
+          | 'Equal'
+          | 'EqualApproximately'
+          | 'EqualApproximatelyNot'
+          | 'EqualNot'
+          | 'EqualSquare'
+          | 'Eraser'
+          | 'EthernetPort'
+          | 'Euro'
+          | 'EvCharger'
+          | 'Expand'
+          | 'ExternalLink'
+          | 'Eye'
+          | 'EyeClosed'
+          | 'EyeDashed'
+          | 'EyeOff'
+          | 'FaceAngry'
+          | 'FaceExpressionless'
+          | 'FaceGrinning'
+          | 'FaceNeutral'
+          | 'FaceSlightlyFrowning'
+          | 'FaceSlightlySmiling'
+          | 'FaceSlightlySmilingPlus'
+          | 'Factory'
+          | 'Fan'
+          | 'FastForward'
+          | 'Faucet'
+          | 'Feather'
+          | 'Fence'
+          | 'FerrisWheel'
+          | 'File'
+          | 'FileArchive'
+          | 'FileAudio'
+          | 'FileAudio2'
+          | 'FileAxis3d'
+          | 'FileAxis3D'
+          | 'FileBadge'
+          | 'FileBadge2'
+          | 'FileBarChart'
+          | 'FileBarChart2'
+          | 'FileBox'
+          | 'FileBraces'
+          | 'FileBracesCorner'
+          | 'FileChartColumn'
+          | 'FileChartColumnIncreasing'
+          | 'FileChartLine'
+          | 'FileChartPie'
+          | 'FileCheck'
+          | 'FileCheck2'
+          | 'FileCheckCorner'
+          | 'FileClock'
+          | 'FileCode'
+          | 'FileCode2'
+          | 'FileCodeCorner'
+          | 'FileCog'
+          | 'FileCog2'
+          | 'FileDatabase'
+          | 'FileDiff'
+          | 'FileDigit'
+          | 'FileDown'
+          | 'FileEdit'
+          | 'FileExclamationPoint'
+          | 'FileHeadphone'
+          | 'FileHeart'
+          | 'FileImage'
+          | 'FileInput'
+          | 'FileJson'
+          | 'FileJson2'
+          | 'FileKey'
+          | 'FileKey2'
+          | 'FileLineChart'
+          | 'FileLock'
+          | 'FileLock2'
+          | 'FileMinus'
+          | 'FileMinus2'
+          | 'FileMinusCorner'
+          | 'FileMusic'
+          | 'FileOutput'
+          | 'FilePen'
+          | 'FilePenLine'
+          | 'FilePieChart'
+          | 'FilePlay'
+          | 'FilePlus'
+          | 'FilePlus2'
+          | 'FilePlusCorner'
+          | 'FileQuestion'
+          | 'FileQuestionMark'
+          | 'Files'
+          | 'FileScan'
+          | 'FileSearch'
+          | 'FileSearch2'
+          | 'FileSearchCorner'
+          | 'FileSignal'
+          | 'FileSignature'
+          | 'FileSliders'
+          | 'FileSpreadsheet'
+          | 'FileStack'
+          | 'FileSymlink'
+          | 'FileTerminal'
+          | 'FileText'
+          | 'FileType'
+          | 'FileType2'
+          | 'FileTypeCorner'
+          | 'FileUp'
+          | 'FileUser'
+          | 'FileVideo'
+          | 'FileVideo2'
+          | 'FileVideoCamera'
+          | 'FileVolume'
+          | 'FileVolume2'
+          | 'FileWarning'
+          | 'FileX'
+          | 'FileX2'
+          | 'FileXCorner'
+          | 'Film'
+          | 'Filter'
+          | 'FilterX'
+          | 'Fingerprint'
+          | 'FingerprintPattern'
+          | 'FireExtinguisher'
+          | 'Fish'
+          | 'FishingHook'
+          | 'FishingRod'
+          | 'FishOff'
+          | 'FishSymbol'
+          | 'Flag'
+          | 'FlagOff'
+          | 'FlagTriangleLeft'
+          | 'FlagTriangleRight'
+          | 'Flame'
+          | 'FlameKindling'
+          | 'Flashlight'
+          | 'FlashlightOff'
+          | 'FlaskConical'
+          | 'FlaskConicalOff'
+          | 'FlaskRound'
+          | 'FlipHorizontal'
+          | 'FlipHorizontal2'
+          | 'FlipVertical'
+          | 'FlipVertical2'
+          | 'Flower'
+          | 'Flower2'
+          | 'Focus'
+          | 'Folder'
+          | 'FolderArchive'
+          | 'FolderBookmark'
+          | 'FolderCheck'
+          | 'FolderClock'
+          | 'FolderClosed'
+          | 'FolderCode'
+          | 'FolderCog'
+          | 'FolderCog2'
+          | 'FolderDot'
+          | 'FolderDown'
+          | 'FolderEdit'
+          | 'FolderGit'
+          | 'FolderGit2'
+          | 'FolderHeart'
+          | 'FolderInput'
+          | 'FolderKanban'
+          | 'FolderKey'
+          | 'FolderLock'
+          | 'FolderMinus'
+          | 'FolderOpen'
+          | 'FolderOpenDot'
+          | 'FolderOutput'
+          | 'FolderPen'
+          | 'FolderPlus'
+          | 'FolderRoot'
+          | 'Folders'
+          | 'FolderSearch'
+          | 'FolderSearch2'
+          | 'FolderSymlink'
+          | 'FolderSync'
+          | 'FolderTree'
+          | 'FolderUp'
+          | 'FolderUser'
+          | 'FolderUsers'
+          | 'FolderX'
+          | 'FoldHorizontal'
+          | 'FoldVertical'
+          | 'Footprints'
+          | 'ForkKnife'
+          | 'ForkKnifeCrossed'
+          | 'Forklift'
+          | 'Form'
+          | 'FormInput'
+          | 'Forward'
+          | 'Frame'
+          | 'Frown'
+          | 'Fuel'
+          | 'Fullscreen'
+          | 'FunctionSquare'
+          | 'Funnel'
+          | 'FunnelPlus'
+          | 'FunnelX'
+          | 'Galaxy'
+          | 'GalleryHorizontal'
+          | 'GalleryHorizontalEnd'
+          | 'GalleryThumbnails'
+          | 'GalleryVertical'
+          | 'GalleryVerticalEnd'
+          | 'Gamepad'
+          | 'Gamepad2'
+          | 'GamepadDirectional'
+          | 'GanttChart'
+          | 'GanttChartSquare'
+          | 'GapHorizontal'
+          | 'GapVertical'
+          | 'Gauge'
+          | 'GaugeCircle'
+          | 'Gavel'
+          | 'Gem'
+          | 'GeorgianLari'
+          | 'Germ'
+          | 'GermOff'
+          | 'Ghost'
+          | 'Gift'
+          | 'GitBranch'
+          | 'GitBranchMinus'
+          | 'GitBranchPlus'
+          | 'GitCommit'
+          | 'GitCommitHorizontal'
+          | 'GitCommitVertical'
+          | 'GitCompare'
+          | 'GitCompareArrows'
+          | 'GitFork'
+          | 'GitGraph'
+          | 'GitMerge'
+          | 'GitMergeConflict'
+          | 'GitPullRequest'
+          | 'GitPullRequestArrow'
+          | 'GitPullRequestClosed'
+          | 'GitPullRequestCreate'
+          | 'GitPullRequestCreateArrow'
+          | 'GitPullRequestDraft'
+          | 'Glasses'
+          | 'GlassWater'
+          | 'Globe'
+          | 'Globe2'
+          | 'GlobeBan'
+          | 'GlobeCheck'
+          | 'GlobeCode'
+          | 'GlobeLock'
+          | 'GlobeOff'
+          | 'GlobePlus'
+          | 'GlobeX'
+          | 'Goal'
+          | 'Gpu'
+          | 'Grab'
+          | 'GraduationCap'
+          | 'Grape'
+          | 'GraphHub'
+          | 'GraphStar'
+          | 'Grid'
+          | 'Grid2x2'
+          | 'Grid2X2'
+          | 'Grid2x2Check'
+          | 'Grid2X2Check'
+          | 'Grid2x2Plus'
+          | 'Grid2X2Plus'
+          | 'Grid2x2X'
+          | 'Grid2X2X'
+          | 'Grid3x2'
+          | 'Grid3x3'
+          | 'Grid3X3'
+          | 'Grip'
+          | 'GripHorizontal'
+          | 'GripVertical'
+          | 'Groceries'
+          | 'Group'
+          | 'Guitar'
+          | 'GuitarElectric'
+          | 'HalfNote'
+          | 'Ham'
+          | 'Hamburger'
+          | 'Hammer'
+          | 'Hand'
+          | 'Handbag'
+          | 'HandCoins'
+          | 'HandFist'
+          | 'HandGrab'
+          | 'HandHeart'
+          | 'HandHelping'
+          | 'HandleBottomRight'
+          | 'HandMetal'
+          | 'HandPlatter'
+          | 'Handshake'
+          | 'HardDrive'
+          | 'HardDriveDownload'
+          | 'HardDriveUpload'
+          | 'HardHat'
+          | 'Hash'
+          | 'HatGlasses'
+          | 'Haze'
+          | 'Hd'
+          | 'HdmiPort'
+          | 'Heading'
+          | 'Heading1'
+          | 'Heading2'
+          | 'Heading3'
+          | 'Heading4'
+          | 'Heading5'
+          | 'Heading6'
+          | 'HeadphoneOff'
+          | 'Headphones'
+          | 'Headset'
+          | 'Heart'
+          | 'HeartCrack'
+          | 'HeartHandshake'
+          | 'HeartMinus'
+          | 'HeartOff'
+          | 'HeartPlus'
+          | 'HeartPulse'
+          | 'HeartX'
+          | 'Heater'
+          | 'Helicopter'
+          | 'HelpCircle'
+          | 'HelpingHand'
+          | 'Hexagon'
+          | 'Highlighter'
+          | 'HikingStick'
+          | 'History'
+          | 'HockeyStick'
+          | 'Home'
+          | 'Hop'
+          | 'HopOff'
+          | 'Hospital'
+          | 'HotAirBalloon'
+          | 'Hotel'
+          | 'Hourglass'
+          | 'HourglassCog'
+          | 'House'
+          | 'HouseCog'
+          | 'HouseHeart'
+          | 'HousePlug'
+          | 'HousePlus'
+          | 'Houses'
+          | 'HouseWifi'
+          | 'IceCream'
+          | 'IceCream2'
+          | 'IceCreamBowl'
+          | 'IceCreamCone'
+          | 'IdCard'
+          | 'IdCardLanyard'
+          | 'Image'
+          | 'ImageDown'
+          | 'ImageMinus'
+          | 'ImageOff'
+          | 'ImagePlay'
+          | 'ImagePlus'
+          | 'Images'
+          | 'ImageUp'
+          | 'ImageUpscale'
+          | 'Import'
+          | 'Inbox'
+          | 'Indent'
+          | 'IndentDecrease'
+          | 'IndentIncrease'
+          | 'IndianRupee'
+          | 'Infinity'
+          | 'Info'
+          | 'Inspect'
+          | 'InspectionPanel'
+          | 'Italic'
+          | 'IterationCcw'
+          | 'IterationCw'
+          | 'IvBag'
+          | 'JapaneseYen'
+          | 'Joystick'
+          | 'Kanban'
+          | 'KanbanSquare'
+          | 'KanbanSquareDashed'
+          | 'Kayak'
+          | 'KazakhTenge'
+          | 'Key'
+          | 'Keyboard'
+          | 'KeyboardMusic'
+          | 'KeyboardOff'
+          | 'KeyRound'
+          | 'KeySquare'
+          | 'Lambda'
+          | 'Lamp'
+          | 'LampCeiling'
+          | 'LampDesk'
+          | 'LampFloor'
+          | 'LampWallDown'
+          | 'LampWallUp'
+          | 'Landmark'
+          | 'LandPlot'
+          | 'Languages'
+          | 'Laptop'
+          | 'Laptop2'
+          | 'LaptopMinimal'
+          | 'LaptopMinimalCheck'
+          | 'Laser'
+          | 'Lasso'
+          | 'LassoSelect'
+          | 'Laugh'
+          | 'LayerArrowDown'
+          | 'LayerArrowUp'
+          | 'Layers'
+          | 'Layers2'
+          | 'Layers3'
+          | 'LayersArrowDown'
+          | 'LayersArrowUp'
+          | 'LayersMinus'
+          | 'LayersPlus'
+          | 'Layout'
+          | 'LayoutArrowDown'
+          | 'LayoutArrowRight'
+          | 'LayoutDashboard'
+          | 'LayoutFreeform'
+          | 'LayoutGrid'
+          | 'LayoutGridCircles'
+          | 'LayoutList'
+          | 'LayoutPanelLeft'
+          | 'LayoutPanelTop'
+          | 'LayoutTemplate'
+          | 'Leaf'
+          | 'LeafyGreen'
+          | 'Lectern'
+          | 'Lens'
+          | 'LensConcave'
+          | 'LensConvex'
+          | 'LetterA'
+          | 'LetterB'
+          | 'LetterC'
+          | 'LetterD'
+          | 'LetterE'
+          | 'LetterF'
+          | 'LetterG'
+          | 'LetterH'
+          | 'LetterI'
+          | 'LetterJ'
+          | 'LetterK'
+          | 'LetterL'
+          | 'LetterM'
+          | 'LetterN'
+          | 'LetterO'
+          | 'LetterP'
+          | 'LetterQ'
+          | 'LetterR'
+          | 'Letters'
+          | 'LetterS'
+          | 'LetterSpacing'
+          | 'LetterT'
+          | 'LetterText'
+          | 'LetterU'
+          | 'LetterV'
+          | 'LetterW'
+          | 'LetterX'
+          | 'LetterY'
+          | 'LetterZ'
+          | 'Library'
+          | 'LibraryBig'
+          | 'LibrarySquare'
+          | 'LifeBuoy'
+          | 'Ligature'
+          | 'Lightbulb'
+          | 'LightbulbOff'
+          | 'Lighthouse'
+          | 'LineChart'
+          | 'LineDotBottomVertical'
+          | 'LineDotLeftHorizontal'
+          | 'LineDotRightHorizontal'
+          | 'LineDotTopVertical'
+          | 'LineHeight'
+          | 'LineSquiggle'
+          | 'LineStyle'
+          | 'Link'
+          | 'Link2'
+          | 'Link2Off'
+          | 'List'
+          | 'ListCheck'
+          | 'ListChecks'
+          | 'ListChevronsDownUp'
+          | 'ListChevronsUpDown'
+          | 'ListClock'
+          | 'ListCollapse'
+          | 'ListEnd'
+          | 'ListFilter'
+          | 'ListFilterPlus'
+          | 'ListIndentDecrease'
+          | 'ListIndentIncrease'
+          | 'ListMinus'
+          | 'ListMusic'
+          | 'ListOrdered'
+          | 'ListPlus'
+          | 'ListRestart'
+          | 'ListSortAscending'
+          | 'ListSortDescending'
+          | 'ListStart'
+          | 'ListTodo'
+          | 'ListTree'
+          | 'ListVideo'
+          | 'ListX'
+          | 'Loader'
+          | 'Loader2'
+          | 'LoaderCircle'
+          | 'LoaderPinwheel'
+          | 'Locate'
+          | 'LocateFixed'
+          | 'LocateOff'
+          | 'LocationEdit'
+          | 'Lock'
+          | 'LockKeyhole'
+          | 'LockKeyholeOpen'
+          | 'LockOpen'
+          | 'LogIn'
+          | 'LogOut'
+          | 'Logs'
+          | 'Lollipop'
+          | 'Luggage'
+          | 'Magnet'
+          | 'Mail'
+          | 'MailAlert'
+          | 'MailBadge'
+          | 'Mailbox'
+          | 'MailCheck'
+          | 'MailClock'
+          | 'MailDot'
+          | 'MailExclamationPoint'
+          | 'MailMinus'
+          | 'MailOpen'
+          | 'MailPen'
+          | 'MailPlus'
+          | 'MailQuestion'
+          | 'MailQuestionMark'
+          | 'Mails'
+          | 'MailSearch'
+          | 'MailWarning'
+          | 'MailX'
+          | 'Mango'
+          | 'Map'
+          | 'MapMinus'
+          | 'MapPin'
+          | 'MapPinCheck'
+          | 'MapPinCheckInside'
+          | 'MapPinHouse'
+          | 'MapPinMinus'
+          | 'MapPinMinusInside'
+          | 'MapPinned'
+          | 'MapPinOff'
+          | 'MapPinPen'
+          | 'MapPinPlus'
+          | 'MapPinPlusInside'
+          | 'MapPinSearch'
+          | 'MapPinX'
+          | 'MapPinXInside'
+          | 'MapPlus'
+          | 'Margin'
+          | 'MarginBottom'
+          | 'MarginHorizontal'
+          | 'MarginLeft'
+          | 'MarginRight'
+          | 'MarginTop'
+          | 'MarginVertical'
+          | 'Mars'
+          | 'MarsStroke'
+          | 'Martini'
+          | 'Maximize'
+          | 'Maximize2'
+          | 'Medal'
+          | 'Megaphone'
+          | 'MegaphoneOff'
+          | 'Meh'
+          | 'MemoryStick'
+          | 'Menu'
+          | 'MenuSquare'
+          | 'Merge'
+          | 'MessageCircle'
+          | 'MessageCircleAlert'
+          | 'MessageCircleCheck'
+          | 'MessageCircleCode'
+          | 'MessageCircleDashed'
+          | 'MessageCircleDashedCheck'
+          | 'MessageCircleExclamationPoint'
+          | 'MessageCircleHeart'
+          | 'MessageCircleMore'
+          | 'MessageCircleOff'
+          | 'MessageCirclePlus'
+          | 'MessageCircleQuestion'
+          | 'MessageCircleQuestionMark'
+          | 'MessageCircleReply'
+          | 'MessageCircleText'
+          | 'MessageCircleWarning'
+          | 'MessageCircleX'
+          | 'MessagesCircle'
+          | 'MessageSquare'
+          | 'MessageSquareAlert'
+          | 'MessageSquareCheck'
+          | 'MessageSquareCode'
+          | 'MessageSquareDashed'
+          | 'MessageSquareDiff'
+          | 'MessageSquareDot'
+          | 'MessageSquareExclamationPoint'
+          | 'MessageSquareHeart'
+          | 'MessageSquareLock'
+          | 'MessageSquareMore'
+          | 'MessageSquareOff'
+          | 'MessageSquarePlus'
+          | 'MessageSquareQuote'
+          | 'MessageSquareReply'
+          | 'MessageSquareShare'
+          | 'MessageSquareText'
+          | 'MessageSquareWarning'
+          | 'MessageSquareX'
+          | 'MessagesSquare'
+          | 'Metronome'
+          | 'Mic'
+          | 'Mic2'
+          | 'MicAudioLines'
+          | 'MicOff'
+          | 'Microchip'
+          | 'Microscope'
+          | 'Microwave'
+          | 'MicSignal'
+          | 'MicVocal'
+          | 'MidiPort'
+          | 'Milestone'
+          | 'Milk'
+          | 'MilkOff'
+          | 'Minimize'
+          | 'Minimize2'
+          | 'Minus'
+          | 'MinusCircle'
+          | 'MinusSquare'
+          | 'MirrorRectangular'
+          | 'MirrorRound'
+          | 'Monitor'
+          | 'MonitorActivity'
+          | 'MonitorCheck'
+          | 'MonitorCloud'
+          | 'MonitorCog'
+          | 'MonitorDot'
+          | 'MonitorDown'
+          | 'MonitorOff'
+          | 'MonitorPause'
+          | 'MonitorPc'
+          | 'MonitorPlay'
+          | 'MonitorSmartphone'
+          | 'MonitorSpeaker'
+          | 'MonitorStop'
+          | 'MonitorUp'
+          | 'MonitorX'
+          | 'Moon'
+          | 'MoonStar'
+          | 'Mop'
+          | 'MopSparkles'
+          | 'MoreHorizontal'
+          | 'MoreVertical'
+          | 'Mosque'
+          | 'Motorbike'
+          | 'Mountain'
+          | 'MountainSnow'
+          | 'Mouse'
+          | 'MouseLeft'
+          | 'MouseOff'
+          | 'MousePointer'
+          | 'MousePointer2'
+          | 'MousePointer2Off'
+          | 'MousePointerBan'
+          | 'MousePointerClick'
+          | 'MousePointerSquareDashed'
+          | 'MouseRight'
+          | 'Mouth'
+          | 'MouthOff'
+          | 'Move'
+          | 'Move3d'
+          | 'Move3D'
+          | 'MoveDiagonal'
+          | 'MoveDiagonal2'
+          | 'MoveDown'
+          | 'MoveDownLeft'
+          | 'MoveDownRight'
+          | 'MoveHorizontal'
+          | 'MoveLeft'
+          | 'MoveRight'
+          | 'MoveUp'
+          | 'MoveUpLeft'
+          | 'MoveUpRight'
+          | 'MoveVertical'
+          | 'MSquare'
+          | 'Music'
+          | 'Music2'
+          | 'Music3'
+          | 'Music4'
+          | 'Navigation'
+          | 'Navigation2'
+          | 'Navigation2Off'
+          | 'NavigationOff'
+          | 'NepaliRupee'
+          | 'Network'
+          | 'Newspaper'
+          | 'Nfc'
+          | 'NonBinary'
+          | 'Notebook'
+          | 'NotebookDot'
+          | 'NotebookPen'
+          | 'NotebookTabs'
+          | 'NotebookText'
+          | 'NotepadText'
+          | 'NotepadTextDashed'
+          | 'Numbers'
+          | 'Nut'
+          | 'NutOff'
+          | 'Octagon'
+          | 'OctagonAlert'
+          | 'OctagonExclamationPoint'
+          | 'OctagonMinus'
+          | 'OctagonPause'
+          | 'OctagonX'
+          | 'Omega'
+          | 'Option'
+          | 'Orbit'
+          | 'Origami'
+          | 'Outdent'
+          | 'Package'
+          | 'Package2'
+          | 'PackageCheck'
+          | 'PackageMinus'
+          | 'PackageOpen'
+          | 'PackagePlus'
+          | 'PackageSearch'
+          | 'PackageX'
+          | 'Paintbrush'
+          | 'Paintbrush2'
+          | 'PaintbrushVertical'
+          | 'PaintBucket'
+          | 'PaintRoller'
+          | 'Palette'
+          | 'Palmtree'
+          | 'Panda'
+          | 'PanelBottom'
+          | 'PanelBottomClose'
+          | 'PanelBottomDashed'
+          | 'PanelBottomInactive'
+          | 'PanelBottomOpen'
+          | 'PanelLeft'
+          | 'PanelLeftClose'
+          | 'PanelLeftDashed'
+          | 'PanelLeftInactive'
+          | 'PanelLeftOpen'
+          | 'PanelLeftRightDashed'
+          | 'PanelRight'
+          | 'PanelRightClose'
+          | 'PanelRightDashed'
+          | 'PanelRightInactive'
+          | 'PanelRightOpen'
+          | 'PanelsLeftBottom'
+          | 'PanelsLeftRight'
+          | 'PanelsRightBottom'
+          | 'PanelsTopBottom'
+          | 'PanelsTopLeft'
+          | 'PanelTop'
+          | 'PanelTopBottomDashed'
+          | 'PanelTopClose'
+          | 'PanelTopDashed'
+          | 'PanelTopInactive'
+          | 'PanelTopOpen'
+          | 'PaperBag'
+          | 'Paperclip'
+          | 'Parasol'
+          | 'Parentheses'
+          | 'Park'
+          | 'ParkingCircle'
+          | 'ParkingCircleOff'
+          | 'ParkingMeter'
+          | 'ParkingSquare'
+          | 'ParkingSquareOff'
+          | 'PartyPopper'
+          | 'Pause'
+          | 'PauseCircle'
+          | 'PauseOctagon'
+          | 'PawPrint'
+          | 'PcCase'
+          | 'Pen'
+          | 'PenBox'
+          | 'Pencil'
+          | 'PencilLine'
+          | 'PencilOff'
+          | 'PencilRuler'
+          | 'PencilSparkles'
+          | 'PenLine'
+          | 'PenOff'
+          | 'PenSquare'
+          | 'Pentagon'
+          | 'PenTool'
+          | 'Percent'
+          | 'PercentCircle'
+          | 'PercentDiamond'
+          | 'PercentSquare'
+          | 'PerfumeBottle'
+          | 'PersonStanding'
+          | 'Phi'
+          | 'PhilippinePeso'
+          | 'Phone'
+          | 'PhoneCall'
+          | 'PhoneForwarded'
+          | 'PhoneIncoming'
+          | 'PhoneLog'
+          | 'PhoneMissed'
+          | 'PhoneOff'
+          | 'PhoneOutgoing'
+          | 'Pi'
+          | 'Piano'
+          | 'Pickaxe'
+          | 'PictureInPicture'
+          | 'PictureInPicture2'
+          | 'PieChart'
+          | 'PiggyBank'
+          | 'Pilcrow'
+          | 'PilcrowLeft'
+          | 'PilcrowRight'
+          | 'PilcrowSquare'
+          | 'Pill'
+          | 'PillBottle'
+          | 'Pin'
+          | 'PinOff'
+          | 'Pipette'
+          | 'PiSquare'
+          | 'Pizza'
+          | 'Plane'
+          | 'PlaneLanding'
+          | 'PlaneTakeoff'
+          | 'PlantPot'
+          | 'Play'
+          | 'PlayCircle'
+          | 'PlayingCard'
+          | 'PlayingCards'
+          | 'PlayingCardsFan'
+          | 'PlayOff'
+          | 'PlaySquare'
+          | 'Plug'
+          | 'Plug2'
+          | 'PlugZap'
+          | 'PlugZap2'
+          | 'Plus'
+          | 'PlusCircle'
+          | 'PlusSquare'
+          | 'PocketKnife'
+          | 'Podcast'
+          | 'Podium'
+          | 'Pointer'
+          | 'PointerOff'
+          | 'Popcorn'
+          | 'Popsicle'
+          | 'PoundSterling'
+          | 'Power'
+          | 'PowerCircle'
+          | 'PowerOff'
+          | 'PowerSquare'
+          | 'Presentation'
+          | 'Printer'
+          | 'Printer3d'
+          | 'PrinterCheck'
+          | 'PrinterX'
+          | 'Projector'
+          | 'Proportions'
+          | 'Puzzle'
+          | 'Pyramid'
+          | 'QrCode'
+          | 'Quote'
+          | 'Rabbit'
+          | 'Radar'
+          | 'Radiation'
+          | 'Radical'
+          | 'Radio'
+          | 'RadioOff'
+          | 'RadioReceiver'
+          | 'RadioTower'
+          | 'Radius'
+          | 'Rainbow'
+          | 'Rat'
+          | 'Ratio'
+          | 'Receipt'
+          | 'ReceiptCent'
+          | 'ReceiptEuro'
+          | 'ReceiptIndianRupee'
+          | 'ReceiptJapaneseYen'
+          | 'ReceiptPoundSterling'
+          | 'ReceiptRussianRuble'
+          | 'ReceiptSwissFranc'
+          | 'ReceiptText'
+          | 'ReceiptTurkishLira'
+          | 'RectangleCircle'
+          | 'RectangleEllipsis'
+          | 'RectangleGoggles'
+          | 'RectangleHorizontal'
+          | 'RectangleVertical'
+          | 'Recycle'
+          | 'Redo'
+          | 'Redo2'
+          | 'RedoDot'
+          | 'RefreshCcw'
+          | 'RefreshCcwDot'
+          | 'RefreshCw'
+          | 'RefreshCwOff'
+          | 'Refrigerator'
+          | 'Regex'
+          | 'RemoveFormatting'
+          | 'Repeat'
+          | 'Repeat1'
+          | 'Repeat2'
+          | 'RepeatOff'
+          | 'Replace'
+          | 'ReplaceAll'
+          | 'Reply'
+          | 'ReplyAll'
+          | 'Rewind'
+          | 'Ribbon'
+          | 'Road'
+          | 'RobotArm'
+          | 'RobotVacuum'
+          | 'Rocket'
+          | 'RockingChair'
+          | 'RollerCoaster'
+          | 'Rose'
+          | 'Rotate3d'
+          | 'Rotate3D'
+          | 'RotateCcw'
+          | 'RotateCcwClock'
+          | 'RotateCcwKey'
+          | 'RotateCcwSquare'
+          | 'RotateCw'
+          | 'RotateCwClock'
+          | 'RotateCwFadingClock'
+          | 'RotateCwSquare'
+          | 'Route'
+          | 'RouteOff'
+          | 'Router'
+          | 'Rows'
+          | 'Rows2'
+          | 'Rows3'
+          | 'Rows4'
+          | 'Rss'
+          | 'RugbyBall'
+          | 'Ruler'
+          | 'RulerDimensionLine'
+          | 'RussianRuble'
+          | 'Sailboat'
+          | 'Salad'
+          | 'Sandwich'
+          | 'Satellite'
+          | 'SatelliteDish'
+          | 'SaudiRiyal'
+          | 'Save'
+          | 'SaveAll'
+          | 'SaveCheck'
+          | 'SaveOff'
+          | 'SavePen'
+          | 'SavePlus'
+          | 'Scale'
+          | 'Scale3d'
+          | 'Scale3D'
+          | 'Scaling'
+          | 'Scan'
+          | 'ScanBarcode'
+          | 'ScanBox'
+          | 'ScanEye'
+          | 'ScanFace'
+          | 'ScanHeart'
+          | 'ScanLine'
+          | 'ScanQrCode'
+          | 'ScanSearch'
+          | 'ScanSquare'
+          | 'ScanText'
+          | 'ScatterChart'
+          | 'School'
+          | 'School2'
+          | 'Scissors'
+          | 'ScissorsLineDashed'
+          | 'ScissorsSquare'
+          | 'ScissorsSquareDashedBottom'
+          | 'Scooter'
+          | 'ScratchBlocks'
+          | 'ScreenShare'
+          | 'ScreenShareOff'
+          | 'Screw'
+          | 'Scroll'
+          | 'ScrollText'
+          | 'Search'
+          | 'SearchAlert'
+          | 'SearchCheck'
+          | 'SearchCode'
+          | 'SearchExclamationPoint'
+          | 'SearchSlash'
+          | 'SearchX'
+          | 'Section'
+          | 'Send'
+          | 'SendHorizonal'
+          | 'SendHorizontal'
+          | 'SendToBack'
+          | 'SeparatorHorizontal'
+          | 'SeparatorVertical'
+          | 'Server'
+          | 'ServerCog'
+          | 'ServerCrash'
+          | 'ServerNas'
+          | 'ServerOff'
+          | 'ServerPlus'
+          | 'Settings'
+          | 'Settings2'
+          | 'Shapes'
+          | 'Share'
+          | 'Share2'
+          | 'Sheet'
+          | 'Shell'
+          | 'ShelvingUnit'
+          | 'Shield'
+          | 'ShieldAlert'
+          | 'ShieldBan'
+          | 'ShieldCheck'
+          | 'ShieldClose'
+          | 'ShieldCog'
+          | 'ShieldCogCorner'
+          | 'ShieldEllipsis'
+          | 'ShieldExclamationPoint'
+          | 'ShieldHalf'
+          | 'ShieldHouse'
+          | 'ShieldKeyhole'
+          | 'ShieldLock'
+          | 'ShieldMinus'
+          | 'ShieldOff'
+          | 'ShieldPlus'
+          | 'ShieldQuestion'
+          | 'ShieldQuestionMark'
+          | 'ShieldUser'
+          | 'ShieldX'
+          | 'Ship'
+          | 'ShipCargo'
+          | 'ShipWheel'
+          | 'Shirt'
+          | 'ShoppingBag'
+          | 'ShoppingBasket'
+          | 'ShoppingCart'
+          | 'ShoppingCartMinus'
+          | 'ShoppingCartPlus'
+          | 'Shovel'
+          | 'ShowerHead'
+          | 'Shredder'
+          | 'Shrimp'
+          | 'ShrimpOff'
+          | 'Shrink'
+          | 'Shrub'
+          | 'Shuffle'
+          | 'Sidebar'
+          | 'SidebarClose'
+          | 'SidebarOpen'
+          | 'Sigma'
+          | 'SigmaSquare'
+          | 'Signal'
+          | 'SignalHigh'
+          | 'SignalLow'
+          | 'SignalMedium'
+          | 'SignalZero'
+          | 'Signature'
+          | 'Signpost'
+          | 'SignpostBig'
+          | 'Siren'
+          | 'SirenOff'
+          | 'SixteenthNotes'
+          | 'SkipBack'
+          | 'SkipForward'
+          | 'Skull'
+          | 'Slash'
+          | 'SlashSquare'
+          | 'Slice'
+          | 'Sliders'
+          | 'SlidersHorizontal'
+          | 'SlidersVertical'
+          | 'Smartphone'
+          | 'SmartphoneCharging'
+          | 'SmartphoneNfc'
+          | 'SmartphoneUserRound'
+          | 'Smile'
+          | 'SmilePlus'
+          | 'Snail'
+          | 'Snowflake'
+          | 'SoapDispenserDroplet'
+          | 'Sofa'
+          | 'SolarPanel'
+          | 'SortAsc'
+          | 'SortDesc'
+          | 'Soup'
+          | 'Space'
+          | 'Spade'
+          | 'Sparkle'
+          | 'Sparkles'
+          | 'Speaker'
+          | 'Speech'
+          | 'SpellCheck'
+          | 'SpellCheck2'
+          | 'Spline'
+          | 'SplinePointer'
+          | 'Split'
+          | 'SplitSquareHorizontal'
+          | 'SplitSquareVertical'
+          | 'Spool'
+          | 'SportShoe'
+          | 'Spotlight'
+          | 'SprayCan'
+          | 'Sprout'
+          | 'Square'
+          | 'SquareActivity'
+          | 'SquareArrowDown'
+          | 'SquareArrowDownLeft'
+          | 'SquareArrowDownRight'
+          | 'SquareArrowLeft'
+          | 'SquareArrowOutDownLeft'
+          | 'SquareArrowOutDownRight'
+          | 'SquareArrowOutUpLeft'
+          | 'SquareArrowOutUpRight'
+          | 'SquareArrowRight'
+          | 'SquareArrowRightEnter'
+          | 'SquareArrowRightExit'
+          | 'SquareArrowUp'
+          | 'SquareArrowUpLeft'
+          | 'SquareArrowUpRight'
+          | 'SquareAsterisk'
+          | 'SquareBookmark'
+          | 'SquareBottomDashedScissors'
+          | 'SquareCenterlineDashedHorizontal'
+          | 'SquareCenterlineDashedVertical'
+          | 'SquareChartGantt'
+          | 'SquareCheck'
+          | 'SquareCheckBig'
+          | 'SquareChevronDown'
+          | 'SquareChevronLeft'
+          | 'SquareChevronRight'
+          | 'SquareChevronsDown'
+          | 'SquareChevronsLeft'
+          | 'SquareChevronsRight'
+          | 'SquareChevronsUp'
+          | 'SquareChevronUp'
+          | 'SquareCode'
+          | 'SquareDashed'
+          | 'SquareDashedBottom'
+          | 'SquareDashedBottomCode'
+          | 'SquareDashedKanban'
+          | 'SquareDashedMousePointer'
+          | 'SquareDashedPlus'
+          | 'SquareDashedText'
+          | 'SquareDashedTopSolid'
+          | 'SquareDashedX'
+          | 'SquareDashedXCorner'
+          | 'SquareDimensions'
+          | 'SquareDivide'
+          | 'SquareDot'
+          | 'SquareEqual'
+          | 'SquareExclamationPoint'
+          | 'SquareFunction'
+          | 'SquareGanttChart'
+          | 'SquareKanban'
+          | 'SquareKanbanPlus'
+          | 'SquareLetterA'
+          | 'SquareLetterB'
+          | 'SquareLetterC'
+          | 'SquareLetterD'
+          | 'SquareLetterE'
+          | 'SquareLetterF'
+          | 'SquareLetterG'
+          | 'SquareLetterH'
+          | 'SquareLetterI'
+          | 'SquareLetterJ'
+          | 'SquareLetterK'
+          | 'SquareLetterL'
+          | 'SquareLetterM'
+          | 'SquareLetterN'
+          | 'SquareLetterO'
+          | 'SquareLetterP'
+          | 'SquareLetterPOff'
+          | 'SquareLetterQ'
+          | 'SquareLetterR'
+          | 'SquareLetterS'
+          | 'SquareLetterT'
+          | 'SquareLetterU'
+          | 'SquareLetterV'
+          | 'SquareLetterW'
+          | 'SquareLetterX'
+          | 'SquareLetterY'
+          | 'SquareLetterZ'
+          | 'SquareLibrary'
+          | 'SquareM'
+          | 'SquareMenu'
+          | 'SquareMinus'
+          | 'SquareMousePointer'
+          | 'SquareOff'
+          | 'SquarePadding'
+          | 'SquarePaddingBottom'
+          | 'SquarePaddingHorizontal'
+          | 'SquarePaddingLeft'
+          | 'SquarePaddingRight'
+          | 'SquarePaddingTop'
+          | 'SquarePaddingVertical'
+          | 'SquareParking'
+          | 'SquareParkingOff'
+          | 'SquarePause'
+          | 'SquarePen'
+          | 'SquarePercent'
+          | 'SquarePi'
+          | 'SquarePilcrow'
+          | 'SquarePlay'
+          | 'SquarePlus'
+          | 'SquarePower'
+          | 'SquareRadical'
+          | 'SquareRoundCorner'
+          | 'SquareScissors'
+          | 'SquaresExclude'
+          | 'SquareSigma'
+          | 'SquaresIntersect'
+          | 'SquareSlash'
+          | 'SquareSparkles'
+          | 'SquareSplitHorizontal'
+          | 'SquareSplitVertical'
+          | 'SquareSquare'
+          | 'SquaresSubtract'
+          | 'SquareStack'
+          | 'SquareStar'
+          | 'SquareStop'
+          | 'SquaresUnite'
+          | 'SquareTerminal'
+          | 'SquareText'
+          | 'SquareUser'
+          | 'SquareUserRound'
+          | 'SquareX'
+          | 'Squircle'
+          | 'SquircleDashed'
+          | 'Squirrel'
+          | 'Stamp'
+          | 'Star'
+          | 'StarCheck'
+          | 'StarHalf'
+          | 'StarMinus'
+          | 'StarOff'
+          | 'StarPlus'
+          | 'Stars'
+          | 'StarX'
+          | 'StepBack'
+          | 'StepForward'
+          | 'Stethoscope'
+          | 'Sticker'
+          | 'StickyNote'
+          | 'StickyNoteCheck'
+          | 'StickyNoteMinus'
+          | 'StickyNoteOff'
+          | 'StickyNotePlus'
+          | 'StickyNotes'
+          | 'StickyNoteX'
+          | 'Stone'
+          | 'StopCircle'
+          | 'Store'
+          | 'StretchHorizontal'
+          | 'StretchVertical'
+          | 'Strikethrough'
+          | 'Subscript'
+          | 'Subtitles'
+          | 'Summary'
+          | 'Sun'
+          | 'SunDim'
+          | 'SunMedium'
+          | 'SunMoon'
+          | 'Sunrise'
+          | 'Sunset'
+          | 'SunSnow'
+          | 'Superscript'
+          | 'SwatchBook'
+          | 'SwissFranc'
+          | 'SwitchCamera'
+          | 'Sword'
+          | 'Swords'
+          | 'Syringe'
+          | 'Table'
+          | 'Table2'
+          | 'TableCellsMerge'
+          | 'TableCellsSplit'
+          | 'TableColumnsSplit'
+          | 'TableConfig'
+          | 'TableOfContents'
+          | 'TableProperties'
+          | 'TableRowsSplit'
+          | 'Tablet'
+          | 'Tablets'
+          | 'TabletSmartphone'
+          | 'Tag'
+          | 'TagPlus'
+          | 'Tags'
+          | 'TagX'
+          | 'Tally1'
+          | 'Tally2'
+          | 'Tally3'
+          | 'Tally4'
+          | 'Tally5'
+          | 'Tangent'
+          | 'Target'
+          | 'Telescope'
+          | 'Tent'
+          | 'TentTree'
+          | 'Terminal'
+          | 'TerminalSquare'
+          | 'TestTube'
+          | 'TestTube2'
+          | 'TestTubeDiagonal'
+          | 'TestTubes'
+          | 'Text'
+          | 'TextAlignCenter'
+          | 'TextAlignEnd'
+          | 'TextAlignJustify'
+          | 'TextAlignJustifyCenter'
+          | 'TextAlignJustifyEnd'
+          | 'TextAlignJustifyStart'
+          | 'TextAlignStart'
+          | 'TextCursor'
+          | 'TextCursorInput'
+          | 'TextInitial'
+          | 'TextQuote'
+          | 'TextSearch'
+          | 'TextSelect'
+          | 'TextSelection'
+          | 'TextWrap'
+          | 'Theater'
+          | 'Thermometer'
+          | 'ThermometerSnowflake'
+          | 'ThermometerSun'
+          | 'ThumbsDown'
+          | 'ThumbsUp'
+          | 'Ticket'
+          | 'TicketCheck'
+          | 'TicketMinus'
+          | 'TicketPercent'
+          | 'TicketPlus'
+          | 'Tickets'
+          | 'TicketSlash'
+          | 'TicketsPlane'
+          | 'TicketX'
+          | 'TicTacToe'
+          | 'Timeline'
+          | 'Timer'
+          | 'TimerOff'
+          | 'TimerReset'
+          | 'ToggleLeft'
+          | 'ToggleRight'
+          | 'Toilet'
+          | 'Tombstone'
+          | 'Toolbox'
+          | 'ToolCase'
+          | 'Toothbrush'
+          | 'ToothbrushSparkles'
+          | 'Tornado'
+          | 'Torus'
+          | 'Touchpad'
+          | 'TouchpadOff'
+          | 'TowelRack'
+          | 'TowerControl'
+          | 'ToyBrick'
+          | 'Tractor'
+          | 'TrafficCone'
+          | 'Trailer'
+          | 'Train'
+          | 'TrainFront'
+          | 'TrainFrontTunnel'
+          | 'TrainTrack'
+          | 'TramFront'
+          | 'Transgender'
+          | 'Trash'
+          | 'Trash2'
+          | 'TrashOff'
+          | 'TreeDeciduous'
+          | 'TreePalm'
+          | 'TreePine'
+          | 'Trees'
+          | 'TrendingDown'
+          | 'TrendingUp'
+          | 'TrendingUpDown'
+          | 'Triangle'
+          | 'TriangleAlert'
+          | 'TriangleDashed'
+          | 'TriangleExclamationPoint'
+          | 'TriangleRight'
+          | 'TrianglesCenterlineDashedHorizontal'
+          | 'TrianglesCenterlineDashedVertical'
+          | 'Trophy'
+          | 'Truck'
+          | 'TruckElectric'
+          | 'TubeLotion'
+          | 'TurkishLira'
+          | 'Turntable'
+          | 'Turtle'
+          | 'Tv'
+          | 'Tv2'
+          | 'TvMinimal'
+          | 'TvMinimalPlay'
+          | 'Type'
+          | 'TypeOutline'
+          | 'Umbrella'
+          | 'UmbrellaOff'
+          | 'Underline'
+          | 'Undo'
+          | 'Undo2'
+          | 'UndoDot'
+          | 'UnfoldHorizontal'
+          | 'UnfoldVertical'
+          | 'Ungroup'
+          | 'University'
+          | 'Unlink'
+          | 'Unlink2'
+          | 'Unlock'
+          | 'UnlockKeyhole'
+          | 'Unplug'
+          | 'Upload'
+          | 'UploadCloud'
+          | 'Usb'
+          | 'UsbCPort'
+          | 'User'
+          | 'User2'
+          | 'UserCheck'
+          | 'UserCheck2'
+          | 'UserCircle'
+          | 'UserCircle2'
+          | 'UserCog'
+          | 'UserCog2'
+          | 'UserGroup'
+          | 'UserKey'
+          | 'UserLock'
+          | 'UserMinus'
+          | 'UserMinus2'
+          | 'UserPen'
+          | 'UserPlus'
+          | 'UserPlus2'
+          | 'UserRound'
+          | 'UserRoundArrowLeft'
+          | 'UserRoundCheck'
+          | 'UserRoundCog'
+          | 'UserRoundGroup'
+          | 'UserRoundKey'
+          | 'UserRoundMinus'
+          | 'UserRoundPen'
+          | 'UserRoundPlus'
+          | 'UserRoundSearch'
+          | 'UserRoundShield'
+          | 'UserRoundStar'
+          | 'UserRoundX'
+          | 'Users'
+          | 'Users2'
+          | 'UsersCollaboration'
+          | 'UserSearch'
+          | 'UserShield'
+          | 'UserSquare'
+          | 'UserSquare2'
+          | 'UsersRound'
+          | 'UsersRoundCollaboration'
+          | 'UserStar'
+          | 'UserX'
+          | 'UserX2'
+          | 'Utensils'
+          | 'UtensilsCrossed'
+          | 'UtilityPole'
+          | 'Van'
+          | 'Variable'
+          | 'Vault'
+          | 'VectorPolygon'
+          | 'VectorSquare'
+          | 'Vegan'
+          | 'VenetianMask'
+          | 'Venus'
+          | 'VenusAndMars'
+          | 'Verified'
+          | 'Vibrate'
+          | 'VibrateOff'
+          | 'Video'
+          | 'VideoOff'
+          | 'Videotape'
+          | 'View'
+          | 'Virus'
+          | 'VirusOff'
+          | 'Voicemail'
+          | 'Volleyball'
+          | 'Volume'
+          | 'Volume1'
+          | 'Volume2'
+          | 'VolumeOff'
+          | 'VolumeX'
+          | 'Vote'
+          | 'Wallet'
+          | 'Wallet2'
+          | 'WalletCards'
+          | 'WalletMinimal'
+          | 'Wallpaper'
+          | 'Wand'
+          | 'Wand2'
+          | 'WandSparkles'
+          | 'Warehouse'
+          | 'WashingMachine'
+          | 'Watch'
+          | 'Waves'
+          | 'WavesArrowDown'
+          | 'WavesArrowUp'
+          | 'WavesHorizontal'
+          | 'WavesLadder'
+          | 'WavesVertical'
+          | 'Waypoints'
+          | 'Webcam'
+          | 'WebcamOff'
+          | 'Webhook'
+          | 'WebhookOff'
+          | 'Weight'
+          | 'WeightTilde'
+          | 'Wheat'
+          | 'WheatOff'
+          | 'Whistle'
+          | 'WholeWord'
+          | 'Wifi'
+          | 'WifiCog'
+          | 'WifiHigh'
+          | 'WifiLock'
+          | 'WifiLow'
+          | 'WifiOff'
+          | 'WifiPen'
+          | 'WifiSync'
+          | 'WifiZero'
+          | 'Wind'
+          | 'WindArrowDown'
+          | 'WindArrowUp'
+          | 'Wine'
+          | 'WineOff'
+          | 'Workflow'
+          | 'Worm'
+          | 'WrapText'
+          | 'Wrench'
+          | 'WrenchOff'
+          | 'X'
+          | 'XCircle'
+          | 'XLineTop'
+          | 'XOctagon'
+          | 'XSquare'
+          | 'Zap'
+          | 'ZapOff'
+          | 'ZodiacAquarius'
+          | 'ZodiacAries'
+          | 'ZodiacCancer'
+          | 'ZodiacCapricorn'
+          | 'ZodiacGemini'
+          | 'ZodiacLeo'
+          | 'ZodiacLibra'
+          | 'ZodiacOphiuchus'
+          | 'ZodiacPisces'
+          | 'ZodiacSagittarius'
+          | 'ZodiacScorpio'
+          | 'ZodiacTaurus'
+          | 'ZodiacVirgo'
+          | 'ZoomIn'
+          | 'ZoomOut'
+        pretitle?: string
+        title?: string
+        subtitle?: string
+        module: Array<
+          | {
+              _key: string
+              _type: 'about.placeholder'
+              options?: ModuleOptions
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'accordion-list'
+              options?: ModuleOptions
+              pretitle?: string
+              intro?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              items?: Array<{
+                summary?: string
+                content?: Array<
+                  | ({
+                      _key: string
+                    } & Code)
+                  | ({
+                      _key: string
+                    } & CustomHtml)
+                  | {
+                      children?: Array<{
+                        marks?: Array<string>
+                        text?: string
+                        _type: 'span'
+                        _key: string
+                      }>
+                      style?:
+                        | 'blockquote'
+                        | 'display-hero'
+                        | 'display-xl'
+                        | 'display-xxl'
+                        | 'h1'
+                        | 'h2'
+                        | 'h3'
+                        | 'h4'
+                        | 'h5'
+                        | 'h6'
+                        | 'normal'
+                      listItem?: 'bullet' | 'number'
+                      markDefs?: Array<{
+                        href?: string
+                        _type: 'link'
+                        _key: string
+                      }>
+                      level?: number
+                      _type: 'block'
+                      _key: string
+                    }
+                  | {
+                      asset?: SanityImageAssetReference
+                      media?: unknown
+                      hotspot?: SanityImageHotspot
+                      crop?: SanityImageCrop
+                      alt?: string
+                      loading?: 'eager' | 'lazy'
+                      caption?: string
+                      source?: string
+                      _type: 'image'
+                      _key: string
+                    }
+                >
+                open?: boolean
+                _type: 'accordion'
+                _key: string
+              }>
+              layout?: 'horizontal' | 'vertical'
+              connect?: boolean
+              generateSchema?: boolean
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'blog-frontpage'
+              mainPost?: 'featured' | 'recent'
+              showFeaturedPostsFirst?: boolean
+              itemsPerPage?: number
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'blog-list'
+              options?: ModuleOptions
+              pretitle?: string
+              intro?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              ctas: Array<{
+                _key: string
+                _type: 'cta'
+                link: {
+                  _type: 'link'
+                  label?: string
+                  type?: 'external' | 'internal'
+                  internal:
+                    | {
+                        _type: 'blog.post'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | {
+                        _type: 'page'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | null
+                  external?: string
+                  params?: string
+                } | null
+                style?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+              }> | null
+              layout?: 'carousel' | 'grid'
+              showFeaturedPostsFirst?: boolean
+              displayFilters?: boolean
+              limit?: number
+              filteredCategory:
+                | {
+                    _id: string
+                    _type: 'blog.category'
+                    _createdAt: string
+                    _updatedAt: string
+                    _rev: string
+                    title?: string
+                    slug?: Slug
+                    language?: string
+                  }
+                | {
+                    _id: string
+                    _type: 'blog.post'
+                    _createdAt: string
+                    _updatedAt: string
+                    _rev: string
+                    title?: string
+                    body?: Array<
+                      | ({
+                          _key: string
+                        } & Code)
+                      | ({
+                          _key: string
+                        } & CustomHtml)
+                      | ({
+                          _key: string
+                        } & Table)
+                      | {
+                          tone?: 'caution' | 'important' | 'note' | 'tip' | 'warning'
+                          title?: string
+                          content?: Array<{
+                            children?: Array<{
+                              marks?: Array<string>
+                              text?: string
+                              _type: 'span'
+                              _key: string
+                            }>
+                            style?:
+                              | 'blockquote'
+                              | 'display-hero'
+                              | 'display-xl'
+                              | 'display-xxl'
+                              | 'h1'
+                              | 'h2'
+                              | 'h3'
+                              | 'h4'
+                              | 'h5'
+                              | 'h6'
+                              | 'normal'
+                            listItem?: 'bullet' | 'number'
+                            markDefs?: Array<{
+                              href?: string
+                              _type: 'link'
+                              _key: string
+                            }>
+                            level?: number
+                            _type: 'block'
+                            _key: string
+                          }>
+                          _type: 'admonition'
+                          _key: string
+                        }
+                      | {
+                          children?: Array<{
+                            marks?: Array<string>
+                            text?: string
+                            _type: 'span'
+                            _key: string
+                          }>
+                          style?:
+                            | 'blockquote'
+                            | 'display-hero'
+                            | 'display-xl'
+                            | 'display-xxl'
+                            | 'h1'
+                            | 'h2'
+                            | 'h3'
+                            | 'h4'
+                            | 'h5'
+                            | 'h6'
+                            | 'normal'
+                          listItem?: 'bullet' | 'number'
+                          markDefs?: Array<{
+                            href?: string
+                            _type: 'link'
+                            _key: string
+                          }>
+                          level?: number
+                          _type: 'block'
+                          _key: string
+                        }
+                      | {
+                          asset?: SanityImageAssetReference
+                          media?: unknown
+                          hotspot?: SanityImageHotspot
+                          crop?: SanityImageCrop
+                          alt?: string
+                          loading?: 'eager' | 'lazy'
+                          caption?: string
+                          source?: string
+                          _type: 'image'
+                          _key: string
+                        }
+                    >
+                    categories?: Array<
+                      {
+                        _key: string
+                      } & BlogCategoryReference
+                    >
+                    authors?: Array<
+                      {
+                        _key: string
+                      } & PersonReference
+                    >
+                    faq?: Faq
+                    publishDate?: string
+                    featured?: boolean
+                    hideTableOfContents?: boolean
+                    metadata?: Metadata
+                    language?: string
+                  }
+                | {
+                    _id: string
+                    _type: 'global-module'
+                    _createdAt: string
+                    _updatedAt: string
+                    _rev: string
+                    path?: string
+                    excludePaths?: Array<string>
+                    before?: Array<
+                      | ({
+                          _key: string
+                        } & AboutPlaceholder)
+                      | ({
+                          _key: string
+                        } & AccordionList)
+                      | ({
+                          _key: string
+                        } & BlogFrontpage)
+                      | ({
+                          _key: string
+                        } & BlogList)
+                      | ({
+                          _key: string
+                        } & BlogPostContent)
+                      | ({
+                          _key: string
+                        } & BrandHeroPlaceholder)
+                      | ({
+                          _key: string
+                        } & Breadcrumbs)
+                      | ({
+                          _key: string
+                        } & Callout)
+                      | ({
+                          _key: string
+                        } & CardList)
+                      | ({
+                          _key: string
+                        } & ContactPlaceholder)
+                      | ({
+                          _key: string
+                        } & ContactSimple)
+                      | ({
+                          _key: string
+                        } & CreativeModule)
+                      | ({
+                          _key: string
+                        } & CustomHtml)
+                      | ({
+                          _key: string
+                        } & Faq)
+                      | ({
+                          _key: string
+                        } & FlagList)
+                      | ({
+                          _key: string
+                        } & HeroSaas)
+                      | ({
+                          _key: string
+                        } & HeroSplit)
+                      | ({
+                          _key: string
+                        } & Hero)
+                      | ({
+                          _key: string
+                        } & ImageGallery)
+                      | ({
+                          _key: string
+                        } & JoinUsPlaceholder)
+                      | ({
+                          _key: string
+                        } & LetsTalkPlaceholder)
+                      | ({
+                          _key: string
+                        } & LogoList)
+                      | ({
+                          _key: string
+                        } & PersonList)
+                      | ({
+                          _key: string
+                        } & PricingList)
+                      | ({
+                          _key: string
+                        } & RichtextModule)
+                      | ({
+                          _key: string
+                        } & ScheduleModule)
+                      | ({
+                          _key: string
+                        } & SearchModule)
+                      | ({
+                          _key: string
+                        } & Section)
+                      | ({
+                          _key: string
+                        } & ServiceDetails)
+                      | ({
+                          _key: string
+                        } & ServiceList)
+                      | ({
+                          _key: string
+                        } & StatList)
+                      | ({
+                          _key: string
+                        } & StepList)
+                      | ({
+                          _key: string
+                        } & TabbedContent)
+                      | ({
+                          _key: string
+                        } & TeamPlaceholder)
+                      | ({
+                          _key: string
+                        } & TestimonialList)
+                      | ({
+                          _key: string
+                        } & TestimonialFeatured)
+                    >
+                    after?: Array<
+                      | ({
+                          _key: string
+                        } & AboutPlaceholder)
+                      | ({
+                          _key: string
+                        } & AccordionList)
+                      | ({
+                          _key: string
+                        } & BlogFrontpage)
+                      | ({
+                          _key: string
+                        } & BlogList)
+                      | ({
+                          _key: string
+                        } & BlogPostContent)
+                      | ({
+                          _key: string
+                        } & BrandHeroPlaceholder)
+                      | ({
+                          _key: string
+                        } & Breadcrumbs)
+                      | ({
+                          _key: string
+                        } & Callout)
+                      | ({
+                          _key: string
+                        } & CardList)
+                      | ({
+                          _key: string
+                        } & ContactPlaceholder)
+                      | ({
+                          _key: string
+                        } & ContactSimple)
+                      | ({
+                          _key: string
+                        } & CreativeModule)
+                      | ({
+                          _key: string
+                        } & CustomHtml)
+                      | ({
+                          _key: string
+                        } & Faq)
+                      | ({
+                          _key: string
+                        } & FlagList)
+                      | ({
+                          _key: string
+                        } & HeroSaas)
+                      | ({
+                          _key: string
+                        } & HeroSplit)
+                      | ({
+                          _key: string
+                        } & Hero)
+                      | ({
+                          _key: string
+                        } & ImageGallery)
+                      | ({
+                          _key: string
+                        } & JoinUsPlaceholder)
+                      | ({
+                          _key: string
+                        } & LetsTalkPlaceholder)
+                      | ({
+                          _key: string
+                        } & LogoList)
+                      | ({
+                          _key: string
+                        } & PersonList)
+                      | ({
+                          _key: string
+                        } & PricingList)
+                      | ({
+                          _key: string
+                        } & RichtextModule)
+                      | ({
+                          _key: string
+                        } & ScheduleModule)
+                      | ({
+                          _key: string
+                        } & SearchModule)
+                      | ({
+                          _key: string
+                        } & Section)
+                      | ({
+                          _key: string
+                        } & ServiceDetails)
+                      | ({
+                          _key: string
+                        } & ServiceList)
+                      | ({
+                          _key: string
+                        } & StatList)
+                      | ({
+                          _key: string
+                        } & StepList)
+                      | ({
+                          _key: string
+                        } & TabbedContent)
+                      | ({
+                          _key: string
+                        } & TeamPlaceholder)
+                      | ({
+                          _key: string
+                        } & TestimonialList)
+                      | ({
+                          _key: string
+                        } & TestimonialFeatured)
+                    >
+                    language?: string
+                  }
+                | {
+                    _id: string
+                    _type: 'navigation'
+                    _createdAt: string
+                    _updatedAt: string
+                    _rev: string
+                    title?: string
+                    items?: Array<
+                      | ({
+                          _key: string
+                        } & LinkList)
+                      | ({
+                          _key: string
+                        } & Link)
+                    >
+                    language?: string
+                  }
+                | {
+                    _id: string
+                    _type: 'page'
+                    _createdAt: string
+                    _updatedAt: string
+                    _rev: string
+                    title?: string
+                    modules?: Array<
+                      | ({
+                          _key: string
+                        } & AboutPlaceholder)
+                      | ({
+                          _key: string
+                        } & AccordionList)
+                      | ({
+                          _key: string
+                        } & BlogFrontpage)
+                      | ({
+                          _key: string
+                        } & BlogList)
+                      | ({
+                          _key: string
+                        } & BlogPostContent)
+                      | ({
+                          _key: string
+                        } & BrandHeroPlaceholder)
+                      | ({
+                          _key: string
+                        } & Breadcrumbs)
+                      | ({
+                          _key: string
+                        } & Callout)
+                      | ({
+                          _key: string
+                        } & CardList)
+                      | ({
+                          _key: string
+                        } & ContactPlaceholder)
+                      | ({
+                          _key: string
+                        } & ContactSimple)
+                      | ({
+                          _key: string
+                        } & CreativeModule)
+                      | ({
+                          _key: string
+                        } & CustomHtml)
+                      | ({
+                          _key: string
+                        } & Faq)
+                      | ({
+                          _key: string
+                        } & FlagList)
+                      | ({
+                          _key: string
+                        } & HeroSaas)
+                      | ({
+                          _key: string
+                        } & HeroSplit)
+                      | ({
+                          _key: string
+                        } & Hero)
+                      | ({
+                          _key: string
+                        } & ImageGallery)
+                      | ({
+                          _key: string
+                        } & JoinUsPlaceholder)
+                      | ({
+                          _key: string
+                        } & LetsTalkPlaceholder)
+                      | ({
+                          _key: string
+                        } & LogoList)
+                      | ({
+                          _key: string
+                        } & PersonList)
+                      | ({
+                          _key: string
+                        } & PricingList)
+                      | ({
+                          _key: string
+                        } & RichtextModule)
+                      | ({
+                          _key: string
+                        } & ScheduleModule)
+                      | ({
+                          _key: string
+                        } & SearchModule)
+                      | ({
+                          _key: string
+                        } & Section)
+                      | ({
+                          _key: string
+                        } & ServiceDetails)
+                      | ({
+                          _key: string
+                        } & ServiceList)
+                      | ({
+                          _key: string
+                        } & StatList)
+                      | ({
+                          _key: string
+                        } & StepList)
+                      | ({
+                          _key: string
+                        } & TabbedContent)
+                      | ({
+                          _key: string
+                        } & TeamPlaceholder)
+                      | ({
+                          _key: string
+                        } & TestimonialList)
+                      | ({
+                          _key: string
+                        } & TestimonialFeatured)
+                    >
+                    metadata?: Metadata
+                    language?: string
+                  }
+                | {
+                    _id: string
+                    _type: 'site'
+                    _createdAt: string
+                    _updatedAt: string
+                    _rev: string
+                    title?: string
+                    blurb?: Array<{
+                      children?: Array<{
+                        marks?: Array<string>
+                        text?: string
+                        _type: 'span'
+                        _key: string
+                      }>
+                      style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
+                      listItem?: never
+                      markDefs?: Array<{
+                        href?: string
+                        _type: 'link'
+                        _key: string
+                      }>
+                      level?: number
+                      _type: 'block'
+                      _key: string
+                    }>
+                    logo?: {
+                      name?: string
+                      image?: {
+                        default?: {
+                          asset?: SanityImageAssetReference
+                          media?: unknown
+                          hotspot?: SanityImageHotspot
+                          crop?: SanityImageCrop
+                          _type: 'image'
+                        }
+                        light?: {
+                          asset?: SanityImageAssetReference
+                          media?: unknown
+                          hotspot?: SanityImageHotspot
+                          crop?: SanityImageCrop
+                          _type: 'image'
+                        }
+                        dark?: {
+                          asset?: SanityImageAssetReference
+                          media?: unknown
+                          hotspot?: SanityImageHotspot
+                          crop?: SanityImageCrop
+                          _type: 'image'
+                        }
+                      }
+                      _type: 'logo'
+                    }
+                    announcements?: Array<
+                      {
+                        _key: string
+                      } & AnnouncementReference
+                    >
+                    copyright?: Array<{
+                      children?: Array<{
+                        marks?: Array<string>
+                        text?: string
+                        _type: 'span'
+                        _key: string
+                      }>
+                      style?: 'normal'
+                      listItem?: never
+                      markDefs?: Array<{
+                        href?: string
+                        _type: 'link'
+                        _key: string
+                      }>
+                      level?: number
+                      _type: 'block'
+                      _key: string
+                    }>
+                    ctas?: Array<
+                      {
+                        _key: string
+                      } & Cta
+                    >
+                    headerMenu?: NavigationReference
+                    footerMenu?: NavigationReference
+                    social?: NavigationReference
+                    localBusiness?: {
+                      telephone?: string
+                      email?: string
+                      priceRange?: string
+                      streetAddress?: string
+                      addressLocality?: string
+                      addressRegion?: string
+                      postalCode?: string
+                      addressCountry?: string
+                      geo?: {
+                        latitude?: number
+                        longitude?: number
+                      }
+                      openingHours?: Array<{
+                        days?: Array<string>
+                        opens?: string
+                        closes?: string
+                        _key: string
+                      }>
+                    }
+                    language?: string
+                  }
+                | {
+                    _id: string
+                    _type: 'testimonial'
+                    _createdAt: string
+                    _updatedAt: string
+                    _rev: string
+                    content?: Array<{
+                      children?: Array<{
+                        marks?: Array<string>
+                        text?: string
+                        _type: 'span'
+                        _key: string
+                      }>
+                      style?:
+                        | 'blockquote'
+                        | 'display-hero'
+                        | 'display-xl'
+                        | 'display-xxl'
+                        | 'h1'
+                        | 'h2'
+                        | 'h3'
+                        | 'h4'
+                        | 'h5'
+                        | 'h6'
+                        | 'normal'
+                      listItem?: 'bullet' | 'number'
+                      markDefs?: Array<{
+                        href?: string
+                        _type: 'link'
+                        _key: string
+                      }>
+                      level?: number
+                      _type: 'block'
+                      _key: string
+                    }>
+                    source?: string
+                    author?: {
+                      name?: string
+                      title?: string
+                      image?: {
+                        asset?: SanityImageAssetReference
+                        media?: unknown
+                        hotspot?: SanityImageHotspot
+                        crop?: SanityImageCrop
+                        _type: 'image'
+                      }
+                    }
+                    language?: string
+                  }
+                | null
+            }
+          | {
+              _key: string
+              _type: 'blog-post-content'
+              options?: ModuleOptions
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'brand-hero.placeholder'
+              options?: ModuleOptions
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'breadcrumbs'
+              crumbs: Array<{
+                _key: string
+                _type: 'link'
+                label?: string
+                type?: 'external' | 'internal'
+                internal:
+                  | {
+                      _type: 'blog.post'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | {
+                      _type: 'page'
+                      title: string | null
+                      metadata: Metadata | null
+                    }
+                  | null
+                external?: string
+                params?: string
+              }> | null
+              hideCurrent?: boolean
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'callout'
+              content: Array<
+                | {
+                    children?: Array<{
+                      marks?: Array<string>
+                      text?: string
+                      _type: 'span'
+                      _key: string
+                    }>
+                    style?:
+                      | 'blockquote'
+                      | 'display-hero'
+                      | 'display-xl'
+                      | 'display-xxl'
+                      | 'h1'
+                      | 'h2'
+                      | 'h3'
+                      | 'h4'
+                      | 'h5'
+                      | 'h6'
+                      | 'normal'
+                    listItem?: 'bullet' | 'number'
+                    markDefs?: Array<{
+                      href?: string
+                      _type: 'link'
+                      _key: string
+                    }>
+                    level?: number
+                    _type: 'block'
+                    _key: string
+                  }
+                | {
+                    _key: string
+                    _type: 'code'
+                    language?: string
+                    filename?: string
+                    code?: string
+                    highlightedLines?: Array<number>
+                  }
+                | {
+                    reputation: {
+                      _id: string
+                      _type: 'reputation'
+                      _createdAt: string
+                      _updatedAt: string
+                      _rev: string
+                      title?: string
+                      subtitle?: string
+                      repo?: string
+                      showForks?: boolean
+                      limit?: number
+                      avatars?: Array<{
+                        asset?: SanityImageAssetReference
+                        media?: unknown
+                        hotspot?: SanityImageHotspot
+                        crop?: SanityImageCrop
+                        alt?: string
+                        _type: 'image'
+                        _key: string
+                      }>
+                    } | null
+                    _type: 'reputation-block'
+                    _key: string
+                  }
+              > | null
+              ctas: Array<{
+                _key: string
+                _type: 'cta'
+                link: {
+                  _type: 'link'
+                  label?: string
+                  type?: 'external' | 'internal'
+                  internal:
+                    | {
+                        _type: 'blog.post'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | {
+                        _type: 'page'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | null
+                  external?: string
+                  params?: string
+                } | null
+                style?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+              }> | null
+            }
+          | {
+              _key: string
+              _type: 'card-list'
+              options?: ModuleOptions
+              pretitle?: string
+              intro?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              ctas: Array<{
+                _key: string
+                _type: 'cta'
+                link: {
+                  _type: 'link'
+                  label?: string
+                  type?: 'external' | 'internal'
+                  internal:
+                    | {
+                        _type: 'blog.post'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | {
+                        _type: 'page'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | null
+                  external?: string
+                  params?: string
+                } | null
+                style?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+              }> | null
+              cards: Array<{
+                image?: CardImage
+                content?: Array<{
+                  children?: Array<{
+                    marks?: Array<string>
+                    text?: string
+                    _type: 'span'
+                    _key: string
+                  }>
+                  style?:
+                    | 'blockquote'
+                    | 'display-hero'
+                    | 'display-xl'
+                    | 'display-xxl'
+                    | 'h1'
+                    | 'h2'
+                    | 'h3'
+                    | 'h4'
+                    | 'h5'
+                    | 'h6'
+                    | 'normal'
+                  listItem?: 'bullet' | 'number'
+                  markDefs?: Array<{
+                    href?: string
+                    _type: 'link'
+                    _key: string
+                  }>
+                  level?: number
+                  _type: 'block'
+                  _key: string
+                }>
+                ctas: Array<{
+                  _key: string
+                  _type: 'cta'
+                  link: {
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  } | null
+                  style:
+                    'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary' | null
+                }> | null
+                _type: 'card'
+                _key: string
+              }> | null
+              layout?: 'carousel' | 'grid'
+              columns?: number
+              visualSeparation?: boolean
+            }
+          | {
+              _key: string
+              _type: 'contact.placeholder'
+              options?: ModuleOptions
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'contact.simple'
+              options?: ModuleOptions
+              title?: string
+              excerpt?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              ctas: Array<{
+                _key: string
+                _type: 'cta'
+                link: {
+                  _type: 'link'
+                  label?: string
+                  type?: 'external' | 'internal'
+                  internal:
+                    | {
+                        _type: 'blog.post'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | {
+                        _type: 'page'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | null
+                  external?: string
+                  params?: string
+                } | null
+                style?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+              }> | null
+            }
+          | {
+              _key: string
+              _type: 'creative-module'
+              options?: ModuleOptions
+              intro?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              modules: Array<{
+                subModules: Array<
+                  | {
+                      ctas: Array<{
+                        _key: string
+                        _type: 'cta'
+                        link: {
+                          _type: 'link'
+                          label?: string
+                          type?: 'external' | 'internal'
+                          internal:
+                            | {
+                                _type: 'blog.post'
+                                title: string | null
+                                metadata: Metadata | null
+                              }
+                            | {
+                                _type: 'page'
+                                title: string | null
+                                metadata: Metadata | null
+                              }
+                            | null
+                          external?: string
+                          params?: string
+                        } | null
+                        style:
+                          | 'default'
+                          | 'destructive'
+                          | 'ghost'
+                          | 'link'
+                          | 'outline'
+                          | 'secondary'
+                          | null
+                      }> | null
+                      _type: 'ctas'
+                      _key: string
+                    }
+                  | {
+                      _key: string
+                      _type: 'custom-html'
+                      options?: ModuleOptions
+                      className?: string
+                      html?: Code
+                      css?: Code
+                      ctas: null
+                    }
+                  | {
+                      _key: string
+                      _type: 'icon'
+                      image?: {
+                        asset?: SanityImageAssetReference
+                        media?: unknown
+                        hotspot?: SanityImageHotspot
+                        crop?: SanityImageCrop
+                        _type: 'image'
+                      }
+                      ic0n?: string
+                      size?: string
+                      ctas: null
+                    }
+                  | {
+                      asset?: SanityImageAssetReference
+                      media?: unknown
+                      hotspot?: SanityImageHotspot
+                      crop?: SanityImageCrop
+                      alt?: string
+                      aspectRatio?: string
+                      _type: 'image'
+                      _key: string
+                      ctas: null
+                    }
+                  | {
+                      pretitle?: string
+                      content?: Array<{
+                        children?: Array<{
+                          marks?: Array<string>
+                          text?: string
+                          _type: 'span'
+                          _key: string
+                        }>
+                        style?:
+                          | 'blockquote'
+                          | 'display-hero'
+                          | 'display-xl'
+                          | 'display-xxl'
+                          | 'h1'
+                          | 'h2'
+                          | 'h3'
+                          | 'h4'
+                          | 'h5'
+                          | 'h6'
+                          | 'normal'
+                        listItem?: 'bullet' | 'number'
+                        markDefs?: Array<{
+                          href?: string
+                          _type: 'link'
+                          _key: string
+                        }>
+                        level?: number
+                        _type: 'block'
+                        _key: string
+                      }>
+                      _type: 'richtext'
+                      _key: string
+                      ctas: null
+                    }
+                > | null
+                colSpan?: number
+                _type: 'module'
+                _key: string
+              }> | null
+              columns?: number
+              visualSeparation?: boolean
+              alignItems?: string
+              textAlign?: string
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'custom-html'
+              options?: ModuleOptions
+              className?: string
+              html?: Code
+              css?: Code
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'faq'
+              options?: ModuleOptions
+              pretitle: string | null
+              title: string | null
+              description: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }> | null
+              items: Array<{
+                _key: string
+                question: string | null
+                answer: Array<
+                  | ({
+                      _key: string
+                    } & Code)
+                  | {
+                      children?: Array<{
+                        marks?: Array<string>
+                        text?: string
+                        _type: 'span'
+                        _key: string
+                      }>
+                      style?:
+                        | 'blockquote'
+                        | 'display-hero'
+                        | 'display-xl'
+                        | 'display-xxl'
+                        | 'h1'
+                        | 'h2'
+                        | 'h3'
+                        | 'h4'
+                        | 'h5'
+                        | 'h6'
+                        | 'normal'
+                      listItem?: 'bullet' | 'number'
+                      markDefs?: Array<{
+                        href?: string
+                        _type: 'link'
+                        _key: string
+                      }>
+                      level?: number
+                      _type: 'block'
+                      _key: string
+                    }
+                > | null
+              }> | null
+              accessibleAccordion: boolean | null
+              generateSchema: boolean | null
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'flag-list'
+              pretitle?: string
+              intro?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              items?: Array<{
+                icon?: Icon
+                content?: Array<{
+                  children?: Array<{
+                    marks?: Array<string>
+                    text?: string
+                    _type: 'span'
+                    _key: string
+                  }>
+                  style?: 'blockquote' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'normal'
+                  listItem?: 'bullet' | 'number'
+                  markDefs?: Array<{
+                    href?: string
+                    _type: 'link'
+                    _key: string
+                  }>
+                  level?: number
+                  _type: 'block'
+                  _key: string
+                }>
+                _type: 'flag'
+                _key: string
+              }>
+              iconPosition?: 'left' | 'top'
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'hero.saas'
+              options?: ModuleOptions
+              pretitle?: string
+              content: Array<
+                | {
+                    children?: Array<{
+                      marks?: Array<string>
+                      text?: string
+                      _type: 'span'
+                      _key: string
+                    }>
+                    style?:
+                      | 'blockquote'
+                      | 'display-hero'
+                      | 'display-xl'
+                      | 'display-xxl'
+                      | 'h1'
+                      | 'h2'
+                      | 'h3'
+                      | 'h4'
+                      | 'h5'
+                      | 'h6'
+                      | 'normal'
+                    listItem?: 'bullet' | 'number'
+                    markDefs?: Array<{
+                      href?: string
+                      _type: 'link'
+                      _key: string
+                    }>
+                    level?: number
+                    _type: 'block'
+                    _key: string
+                  }
+                | {
+                    _key: string
+                    _type: 'code'
+                    language?: string
+                    filename?: string
+                    code?: string
+                    highlightedLines?: Array<number>
+                  }
+                | {
+                    _key: string
+                    _type: 'custom-html'
+                    options?: ModuleOptions
+                    className?: string
+                    html?: Code
+                    css?: Code
+                  }
+                | {
+                    reputation: {
+                      _id: string
+                      _type: 'reputation'
+                      _createdAt: string
+                      _updatedAt: string
+                      _rev: string
+                      title?: string
+                      subtitle?: string
+                      repo?: string
+                      showForks?: boolean
+                      limit?: number
+                      avatars?: Array<{
+                        asset?: SanityImageAssetReference
+                        media?: unknown
+                        hotspot?: SanityImageHotspot
+                        crop?: SanityImageCrop
+                        alt?: string
+                        _type: 'image'
+                        _key: string
+                      }>
+                    } | null
+                    _type: 'reputation-block'
+                    _key: string
+                  }
+              > | null
+              ctas: Array<{
+                _key: string
+                _type: 'cta'
+                link: {
+                  _type: 'link'
+                  label?: string
+                  type?: 'external' | 'internal'
+                  internal:
+                    | {
+                        _type: 'blog.post'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | {
+                        _type: 'page'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | null
+                  external?: string
+                  params?: string
+                } | null
+                style?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+              }> | null
+              assets: Array<{
+                _key: string
+                _type: 'img'
+                image: {
+                  asset?: SanityImageAssetReference
+                  media?: unknown
+                  hotspot?: SanityImageHotspot
+                  crop?: SanityImageCrop
+                  _type: 'image'
+                  lqip: string | null
+                } | null
+                responsive?: Array<{
+                  image?: ResponsiveImage
+                  media?: string
+                  _type: 'responsive'
+                  _key: string
+                }>
+                alt?: string
+                loading?: 'eager' | 'lazy'
+              }> | null
+              assetFaded?: boolean
+            }
+          | {
+              _key: string
+              _type: 'hero.split'
+              pretitle?: string
+              content: Array<
+                | {
+                    children?: Array<{
+                      marks?: Array<string>
+                      text?: string
+                      _type: 'span'
+                      _key: string
+                    }>
+                    style?:
+                      | 'blockquote'
+                      | 'display-hero'
+                      | 'display-xl'
+                      | 'display-xxl'
+                      | 'h1'
+                      | 'h2'
+                      | 'h3'
+                      | 'h4'
+                      | 'h5'
+                      | 'h6'
+                      | 'normal'
+                    listItem?: 'bullet' | 'number'
+                    markDefs?: Array<{
+                      href?: string
+                      _type: 'link'
+                      _key: string
+                    }>
+                    level?: number
+                    _type: 'block'
+                    _key: string
+                  }
+                | {
+                    _key: string
+                    _type: 'custom-html'
+                    options?: ModuleOptions
+                    className?: string
+                    html?: Code
+                    css?: Code
+                  }
+                | {
+                    reputation: {
+                      _id: string
+                      _type: 'reputation'
+                      _createdAt: string
+                      _updatedAt: string
+                      _rev: string
+                      title?: string
+                      subtitle?: string
+                      repo?: string
+                      showForks?: boolean
+                      limit?: number
+                      avatars?: Array<{
+                        asset?: SanityImageAssetReference
+                        media?: unknown
+                        hotspot?: SanityImageHotspot
+                        crop?: SanityImageCrop
+                        alt?: string
+                        _type: 'image'
+                        _key: string
+                      }>
+                    } | null
+                    _type: 'reputation-block'
+                    _key: string
+                  }
+              > | null
+              ctas: Array<{
+                _key: string
+                _type: 'cta'
+                link: {
+                  _type: 'link'
+                  label?: string
+                  type?: 'external' | 'internal'
+                  internal:
+                    | {
+                        _type: 'blog.post'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | {
+                        _type: 'page'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | null
+                  external?: string
+                  params?: string
+                } | null
+                style?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+              }> | null
+              assets: Array<
+                | {
+                    _key: string
+                    _type: 'code'
+                    language?: string
+                    filename?: string
+                    code?: string
+                    highlightedLines?: Array<number>
+                  }
+                | {
+                    _key: string
+                    _type: 'custom-html'
+                    options?: ModuleOptions
+                    className?: string
+                    html?: Code
+                    css?: Code
+                  }
+                | {
+                    _key: string
+                    _type: 'img'
+                    image: {
+                      asset?: SanityImageAssetReference
+                      media?: unknown
+                      hotspot?: SanityImageHotspot
+                      crop?: SanityImageCrop
+                      _type: 'image'
+                      lqip: string | null
+                    } | null
+                    responsive?: Array<{
+                      image?: ResponsiveImage
+                      media?: string
+                      _type: 'responsive'
+                      _key: string
+                    }>
+                    alt?: string
+                    loading?: 'eager' | 'lazy'
+                  }
+              > | null
+              assetOnRight?: boolean
+              assetBelowContent?: boolean
+            }
+          | {
+              _key: string
+              _type: 'hero'
+              options?: ModuleOptions
+              pretitle?: string
+              content: Array<
+                | {
+                    children?: Array<{
+                      marks?: Array<string>
+                      text?: string
+                      _type: 'span'
+                      _key: string
+                    }>
+                    style?:
+                      | 'blockquote'
+                      | 'display-hero'
+                      | 'display-xl'
+                      | 'display-xxl'
+                      | 'h1'
+                      | 'h2'
+                      | 'h3'
+                      | 'h4'
+                      | 'h5'
+                      | 'h6'
+                      | 'normal'
+                    listItem?: 'bullet' | 'number'
+                    markDefs?: Array<{
+                      href?: string
+                      _type: 'link'
+                      _key: string
+                    }>
+                    level?: number
+                    _type: 'block'
+                    _key: string
+                  }
+                | {
+                    _key: string
+                    _type: 'custom-html'
+                    options?: ModuleOptions
+                    className?: string
+                    html?: Code
+                    css?: Code
+                  }
+                | {
+                    reputation: {
+                      _id: string
+                      _type: 'reputation'
+                      _createdAt: string
+                      _updatedAt: string
+                      _rev: string
+                      title?: string
+                      subtitle?: string
+                      repo?: string
+                      showForks?: boolean
+                      limit?: number
+                      avatars?: Array<{
+                        asset?: SanityImageAssetReference
+                        media?: unknown
+                        hotspot?: SanityImageHotspot
+                        crop?: SanityImageCrop
+                        alt?: string
+                        _type: 'image'
+                        _key: string
+                      }>
+                    } | null
+                    _type: 'reputation-block'
+                    _key: string
+                  }
+              > | null
+              ctas: Array<{
+                _key: string
+                _type: 'cta'
+                link: {
+                  _type: 'link'
+                  label?: string
+                  type?: 'external' | 'internal'
+                  internal:
+                    | {
+                        _type: 'blog.post'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | {
+                        _type: 'page'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | null
+                  external?: string
+                  params?: string
+                } | null
+                style?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+              }> | null
+              assets: Array<
+                | {
+                    _key: string
+                    _type: 'img'
+                    image: {
+                      asset?: SanityImageAssetReference
+                      media?: unknown
+                      hotspot?: SanityImageHotspot
+                      crop?: SanityImageCrop
+                      _type: 'image'
+                      lqip: string | null
+                    } | null
+                    responsive?: Array<{
+                      image?: ResponsiveImage
+                      media?: string
+                      _type: 'responsive'
+                      _key: string
+                    }>
+                    alt?: string
+                    loading?: 'eager' | 'lazy'
+                  }
+                | {
+                    file?: VideoFile
+                    poster: {
+                      _type: 'img'
+                      image: {
+                        asset?: SanityImageAssetReference
+                        media?: unknown
+                        hotspot?: SanityImageHotspot
+                        crop?: SanityImageCrop
+                        _type: 'image'
+                        lqip: string | null
+                      } | null
+                      responsive?: Array<{
+                        image?: ResponsiveImage
+                        media?: string
+                        _type: 'responsive'
+                        _key: string
+                      }>
+                      alt?: string
+                      loading?: 'eager' | 'lazy'
+                    } | null
+                    autoplay: boolean | null
+                    loop: boolean | null
+                    muted: boolean | null
+                    _type: 'video'
+                    _key: string
+                    url: string | null
+                    mimeType: string | null
+                  }
+              > | null
+              alignItems?: string
+              textAlign?: string
+              overlayHeader?: boolean
+            }
+          | {
+              _key: string
+              _type: 'join-us.placeholder'
+              options?: ModuleOptions
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'lets-talk-placeholder'
+              options?: ModuleOptions
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'logo-list'
+              pretitle?: string
+              intro?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              logos: Array<{
+                _id: string
+                _type: 'logo'
+                _createdAt: string
+                _updatedAt: string
+                _rev: string
+                name?: string
+                image?: {
+                  default?: {
+                    asset?: SanityImageAssetReference
+                    media?: unknown
+                    hotspot?: SanityImageHotspot
+                    crop?: SanityImageCrop
+                    _type: 'image'
+                  }
+                  light?: {
+                    asset?: SanityImageAssetReference
+                    media?: unknown
+                    hotspot?: SanityImageHotspot
+                    crop?: SanityImageCrop
+                    _type: 'image'
+                  }
+                  dark?: {
+                    asset?: SanityImageAssetReference
+                    media?: unknown
+                    hotspot?: SanityImageHotspot
+                    crop?: SanityImageCrop
+                    _type: 'image'
+                  }
+                }
+              }> | null
+              logoType?: 'dark' | 'default' | 'light'
+              autoScroll?: boolean
+              duration?: number
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'person-list'
+              pretitle?: string
+              intro?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              people: Array<{
+                _id: string
+                _type: 'person'
+                _createdAt: string
+                _updatedAt: string
+                _rev: string
+                name?: string
+                slug?: Slug
+                image?: {
+                  asset?: SanityImageAssetReference
+                  media?: unknown
+                  hotspot?: SanityImageHotspot
+                  crop?: SanityImageCrop
+                  _type: 'image'
+                }
+              }> | null
+              layout?: 'carousel' | 'grid'
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'pricing-list'
+              options?: ModuleOptions
+              pretitle?: string
+              intro?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              tiers: Array<{
+                _id: string
+                _type: 'pricing'
+                _createdAt: string
+                _updatedAt: string
+                _rev: string
+                title?: string
+                highlight?: string
+                price?: {
+                  base?: number
+                  strikethrough?: number
+                  suffix?: string
+                }
+                ctas: Array<{
+                  _key: string
+                  _type: 'cta'
+                  link: {
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  } | null
+                  style:
+                    'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary' | null
+                }> | null
+                content?: Array<{
+                  children?: Array<{
+                    marks?: Array<string>
+                    text?: string
+                    _type: 'span'
+                    _key: string
+                  }>
+                  style?:
+                    | 'blockquote'
+                    | 'display-hero'
+                    | 'display-xl'
+                    | 'display-xxl'
+                    | 'h1'
+                    | 'h2'
+                    | 'h3'
+                    | 'h4'
+                    | 'h5'
+                    | 'h6'
+                    | 'normal'
+                  listItem?: 'bullet' | 'number'
+                  markDefs?: Array<{
+                    href?: string
+                    _type: 'link'
+                    _key: string
+                  }>
+                  level?: number
+                  _type: 'block'
+                  _key: string
+                }>
+              }> | null
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'project-list'
+              options?: ModuleOptions
+              projects: Array<{
+                name?: string
+                description?: Array<{
+                  children?: Array<{
+                    marks?: Array<string>
+                    text?: string
+                    _type: 'span'
+                    _key: string
+                  }>
+                  style?:
+                    | 'blockquote'
+                    | 'display-hero'
+                    | 'display-xl'
+                    | 'display-xxl'
+                    | 'h1'
+                    | 'h2'
+                    | 'h3'
+                    | 'h4'
+                    | 'h5'
+                    | 'h6'
+                    | 'normal'
+                  listItem?: 'bullet' | 'number'
+                  markDefs?: Array<{
+                    href?: string
+                    _type: 'link'
+                    _key: string
+                  }>
+                  level?: number
+                  _type: 'block'
+                  _key: string
+                }>
+                asset: {
+                  asset?: SanityImageAssetReference
+                  media?: unknown // Unable to locate the referenced type "asset.media" in schema
+                  hotspot?: SanityImageHotspot
+                  crop?: SanityImageCrop
+                  alt?: string
+                  loading?: 'eager' | 'lazy'
+                  _type: 'image'
+                  lqip: string | null
+                } | null
+                cta: {
+                  _type: 'cta'
+                  link: {
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  } | null
+                  style:
+                    'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary' | null
+                } | null
+                ctas?: Array<
+                  {
+                    _key: string
+                  } & Cta
+                >
+                ctaEnabled?: boolean
+                _type: 'project'
+                _key: string
+              }> | null
+              initialProjects?: number
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'richtext-module'
+              options?: ModuleOptions
+              content: Array<
+                | {
+                    tone?: 'caution' | 'important' | 'note' | 'tip' | 'warning'
+                    title?: string
+                    content?: Array<{
+                      children?: Array<{
+                        marks?: Array<string>
+                        text?: string
+                        _type: 'span'
+                        _key: string
+                      }>
+                      style?:
+                        | 'blockquote'
+                        | 'display-hero'
+                        | 'display-xl'
+                        | 'display-xxl'
+                        | 'h1'
+                        | 'h2'
+                        | 'h3'
+                        | 'h4'
+                        | 'h5'
+                        | 'h6'
+                        | 'normal'
+                      listItem?: 'bullet' | 'number'
+                      markDefs?: Array<{
+                        href?: string
+                        _type: 'link'
+                        _key: string
+                      }>
+                      level?: number
+                      _type: 'block'
+                      _key: string
+                    }>
+                    _type: 'admonition'
+                    _key: string
+                  }
+                | {
+                    children?: Array<{
+                      marks?: Array<string>
+                      text?: string
+                      _type: 'span'
+                      _key: string
+                    }>
+                    style?:
+                      | 'blockquote'
+                      | 'display-hero'
+                      | 'display-xl'
+                      | 'display-xxl'
+                      | 'h1'
+                      | 'h2'
+                      | 'h3'
+                      | 'h4'
+                      | 'h5'
+                      | 'h6'
+                      | 'normal'
+                    listItem?: 'bullet' | 'number'
+                    markDefs?: Array<{
+                      href?: string
+                      _type: 'link'
+                      _key: string
+                    }>
+                    level?: number
+                    _type: 'block'
+                    _key: string
+                  }
+                | {
+                    _key: string
+                    _type: 'code'
+                    language?: string
+                    filename?: string
+                    code?: string
+                    highlightedLines?: Array<number>
+                  }
+                | {
+                    _key: string
+                    _type: 'custom-html'
+                    options?: ModuleOptions
+                    className?: string
+                    html?: Code
+                    css?: Code
+                  }
+                | {
+                    asset?: SanityImageAssetReference
+                    media?: unknown
+                    hotspot?: SanityImageHotspot
+                    crop?: SanityImageCrop
+                    alt?: string
+                    loading?: 'eager' | 'lazy'
+                    caption?: string
+                    source?: string
+                    _type: 'image'
+                    _key: string
+                    lqip: string | null
+                  }
+                | {
+                    _key: string
+                    _type: 'table'
+                    caption?: string
+                    headerRows?: number
+                    rows?: Array<{
+                      cells?: Array<{
+                        value?: Array<{
+                          children?: Array<{
+                            marks?: Array<string>
+                            text?: string
+                            _type: 'span'
+                            _key: string
+                          }>
+                          style?: 'normal'
+                          listItem?: 'bullet' | 'number'
+                          markDefs?: Array<{
+                            href?: string
+                            _type: 'link'
+                            _key: string
+                          }>
+                          level?: number
+                          _type: 'block'
+                          _key: string
+                        }>
+                        _type: 'cell'
+                        _key: string
+                      }>
+                      _type: 'row'
+                      _key: string
+                    }>
+                  }
+              > | null
+              tableOfContents?: boolean
+              tocPosition?: 'left' | 'right'
+              stretch?: boolean
+              ctas: null
+              headings: Array<{
+                style:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                  | null
+                text: string
+              }> | null
+            }
+          | {
+              _key: string
+              _type: 'schedule-module'
+              start?: string
+              end?: string
+              modules?: Array<
+                | ({
+                    _key: string
+                  } & Callout)
+                | ({
+                    _key: string
+                  } & CustomHtml)
+                | ({
+                    _key: string
+                  } & HeroSaas)
+                | ({
+                    _key: string
+                  } & HeroSplit)
+                | ({
+                    _key: string
+                  } & Hero)
+                | ({
+                    _key: string
+                  } & TestimonialFeatured)
+              >
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'search-module'
+              pretitle?: string
+              intro?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              ctas: Array<{
+                _key: string
+                _type: 'cta'
+                link: {
+                  _type: 'link'
+                  label?: string
+                  type?: 'external' | 'internal'
+                  internal:
+                    | {
+                        _type: 'blog.post'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | {
+                        _type: 'page'
+                        title: string | null
+                        metadata: Metadata | null
+                      }
+                    | null
+                  external?: string
+                  params?: string
+                } | null
+                style?: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary'
+              }> | null
+              scope?: 'all' | 'blog posts' | 'pages' | 'path'
+              path?: string
+            }
+          | {
+              _key: string
+              _type: 'service-list'
+              options?: ModuleOptions
+              services: Array<{
+                _key: string
+                title: string | null
+                description: Array<{
+                  children?: Array<{
+                    marks?: Array<string>
+                    text?: string
+                    _type: 'span'
+                    _key: string
+                  }>
+                  style?:
+                    | 'blockquote'
+                    | 'display-hero'
+                    | 'display-xl'
+                    | 'display-xxl'
+                    | 'h1'
+                    | 'h2'
+                    | 'h3'
+                    | 'h4'
+                    | 'h5'
+                    | 'h6'
+                    | 'normal'
+                  listItem?: 'bullet' | 'number'
+                  markDefs?: Array<{
+                    href?: string
+                    _type: 'link'
+                    _key: string
+                  }>
+                  level?: number
+                  _type: 'block'
+                  _key: string
+                }> | null
+                layout: 'text-left' | 'text-right' | null
+                keywords: Array<string> | null
+                icon:
+                  | ''
+                  | 'AArrowDown'
+                  | 'AArrowUp'
+                  | 'Accessibility'
+                  | 'Activity'
+                  | 'ActivitySquare'
+                  | 'Ad'
+                  | 'Airplay'
+                  | 'AirVent'
+                  | 'ALargeSmall'
+                  | 'AlarmCheck'
+                  | 'AlarmClock'
+                  | 'AlarmClockCheck'
+                  | 'AlarmClockMinus'
+                  | 'AlarmClockOff'
+                  | 'AlarmClockPlus'
+                  | 'AlarmMinus'
+                  | 'AlarmPlus'
+                  | 'AlarmSmoke'
+                  | 'Album'
+                  | 'AlertCircle'
+                  | 'AlertOctagon'
+                  | 'AlertTriangle'
+                  | 'AlignCenter'
+                  | 'AlignCenterHorizontal'
+                  | 'AlignCenterVertical'
+                  | 'AlignEndHorizontal'
+                  | 'AlignEndVertical'
+                  | 'AlignHorizontalDistributeCenter'
+                  | 'AlignHorizontalDistributeEnd'
+                  | 'AlignHorizontalDistributeStart'
+                  | 'AlignHorizontalJustifyCenter'
+                  | 'AlignHorizontalJustifyEnd'
+                  | 'AlignHorizontalJustifyStart'
+                  | 'AlignHorizontalSpaceAround'
+                  | 'AlignHorizontalSpaceBetween'
+                  | 'AlignJustify'
+                  | 'AlignLeft'
+                  | 'AlignRight'
+                  | 'AlignStartHorizontal'
+                  | 'AlignStartVertical'
+                  | 'AlignVerticalDistributeCenter'
+                  | 'AlignVerticalDistributeEnd'
+                  | 'AlignVerticalDistributeStart'
+                  | 'AlignVerticalJustifyCenter'
+                  | 'AlignVerticalJustifyEnd'
+                  | 'AlignVerticalJustifyStart'
+                  | 'AlignVerticalSpaceAround'
+                  | 'AlignVerticalSpaceBetween'
+                  | 'Ambulance'
+                  | 'Ampersand'
+                  | 'Ampersands'
+                  | 'Amphora'
+                  | 'Anchor'
+                  | 'Angle'
+                  | 'Angry'
+                  | 'Annoyed'
+                  | 'Antenna'
+                  | 'Anvil'
+                  | 'Aperture'
+                  | 'Apple'
+                  | 'AppWindow'
+                  | 'AppWindowMac'
+                  | 'Archive'
+                  | 'ArchiveArrowDown'
+                  | 'ArchiveArrowUp'
+                  | 'ArchiveRestore'
+                  | 'ArchiveX'
+                  | 'AreaChart'
+                  | 'Armchair'
+                  | 'ArmenianDram'
+                  | 'ArrowBigDown'
+                  | 'ArrowBigDownDash'
+                  | 'ArrowBigLeft'
+                  | 'ArrowBigLeftDash'
+                  | 'ArrowBigRight'
+                  | 'ArrowBigRightDash'
+                  | 'ArrowBigUp'
+                  | 'ArrowBigUpDash'
+                  | 'ArrowDown'
+                  | 'ArrowDown01'
+                  | 'ArrowDown10'
+                  | 'ArrowDownAz'
+                  | 'ArrowDownAZ'
+                  | 'ArrowDownCircle'
+                  | 'ArrowDownFromLine'
+                  | 'ArrowDownLeft'
+                  | 'ArrowDownLeftFromCircle'
+                  | 'ArrowDownLeftFromSquare'
+                  | 'ArrowDownLeftSquare'
+                  | 'ArrowDownNarrowWide'
+                  | 'ArrowDownRight'
+                  | 'ArrowDownRightFromCircle'
+                  | 'ArrowDownRightFromSquare'
+                  | 'ArrowDownRightSquare'
+                  | 'ArrowDownSquare'
+                  | 'ArrowDownToDot'
+                  | 'ArrowDownToLine'
+                  | 'ArrowDownUp'
+                  | 'ArrowDownWideNarrow'
+                  | 'ArrowDownZa'
+                  | 'ArrowDownZA'
+                  | 'ArrowLeft'
+                  | 'ArrowLeftCircle'
+                  | 'ArrowLeftFromLine'
+                  | 'ArrowLeftRight'
+                  | 'ArrowLeftSquare'
+                  | 'ArrowLeftToLine'
+                  | 'ArrowRight'
+                  | 'ArrowRightCircle'
+                  | 'ArrowRightFromLine'
+                  | 'ArrowRightLeft'
+                  | 'ArrowRightSquare'
+                  | 'ArrowRightToLine'
+                  | 'ArrowsUpFromLine'
+                  | 'ArrowUp'
+                  | 'ArrowUp01'
+                  | 'ArrowUp10'
+                  | 'ArrowUpAz'
+                  | 'ArrowUpAZ'
+                  | 'ArrowUpCircle'
+                  | 'ArrowUpDown'
+                  | 'ArrowUpFromDot'
+                  | 'ArrowUpFromLine'
+                  | 'ArrowUpLeft'
+                  | 'ArrowUpLeftFromCircle'
+                  | 'ArrowUpLeftFromSquare'
+                  | 'ArrowUpLeftSquare'
+                  | 'ArrowUpNarrowWide'
+                  | 'ArrowUpRight'
+                  | 'ArrowUpRightFromCircle'
+                  | 'ArrowUpRightFromSquare'
+                  | 'ArrowUpRightSquare'
+                  | 'ArrowUpSquare'
+                  | 'ArrowUpToLine'
+                  | 'ArrowUpWideNarrow'
+                  | 'ArrowUpZa'
+                  | 'ArrowUpZA'
+                  | 'Asterisk'
+                  | 'AsteriskSquare'
+                  | 'Astroid'
+                  | 'Atom'
+                  | 'AtSign'
+                  | 'AudioLines'
+                  | 'AudioLinesOff'
+                  | 'AudioLinesX'
+                  | 'AudioWaveform'
+                  | 'Avocado'
+                  | 'Award'
+                  | 'Axe'
+                  | 'Axis3d'
+                  | 'Axis3D'
+                  | 'AzerbaijaniManat'
+                  | 'Baby'
+                  | 'Backpack'
+                  | 'Bacon'
+                  | 'Badge'
+                  | 'BadgeAlert'
+                  | 'BadgeCent'
+                  | 'BadgeCheck'
+                  | 'BadgeDollarSign'
+                  | 'BadgeEuro'
+                  | 'BadgeExclamationPoint'
+                  | 'BadgeHelp'
+                  | 'BadgeIndianRupee'
+                  | 'BadgeInfo'
+                  | 'BadgeJapaneseYen'
+                  | 'BadgeMinus'
+                  | 'BadgePercent'
+                  | 'BadgePlus'
+                  | 'BadgePoundSterling'
+                  | 'BadgeQuestionMark'
+                  | 'BadgeRussianRuble'
+                  | 'BadgeSwissFranc'
+                  | 'BadgeTurkishLira'
+                  | 'BadgeX'
+                  | 'BaggageClaim'
+                  | 'Balloon'
+                  | 'BallWave'
+                  | 'Ban'
+                  | 'Banana'
+                  | 'Bandage'
+                  | 'BangladeshiTaka'
+                  | 'Banknote'
+                  | 'BanknoteArrowDown'
+                  | 'BanknoteArrowUp'
+                  | 'BanknoteCheck'
+                  | 'BanknoteX'
+                  | 'BarChart'
+                  | 'BarChart2'
+                  | 'BarChart3'
+                  | 'BarChart4'
+                  | 'BarChartBig'
+                  | 'BarChartHorizontal'
+                  | 'BarChartHorizontalBig'
+                  | 'Barcode'
+                  | 'Barrel'
+                  | 'Baseline'
+                  | 'Bath'
+                  | 'Battery'
+                  | 'BatteryCharging'
+                  | 'BatteryExclamationPoint'
+                  | 'BatteryFull'
+                  | 'BatteryLow'
+                  | 'BatteryMedium'
+                  | 'BatteryPlus'
+                  | 'BatteryWarning'
+                  | 'Beaker'
+                  | 'Bean'
+                  | 'BeanOff'
+                  | 'Bed'
+                  | 'BedDouble'
+                  | 'BedSingle'
+                  | 'Beef'
+                  | 'BeefOff'
+                  | 'Beer'
+                  | 'BeerOff'
+                  | 'BelarusianRuble'
+                  | 'Bell'
+                  | 'BellCheck'
+                  | 'BellDot'
+                  | 'BellElectric'
+                  | 'BellMinus'
+                  | 'BellOff'
+                  | 'BellPlus'
+                  | 'BellRing'
+                  | 'BetweenHorizonalEnd'
+                  | 'BetweenHorizonalStart'
+                  | 'BetweenHorizontalEnd'
+                  | 'BetweenHorizontalStart'
+                  | 'BetweenVerticalEnd'
+                  | 'BetweenVerticalStart'
+                  | 'BicepsFlexed'
+                  | 'Bike'
+                  | 'Binary'
+                  | 'Binoculars'
+                  | 'Biohazard'
+                  | 'Bird'
+                  | 'Birdhouse'
+                  | 'Bitcoin'
+                  | 'Blend'
+                  | 'Blender'
+                  | 'Blinds'
+                  | 'Blocks'
+                  | 'Bluetooth'
+                  | 'BluetoothConnected'
+                  | 'BluetoothOff'
+                  | 'BluetoothSearching'
+                  | 'Bold'
+                  | 'Bolt'
+                  | 'Bomb'
+                  | 'Bone'
+                  | 'BoneFracture'
+                  | 'Book'
+                  | 'BookA'
+                  | 'BookAlert'
+                  | 'BookAudio'
+                  | 'BookBookmark'
+                  | 'BookCheck'
+                  | 'BookCopy'
+                  | 'BookDashed'
+                  | 'BookDown'
+                  | 'BookExclamationPoint'
+                  | 'BookHeadphones'
+                  | 'BookHeart'
+                  | 'BookImage'
+                  | 'BookKey'
+                  | 'BookLock'
+                  | 'Bookmark'
+                  | 'BookmarkCheck'
+                  | 'BookMarked'
+                  | 'BookmarkMinus'
+                  | 'BookmarkOff'
+                  | 'BookmarkPlus'
+                  | 'BookmarkX'
+                  | 'BookMinus'
+                  | 'BookOpen'
+                  | 'BookOpenCheck'
+                  | 'BookOpenText'
+                  | 'BookPlus'
+                  | 'BookSearch'
+                  | 'BookTemplate'
+                  | 'BookText'
+                  | 'BookType'
+                  | 'BookUp'
+                  | 'BookUp2'
+                  | 'BookUser'
+                  | 'BookX'
+                  | 'BoomBox'
+                  | 'Bot'
+                  | 'BotMessageSquare'
+                  | 'BotOff'
+                  | 'BottleWine'
+                  | 'BowArrow'
+                  | 'Box'
+                  | 'Boxes'
+                  | 'BoxesLinked'
+                  | 'BoxSelect'
+                  | 'Braces'
+                  | 'Brackets'
+                  | 'Brain'
+                  | 'BrainCircuit'
+                  | 'BrainCog'
+                  | 'BrainOff'
+                  | 'BrickWall'
+                  | 'BrickWallFire'
+                  | 'BrickWallShield'
+                  | 'Bridge'
+                  | 'Briefcase'
+                  | 'BriefcaseBusiness'
+                  | 'BriefcaseConveyorBelt'
+                  | 'BriefcaseMedical'
+                  | 'BriefcasePlus'
+                  | 'BringToFront'
+                  | 'Broccoli'
+                  | 'Broom'
+                  | 'BroomSparkles'
+                  | 'Brush'
+                  | 'BrushCleaning'
+                  | 'Bubbles'
+                  | 'Bug'
+                  | 'BugOff'
+                  | 'BugPlay'
+                  | 'Building'
+                  | 'Building2'
+                  | 'BuildingComplex'
+                  | 'BuildingComplexPlus'
+                  | 'Bus'
+                  | 'BusFront'
+                  | 'Cable'
+                  | 'CableCar'
+                  | 'Cake'
+                  | 'CakeSlice'
+                  | 'Calculator'
+                  | 'Calendar'
+                  | 'Calendar1'
+                  | 'CalendarArrowDown'
+                  | 'CalendarArrowLeft'
+                  | 'CalendarArrowRight'
+                  | 'CalendarArrowUp'
+                  | 'CalendarCheck'
+                  | 'CalendarCheck2'
+                  | 'CalendarChevronsLeft'
+                  | 'CalendarChevronsRight'
+                  | 'CalendarClock'
+                  | 'CalendarCog'
+                  | 'CalendarDays'
+                  | 'CalendarFold'
+                  | 'CalendarHeart'
+                  | 'CalendarMinus'
+                  | 'CalendarMinus2'
+                  | 'CalendarOff'
+                  | 'CalendarPlus'
+                  | 'CalendarPlus2'
+                  | 'CalendarRange'
+                  | 'Calendars'
+                  | 'CalendarSearch'
+                  | 'CalendarSync'
+                  | 'CalendarX'
+                  | 'CalendarX2'
+                  | 'Camera'
+                  | 'CameraOff'
+                  | 'Can'
+                  | 'CandlestickChart'
+                  | 'Candy'
+                  | 'CandyCane'
+                  | 'CandyOff'
+                  | 'Cannabis'
+                  | 'CannabisOff'
+                  | 'CanSoda'
+                  | 'Captions'
+                  | 'CaptionsOff'
+                  | 'Car'
+                  | 'Caravan'
+                  | 'CarBattery'
+                  | 'CardSim'
+                  | 'CarFront'
+                  | 'Carrot'
+                  | 'CarTaxiFront'
+                  | 'Carton'
+                  | 'CartonOff'
+                  | 'CaseLower'
+                  | 'CaseSensitive'
+                  | 'CaseUpper'
+                  | 'CassetteTape'
+                  | 'Cast'
+                  | 'Castle'
+                  | 'Cat'
+                  | 'Cctv'
+                  | 'CctvOff'
+                  | 'Certificate'
+                  | 'ChartArea'
+                  | 'ChartBar'
+                  | 'ChartBarBig'
+                  | 'ChartBarDecreasing'
+                  | 'ChartBarIncreasing'
+                  | 'ChartBarStacked'
+                  | 'ChartBellCurve'
+                  | 'ChartCandlestick'
+                  | 'ChartColumn'
+                  | 'ChartColumnBig'
+                  | 'ChartColumnDecreasing'
+                  | 'ChartColumnIncreasing'
+                  | 'ChartColumnStacked'
+                  | 'ChartGantt'
+                  | 'ChartLine'
+                  | 'ChartNetwork'
+                  | 'ChartNoAxesColumn'
+                  | 'ChartNoAxesColumnDecreasing'
+                  | 'ChartNoAxesColumnIncreasing'
+                  | 'ChartNoAxesCombined'
+                  | 'ChartNoAxesGantt'
+                  | 'ChartPie'
+                  | 'ChartQuadrant'
+                  | 'ChartRadar'
+                  | 'ChartScatter'
+                  | 'ChartSpline'
+                  | 'Check'
+                  | 'CheckCheck'
+                  | 'CheckCircle'
+                  | 'CheckCircle2'
+                  | 'CheckLine'
+                  | 'CheckSquare'
+                  | 'CheckSquare2'
+                  | 'ChefHat'
+                  | 'Cherry'
+                  | 'ChessBishop'
+                  | 'ChessKing'
+                  | 'ChessKnight'
+                  | 'ChessPawn'
+                  | 'ChessQueen'
+                  | 'ChessRook'
+                  | 'ChevronDown'
+                  | 'ChevronDownCircle'
+                  | 'ChevronDownSquare'
+                  | 'ChevronFirst'
+                  | 'ChevronLast'
+                  | 'ChevronLeft'
+                  | 'ChevronLeftCircle'
+                  | 'ChevronLeftSquare'
+                  | 'ChevronRight'
+                  | 'ChevronRightCircle'
+                  | 'ChevronRightSquare'
+                  | 'ChevronsDown'
+                  | 'ChevronsDownUp'
+                  | 'ChevronsLeft'
+                  | 'ChevronsLeftRight'
+                  | 'ChevronsLeftRightEllipsis'
+                  | 'ChevronsRight'
+                  | 'ChevronsRightLeft'
+                  | 'ChevronsUp'
+                  | 'ChevronsUpDown'
+                  | 'ChevronUp'
+                  | 'ChevronUpCircle'
+                  | 'ChevronUpSquare'
+                  | 'Church'
+                  | 'Cigarette'
+                  | 'CigaretteOff'
+                  | 'Circle'
+                  | 'CircleAlert'
+                  | 'CircleArrowDown'
+                  | 'CircleArrowLeft'
+                  | 'CircleArrowOutDownLeft'
+                  | 'CircleArrowOutDownRight'
+                  | 'CircleArrowOutUpLeft'
+                  | 'CircleArrowOutUpRight'
+                  | 'CircleArrowRight'
+                  | 'CircleArrowUp'
+                  | 'CircleCheck'
+                  | 'CircleCheckBig'
+                  | 'CircleChevronDown'
+                  | 'CircleChevronLeft'
+                  | 'CircleChevronRight'
+                  | 'CircleChevronsDown'
+                  | 'CircleChevronsLeft'
+                  | 'CircleChevronsRight'
+                  | 'CircleChevronsUp'
+                  | 'CircleChevronUp'
+                  | 'CircleDashed'
+                  | 'CircleDashedCheck'
+                  | 'CircleDivide'
+                  | 'CircleDollarSign'
+                  | 'CircleDot'
+                  | 'CircleDotDashed'
+                  | 'CircleEllipsis'
+                  | 'CircleEqual'
+                  | 'CircleEuro'
+                  | 'CircleExclamationPoint'
+                  | 'CircleFadingArrowUp'
+                  | 'CircleFadingPlay'
+                  | 'CircleFadingPlus'
+                  | 'CircleGauge'
+                  | 'CircleHelp'
+                  | 'CircleLetterA'
+                  | 'CircleLetterB'
+                  | 'CircleLetterC'
+                  | 'CircleLetterD'
+                  | 'CircleLetterE'
+                  | 'CircleLetterF'
+                  | 'CircleLetterG'
+                  | 'CircleLetterH'
+                  | 'CircleLetterI'
+                  | 'CircleLetterJ'
+                  | 'CircleLetterK'
+                  | 'CircleLetterL'
+                  | 'CircleLetterM'
+                  | 'CircleLetterN'
+                  | 'CircleLetterO'
+                  | 'CircleLetterP'
+                  | 'CircleLetterPOff'
+                  | 'CircleLetterQ'
+                  | 'CircleLetterR'
+                  | 'CircleLetterS'
+                  | 'CircleLetterT'
+                  | 'CircleLetterU'
+                  | 'CircleLetterV'
+                  | 'CircleLetterW'
+                  | 'CircleLetterX'
+                  | 'CircleLetterY'
+                  | 'CircleLetterZ'
+                  | 'CircleMinus'
+                  | 'CircleOff'
+                  | 'CircleParking'
+                  | 'CircleParkingOff'
+                  | 'CirclePause'
+                  | 'CirclePercent'
+                  | 'CirclePile'
+                  | 'CirclePlay'
+                  | 'CirclePlus'
+                  | 'CirclePoundSterling'
+                  | 'CirclePower'
+                  | 'CircleQuestionMark'
+                  | 'CircleSlash'
+                  | 'CircleSlash2'
+                  | 'CircleSlashed'
+                  | 'CircleSmall'
+                  | 'CircleStar'
+                  | 'CircleStop'
+                  | 'CircleUser'
+                  | 'CircleUserRound'
+                  | 'CircleX'
+                  | 'CircuitBoard'
+                  | 'Citrus'
+                  | 'Clapperboard'
+                  | 'ClefAlto'
+                  | 'ClefBass'
+                  | 'ClefTreble'
+                  | 'Clipboard'
+                  | 'ClipboardCheck'
+                  | 'ClipboardClock'
+                  | 'ClipboardCopy'
+                  | 'ClipboardEdit'
+                  | 'ClipboardList'
+                  | 'ClipboardMinus'
+                  | 'ClipboardPaste'
+                  | 'ClipboardPen'
+                  | 'ClipboardPenLine'
+                  | 'ClipboardPlus'
+                  | 'ClipboardSignature'
+                  | 'ClipboardType'
+                  | 'ClipboardX'
+                  | 'Clock'
+                  | 'Clock1'
+                  | 'Clock10'
+                  | 'Clock11'
+                  | 'Clock12'
+                  | 'Clock2'
+                  | 'Clock3'
+                  | 'Clock4'
+                  | 'Clock5'
+                  | 'Clock6'
+                  | 'Clock7'
+                  | 'Clock8'
+                  | 'Clock9'
+                  | 'ClockAlert'
+                  | 'ClockArrowDown'
+                  | 'ClockArrowLeft'
+                  | 'ClockArrowRight'
+                  | 'ClockArrowUp'
+                  | 'ClockCheck'
+                  | 'ClockExclamationPoint'
+                  | 'ClockFading'
+                  | 'ClockPlus'
+                  | 'ClosedCaption'
+                  | 'Cloud'
+                  | 'CloudAlert'
+                  | 'CloudBackup'
+                  | 'CloudCheck'
+                  | 'CloudCog'
+                  | 'CloudDownload'
+                  | 'CloudDrizzle'
+                  | 'CloudExclamationPoint'
+                  | 'CloudFog'
+                  | 'CloudHail'
+                  | 'CloudLightning'
+                  | 'CloudMoon'
+                  | 'CloudMoonRain'
+                  | 'CloudOff'
+                  | 'CloudRain'
+                  | 'CloudRainWind'
+                  | 'CloudSnow'
+                  | 'CloudSun'
+                  | 'CloudSunRain'
+                  | 'CloudSync'
+                  | 'CloudUpload'
+                  | 'Cloudy'
+                  | 'Clover'
+                  | 'Club'
+                  | 'Code'
+                  | 'Code2'
+                  | 'CodeSquare'
+                  | 'CodeXml'
+                  | 'Coffee'
+                  | 'Cog'
+                  | 'Coins'
+                  | 'Columns'
+                  | 'Columns2'
+                  | 'Columns3'
+                  | 'Columns3Cog'
+                  | 'Columns4'
+                  | 'ColumnsSettings'
+                  | 'Combine'
+                  | 'Command'
+                  | 'Compass'
+                  | 'Component'
+                  | 'Computer'
+                  | 'ConciergeBell'
+                  | 'Cone'
+                  | 'Construction'
+                  | 'Contact'
+                  | 'Contact2'
+                  | 'ContactRound'
+                  | 'Container'
+                  | 'Contrast'
+                  | 'Cookie'
+                  | 'CookingPot'
+                  | 'Copy'
+                  | 'CopyCheck'
+                  | 'Copyleft'
+                  | 'CopyMinus'
+                  | 'CopyPlus'
+                  | 'Copyright'
+                  | 'CopySlash'
+                  | 'CopyX'
+                  | 'CornerDownLeft'
+                  | 'CornerDownRight'
+                  | 'CornerLeftDown'
+                  | 'CornerLeftUp'
+                  | 'CornerRightDown'
+                  | 'CornerRightUp'
+                  | 'CornerUpLeft'
+                  | 'CornerUpRight'
+                  | 'Cpu'
+                  | 'CpuAi'
+                  | 'CreativeCommons'
+                  | 'CreditCard'
+                  | 'CreditCardCheck'
+                  | 'CreditCardMinus'
+                  | 'CreditCardPlus'
+                  | 'CreditCardReader'
+                  | 'CreditCardX'
+                  | 'Croissant'
+                  | 'Crop'
+                  | 'Cross'
+                  | 'Crosshair'
+                  | 'Crown'
+                  | 'Cuboid'
+                  | 'Cupcake'
+                  | 'CupSoda'
+                  | 'CurlyBraces'
+                  | 'Currency'
+                  | 'Cylinder'
+                  | 'Dam'
+                  | 'Database'
+                  | 'DatabaseArrowDown'
+                  | 'DatabaseArrowUp'
+                  | 'DatabaseBackup'
+                  | 'DatabaseCheck'
+                  | 'DatabaseCog'
+                  | 'DatabaseMinus'
+                  | 'DatabasePlus'
+                  | 'DatabaseSearch'
+                  | 'DatabaseX'
+                  | 'DatabaseZap'
+                  | 'DecimalsArrowLeft'
+                  | 'DecimalsArrowRight'
+                  | 'Delete'
+                  | 'Dessert'
+                  | 'DiagramFlowHorizontal'
+                  | 'DiagramFlowVertical'
+                  | 'Diameter'
+                  | 'Diamond'
+                  | 'DiamondMinus'
+                  | 'DiamondPercent'
+                  | 'DiamondPlus'
+                  | 'Dice1'
+                  | 'Dice2'
+                  | 'Dice3'
+                  | 'Dice4'
+                  | 'Dice5'
+                  | 'Dice6'
+                  | 'Dices'
+                  | 'Diff'
+                  | 'Disc'
+                  | 'Disc2'
+                  | 'Disc3'
+                  | 'DiscAlbum'
+                  | 'Divide'
+                  | 'DivideCircle'
+                  | 'DivideSquare'
+                  | 'Dna'
+                  | 'DnaOff'
+                  | 'Dock'
+                  | 'Dog'
+                  | 'DollarSign'
+                  | 'Dome'
+                  | 'Donut'
+                  | 'DoorClosed'
+                  | 'DoorClosedCog'
+                  | 'DoorClosedLocked'
+                  | 'DoorClosedPackage'
+                  | 'DoorOpen'
+                  | 'DoorStairwell'
+                  | 'Dot'
+                  | 'DotSquare'
+                  | 'Download'
+                  | 'DownloadCloud'
+                  | 'DraftingCompass'
+                  | 'Drama'
+                  | 'Drill'
+                  | 'Drone'
+                  | 'Droplet'
+                  | 'DropletOff'
+                  | 'Droplets'
+                  | 'Drum'
+                  | 'Drumstick'
+                  | 'Dumbbell'
+                  | 'Ear'
+                  | 'Earbuds'
+                  | 'EarbudsOff'
+                  | 'EarOff'
+                  | 'Earth'
+                  | 'EarthLock'
+                  | 'Eclipse'
+                  | 'Edit'
+                  | 'Edit2'
+                  | 'Edit3'
+                  | 'Egg'
+                  | 'EggFried'
+                  | 'EggOff'
+                  | 'EighthNote'
+                  | 'EighthNotes'
+                  | 'Eject'
+                  | 'Ellipse'
+                  | 'Ellipsis'
+                  | 'EllipsisVertical'
+                  | 'EmiratiDirham'
+                  | 'Engine'
+                  | 'Equal'
+                  | 'EqualApproximately'
+                  | 'EqualApproximatelyNot'
+                  | 'EqualNot'
+                  | 'EqualSquare'
+                  | 'Eraser'
+                  | 'EthernetPort'
+                  | 'Euro'
+                  | 'EvCharger'
+                  | 'Expand'
+                  | 'ExternalLink'
+                  | 'Eye'
+                  | 'EyeClosed'
+                  | 'EyeDashed'
+                  | 'EyeOff'
+                  | 'FaceAngry'
+                  | 'FaceExpressionless'
+                  | 'FaceGrinning'
+                  | 'FaceNeutral'
+                  | 'FaceSlightlyFrowning'
+                  | 'FaceSlightlySmiling'
+                  | 'FaceSlightlySmilingPlus'
+                  | 'Factory'
+                  | 'Fan'
+                  | 'FastForward'
+                  | 'Faucet'
+                  | 'Feather'
+                  | 'Fence'
+                  | 'FerrisWheel'
+                  | 'File'
+                  | 'FileArchive'
+                  | 'FileAudio'
+                  | 'FileAudio2'
+                  | 'FileAxis3d'
+                  | 'FileAxis3D'
+                  | 'FileBadge'
+                  | 'FileBadge2'
+                  | 'FileBarChart'
+                  | 'FileBarChart2'
+                  | 'FileBox'
+                  | 'FileBraces'
+                  | 'FileBracesCorner'
+                  | 'FileChartColumn'
+                  | 'FileChartColumnIncreasing'
+                  | 'FileChartLine'
+                  | 'FileChartPie'
+                  | 'FileCheck'
+                  | 'FileCheck2'
+                  | 'FileCheckCorner'
+                  | 'FileClock'
+                  | 'FileCode'
+                  | 'FileCode2'
+                  | 'FileCodeCorner'
+                  | 'FileCog'
+                  | 'FileCog2'
+                  | 'FileDatabase'
+                  | 'FileDiff'
+                  | 'FileDigit'
+                  | 'FileDown'
+                  | 'FileEdit'
+                  | 'FileExclamationPoint'
+                  | 'FileHeadphone'
+                  | 'FileHeart'
+                  | 'FileImage'
+                  | 'FileInput'
+                  | 'FileJson'
+                  | 'FileJson2'
+                  | 'FileKey'
+                  | 'FileKey2'
+                  | 'FileLineChart'
+                  | 'FileLock'
+                  | 'FileLock2'
+                  | 'FileMinus'
+                  | 'FileMinus2'
+                  | 'FileMinusCorner'
+                  | 'FileMusic'
+                  | 'FileOutput'
+                  | 'FilePen'
+                  | 'FilePenLine'
+                  | 'FilePieChart'
+                  | 'FilePlay'
+                  | 'FilePlus'
+                  | 'FilePlus2'
+                  | 'FilePlusCorner'
+                  | 'FileQuestion'
+                  | 'FileQuestionMark'
+                  | 'Files'
+                  | 'FileScan'
+                  | 'FileSearch'
+                  | 'FileSearch2'
+                  | 'FileSearchCorner'
+                  | 'FileSignal'
+                  | 'FileSignature'
+                  | 'FileSliders'
+                  | 'FileSpreadsheet'
+                  | 'FileStack'
+                  | 'FileSymlink'
+                  | 'FileTerminal'
+                  | 'FileText'
+                  | 'FileType'
+                  | 'FileType2'
+                  | 'FileTypeCorner'
+                  | 'FileUp'
+                  | 'FileUser'
+                  | 'FileVideo'
+                  | 'FileVideo2'
+                  | 'FileVideoCamera'
+                  | 'FileVolume'
+                  | 'FileVolume2'
+                  | 'FileWarning'
+                  | 'FileX'
+                  | 'FileX2'
+                  | 'FileXCorner'
+                  | 'Film'
+                  | 'Filter'
+                  | 'FilterX'
+                  | 'Fingerprint'
+                  | 'FingerprintPattern'
+                  | 'FireExtinguisher'
+                  | 'Fish'
+                  | 'FishingHook'
+                  | 'FishingRod'
+                  | 'FishOff'
+                  | 'FishSymbol'
+                  | 'Flag'
+                  | 'FlagOff'
+                  | 'FlagTriangleLeft'
+                  | 'FlagTriangleRight'
+                  | 'Flame'
+                  | 'FlameKindling'
+                  | 'Flashlight'
+                  | 'FlashlightOff'
+                  | 'FlaskConical'
+                  | 'FlaskConicalOff'
+                  | 'FlaskRound'
+                  | 'FlipHorizontal'
+                  | 'FlipHorizontal2'
+                  | 'FlipVertical'
+                  | 'FlipVertical2'
+                  | 'Flower'
+                  | 'Flower2'
+                  | 'Focus'
+                  | 'Folder'
+                  | 'FolderArchive'
+                  | 'FolderBookmark'
+                  | 'FolderCheck'
+                  | 'FolderClock'
+                  | 'FolderClosed'
+                  | 'FolderCode'
+                  | 'FolderCog'
+                  | 'FolderCog2'
+                  | 'FolderDot'
+                  | 'FolderDown'
+                  | 'FolderEdit'
+                  | 'FolderGit'
+                  | 'FolderGit2'
+                  | 'FolderHeart'
+                  | 'FolderInput'
+                  | 'FolderKanban'
+                  | 'FolderKey'
+                  | 'FolderLock'
+                  | 'FolderMinus'
+                  | 'FolderOpen'
+                  | 'FolderOpenDot'
+                  | 'FolderOutput'
+                  | 'FolderPen'
+                  | 'FolderPlus'
+                  | 'FolderRoot'
+                  | 'Folders'
+                  | 'FolderSearch'
+                  | 'FolderSearch2'
+                  | 'FolderSymlink'
+                  | 'FolderSync'
+                  | 'FolderTree'
+                  | 'FolderUp'
+                  | 'FolderUser'
+                  | 'FolderUsers'
+                  | 'FolderX'
+                  | 'FoldHorizontal'
+                  | 'FoldVertical'
+                  | 'Footprints'
+                  | 'ForkKnife'
+                  | 'ForkKnifeCrossed'
+                  | 'Forklift'
+                  | 'Form'
+                  | 'FormInput'
+                  | 'Forward'
+                  | 'Frame'
+                  | 'Frown'
+                  | 'Fuel'
+                  | 'Fullscreen'
+                  | 'FunctionSquare'
+                  | 'Funnel'
+                  | 'FunnelPlus'
+                  | 'FunnelX'
+                  | 'Galaxy'
+                  | 'GalleryHorizontal'
+                  | 'GalleryHorizontalEnd'
+                  | 'GalleryThumbnails'
+                  | 'GalleryVertical'
+                  | 'GalleryVerticalEnd'
+                  | 'Gamepad'
+                  | 'Gamepad2'
+                  | 'GamepadDirectional'
+                  | 'GanttChart'
+                  | 'GanttChartSquare'
+                  | 'GapHorizontal'
+                  | 'GapVertical'
+                  | 'Gauge'
+                  | 'GaugeCircle'
+                  | 'Gavel'
+                  | 'Gem'
+                  | 'GeorgianLari'
+                  | 'Germ'
+                  | 'GermOff'
+                  | 'Ghost'
+                  | 'Gift'
+                  | 'GitBranch'
+                  | 'GitBranchMinus'
+                  | 'GitBranchPlus'
+                  | 'GitCommit'
+                  | 'GitCommitHorizontal'
+                  | 'GitCommitVertical'
+                  | 'GitCompare'
+                  | 'GitCompareArrows'
+                  | 'GitFork'
+                  | 'GitGraph'
+                  | 'GitMerge'
+                  | 'GitMergeConflict'
+                  | 'GitPullRequest'
+                  | 'GitPullRequestArrow'
+                  | 'GitPullRequestClosed'
+                  | 'GitPullRequestCreate'
+                  | 'GitPullRequestCreateArrow'
+                  | 'GitPullRequestDraft'
+                  | 'Glasses'
+                  | 'GlassWater'
+                  | 'Globe'
+                  | 'Globe2'
+                  | 'GlobeBan'
+                  | 'GlobeCheck'
+                  | 'GlobeCode'
+                  | 'GlobeLock'
+                  | 'GlobeOff'
+                  | 'GlobePlus'
+                  | 'GlobeX'
+                  | 'Goal'
+                  | 'Gpu'
+                  | 'Grab'
+                  | 'GraduationCap'
+                  | 'Grape'
+                  | 'GraphHub'
+                  | 'GraphStar'
+                  | 'Grid'
+                  | 'Grid2x2'
+                  | 'Grid2X2'
+                  | 'Grid2x2Check'
+                  | 'Grid2X2Check'
+                  | 'Grid2x2Plus'
+                  | 'Grid2X2Plus'
+                  | 'Grid2x2X'
+                  | 'Grid2X2X'
+                  | 'Grid3x2'
+                  | 'Grid3x3'
+                  | 'Grid3X3'
+                  | 'Grip'
+                  | 'GripHorizontal'
+                  | 'GripVertical'
+                  | 'Groceries'
+                  | 'Group'
+                  | 'Guitar'
+                  | 'GuitarElectric'
+                  | 'HalfNote'
+                  | 'Ham'
+                  | 'Hamburger'
+                  | 'Hammer'
+                  | 'Hand'
+                  | 'Handbag'
+                  | 'HandCoins'
+                  | 'HandFist'
+                  | 'HandGrab'
+                  | 'HandHeart'
+                  | 'HandHelping'
+                  | 'HandleBottomRight'
+                  | 'HandMetal'
+                  | 'HandPlatter'
+                  | 'Handshake'
+                  | 'HardDrive'
+                  | 'HardDriveDownload'
+                  | 'HardDriveUpload'
+                  | 'HardHat'
+                  | 'Hash'
+                  | 'HatGlasses'
+                  | 'Haze'
+                  | 'Hd'
+                  | 'HdmiPort'
+                  | 'Heading'
+                  | 'Heading1'
+                  | 'Heading2'
+                  | 'Heading3'
+                  | 'Heading4'
+                  | 'Heading5'
+                  | 'Heading6'
+                  | 'HeadphoneOff'
+                  | 'Headphones'
+                  | 'Headset'
+                  | 'Heart'
+                  | 'HeartCrack'
+                  | 'HeartHandshake'
+                  | 'HeartMinus'
+                  | 'HeartOff'
+                  | 'HeartPlus'
+                  | 'HeartPulse'
+                  | 'HeartX'
+                  | 'Heater'
+                  | 'Helicopter'
+                  | 'HelpCircle'
+                  | 'HelpingHand'
+                  | 'Hexagon'
+                  | 'Highlighter'
+                  | 'HikingStick'
+                  | 'History'
+                  | 'HockeyStick'
+                  | 'Home'
+                  | 'Hop'
+                  | 'HopOff'
+                  | 'Hospital'
+                  | 'HotAirBalloon'
+                  | 'Hotel'
+                  | 'Hourglass'
+                  | 'HourglassCog'
+                  | 'House'
+                  | 'HouseCog'
+                  | 'HouseHeart'
+                  | 'HousePlug'
+                  | 'HousePlus'
+                  | 'Houses'
+                  | 'HouseWifi'
+                  | 'IceCream'
+                  | 'IceCream2'
+                  | 'IceCreamBowl'
+                  | 'IceCreamCone'
+                  | 'IdCard'
+                  | 'IdCardLanyard'
+                  | 'Image'
+                  | 'ImageDown'
+                  | 'ImageMinus'
+                  | 'ImageOff'
+                  | 'ImagePlay'
+                  | 'ImagePlus'
+                  | 'Images'
+                  | 'ImageUp'
+                  | 'ImageUpscale'
+                  | 'Import'
+                  | 'Inbox'
+                  | 'Indent'
+                  | 'IndentDecrease'
+                  | 'IndentIncrease'
+                  | 'IndianRupee'
+                  | 'Infinity'
+                  | 'Info'
+                  | 'Inspect'
+                  | 'InspectionPanel'
+                  | 'Italic'
+                  | 'IterationCcw'
+                  | 'IterationCw'
+                  | 'IvBag'
+                  | 'JapaneseYen'
+                  | 'Joystick'
+                  | 'Kanban'
+                  | 'KanbanSquare'
+                  | 'KanbanSquareDashed'
+                  | 'Kayak'
+                  | 'KazakhTenge'
+                  | 'Key'
+                  | 'Keyboard'
+                  | 'KeyboardMusic'
+                  | 'KeyboardOff'
+                  | 'KeyRound'
+                  | 'KeySquare'
+                  | 'Lambda'
+                  | 'Lamp'
+                  | 'LampCeiling'
+                  | 'LampDesk'
+                  | 'LampFloor'
+                  | 'LampWallDown'
+                  | 'LampWallUp'
+                  | 'Landmark'
+                  | 'LandPlot'
+                  | 'Languages'
+                  | 'Laptop'
+                  | 'Laptop2'
+                  | 'LaptopMinimal'
+                  | 'LaptopMinimalCheck'
+                  | 'Laser'
+                  | 'Lasso'
+                  | 'LassoSelect'
+                  | 'Laugh'
+                  | 'LayerArrowDown'
+                  | 'LayerArrowUp'
+                  | 'Layers'
+                  | 'Layers2'
+                  | 'Layers3'
+                  | 'LayersArrowDown'
+                  | 'LayersArrowUp'
+                  | 'LayersMinus'
+                  | 'LayersPlus'
+                  | 'Layout'
+                  | 'LayoutArrowDown'
+                  | 'LayoutArrowRight'
+                  | 'LayoutDashboard'
+                  | 'LayoutFreeform'
+                  | 'LayoutGrid'
+                  | 'LayoutGridCircles'
+                  | 'LayoutList'
+                  | 'LayoutPanelLeft'
+                  | 'LayoutPanelTop'
+                  | 'LayoutTemplate'
+                  | 'Leaf'
+                  | 'LeafyGreen'
+                  | 'Lectern'
+                  | 'Lens'
+                  | 'LensConcave'
+                  | 'LensConvex'
+                  | 'LetterA'
+                  | 'LetterB'
+                  | 'LetterC'
+                  | 'LetterD'
+                  | 'LetterE'
+                  | 'LetterF'
+                  | 'LetterG'
+                  | 'LetterH'
+                  | 'LetterI'
+                  | 'LetterJ'
+                  | 'LetterK'
+                  | 'LetterL'
+                  | 'LetterM'
+                  | 'LetterN'
+                  | 'LetterO'
+                  | 'LetterP'
+                  | 'LetterQ'
+                  | 'LetterR'
+                  | 'Letters'
+                  | 'LetterS'
+                  | 'LetterSpacing'
+                  | 'LetterT'
+                  | 'LetterText'
+                  | 'LetterU'
+                  | 'LetterV'
+                  | 'LetterW'
+                  | 'LetterX'
+                  | 'LetterY'
+                  | 'LetterZ'
+                  | 'Library'
+                  | 'LibraryBig'
+                  | 'LibrarySquare'
+                  | 'LifeBuoy'
+                  | 'Ligature'
+                  | 'Lightbulb'
+                  | 'LightbulbOff'
+                  | 'Lighthouse'
+                  | 'LineChart'
+                  | 'LineDotBottomVertical'
+                  | 'LineDotLeftHorizontal'
+                  | 'LineDotRightHorizontal'
+                  | 'LineDotTopVertical'
+                  | 'LineHeight'
+                  | 'LineSquiggle'
+                  | 'LineStyle'
+                  | 'Link'
+                  | 'Link2'
+                  | 'Link2Off'
+                  | 'List'
+                  | 'ListCheck'
+                  | 'ListChecks'
+                  | 'ListChevronsDownUp'
+                  | 'ListChevronsUpDown'
+                  | 'ListClock'
+                  | 'ListCollapse'
+                  | 'ListEnd'
+                  | 'ListFilter'
+                  | 'ListFilterPlus'
+                  | 'ListIndentDecrease'
+                  | 'ListIndentIncrease'
+                  | 'ListMinus'
+                  | 'ListMusic'
+                  | 'ListOrdered'
+                  | 'ListPlus'
+                  | 'ListRestart'
+                  | 'ListSortAscending'
+                  | 'ListSortDescending'
+                  | 'ListStart'
+                  | 'ListTodo'
+                  | 'ListTree'
+                  | 'ListVideo'
+                  | 'ListX'
+                  | 'Loader'
+                  | 'Loader2'
+                  | 'LoaderCircle'
+                  | 'LoaderPinwheel'
+                  | 'Locate'
+                  | 'LocateFixed'
+                  | 'LocateOff'
+                  | 'LocationEdit'
+                  | 'Lock'
+                  | 'LockKeyhole'
+                  | 'LockKeyholeOpen'
+                  | 'LockOpen'
+                  | 'LogIn'
+                  | 'LogOut'
+                  | 'Logs'
+                  | 'Lollipop'
+                  | 'Luggage'
+                  | 'Magnet'
+                  | 'Mail'
+                  | 'MailAlert'
+                  | 'MailBadge'
+                  | 'Mailbox'
+                  | 'MailCheck'
+                  | 'MailClock'
+                  | 'MailDot'
+                  | 'MailExclamationPoint'
+                  | 'MailMinus'
+                  | 'MailOpen'
+                  | 'MailPen'
+                  | 'MailPlus'
+                  | 'MailQuestion'
+                  | 'MailQuestionMark'
+                  | 'Mails'
+                  | 'MailSearch'
+                  | 'MailWarning'
+                  | 'MailX'
+                  | 'Mango'
+                  | 'Map'
+                  | 'MapMinus'
+                  | 'MapPin'
+                  | 'MapPinCheck'
+                  | 'MapPinCheckInside'
+                  | 'MapPinHouse'
+                  | 'MapPinMinus'
+                  | 'MapPinMinusInside'
+                  | 'MapPinned'
+                  | 'MapPinOff'
+                  | 'MapPinPen'
+                  | 'MapPinPlus'
+                  | 'MapPinPlusInside'
+                  | 'MapPinSearch'
+                  | 'MapPinX'
+                  | 'MapPinXInside'
+                  | 'MapPlus'
+                  | 'Margin'
+                  | 'MarginBottom'
+                  | 'MarginHorizontal'
+                  | 'MarginLeft'
+                  | 'MarginRight'
+                  | 'MarginTop'
+                  | 'MarginVertical'
+                  | 'Mars'
+                  | 'MarsStroke'
+                  | 'Martini'
+                  | 'Maximize'
+                  | 'Maximize2'
+                  | 'Medal'
+                  | 'Megaphone'
+                  | 'MegaphoneOff'
+                  | 'Meh'
+                  | 'MemoryStick'
+                  | 'Menu'
+                  | 'MenuSquare'
+                  | 'Merge'
+                  | 'MessageCircle'
+                  | 'MessageCircleAlert'
+                  | 'MessageCircleCheck'
+                  | 'MessageCircleCode'
+                  | 'MessageCircleDashed'
+                  | 'MessageCircleDashedCheck'
+                  | 'MessageCircleExclamationPoint'
+                  | 'MessageCircleHeart'
+                  | 'MessageCircleMore'
+                  | 'MessageCircleOff'
+                  | 'MessageCirclePlus'
+                  | 'MessageCircleQuestion'
+                  | 'MessageCircleQuestionMark'
+                  | 'MessageCircleReply'
+                  | 'MessageCircleText'
+                  | 'MessageCircleWarning'
+                  | 'MessageCircleX'
+                  | 'MessagesCircle'
+                  | 'MessageSquare'
+                  | 'MessageSquareAlert'
+                  | 'MessageSquareCheck'
+                  | 'MessageSquareCode'
+                  | 'MessageSquareDashed'
+                  | 'MessageSquareDiff'
+                  | 'MessageSquareDot'
+                  | 'MessageSquareExclamationPoint'
+                  | 'MessageSquareHeart'
+                  | 'MessageSquareLock'
+                  | 'MessageSquareMore'
+                  | 'MessageSquareOff'
+                  | 'MessageSquarePlus'
+                  | 'MessageSquareQuote'
+                  | 'MessageSquareReply'
+                  | 'MessageSquareShare'
+                  | 'MessageSquareText'
+                  | 'MessageSquareWarning'
+                  | 'MessageSquareX'
+                  | 'MessagesSquare'
+                  | 'Metronome'
+                  | 'Mic'
+                  | 'Mic2'
+                  | 'MicAudioLines'
+                  | 'MicOff'
+                  | 'Microchip'
+                  | 'Microscope'
+                  | 'Microwave'
+                  | 'MicSignal'
+                  | 'MicVocal'
+                  | 'MidiPort'
+                  | 'Milestone'
+                  | 'Milk'
+                  | 'MilkOff'
+                  | 'Minimize'
+                  | 'Minimize2'
+                  | 'Minus'
+                  | 'MinusCircle'
+                  | 'MinusSquare'
+                  | 'MirrorRectangular'
+                  | 'MirrorRound'
+                  | 'Monitor'
+                  | 'MonitorActivity'
+                  | 'MonitorCheck'
+                  | 'MonitorCloud'
+                  | 'MonitorCog'
+                  | 'MonitorDot'
+                  | 'MonitorDown'
+                  | 'MonitorOff'
+                  | 'MonitorPause'
+                  | 'MonitorPc'
+                  | 'MonitorPlay'
+                  | 'MonitorSmartphone'
+                  | 'MonitorSpeaker'
+                  | 'MonitorStop'
+                  | 'MonitorUp'
+                  | 'MonitorX'
+                  | 'Moon'
+                  | 'MoonStar'
+                  | 'Mop'
+                  | 'MopSparkles'
+                  | 'MoreHorizontal'
+                  | 'MoreVertical'
+                  | 'Mosque'
+                  | 'Motorbike'
+                  | 'Mountain'
+                  | 'MountainSnow'
+                  | 'Mouse'
+                  | 'MouseLeft'
+                  | 'MouseOff'
+                  | 'MousePointer'
+                  | 'MousePointer2'
+                  | 'MousePointer2Off'
+                  | 'MousePointerBan'
+                  | 'MousePointerClick'
+                  | 'MousePointerSquareDashed'
+                  | 'MouseRight'
+                  | 'Mouth'
+                  | 'MouthOff'
+                  | 'Move'
+                  | 'Move3d'
+                  | 'Move3D'
+                  | 'MoveDiagonal'
+                  | 'MoveDiagonal2'
+                  | 'MoveDown'
+                  | 'MoveDownLeft'
+                  | 'MoveDownRight'
+                  | 'MoveHorizontal'
+                  | 'MoveLeft'
+                  | 'MoveRight'
+                  | 'MoveUp'
+                  | 'MoveUpLeft'
+                  | 'MoveUpRight'
+                  | 'MoveVertical'
+                  | 'MSquare'
+                  | 'Music'
+                  | 'Music2'
+                  | 'Music3'
+                  | 'Music4'
+                  | 'Navigation'
+                  | 'Navigation2'
+                  | 'Navigation2Off'
+                  | 'NavigationOff'
+                  | 'NepaliRupee'
+                  | 'Network'
+                  | 'Newspaper'
+                  | 'Nfc'
+                  | 'NonBinary'
+                  | 'Notebook'
+                  | 'NotebookDot'
+                  | 'NotebookPen'
+                  | 'NotebookTabs'
+                  | 'NotebookText'
+                  | 'NotepadText'
+                  | 'NotepadTextDashed'
+                  | 'Numbers'
+                  | 'Nut'
+                  | 'NutOff'
+                  | 'Octagon'
+                  | 'OctagonAlert'
+                  | 'OctagonExclamationPoint'
+                  | 'OctagonMinus'
+                  | 'OctagonPause'
+                  | 'OctagonX'
+                  | 'Omega'
+                  | 'Option'
+                  | 'Orbit'
+                  | 'Origami'
+                  | 'Outdent'
+                  | 'Package'
+                  | 'Package2'
+                  | 'PackageCheck'
+                  | 'PackageMinus'
+                  | 'PackageOpen'
+                  | 'PackagePlus'
+                  | 'PackageSearch'
+                  | 'PackageX'
+                  | 'Paintbrush'
+                  | 'Paintbrush2'
+                  | 'PaintbrushVertical'
+                  | 'PaintBucket'
+                  | 'PaintRoller'
+                  | 'Palette'
+                  | 'Palmtree'
+                  | 'Panda'
+                  | 'PanelBottom'
+                  | 'PanelBottomClose'
+                  | 'PanelBottomDashed'
+                  | 'PanelBottomInactive'
+                  | 'PanelBottomOpen'
+                  | 'PanelLeft'
+                  | 'PanelLeftClose'
+                  | 'PanelLeftDashed'
+                  | 'PanelLeftInactive'
+                  | 'PanelLeftOpen'
+                  | 'PanelLeftRightDashed'
+                  | 'PanelRight'
+                  | 'PanelRightClose'
+                  | 'PanelRightDashed'
+                  | 'PanelRightInactive'
+                  | 'PanelRightOpen'
+                  | 'PanelsLeftBottom'
+                  | 'PanelsLeftRight'
+                  | 'PanelsRightBottom'
+                  | 'PanelsTopBottom'
+                  | 'PanelsTopLeft'
+                  | 'PanelTop'
+                  | 'PanelTopBottomDashed'
+                  | 'PanelTopClose'
+                  | 'PanelTopDashed'
+                  | 'PanelTopInactive'
+                  | 'PanelTopOpen'
+                  | 'PaperBag'
+                  | 'Paperclip'
+                  | 'Parasol'
+                  | 'Parentheses'
+                  | 'Park'
+                  | 'ParkingCircle'
+                  | 'ParkingCircleOff'
+                  | 'ParkingMeter'
+                  | 'ParkingSquare'
+                  | 'ParkingSquareOff'
+                  | 'PartyPopper'
+                  | 'Pause'
+                  | 'PauseCircle'
+                  | 'PauseOctagon'
+                  | 'PawPrint'
+                  | 'PcCase'
+                  | 'Pen'
+                  | 'PenBox'
+                  | 'Pencil'
+                  | 'PencilLine'
+                  | 'PencilOff'
+                  | 'PencilRuler'
+                  | 'PencilSparkles'
+                  | 'PenLine'
+                  | 'PenOff'
+                  | 'PenSquare'
+                  | 'Pentagon'
+                  | 'PenTool'
+                  | 'Percent'
+                  | 'PercentCircle'
+                  | 'PercentDiamond'
+                  | 'PercentSquare'
+                  | 'PerfumeBottle'
+                  | 'PersonStanding'
+                  | 'Phi'
+                  | 'PhilippinePeso'
+                  | 'Phone'
+                  | 'PhoneCall'
+                  | 'PhoneForwarded'
+                  | 'PhoneIncoming'
+                  | 'PhoneLog'
+                  | 'PhoneMissed'
+                  | 'PhoneOff'
+                  | 'PhoneOutgoing'
+                  | 'Pi'
+                  | 'Piano'
+                  | 'Pickaxe'
+                  | 'PictureInPicture'
+                  | 'PictureInPicture2'
+                  | 'PieChart'
+                  | 'PiggyBank'
+                  | 'Pilcrow'
+                  | 'PilcrowLeft'
+                  | 'PilcrowRight'
+                  | 'PilcrowSquare'
+                  | 'Pill'
+                  | 'PillBottle'
+                  | 'Pin'
+                  | 'PinOff'
+                  | 'Pipette'
+                  | 'PiSquare'
+                  | 'Pizza'
+                  | 'Plane'
+                  | 'PlaneLanding'
+                  | 'PlaneTakeoff'
+                  | 'PlantPot'
+                  | 'Play'
+                  | 'PlayCircle'
+                  | 'PlayingCard'
+                  | 'PlayingCards'
+                  | 'PlayingCardsFan'
+                  | 'PlayOff'
+                  | 'PlaySquare'
+                  | 'Plug'
+                  | 'Plug2'
+                  | 'PlugZap'
+                  | 'PlugZap2'
+                  | 'Plus'
+                  | 'PlusCircle'
+                  | 'PlusSquare'
+                  | 'PocketKnife'
+                  | 'Podcast'
+                  | 'Podium'
+                  | 'Pointer'
+                  | 'PointerOff'
+                  | 'Popcorn'
+                  | 'Popsicle'
+                  | 'PoundSterling'
+                  | 'Power'
+                  | 'PowerCircle'
+                  | 'PowerOff'
+                  | 'PowerSquare'
+                  | 'Presentation'
+                  | 'Printer'
+                  | 'Printer3d'
+                  | 'PrinterCheck'
+                  | 'PrinterX'
+                  | 'Projector'
+                  | 'Proportions'
+                  | 'Puzzle'
+                  | 'Pyramid'
+                  | 'QrCode'
+                  | 'Quote'
+                  | 'Rabbit'
+                  | 'Radar'
+                  | 'Radiation'
+                  | 'Radical'
+                  | 'Radio'
+                  | 'RadioOff'
+                  | 'RadioReceiver'
+                  | 'RadioTower'
+                  | 'Radius'
+                  | 'Rainbow'
+                  | 'Rat'
+                  | 'Ratio'
+                  | 'Receipt'
+                  | 'ReceiptCent'
+                  | 'ReceiptEuro'
+                  | 'ReceiptIndianRupee'
+                  | 'ReceiptJapaneseYen'
+                  | 'ReceiptPoundSterling'
+                  | 'ReceiptRussianRuble'
+                  | 'ReceiptSwissFranc'
+                  | 'ReceiptText'
+                  | 'ReceiptTurkishLira'
+                  | 'RectangleCircle'
+                  | 'RectangleEllipsis'
+                  | 'RectangleGoggles'
+                  | 'RectangleHorizontal'
+                  | 'RectangleVertical'
+                  | 'Recycle'
+                  | 'Redo'
+                  | 'Redo2'
+                  | 'RedoDot'
+                  | 'RefreshCcw'
+                  | 'RefreshCcwDot'
+                  | 'RefreshCw'
+                  | 'RefreshCwOff'
+                  | 'Refrigerator'
+                  | 'Regex'
+                  | 'RemoveFormatting'
+                  | 'Repeat'
+                  | 'Repeat1'
+                  | 'Repeat2'
+                  | 'RepeatOff'
+                  | 'Replace'
+                  | 'ReplaceAll'
+                  | 'Reply'
+                  | 'ReplyAll'
+                  | 'Rewind'
+                  | 'Ribbon'
+                  | 'Road'
+                  | 'RobotArm'
+                  | 'RobotVacuum'
+                  | 'Rocket'
+                  | 'RockingChair'
+                  | 'RollerCoaster'
+                  | 'Rose'
+                  | 'Rotate3d'
+                  | 'Rotate3D'
+                  | 'RotateCcw'
+                  | 'RotateCcwClock'
+                  | 'RotateCcwKey'
+                  | 'RotateCcwSquare'
+                  | 'RotateCw'
+                  | 'RotateCwClock'
+                  | 'RotateCwFadingClock'
+                  | 'RotateCwSquare'
+                  | 'Route'
+                  | 'RouteOff'
+                  | 'Router'
+                  | 'Rows'
+                  | 'Rows2'
+                  | 'Rows3'
+                  | 'Rows4'
+                  | 'Rss'
+                  | 'RugbyBall'
+                  | 'Ruler'
+                  | 'RulerDimensionLine'
+                  | 'RussianRuble'
+                  | 'Sailboat'
+                  | 'Salad'
+                  | 'Sandwich'
+                  | 'Satellite'
+                  | 'SatelliteDish'
+                  | 'SaudiRiyal'
+                  | 'Save'
+                  | 'SaveAll'
+                  | 'SaveCheck'
+                  | 'SaveOff'
+                  | 'SavePen'
+                  | 'SavePlus'
+                  | 'Scale'
+                  | 'Scale3d'
+                  | 'Scale3D'
+                  | 'Scaling'
+                  | 'Scan'
+                  | 'ScanBarcode'
+                  | 'ScanBox'
+                  | 'ScanEye'
+                  | 'ScanFace'
+                  | 'ScanHeart'
+                  | 'ScanLine'
+                  | 'ScanQrCode'
+                  | 'ScanSearch'
+                  | 'ScanSquare'
+                  | 'ScanText'
+                  | 'ScatterChart'
+                  | 'School'
+                  | 'School2'
+                  | 'Scissors'
+                  | 'ScissorsLineDashed'
+                  | 'ScissorsSquare'
+                  | 'ScissorsSquareDashedBottom'
+                  | 'Scooter'
+                  | 'ScratchBlocks'
+                  | 'ScreenShare'
+                  | 'ScreenShareOff'
+                  | 'Screw'
+                  | 'Scroll'
+                  | 'ScrollText'
+                  | 'Search'
+                  | 'SearchAlert'
+                  | 'SearchCheck'
+                  | 'SearchCode'
+                  | 'SearchExclamationPoint'
+                  | 'SearchSlash'
+                  | 'SearchX'
+                  | 'Section'
+                  | 'Send'
+                  | 'SendHorizonal'
+                  | 'SendHorizontal'
+                  | 'SendToBack'
+                  | 'SeparatorHorizontal'
+                  | 'SeparatorVertical'
+                  | 'Server'
+                  | 'ServerCog'
+                  | 'ServerCrash'
+                  | 'ServerNas'
+                  | 'ServerOff'
+                  | 'ServerPlus'
+                  | 'Settings'
+                  | 'Settings2'
+                  | 'Shapes'
+                  | 'Share'
+                  | 'Share2'
+                  | 'Sheet'
+                  | 'Shell'
+                  | 'ShelvingUnit'
+                  | 'Shield'
+                  | 'ShieldAlert'
+                  | 'ShieldBan'
+                  | 'ShieldCheck'
+                  | 'ShieldClose'
+                  | 'ShieldCog'
+                  | 'ShieldCogCorner'
+                  | 'ShieldEllipsis'
+                  | 'ShieldExclamationPoint'
+                  | 'ShieldHalf'
+                  | 'ShieldHouse'
+                  | 'ShieldKeyhole'
+                  | 'ShieldLock'
+                  | 'ShieldMinus'
+                  | 'ShieldOff'
+                  | 'ShieldPlus'
+                  | 'ShieldQuestion'
+                  | 'ShieldQuestionMark'
+                  | 'ShieldUser'
+                  | 'ShieldX'
+                  | 'Ship'
+                  | 'ShipCargo'
+                  | 'ShipWheel'
+                  | 'Shirt'
+                  | 'ShoppingBag'
+                  | 'ShoppingBasket'
+                  | 'ShoppingCart'
+                  | 'ShoppingCartMinus'
+                  | 'ShoppingCartPlus'
+                  | 'Shovel'
+                  | 'ShowerHead'
+                  | 'Shredder'
+                  | 'Shrimp'
+                  | 'ShrimpOff'
+                  | 'Shrink'
+                  | 'Shrub'
+                  | 'Shuffle'
+                  | 'Sidebar'
+                  | 'SidebarClose'
+                  | 'SidebarOpen'
+                  | 'Sigma'
+                  | 'SigmaSquare'
+                  | 'Signal'
+                  | 'SignalHigh'
+                  | 'SignalLow'
+                  | 'SignalMedium'
+                  | 'SignalZero'
+                  | 'Signature'
+                  | 'Signpost'
+                  | 'SignpostBig'
+                  | 'Siren'
+                  | 'SirenOff'
+                  | 'SixteenthNotes'
+                  | 'SkipBack'
+                  | 'SkipForward'
+                  | 'Skull'
+                  | 'Slash'
+                  | 'SlashSquare'
+                  | 'Slice'
+                  | 'Sliders'
+                  | 'SlidersHorizontal'
+                  | 'SlidersVertical'
+                  | 'Smartphone'
+                  | 'SmartphoneCharging'
+                  | 'SmartphoneNfc'
+                  | 'SmartphoneUserRound'
+                  | 'Smile'
+                  | 'SmilePlus'
+                  | 'Snail'
+                  | 'Snowflake'
+                  | 'SoapDispenserDroplet'
+                  | 'Sofa'
+                  | 'SolarPanel'
+                  | 'SortAsc'
+                  | 'SortDesc'
+                  | 'Soup'
+                  | 'Space'
+                  | 'Spade'
+                  | 'Sparkle'
+                  | 'Sparkles'
+                  | 'Speaker'
+                  | 'Speech'
+                  | 'SpellCheck'
+                  | 'SpellCheck2'
+                  | 'Spline'
+                  | 'SplinePointer'
+                  | 'Split'
+                  | 'SplitSquareHorizontal'
+                  | 'SplitSquareVertical'
+                  | 'Spool'
+                  | 'SportShoe'
+                  | 'Spotlight'
+                  | 'SprayCan'
+                  | 'Sprout'
+                  | 'Square'
+                  | 'SquareActivity'
+                  | 'SquareArrowDown'
+                  | 'SquareArrowDownLeft'
+                  | 'SquareArrowDownRight'
+                  | 'SquareArrowLeft'
+                  | 'SquareArrowOutDownLeft'
+                  | 'SquareArrowOutDownRight'
+                  | 'SquareArrowOutUpLeft'
+                  | 'SquareArrowOutUpRight'
+                  | 'SquareArrowRight'
+                  | 'SquareArrowRightEnter'
+                  | 'SquareArrowRightExit'
+                  | 'SquareArrowUp'
+                  | 'SquareArrowUpLeft'
+                  | 'SquareArrowUpRight'
+                  | 'SquareAsterisk'
+                  | 'SquareBookmark'
+                  | 'SquareBottomDashedScissors'
+                  | 'SquareCenterlineDashedHorizontal'
+                  | 'SquareCenterlineDashedVertical'
+                  | 'SquareChartGantt'
+                  | 'SquareCheck'
+                  | 'SquareCheckBig'
+                  | 'SquareChevronDown'
+                  | 'SquareChevronLeft'
+                  | 'SquareChevronRight'
+                  | 'SquareChevronsDown'
+                  | 'SquareChevronsLeft'
+                  | 'SquareChevronsRight'
+                  | 'SquareChevronsUp'
+                  | 'SquareChevronUp'
+                  | 'SquareCode'
+                  | 'SquareDashed'
+                  | 'SquareDashedBottom'
+                  | 'SquareDashedBottomCode'
+                  | 'SquareDashedKanban'
+                  | 'SquareDashedMousePointer'
+                  | 'SquareDashedPlus'
+                  | 'SquareDashedText'
+                  | 'SquareDashedTopSolid'
+                  | 'SquareDashedX'
+                  | 'SquareDashedXCorner'
+                  | 'SquareDimensions'
+                  | 'SquareDivide'
+                  | 'SquareDot'
+                  | 'SquareEqual'
+                  | 'SquareExclamationPoint'
+                  | 'SquareFunction'
+                  | 'SquareGanttChart'
+                  | 'SquareKanban'
+                  | 'SquareKanbanPlus'
+                  | 'SquareLetterA'
+                  | 'SquareLetterB'
+                  | 'SquareLetterC'
+                  | 'SquareLetterD'
+                  | 'SquareLetterE'
+                  | 'SquareLetterF'
+                  | 'SquareLetterG'
+                  | 'SquareLetterH'
+                  | 'SquareLetterI'
+                  | 'SquareLetterJ'
+                  | 'SquareLetterK'
+                  | 'SquareLetterL'
+                  | 'SquareLetterM'
+                  | 'SquareLetterN'
+                  | 'SquareLetterO'
+                  | 'SquareLetterP'
+                  | 'SquareLetterPOff'
+                  | 'SquareLetterQ'
+                  | 'SquareLetterR'
+                  | 'SquareLetterS'
+                  | 'SquareLetterT'
+                  | 'SquareLetterU'
+                  | 'SquareLetterV'
+                  | 'SquareLetterW'
+                  | 'SquareLetterX'
+                  | 'SquareLetterY'
+                  | 'SquareLetterZ'
+                  | 'SquareLibrary'
+                  | 'SquareM'
+                  | 'SquareMenu'
+                  | 'SquareMinus'
+                  | 'SquareMousePointer'
+                  | 'SquareOff'
+                  | 'SquarePadding'
+                  | 'SquarePaddingBottom'
+                  | 'SquarePaddingHorizontal'
+                  | 'SquarePaddingLeft'
+                  | 'SquarePaddingRight'
+                  | 'SquarePaddingTop'
+                  | 'SquarePaddingVertical'
+                  | 'SquareParking'
+                  | 'SquareParkingOff'
+                  | 'SquarePause'
+                  | 'SquarePen'
+                  | 'SquarePercent'
+                  | 'SquarePi'
+                  | 'SquarePilcrow'
+                  | 'SquarePlay'
+                  | 'SquarePlus'
+                  | 'SquarePower'
+                  | 'SquareRadical'
+                  | 'SquareRoundCorner'
+                  | 'SquareScissors'
+                  | 'SquaresExclude'
+                  | 'SquareSigma'
+                  | 'SquaresIntersect'
+                  | 'SquareSlash'
+                  | 'SquareSparkles'
+                  | 'SquareSplitHorizontal'
+                  | 'SquareSplitVertical'
+                  | 'SquareSquare'
+                  | 'SquaresSubtract'
+                  | 'SquareStack'
+                  | 'SquareStar'
+                  | 'SquareStop'
+                  | 'SquaresUnite'
+                  | 'SquareTerminal'
+                  | 'SquareText'
+                  | 'SquareUser'
+                  | 'SquareUserRound'
+                  | 'SquareX'
+                  | 'Squircle'
+                  | 'SquircleDashed'
+                  | 'Squirrel'
+                  | 'Stamp'
+                  | 'Star'
+                  | 'StarCheck'
+                  | 'StarHalf'
+                  | 'StarMinus'
+                  | 'StarOff'
+                  | 'StarPlus'
+                  | 'Stars'
+                  | 'StarX'
+                  | 'StepBack'
+                  | 'StepForward'
+                  | 'Stethoscope'
+                  | 'Sticker'
+                  | 'StickyNote'
+                  | 'StickyNoteCheck'
+                  | 'StickyNoteMinus'
+                  | 'StickyNoteOff'
+                  | 'StickyNotePlus'
+                  | 'StickyNotes'
+                  | 'StickyNoteX'
+                  | 'Stone'
+                  | 'StopCircle'
+                  | 'Store'
+                  | 'StretchHorizontal'
+                  | 'StretchVertical'
+                  | 'Strikethrough'
+                  | 'Subscript'
+                  | 'Subtitles'
+                  | 'Summary'
+                  | 'Sun'
+                  | 'SunDim'
+                  | 'SunMedium'
+                  | 'SunMoon'
+                  | 'Sunrise'
+                  | 'Sunset'
+                  | 'SunSnow'
+                  | 'Superscript'
+                  | 'SwatchBook'
+                  | 'SwissFranc'
+                  | 'SwitchCamera'
+                  | 'Sword'
+                  | 'Swords'
+                  | 'Syringe'
+                  | 'Table'
+                  | 'Table2'
+                  | 'TableCellsMerge'
+                  | 'TableCellsSplit'
+                  | 'TableColumnsSplit'
+                  | 'TableConfig'
+                  | 'TableOfContents'
+                  | 'TableProperties'
+                  | 'TableRowsSplit'
+                  | 'Tablet'
+                  | 'Tablets'
+                  | 'TabletSmartphone'
+                  | 'Tag'
+                  | 'TagPlus'
+                  | 'Tags'
+                  | 'TagX'
+                  | 'Tally1'
+                  | 'Tally2'
+                  | 'Tally3'
+                  | 'Tally4'
+                  | 'Tally5'
+                  | 'Tangent'
+                  | 'Target'
+                  | 'Telescope'
+                  | 'Tent'
+                  | 'TentTree'
+                  | 'Terminal'
+                  | 'TerminalSquare'
+                  | 'TestTube'
+                  | 'TestTube2'
+                  | 'TestTubeDiagonal'
+                  | 'TestTubes'
+                  | 'Text'
+                  | 'TextAlignCenter'
+                  | 'TextAlignEnd'
+                  | 'TextAlignJustify'
+                  | 'TextAlignJustifyCenter'
+                  | 'TextAlignJustifyEnd'
+                  | 'TextAlignJustifyStart'
+                  | 'TextAlignStart'
+                  | 'TextCursor'
+                  | 'TextCursorInput'
+                  | 'TextInitial'
+                  | 'TextQuote'
+                  | 'TextSearch'
+                  | 'TextSelect'
+                  | 'TextSelection'
+                  | 'TextWrap'
+                  | 'Theater'
+                  | 'Thermometer'
+                  | 'ThermometerSnowflake'
+                  | 'ThermometerSun'
+                  | 'ThumbsDown'
+                  | 'ThumbsUp'
+                  | 'Ticket'
+                  | 'TicketCheck'
+                  | 'TicketMinus'
+                  | 'TicketPercent'
+                  | 'TicketPlus'
+                  | 'Tickets'
+                  | 'TicketSlash'
+                  | 'TicketsPlane'
+                  | 'TicketX'
+                  | 'TicTacToe'
+                  | 'Timeline'
+                  | 'Timer'
+                  | 'TimerOff'
+                  | 'TimerReset'
+                  | 'ToggleLeft'
+                  | 'ToggleRight'
+                  | 'Toilet'
+                  | 'Tombstone'
+                  | 'Toolbox'
+                  | 'ToolCase'
+                  | 'Toothbrush'
+                  | 'ToothbrushSparkles'
+                  | 'Tornado'
+                  | 'Torus'
+                  | 'Touchpad'
+                  | 'TouchpadOff'
+                  | 'TowelRack'
+                  | 'TowerControl'
+                  | 'ToyBrick'
+                  | 'Tractor'
+                  | 'TrafficCone'
+                  | 'Trailer'
+                  | 'Train'
+                  | 'TrainFront'
+                  | 'TrainFrontTunnel'
+                  | 'TrainTrack'
+                  | 'TramFront'
+                  | 'Transgender'
+                  | 'Trash'
+                  | 'Trash2'
+                  | 'TrashOff'
+                  | 'TreeDeciduous'
+                  | 'TreePalm'
+                  | 'TreePine'
+                  | 'Trees'
+                  | 'TrendingDown'
+                  | 'TrendingUp'
+                  | 'TrendingUpDown'
+                  | 'Triangle'
+                  | 'TriangleAlert'
+                  | 'TriangleDashed'
+                  | 'TriangleExclamationPoint'
+                  | 'TriangleRight'
+                  | 'TrianglesCenterlineDashedHorizontal'
+                  | 'TrianglesCenterlineDashedVertical'
+                  | 'Trophy'
+                  | 'Truck'
+                  | 'TruckElectric'
+                  | 'TubeLotion'
+                  | 'TurkishLira'
+                  | 'Turntable'
+                  | 'Turtle'
+                  | 'Tv'
+                  | 'Tv2'
+                  | 'TvMinimal'
+                  | 'TvMinimalPlay'
+                  | 'Type'
+                  | 'TypeOutline'
+                  | 'Umbrella'
+                  | 'UmbrellaOff'
+                  | 'Underline'
+                  | 'Undo'
+                  | 'Undo2'
+                  | 'UndoDot'
+                  | 'UnfoldHorizontal'
+                  | 'UnfoldVertical'
+                  | 'Ungroup'
+                  | 'University'
+                  | 'Unlink'
+                  | 'Unlink2'
+                  | 'Unlock'
+                  | 'UnlockKeyhole'
+                  | 'Unplug'
+                  | 'Upload'
+                  | 'UploadCloud'
+                  | 'Usb'
+                  | 'UsbCPort'
+                  | 'User'
+                  | 'User2'
+                  | 'UserCheck'
+                  | 'UserCheck2'
+                  | 'UserCircle'
+                  | 'UserCircle2'
+                  | 'UserCog'
+                  | 'UserCog2'
+                  | 'UserGroup'
+                  | 'UserKey'
+                  | 'UserLock'
+                  | 'UserMinus'
+                  | 'UserMinus2'
+                  | 'UserPen'
+                  | 'UserPlus'
+                  | 'UserPlus2'
+                  | 'UserRound'
+                  | 'UserRoundArrowLeft'
+                  | 'UserRoundCheck'
+                  | 'UserRoundCog'
+                  | 'UserRoundGroup'
+                  | 'UserRoundKey'
+                  | 'UserRoundMinus'
+                  | 'UserRoundPen'
+                  | 'UserRoundPlus'
+                  | 'UserRoundSearch'
+                  | 'UserRoundShield'
+                  | 'UserRoundStar'
+                  | 'UserRoundX'
+                  | 'Users'
+                  | 'Users2'
+                  | 'UsersCollaboration'
+                  | 'UserSearch'
+                  | 'UserShield'
+                  | 'UserSquare'
+                  | 'UserSquare2'
+                  | 'UsersRound'
+                  | 'UsersRoundCollaboration'
+                  | 'UserStar'
+                  | 'UserX'
+                  | 'UserX2'
+                  | 'Utensils'
+                  | 'UtensilsCrossed'
+                  | 'UtilityPole'
+                  | 'Van'
+                  | 'Variable'
+                  | 'Vault'
+                  | 'VectorPolygon'
+                  | 'VectorSquare'
+                  | 'Vegan'
+                  | 'VenetianMask'
+                  | 'Venus'
+                  | 'VenusAndMars'
+                  | 'Verified'
+                  | 'Vibrate'
+                  | 'VibrateOff'
+                  | 'Video'
+                  | 'VideoOff'
+                  | 'Videotape'
+                  | 'View'
+                  | 'Virus'
+                  | 'VirusOff'
+                  | 'Voicemail'
+                  | 'Volleyball'
+                  | 'Volume'
+                  | 'Volume1'
+                  | 'Volume2'
+                  | 'VolumeOff'
+                  | 'VolumeX'
+                  | 'Vote'
+                  | 'Wallet'
+                  | 'Wallet2'
+                  | 'WalletCards'
+                  | 'WalletMinimal'
+                  | 'Wallpaper'
+                  | 'Wand'
+                  | 'Wand2'
+                  | 'WandSparkles'
+                  | 'Warehouse'
+                  | 'WashingMachine'
+                  | 'Watch'
+                  | 'Waves'
+                  | 'WavesArrowDown'
+                  | 'WavesArrowUp'
+                  | 'WavesHorizontal'
+                  | 'WavesLadder'
+                  | 'WavesVertical'
+                  | 'Waypoints'
+                  | 'Webcam'
+                  | 'WebcamOff'
+                  | 'Webhook'
+                  | 'WebhookOff'
+                  | 'Weight'
+                  | 'WeightTilde'
+                  | 'Wheat'
+                  | 'WheatOff'
+                  | 'Whistle'
+                  | 'WholeWord'
+                  | 'Wifi'
+                  | 'WifiCog'
+                  | 'WifiHigh'
+                  | 'WifiLock'
+                  | 'WifiLow'
+                  | 'WifiOff'
+                  | 'WifiPen'
+                  | 'WifiSync'
+                  | 'WifiZero'
+                  | 'Wind'
+                  | 'WindArrowDown'
+                  | 'WindArrowUp'
+                  | 'Wine'
+                  | 'WineOff'
+                  | 'Workflow'
+                  | 'Worm'
+                  | 'WrapText'
+                  | 'Wrench'
+                  | 'WrenchOff'
+                  | 'X'
+                  | 'XCircle'
+                  | 'XLineTop'
+                  | 'XOctagon'
+                  | 'XSquare'
+                  | 'Zap'
+                  | 'ZapOff'
+                  | 'ZodiacAquarius'
+                  | 'ZodiacAries'
+                  | 'ZodiacCancer'
+                  | 'ZodiacCapricorn'
+                  | 'ZodiacGemini'
+                  | 'ZodiacLeo'
+                  | 'ZodiacLibra'
+                  | 'ZodiacOphiuchus'
+                  | 'ZodiacPisces'
+                  | 'ZodiacSagittarius'
+                  | 'ZodiacScorpio'
+                  | 'ZodiacTaurus'
+                  | 'ZodiacVirgo'
+                  | 'ZoomIn'
+                  | 'ZoomOut'
+                  | null
+                image: {
+                  asset?: SanityImageAssetReference
+                  media?: unknown // Unable to locate the referenced type "serviceItem.image.media" in schema
+                  hotspot?: SanityImageHotspot
+                  crop?: SanityImageCrop
+                  _type: 'image'
+                  lqip: string | null
+                } | null
+                ctas: Array<{
+                  _key: string
+                  _type: 'cta'
+                  link: {
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  } | null
+                  style:
+                    'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary' | null
+                }> | null
+              }> | null
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'stat-list'
+              pretitle?: string
+              intro?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              stats?: Array<{
+                prefix?: string
+                value?: string
+                suffix?: string
+                text?: string
+                _type: 'stat'
+                _key: string
+              }>
+              textAlign?: string
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'step-list'
+              pretitle?: string
+              intro?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              steps?: Array<{
+                content?: Array<{
+                  children?: Array<{
+                    marks?: Array<string>
+                    text?: string
+                    _type: 'span'
+                    _key: string
+                  }>
+                  style?:
+                    | 'blockquote'
+                    | 'display-hero'
+                    | 'display-xl'
+                    | 'display-xxl'
+                    | 'h1'
+                    | 'h2'
+                    | 'h3'
+                    | 'h4'
+                    | 'h5'
+                    | 'h6'
+                    | 'normal'
+                  listItem?: 'bullet' | 'number'
+                  markDefs?: Array<{
+                    href?: string
+                    _type: 'link'
+                    _key: string
+                  }>
+                  level?: number
+                  _type: 'block'
+                  _key: string
+                }>
+                _type: 'step'
+                _key: string
+              }>
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'tabbed-content'
+              pretitle?: string
+              intro?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              tabs: Array<{
+                label?: string
+                pretitle?: string
+                content?: Array<{
+                  children?: Array<{
+                    marks?: Array<string>
+                    text?: string
+                    _type: 'span'
+                    _key: string
+                  }>
+                  style?:
+                    | 'blockquote'
+                    | 'display-hero'
+                    | 'display-xl'
+                    | 'display-xxl'
+                    | 'h1'
+                    | 'h2'
+                    | 'h3'
+                    | 'h4'
+                    | 'h5'
+                    | 'h6'
+                    | 'normal'
+                  listItem?: 'bullet' | 'number'
+                  markDefs?: Array<{
+                    href?: string
+                    _type: 'link'
+                    _key: string
+                  }>
+                  level?: number
+                  _type: 'block'
+                  _key: string
+                }>
+                ctas: Array<{
+                  _key: string
+                  _type: 'cta'
+                  link: {
+                    _type: 'link'
+                    label?: string
+                    type?: 'external' | 'internal'
+                    internal:
+                      | {
+                          _type: 'blog.post'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | {
+                          _type: 'page'
+                          title: string | null
+                          metadata: Metadata | null
+                        }
+                      | null
+                    external?: string
+                    params?: string
+                  } | null
+                  style:
+                    'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary' | null
+                }> | null
+                assets?: Array<
+                  | ({
+                      _key: string
+                    } & Code)
+                  | ({
+                      _key: string
+                    } & CustomHtml)
+                  | ({
+                      _key: string
+                    } & Img)
+                >
+                assetOnRight?: boolean
+                assetBelowContent?: boolean
+                _type: 'tab'
+                _key: string
+              }> | null
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'team.placeholder'
+              options?: ModuleOptions
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'testimonial-list'
+              pretitle?: string
+              intro?: Array<{
+                children?: Array<{
+                  marks?: Array<string>
+                  text?: string
+                  _type: 'span'
+                  _key: string
+                }>
+                style?:
+                  | 'blockquote'
+                  | 'display-hero'
+                  | 'display-xl'
+                  | 'display-xxl'
+                  | 'h1'
+                  | 'h2'
+                  | 'h3'
+                  | 'h4'
+                  | 'h5'
+                  | 'h6'
+                  | 'normal'
+                listItem?: 'bullet' | 'number'
+                markDefs?: Array<{
+                  href?: string
+                  _type: 'link'
+                  _key: string
+                }>
+                level?: number
+                _type: 'block'
+                _key: string
+              }>
+              testimonials: Array<{
+                _id: string
+                _type: 'testimonial'
+                _createdAt: string
+                _updatedAt: string
+                _rev: string
+                content?: Array<{
+                  children?: Array<{
+                    marks?: Array<string>
+                    text?: string
+                    _type: 'span'
+                    _key: string
+                  }>
+                  style?:
+                    | 'blockquote'
+                    | 'display-hero'
+                    | 'display-xl'
+                    | 'display-xxl'
+                    | 'h1'
+                    | 'h2'
+                    | 'h3'
+                    | 'h4'
+                    | 'h5'
+                    | 'h6'
+                    | 'normal'
+                  listItem?: 'bullet' | 'number'
+                  markDefs?: Array<{
+                    href?: string
+                    _type: 'link'
+                    _key: string
+                  }>
+                  level?: number
+                  _type: 'block'
+                  _key: string
+                }>
+                source?: string
+                author?: {
+                  name?: string
+                  title?: string
+                  image?: {
+                    asset?: SanityImageAssetReference
+                    media?: unknown
+                    hotspot?: SanityImageHotspot
+                    crop?: SanityImageCrop
+                    _type: 'image'
+                  }
+                }
+                language?: string
+              }> | null
+              layout?: 'carousel' | 'grid'
+              layoutMobile?: 'carousel' | 'grid'
+              ctas: null
+            }
+          | {
+              _key: string
+              _type: 'testimonial.featured'
+              testimonial: {
+                _id: string
+                _type: 'testimonial'
+                _createdAt: string
+                _updatedAt: string
+                _rev: string
+                content?: Array<{
+                  children?: Array<{
+                    marks?: Array<string>
+                    text?: string
+                    _type: 'span'
+                    _key: string
+                  }>
+                  style?:
+                    | 'blockquote'
+                    | 'display-hero'
+                    | 'display-xl'
+                    | 'display-xxl'
+                    | 'h1'
+                    | 'h2'
+                    | 'h3'
+                    | 'h4'
+                    | 'h5'
+                    | 'h6'
+                    | 'normal'
+                  listItem?: 'bullet' | 'number'
+                  markDefs?: Array<{
+                    href?: string
+                    _type: 'link'
+                    _key: string
+                  }>
+                  level?: number
+                  _type: 'block'
+                  _key: string
+                }>
+                source?: string
+                author?: {
+                  name?: string
+                  title?: string
+                  image?: {
+                    asset?: SanityImageAssetReference
+                    media?: unknown
+                    hotspot?: SanityImageHotspot
+                    crop?: SanityImageCrop
+                    _type: 'image'
+                  }
+                }
+                language?: string
+              } | null
+              ctas: null
+            }
+        > | null
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'service-details'
+        features: Array<{
+          name?: string
+          description?: string
+          img: {
+            asset?: SanityImageAssetReference
+            media?: unknown // Unable to locate the referenced type "img.media" in schema
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            caption?: string
+            alt?: string
+            source?: string
+            loading?: 'eager' | 'lazy'
+            _type: 'image'
+            lqip: string | null
+          } | null
+          _key: string
+        }> | null
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'service-list'
+        options?: ModuleOptions
+        services: Array<{
+          _key: string
+          title: string | null
+          description: Array<{
+            children?: Array<{
+              marks?: Array<string>
+              text?: string
+              _type: 'span'
+              _key: string
+            }>
+            style?:
+              | 'blockquote'
+              | 'display-hero'
+              | 'display-xl'
+              | 'display-xxl'
+              | 'h1'
+              | 'h2'
+              | 'h3'
+              | 'h4'
+              | 'h5'
+              | 'h6'
+              | 'normal'
+            listItem?: 'bullet' | 'number'
+            markDefs?: Array<{
+              href?: string
+              _type: 'link'
+              _key: string
+            }>
+            level?: number
+            _type: 'block'
+            _key: string
+          }> | null
+          layout: 'text-left' | 'text-right' | null
+          keywords: Array<string> | null
+          icon:
+            | ''
+            | 'AArrowDown'
+            | 'AArrowUp'
+            | 'Accessibility'
+            | 'Activity'
+            | 'ActivitySquare'
+            | 'Ad'
+            | 'Airplay'
+            | 'AirVent'
+            | 'ALargeSmall'
+            | 'AlarmCheck'
+            | 'AlarmClock'
+            | 'AlarmClockCheck'
+            | 'AlarmClockMinus'
+            | 'AlarmClockOff'
+            | 'AlarmClockPlus'
+            | 'AlarmMinus'
+            | 'AlarmPlus'
+            | 'AlarmSmoke'
+            | 'Album'
+            | 'AlertCircle'
+            | 'AlertOctagon'
+            | 'AlertTriangle'
+            | 'AlignCenter'
+            | 'AlignCenterHorizontal'
+            | 'AlignCenterVertical'
+            | 'AlignEndHorizontal'
+            | 'AlignEndVertical'
+            | 'AlignHorizontalDistributeCenter'
+            | 'AlignHorizontalDistributeEnd'
+            | 'AlignHorizontalDistributeStart'
+            | 'AlignHorizontalJustifyCenter'
+            | 'AlignHorizontalJustifyEnd'
+            | 'AlignHorizontalJustifyStart'
+            | 'AlignHorizontalSpaceAround'
+            | 'AlignHorizontalSpaceBetween'
+            | 'AlignJustify'
+            | 'AlignLeft'
+            | 'AlignRight'
+            | 'AlignStartHorizontal'
+            | 'AlignStartVertical'
+            | 'AlignVerticalDistributeCenter'
+            | 'AlignVerticalDistributeEnd'
+            | 'AlignVerticalDistributeStart'
+            | 'AlignVerticalJustifyCenter'
+            | 'AlignVerticalJustifyEnd'
+            | 'AlignVerticalJustifyStart'
+            | 'AlignVerticalSpaceAround'
+            | 'AlignVerticalSpaceBetween'
+            | 'Ambulance'
+            | 'Ampersand'
+            | 'Ampersands'
+            | 'Amphora'
+            | 'Anchor'
+            | 'Angle'
+            | 'Angry'
+            | 'Annoyed'
+            | 'Antenna'
+            | 'Anvil'
+            | 'Aperture'
+            | 'Apple'
+            | 'AppWindow'
+            | 'AppWindowMac'
+            | 'Archive'
+            | 'ArchiveArrowDown'
+            | 'ArchiveArrowUp'
+            | 'ArchiveRestore'
+            | 'ArchiveX'
+            | 'AreaChart'
+            | 'Armchair'
+            | 'ArmenianDram'
+            | 'ArrowBigDown'
+            | 'ArrowBigDownDash'
+            | 'ArrowBigLeft'
+            | 'ArrowBigLeftDash'
+            | 'ArrowBigRight'
+            | 'ArrowBigRightDash'
+            | 'ArrowBigUp'
+            | 'ArrowBigUpDash'
+            | 'ArrowDown'
+            | 'ArrowDown01'
+            | 'ArrowDown10'
+            | 'ArrowDownAz'
+            | 'ArrowDownAZ'
+            | 'ArrowDownCircle'
+            | 'ArrowDownFromLine'
+            | 'ArrowDownLeft'
+            | 'ArrowDownLeftFromCircle'
+            | 'ArrowDownLeftFromSquare'
+            | 'ArrowDownLeftSquare'
+            | 'ArrowDownNarrowWide'
+            | 'ArrowDownRight'
+            | 'ArrowDownRightFromCircle'
+            | 'ArrowDownRightFromSquare'
+            | 'ArrowDownRightSquare'
+            | 'ArrowDownSquare'
+            | 'ArrowDownToDot'
+            | 'ArrowDownToLine'
+            | 'ArrowDownUp'
+            | 'ArrowDownWideNarrow'
+            | 'ArrowDownZa'
+            | 'ArrowDownZA'
+            | 'ArrowLeft'
+            | 'ArrowLeftCircle'
+            | 'ArrowLeftFromLine'
+            | 'ArrowLeftRight'
+            | 'ArrowLeftSquare'
+            | 'ArrowLeftToLine'
+            | 'ArrowRight'
+            | 'ArrowRightCircle'
+            | 'ArrowRightFromLine'
+            | 'ArrowRightLeft'
+            | 'ArrowRightSquare'
+            | 'ArrowRightToLine'
+            | 'ArrowsUpFromLine'
+            | 'ArrowUp'
+            | 'ArrowUp01'
+            | 'ArrowUp10'
+            | 'ArrowUpAz'
+            | 'ArrowUpAZ'
+            | 'ArrowUpCircle'
+            | 'ArrowUpDown'
+            | 'ArrowUpFromDot'
+            | 'ArrowUpFromLine'
+            | 'ArrowUpLeft'
+            | 'ArrowUpLeftFromCircle'
+            | 'ArrowUpLeftFromSquare'
+            | 'ArrowUpLeftSquare'
+            | 'ArrowUpNarrowWide'
+            | 'ArrowUpRight'
+            | 'ArrowUpRightFromCircle'
+            | 'ArrowUpRightFromSquare'
+            | 'ArrowUpRightSquare'
+            | 'ArrowUpSquare'
+            | 'ArrowUpToLine'
+            | 'ArrowUpWideNarrow'
+            | 'ArrowUpZa'
+            | 'ArrowUpZA'
+            | 'Asterisk'
+            | 'AsteriskSquare'
+            | 'Astroid'
+            | 'Atom'
+            | 'AtSign'
+            | 'AudioLines'
+            | 'AudioLinesOff'
+            | 'AudioLinesX'
+            | 'AudioWaveform'
+            | 'Avocado'
+            | 'Award'
+            | 'Axe'
+            | 'Axis3d'
+            | 'Axis3D'
+            | 'AzerbaijaniManat'
+            | 'Baby'
+            | 'Backpack'
+            | 'Bacon'
+            | 'Badge'
+            | 'BadgeAlert'
+            | 'BadgeCent'
+            | 'BadgeCheck'
+            | 'BadgeDollarSign'
+            | 'BadgeEuro'
+            | 'BadgeExclamationPoint'
+            | 'BadgeHelp'
+            | 'BadgeIndianRupee'
+            | 'BadgeInfo'
+            | 'BadgeJapaneseYen'
+            | 'BadgeMinus'
+            | 'BadgePercent'
+            | 'BadgePlus'
+            | 'BadgePoundSterling'
+            | 'BadgeQuestionMark'
+            | 'BadgeRussianRuble'
+            | 'BadgeSwissFranc'
+            | 'BadgeTurkishLira'
+            | 'BadgeX'
+            | 'BaggageClaim'
+            | 'Balloon'
+            | 'BallWave'
+            | 'Ban'
+            | 'Banana'
+            | 'Bandage'
+            | 'BangladeshiTaka'
+            | 'Banknote'
+            | 'BanknoteArrowDown'
+            | 'BanknoteArrowUp'
+            | 'BanknoteCheck'
+            | 'BanknoteX'
+            | 'BarChart'
+            | 'BarChart2'
+            | 'BarChart3'
+            | 'BarChart4'
+            | 'BarChartBig'
+            | 'BarChartHorizontal'
+            | 'BarChartHorizontalBig'
+            | 'Barcode'
+            | 'Barrel'
+            | 'Baseline'
+            | 'Bath'
+            | 'Battery'
+            | 'BatteryCharging'
+            | 'BatteryExclamationPoint'
+            | 'BatteryFull'
+            | 'BatteryLow'
+            | 'BatteryMedium'
+            | 'BatteryPlus'
+            | 'BatteryWarning'
+            | 'Beaker'
+            | 'Bean'
+            | 'BeanOff'
+            | 'Bed'
+            | 'BedDouble'
+            | 'BedSingle'
+            | 'Beef'
+            | 'BeefOff'
+            | 'Beer'
+            | 'BeerOff'
+            | 'BelarusianRuble'
+            | 'Bell'
+            | 'BellCheck'
+            | 'BellDot'
+            | 'BellElectric'
+            | 'BellMinus'
+            | 'BellOff'
+            | 'BellPlus'
+            | 'BellRing'
+            | 'BetweenHorizonalEnd'
+            | 'BetweenHorizonalStart'
+            | 'BetweenHorizontalEnd'
+            | 'BetweenHorizontalStart'
+            | 'BetweenVerticalEnd'
+            | 'BetweenVerticalStart'
+            | 'BicepsFlexed'
+            | 'Bike'
+            | 'Binary'
+            | 'Binoculars'
+            | 'Biohazard'
+            | 'Bird'
+            | 'Birdhouse'
+            | 'Bitcoin'
+            | 'Blend'
+            | 'Blender'
+            | 'Blinds'
+            | 'Blocks'
+            | 'Bluetooth'
+            | 'BluetoothConnected'
+            | 'BluetoothOff'
+            | 'BluetoothSearching'
+            | 'Bold'
+            | 'Bolt'
+            | 'Bomb'
+            | 'Bone'
+            | 'BoneFracture'
+            | 'Book'
+            | 'BookA'
+            | 'BookAlert'
+            | 'BookAudio'
+            | 'BookBookmark'
+            | 'BookCheck'
+            | 'BookCopy'
+            | 'BookDashed'
+            | 'BookDown'
+            | 'BookExclamationPoint'
+            | 'BookHeadphones'
+            | 'BookHeart'
+            | 'BookImage'
+            | 'BookKey'
+            | 'BookLock'
+            | 'Bookmark'
+            | 'BookmarkCheck'
+            | 'BookMarked'
+            | 'BookmarkMinus'
+            | 'BookmarkOff'
+            | 'BookmarkPlus'
+            | 'BookmarkX'
+            | 'BookMinus'
+            | 'BookOpen'
+            | 'BookOpenCheck'
+            | 'BookOpenText'
+            | 'BookPlus'
+            | 'BookSearch'
+            | 'BookTemplate'
+            | 'BookText'
+            | 'BookType'
+            | 'BookUp'
+            | 'BookUp2'
+            | 'BookUser'
+            | 'BookX'
+            | 'BoomBox'
+            | 'Bot'
+            | 'BotMessageSquare'
+            | 'BotOff'
+            | 'BottleWine'
+            | 'BowArrow'
+            | 'Box'
+            | 'Boxes'
+            | 'BoxesLinked'
+            | 'BoxSelect'
+            | 'Braces'
+            | 'Brackets'
+            | 'Brain'
+            | 'BrainCircuit'
+            | 'BrainCog'
+            | 'BrainOff'
+            | 'BrickWall'
+            | 'BrickWallFire'
+            | 'BrickWallShield'
+            | 'Bridge'
+            | 'Briefcase'
+            | 'BriefcaseBusiness'
+            | 'BriefcaseConveyorBelt'
+            | 'BriefcaseMedical'
+            | 'BriefcasePlus'
+            | 'BringToFront'
+            | 'Broccoli'
+            | 'Broom'
+            | 'BroomSparkles'
+            | 'Brush'
+            | 'BrushCleaning'
+            | 'Bubbles'
+            | 'Bug'
+            | 'BugOff'
+            | 'BugPlay'
+            | 'Building'
+            | 'Building2'
+            | 'BuildingComplex'
+            | 'BuildingComplexPlus'
+            | 'Bus'
+            | 'BusFront'
+            | 'Cable'
+            | 'CableCar'
+            | 'Cake'
+            | 'CakeSlice'
+            | 'Calculator'
+            | 'Calendar'
+            | 'Calendar1'
+            | 'CalendarArrowDown'
+            | 'CalendarArrowLeft'
+            | 'CalendarArrowRight'
+            | 'CalendarArrowUp'
+            | 'CalendarCheck'
+            | 'CalendarCheck2'
+            | 'CalendarChevronsLeft'
+            | 'CalendarChevronsRight'
+            | 'CalendarClock'
+            | 'CalendarCog'
+            | 'CalendarDays'
+            | 'CalendarFold'
+            | 'CalendarHeart'
+            | 'CalendarMinus'
+            | 'CalendarMinus2'
+            | 'CalendarOff'
+            | 'CalendarPlus'
+            | 'CalendarPlus2'
+            | 'CalendarRange'
+            | 'Calendars'
+            | 'CalendarSearch'
+            | 'CalendarSync'
+            | 'CalendarX'
+            | 'CalendarX2'
+            | 'Camera'
+            | 'CameraOff'
+            | 'Can'
+            | 'CandlestickChart'
+            | 'Candy'
+            | 'CandyCane'
+            | 'CandyOff'
+            | 'Cannabis'
+            | 'CannabisOff'
+            | 'CanSoda'
+            | 'Captions'
+            | 'CaptionsOff'
+            | 'Car'
+            | 'Caravan'
+            | 'CarBattery'
+            | 'CardSim'
+            | 'CarFront'
+            | 'Carrot'
+            | 'CarTaxiFront'
+            | 'Carton'
+            | 'CartonOff'
+            | 'CaseLower'
+            | 'CaseSensitive'
+            | 'CaseUpper'
+            | 'CassetteTape'
+            | 'Cast'
+            | 'Castle'
+            | 'Cat'
+            | 'Cctv'
+            | 'CctvOff'
+            | 'Certificate'
+            | 'ChartArea'
+            | 'ChartBar'
+            | 'ChartBarBig'
+            | 'ChartBarDecreasing'
+            | 'ChartBarIncreasing'
+            | 'ChartBarStacked'
+            | 'ChartBellCurve'
+            | 'ChartCandlestick'
+            | 'ChartColumn'
+            | 'ChartColumnBig'
+            | 'ChartColumnDecreasing'
+            | 'ChartColumnIncreasing'
+            | 'ChartColumnStacked'
+            | 'ChartGantt'
+            | 'ChartLine'
+            | 'ChartNetwork'
+            | 'ChartNoAxesColumn'
+            | 'ChartNoAxesColumnDecreasing'
+            | 'ChartNoAxesColumnIncreasing'
+            | 'ChartNoAxesCombined'
+            | 'ChartNoAxesGantt'
+            | 'ChartPie'
+            | 'ChartQuadrant'
+            | 'ChartRadar'
+            | 'ChartScatter'
+            | 'ChartSpline'
+            | 'Check'
+            | 'CheckCheck'
+            | 'CheckCircle'
+            | 'CheckCircle2'
+            | 'CheckLine'
+            | 'CheckSquare'
+            | 'CheckSquare2'
+            | 'ChefHat'
+            | 'Cherry'
+            | 'ChessBishop'
+            | 'ChessKing'
+            | 'ChessKnight'
+            | 'ChessPawn'
+            | 'ChessQueen'
+            | 'ChessRook'
+            | 'ChevronDown'
+            | 'ChevronDownCircle'
+            | 'ChevronDownSquare'
+            | 'ChevronFirst'
+            | 'ChevronLast'
+            | 'ChevronLeft'
+            | 'ChevronLeftCircle'
+            | 'ChevronLeftSquare'
+            | 'ChevronRight'
+            | 'ChevronRightCircle'
+            | 'ChevronRightSquare'
+            | 'ChevronsDown'
+            | 'ChevronsDownUp'
+            | 'ChevronsLeft'
+            | 'ChevronsLeftRight'
+            | 'ChevronsLeftRightEllipsis'
+            | 'ChevronsRight'
+            | 'ChevronsRightLeft'
+            | 'ChevronsUp'
+            | 'ChevronsUpDown'
+            | 'ChevronUp'
+            | 'ChevronUpCircle'
+            | 'ChevronUpSquare'
+            | 'Church'
+            | 'Cigarette'
+            | 'CigaretteOff'
+            | 'Circle'
+            | 'CircleAlert'
+            | 'CircleArrowDown'
+            | 'CircleArrowLeft'
+            | 'CircleArrowOutDownLeft'
+            | 'CircleArrowOutDownRight'
+            | 'CircleArrowOutUpLeft'
+            | 'CircleArrowOutUpRight'
+            | 'CircleArrowRight'
+            | 'CircleArrowUp'
+            | 'CircleCheck'
+            | 'CircleCheckBig'
+            | 'CircleChevronDown'
+            | 'CircleChevronLeft'
+            | 'CircleChevronRight'
+            | 'CircleChevronsDown'
+            | 'CircleChevronsLeft'
+            | 'CircleChevronsRight'
+            | 'CircleChevronsUp'
+            | 'CircleChevronUp'
+            | 'CircleDashed'
+            | 'CircleDashedCheck'
+            | 'CircleDivide'
+            | 'CircleDollarSign'
+            | 'CircleDot'
+            | 'CircleDotDashed'
+            | 'CircleEllipsis'
+            | 'CircleEqual'
+            | 'CircleEuro'
+            | 'CircleExclamationPoint'
+            | 'CircleFadingArrowUp'
+            | 'CircleFadingPlay'
+            | 'CircleFadingPlus'
+            | 'CircleGauge'
+            | 'CircleHelp'
+            | 'CircleLetterA'
+            | 'CircleLetterB'
+            | 'CircleLetterC'
+            | 'CircleLetterD'
+            | 'CircleLetterE'
+            | 'CircleLetterF'
+            | 'CircleLetterG'
+            | 'CircleLetterH'
+            | 'CircleLetterI'
+            | 'CircleLetterJ'
+            | 'CircleLetterK'
+            | 'CircleLetterL'
+            | 'CircleLetterM'
+            | 'CircleLetterN'
+            | 'CircleLetterO'
+            | 'CircleLetterP'
+            | 'CircleLetterPOff'
+            | 'CircleLetterQ'
+            | 'CircleLetterR'
+            | 'CircleLetterS'
+            | 'CircleLetterT'
+            | 'CircleLetterU'
+            | 'CircleLetterV'
+            | 'CircleLetterW'
+            | 'CircleLetterX'
+            | 'CircleLetterY'
+            | 'CircleLetterZ'
+            | 'CircleMinus'
+            | 'CircleOff'
+            | 'CircleParking'
+            | 'CircleParkingOff'
+            | 'CirclePause'
+            | 'CirclePercent'
+            | 'CirclePile'
+            | 'CirclePlay'
+            | 'CirclePlus'
+            | 'CirclePoundSterling'
+            | 'CirclePower'
+            | 'CircleQuestionMark'
+            | 'CircleSlash'
+            | 'CircleSlash2'
+            | 'CircleSlashed'
+            | 'CircleSmall'
+            | 'CircleStar'
+            | 'CircleStop'
+            | 'CircleUser'
+            | 'CircleUserRound'
+            | 'CircleX'
+            | 'CircuitBoard'
+            | 'Citrus'
+            | 'Clapperboard'
+            | 'ClefAlto'
+            | 'ClefBass'
+            | 'ClefTreble'
+            | 'Clipboard'
+            | 'ClipboardCheck'
+            | 'ClipboardClock'
+            | 'ClipboardCopy'
+            | 'ClipboardEdit'
+            | 'ClipboardList'
+            | 'ClipboardMinus'
+            | 'ClipboardPaste'
+            | 'ClipboardPen'
+            | 'ClipboardPenLine'
+            | 'ClipboardPlus'
+            | 'ClipboardSignature'
+            | 'ClipboardType'
+            | 'ClipboardX'
+            | 'Clock'
+            | 'Clock1'
+            | 'Clock10'
+            | 'Clock11'
+            | 'Clock12'
+            | 'Clock2'
+            | 'Clock3'
+            | 'Clock4'
+            | 'Clock5'
+            | 'Clock6'
+            | 'Clock7'
+            | 'Clock8'
+            | 'Clock9'
+            | 'ClockAlert'
+            | 'ClockArrowDown'
+            | 'ClockArrowLeft'
+            | 'ClockArrowRight'
+            | 'ClockArrowUp'
+            | 'ClockCheck'
+            | 'ClockExclamationPoint'
+            | 'ClockFading'
+            | 'ClockPlus'
+            | 'ClosedCaption'
+            | 'Cloud'
+            | 'CloudAlert'
+            | 'CloudBackup'
+            | 'CloudCheck'
+            | 'CloudCog'
+            | 'CloudDownload'
+            | 'CloudDrizzle'
+            | 'CloudExclamationPoint'
+            | 'CloudFog'
+            | 'CloudHail'
+            | 'CloudLightning'
+            | 'CloudMoon'
+            | 'CloudMoonRain'
+            | 'CloudOff'
+            | 'CloudRain'
+            | 'CloudRainWind'
+            | 'CloudSnow'
+            | 'CloudSun'
+            | 'CloudSunRain'
+            | 'CloudSync'
+            | 'CloudUpload'
+            | 'Cloudy'
+            | 'Clover'
+            | 'Club'
+            | 'Code'
+            | 'Code2'
+            | 'CodeSquare'
+            | 'CodeXml'
+            | 'Coffee'
+            | 'Cog'
+            | 'Coins'
+            | 'Columns'
+            | 'Columns2'
+            | 'Columns3'
+            | 'Columns3Cog'
+            | 'Columns4'
+            | 'ColumnsSettings'
+            | 'Combine'
+            | 'Command'
+            | 'Compass'
+            | 'Component'
+            | 'Computer'
+            | 'ConciergeBell'
+            | 'Cone'
+            | 'Construction'
+            | 'Contact'
+            | 'Contact2'
+            | 'ContactRound'
+            | 'Container'
+            | 'Contrast'
+            | 'Cookie'
+            | 'CookingPot'
+            | 'Copy'
+            | 'CopyCheck'
+            | 'Copyleft'
+            | 'CopyMinus'
+            | 'CopyPlus'
+            | 'Copyright'
+            | 'CopySlash'
+            | 'CopyX'
+            | 'CornerDownLeft'
+            | 'CornerDownRight'
+            | 'CornerLeftDown'
+            | 'CornerLeftUp'
+            | 'CornerRightDown'
+            | 'CornerRightUp'
+            | 'CornerUpLeft'
+            | 'CornerUpRight'
+            | 'Cpu'
+            | 'CpuAi'
+            | 'CreativeCommons'
+            | 'CreditCard'
+            | 'CreditCardCheck'
+            | 'CreditCardMinus'
+            | 'CreditCardPlus'
+            | 'CreditCardReader'
+            | 'CreditCardX'
+            | 'Croissant'
+            | 'Crop'
+            | 'Cross'
+            | 'Crosshair'
+            | 'Crown'
+            | 'Cuboid'
+            | 'Cupcake'
+            | 'CupSoda'
+            | 'CurlyBraces'
+            | 'Currency'
+            | 'Cylinder'
+            | 'Dam'
+            | 'Database'
+            | 'DatabaseArrowDown'
+            | 'DatabaseArrowUp'
+            | 'DatabaseBackup'
+            | 'DatabaseCheck'
+            | 'DatabaseCog'
+            | 'DatabaseMinus'
+            | 'DatabasePlus'
+            | 'DatabaseSearch'
+            | 'DatabaseX'
+            | 'DatabaseZap'
+            | 'DecimalsArrowLeft'
+            | 'DecimalsArrowRight'
+            | 'Delete'
+            | 'Dessert'
+            | 'DiagramFlowHorizontal'
+            | 'DiagramFlowVertical'
+            | 'Diameter'
+            | 'Diamond'
+            | 'DiamondMinus'
+            | 'DiamondPercent'
+            | 'DiamondPlus'
+            | 'Dice1'
+            | 'Dice2'
+            | 'Dice3'
+            | 'Dice4'
+            | 'Dice5'
+            | 'Dice6'
+            | 'Dices'
+            | 'Diff'
+            | 'Disc'
+            | 'Disc2'
+            | 'Disc3'
+            | 'DiscAlbum'
+            | 'Divide'
+            | 'DivideCircle'
+            | 'DivideSquare'
+            | 'Dna'
+            | 'DnaOff'
+            | 'Dock'
+            | 'Dog'
+            | 'DollarSign'
+            | 'Dome'
+            | 'Donut'
+            | 'DoorClosed'
+            | 'DoorClosedCog'
+            | 'DoorClosedLocked'
+            | 'DoorClosedPackage'
+            | 'DoorOpen'
+            | 'DoorStairwell'
+            | 'Dot'
+            | 'DotSquare'
+            | 'Download'
+            | 'DownloadCloud'
+            | 'DraftingCompass'
+            | 'Drama'
+            | 'Drill'
+            | 'Drone'
+            | 'Droplet'
+            | 'DropletOff'
+            | 'Droplets'
+            | 'Drum'
+            | 'Drumstick'
+            | 'Dumbbell'
+            | 'Ear'
+            | 'Earbuds'
+            | 'EarbudsOff'
+            | 'EarOff'
+            | 'Earth'
+            | 'EarthLock'
+            | 'Eclipse'
+            | 'Edit'
+            | 'Edit2'
+            | 'Edit3'
+            | 'Egg'
+            | 'EggFried'
+            | 'EggOff'
+            | 'EighthNote'
+            | 'EighthNotes'
+            | 'Eject'
+            | 'Ellipse'
+            | 'Ellipsis'
+            | 'EllipsisVertical'
+            | 'EmiratiDirham'
+            | 'Engine'
+            | 'Equal'
+            | 'EqualApproximately'
+            | 'EqualApproximatelyNot'
+            | 'EqualNot'
+            | 'EqualSquare'
+            | 'Eraser'
+            | 'EthernetPort'
+            | 'Euro'
+            | 'EvCharger'
+            | 'Expand'
+            | 'ExternalLink'
+            | 'Eye'
+            | 'EyeClosed'
+            | 'EyeDashed'
+            | 'EyeOff'
+            | 'FaceAngry'
+            | 'FaceExpressionless'
+            | 'FaceGrinning'
+            | 'FaceNeutral'
+            | 'FaceSlightlyFrowning'
+            | 'FaceSlightlySmiling'
+            | 'FaceSlightlySmilingPlus'
+            | 'Factory'
+            | 'Fan'
+            | 'FastForward'
+            | 'Faucet'
+            | 'Feather'
+            | 'Fence'
+            | 'FerrisWheel'
+            | 'File'
+            | 'FileArchive'
+            | 'FileAudio'
+            | 'FileAudio2'
+            | 'FileAxis3d'
+            | 'FileAxis3D'
+            | 'FileBadge'
+            | 'FileBadge2'
+            | 'FileBarChart'
+            | 'FileBarChart2'
+            | 'FileBox'
+            | 'FileBraces'
+            | 'FileBracesCorner'
+            | 'FileChartColumn'
+            | 'FileChartColumnIncreasing'
+            | 'FileChartLine'
+            | 'FileChartPie'
+            | 'FileCheck'
+            | 'FileCheck2'
+            | 'FileCheckCorner'
+            | 'FileClock'
+            | 'FileCode'
+            | 'FileCode2'
+            | 'FileCodeCorner'
+            | 'FileCog'
+            | 'FileCog2'
+            | 'FileDatabase'
+            | 'FileDiff'
+            | 'FileDigit'
+            | 'FileDown'
+            | 'FileEdit'
+            | 'FileExclamationPoint'
+            | 'FileHeadphone'
+            | 'FileHeart'
+            | 'FileImage'
+            | 'FileInput'
+            | 'FileJson'
+            | 'FileJson2'
+            | 'FileKey'
+            | 'FileKey2'
+            | 'FileLineChart'
+            | 'FileLock'
+            | 'FileLock2'
+            | 'FileMinus'
+            | 'FileMinus2'
+            | 'FileMinusCorner'
+            | 'FileMusic'
+            | 'FileOutput'
+            | 'FilePen'
+            | 'FilePenLine'
+            | 'FilePieChart'
+            | 'FilePlay'
+            | 'FilePlus'
+            | 'FilePlus2'
+            | 'FilePlusCorner'
+            | 'FileQuestion'
+            | 'FileQuestionMark'
+            | 'Files'
+            | 'FileScan'
+            | 'FileSearch'
+            | 'FileSearch2'
+            | 'FileSearchCorner'
+            | 'FileSignal'
+            | 'FileSignature'
+            | 'FileSliders'
+            | 'FileSpreadsheet'
+            | 'FileStack'
+            | 'FileSymlink'
+            | 'FileTerminal'
+            | 'FileText'
+            | 'FileType'
+            | 'FileType2'
+            | 'FileTypeCorner'
+            | 'FileUp'
+            | 'FileUser'
+            | 'FileVideo'
+            | 'FileVideo2'
+            | 'FileVideoCamera'
+            | 'FileVolume'
+            | 'FileVolume2'
+            | 'FileWarning'
+            | 'FileX'
+            | 'FileX2'
+            | 'FileXCorner'
+            | 'Film'
+            | 'Filter'
+            | 'FilterX'
+            | 'Fingerprint'
+            | 'FingerprintPattern'
+            | 'FireExtinguisher'
+            | 'Fish'
+            | 'FishingHook'
+            | 'FishingRod'
+            | 'FishOff'
+            | 'FishSymbol'
+            | 'Flag'
+            | 'FlagOff'
+            | 'FlagTriangleLeft'
+            | 'FlagTriangleRight'
+            | 'Flame'
+            | 'FlameKindling'
+            | 'Flashlight'
+            | 'FlashlightOff'
+            | 'FlaskConical'
+            | 'FlaskConicalOff'
+            | 'FlaskRound'
+            | 'FlipHorizontal'
+            | 'FlipHorizontal2'
+            | 'FlipVertical'
+            | 'FlipVertical2'
+            | 'Flower'
+            | 'Flower2'
+            | 'Focus'
+            | 'Folder'
+            | 'FolderArchive'
+            | 'FolderBookmark'
+            | 'FolderCheck'
+            | 'FolderClock'
+            | 'FolderClosed'
+            | 'FolderCode'
+            | 'FolderCog'
+            | 'FolderCog2'
+            | 'FolderDot'
+            | 'FolderDown'
+            | 'FolderEdit'
+            | 'FolderGit'
+            | 'FolderGit2'
+            | 'FolderHeart'
+            | 'FolderInput'
+            | 'FolderKanban'
+            | 'FolderKey'
+            | 'FolderLock'
+            | 'FolderMinus'
+            | 'FolderOpen'
+            | 'FolderOpenDot'
+            | 'FolderOutput'
+            | 'FolderPen'
+            | 'FolderPlus'
+            | 'FolderRoot'
+            | 'Folders'
+            | 'FolderSearch'
+            | 'FolderSearch2'
+            | 'FolderSymlink'
+            | 'FolderSync'
+            | 'FolderTree'
+            | 'FolderUp'
+            | 'FolderUser'
+            | 'FolderUsers'
+            | 'FolderX'
+            | 'FoldHorizontal'
+            | 'FoldVertical'
+            | 'Footprints'
+            | 'ForkKnife'
+            | 'ForkKnifeCrossed'
+            | 'Forklift'
+            | 'Form'
+            | 'FormInput'
+            | 'Forward'
+            | 'Frame'
+            | 'Frown'
+            | 'Fuel'
+            | 'Fullscreen'
+            | 'FunctionSquare'
+            | 'Funnel'
+            | 'FunnelPlus'
+            | 'FunnelX'
+            | 'Galaxy'
+            | 'GalleryHorizontal'
+            | 'GalleryHorizontalEnd'
+            | 'GalleryThumbnails'
+            | 'GalleryVertical'
+            | 'GalleryVerticalEnd'
+            | 'Gamepad'
+            | 'Gamepad2'
+            | 'GamepadDirectional'
+            | 'GanttChart'
+            | 'GanttChartSquare'
+            | 'GapHorizontal'
+            | 'GapVertical'
+            | 'Gauge'
+            | 'GaugeCircle'
+            | 'Gavel'
+            | 'Gem'
+            | 'GeorgianLari'
+            | 'Germ'
+            | 'GermOff'
+            | 'Ghost'
+            | 'Gift'
+            | 'GitBranch'
+            | 'GitBranchMinus'
+            | 'GitBranchPlus'
+            | 'GitCommit'
+            | 'GitCommitHorizontal'
+            | 'GitCommitVertical'
+            | 'GitCompare'
+            | 'GitCompareArrows'
+            | 'GitFork'
+            | 'GitGraph'
+            | 'GitMerge'
+            | 'GitMergeConflict'
+            | 'GitPullRequest'
+            | 'GitPullRequestArrow'
+            | 'GitPullRequestClosed'
+            | 'GitPullRequestCreate'
+            | 'GitPullRequestCreateArrow'
+            | 'GitPullRequestDraft'
+            | 'Glasses'
+            | 'GlassWater'
+            | 'Globe'
+            | 'Globe2'
+            | 'GlobeBan'
+            | 'GlobeCheck'
+            | 'GlobeCode'
+            | 'GlobeLock'
+            | 'GlobeOff'
+            | 'GlobePlus'
+            | 'GlobeX'
+            | 'Goal'
+            | 'Gpu'
+            | 'Grab'
+            | 'GraduationCap'
+            | 'Grape'
+            | 'GraphHub'
+            | 'GraphStar'
+            | 'Grid'
+            | 'Grid2x2'
+            | 'Grid2X2'
+            | 'Grid2x2Check'
+            | 'Grid2X2Check'
+            | 'Grid2x2Plus'
+            | 'Grid2X2Plus'
+            | 'Grid2x2X'
+            | 'Grid2X2X'
+            | 'Grid3x2'
+            | 'Grid3x3'
+            | 'Grid3X3'
+            | 'Grip'
+            | 'GripHorizontal'
+            | 'GripVertical'
+            | 'Groceries'
+            | 'Group'
+            | 'Guitar'
+            | 'GuitarElectric'
+            | 'HalfNote'
+            | 'Ham'
+            | 'Hamburger'
+            | 'Hammer'
+            | 'Hand'
+            | 'Handbag'
+            | 'HandCoins'
+            | 'HandFist'
+            | 'HandGrab'
+            | 'HandHeart'
+            | 'HandHelping'
+            | 'HandleBottomRight'
+            | 'HandMetal'
+            | 'HandPlatter'
+            | 'Handshake'
+            | 'HardDrive'
+            | 'HardDriveDownload'
+            | 'HardDriveUpload'
+            | 'HardHat'
+            | 'Hash'
+            | 'HatGlasses'
+            | 'Haze'
+            | 'Hd'
+            | 'HdmiPort'
+            | 'Heading'
+            | 'Heading1'
+            | 'Heading2'
+            | 'Heading3'
+            | 'Heading4'
+            | 'Heading5'
+            | 'Heading6'
+            | 'HeadphoneOff'
+            | 'Headphones'
+            | 'Headset'
+            | 'Heart'
+            | 'HeartCrack'
+            | 'HeartHandshake'
+            | 'HeartMinus'
+            | 'HeartOff'
+            | 'HeartPlus'
+            | 'HeartPulse'
+            | 'HeartX'
+            | 'Heater'
+            | 'Helicopter'
+            | 'HelpCircle'
+            | 'HelpingHand'
+            | 'Hexagon'
+            | 'Highlighter'
+            | 'HikingStick'
+            | 'History'
+            | 'HockeyStick'
+            | 'Home'
+            | 'Hop'
+            | 'HopOff'
+            | 'Hospital'
+            | 'HotAirBalloon'
+            | 'Hotel'
+            | 'Hourglass'
+            | 'HourglassCog'
+            | 'House'
+            | 'HouseCog'
+            | 'HouseHeart'
+            | 'HousePlug'
+            | 'HousePlus'
+            | 'Houses'
+            | 'HouseWifi'
+            | 'IceCream'
+            | 'IceCream2'
+            | 'IceCreamBowl'
+            | 'IceCreamCone'
+            | 'IdCard'
+            | 'IdCardLanyard'
+            | 'Image'
+            | 'ImageDown'
+            | 'ImageMinus'
+            | 'ImageOff'
+            | 'ImagePlay'
+            | 'ImagePlus'
+            | 'Images'
+            | 'ImageUp'
+            | 'ImageUpscale'
+            | 'Import'
+            | 'Inbox'
+            | 'Indent'
+            | 'IndentDecrease'
+            | 'IndentIncrease'
+            | 'IndianRupee'
+            | 'Infinity'
+            | 'Info'
+            | 'Inspect'
+            | 'InspectionPanel'
+            | 'Italic'
+            | 'IterationCcw'
+            | 'IterationCw'
+            | 'IvBag'
+            | 'JapaneseYen'
+            | 'Joystick'
+            | 'Kanban'
+            | 'KanbanSquare'
+            | 'KanbanSquareDashed'
+            | 'Kayak'
+            | 'KazakhTenge'
+            | 'Key'
+            | 'Keyboard'
+            | 'KeyboardMusic'
+            | 'KeyboardOff'
+            | 'KeyRound'
+            | 'KeySquare'
+            | 'Lambda'
+            | 'Lamp'
+            | 'LampCeiling'
+            | 'LampDesk'
+            | 'LampFloor'
+            | 'LampWallDown'
+            | 'LampWallUp'
+            | 'Landmark'
+            | 'LandPlot'
+            | 'Languages'
+            | 'Laptop'
+            | 'Laptop2'
+            | 'LaptopMinimal'
+            | 'LaptopMinimalCheck'
+            | 'Laser'
+            | 'Lasso'
+            | 'LassoSelect'
+            | 'Laugh'
+            | 'LayerArrowDown'
+            | 'LayerArrowUp'
+            | 'Layers'
+            | 'Layers2'
+            | 'Layers3'
+            | 'LayersArrowDown'
+            | 'LayersArrowUp'
+            | 'LayersMinus'
+            | 'LayersPlus'
+            | 'Layout'
+            | 'LayoutArrowDown'
+            | 'LayoutArrowRight'
+            | 'LayoutDashboard'
+            | 'LayoutFreeform'
+            | 'LayoutGrid'
+            | 'LayoutGridCircles'
+            | 'LayoutList'
+            | 'LayoutPanelLeft'
+            | 'LayoutPanelTop'
+            | 'LayoutTemplate'
+            | 'Leaf'
+            | 'LeafyGreen'
+            | 'Lectern'
+            | 'Lens'
+            | 'LensConcave'
+            | 'LensConvex'
+            | 'LetterA'
+            | 'LetterB'
+            | 'LetterC'
+            | 'LetterD'
+            | 'LetterE'
+            | 'LetterF'
+            | 'LetterG'
+            | 'LetterH'
+            | 'LetterI'
+            | 'LetterJ'
+            | 'LetterK'
+            | 'LetterL'
+            | 'LetterM'
+            | 'LetterN'
+            | 'LetterO'
+            | 'LetterP'
+            | 'LetterQ'
+            | 'LetterR'
+            | 'Letters'
+            | 'LetterS'
+            | 'LetterSpacing'
+            | 'LetterT'
+            | 'LetterText'
+            | 'LetterU'
+            | 'LetterV'
+            | 'LetterW'
+            | 'LetterX'
+            | 'LetterY'
+            | 'LetterZ'
+            | 'Library'
+            | 'LibraryBig'
+            | 'LibrarySquare'
+            | 'LifeBuoy'
+            | 'Ligature'
+            | 'Lightbulb'
+            | 'LightbulbOff'
+            | 'Lighthouse'
+            | 'LineChart'
+            | 'LineDotBottomVertical'
+            | 'LineDotLeftHorizontal'
+            | 'LineDotRightHorizontal'
+            | 'LineDotTopVertical'
+            | 'LineHeight'
+            | 'LineSquiggle'
+            | 'LineStyle'
+            | 'Link'
+            | 'Link2'
+            | 'Link2Off'
+            | 'List'
+            | 'ListCheck'
+            | 'ListChecks'
+            | 'ListChevronsDownUp'
+            | 'ListChevronsUpDown'
+            | 'ListClock'
+            | 'ListCollapse'
+            | 'ListEnd'
+            | 'ListFilter'
+            | 'ListFilterPlus'
+            | 'ListIndentDecrease'
+            | 'ListIndentIncrease'
+            | 'ListMinus'
+            | 'ListMusic'
+            | 'ListOrdered'
+            | 'ListPlus'
+            | 'ListRestart'
+            | 'ListSortAscending'
+            | 'ListSortDescending'
+            | 'ListStart'
+            | 'ListTodo'
+            | 'ListTree'
+            | 'ListVideo'
+            | 'ListX'
+            | 'Loader'
+            | 'Loader2'
+            | 'LoaderCircle'
+            | 'LoaderPinwheel'
+            | 'Locate'
+            | 'LocateFixed'
+            | 'LocateOff'
+            | 'LocationEdit'
+            | 'Lock'
+            | 'LockKeyhole'
+            | 'LockKeyholeOpen'
+            | 'LockOpen'
+            | 'LogIn'
+            | 'LogOut'
+            | 'Logs'
+            | 'Lollipop'
+            | 'Luggage'
+            | 'Magnet'
+            | 'Mail'
+            | 'MailAlert'
+            | 'MailBadge'
+            | 'Mailbox'
+            | 'MailCheck'
+            | 'MailClock'
+            | 'MailDot'
+            | 'MailExclamationPoint'
+            | 'MailMinus'
+            | 'MailOpen'
+            | 'MailPen'
+            | 'MailPlus'
+            | 'MailQuestion'
+            | 'MailQuestionMark'
+            | 'Mails'
+            | 'MailSearch'
+            | 'MailWarning'
+            | 'MailX'
+            | 'Mango'
+            | 'Map'
+            | 'MapMinus'
+            | 'MapPin'
+            | 'MapPinCheck'
+            | 'MapPinCheckInside'
+            | 'MapPinHouse'
+            | 'MapPinMinus'
+            | 'MapPinMinusInside'
+            | 'MapPinned'
+            | 'MapPinOff'
+            | 'MapPinPen'
+            | 'MapPinPlus'
+            | 'MapPinPlusInside'
+            | 'MapPinSearch'
+            | 'MapPinX'
+            | 'MapPinXInside'
+            | 'MapPlus'
+            | 'Margin'
+            | 'MarginBottom'
+            | 'MarginHorizontal'
+            | 'MarginLeft'
+            | 'MarginRight'
+            | 'MarginTop'
+            | 'MarginVertical'
+            | 'Mars'
+            | 'MarsStroke'
+            | 'Martini'
+            | 'Maximize'
+            | 'Maximize2'
+            | 'Medal'
+            | 'Megaphone'
+            | 'MegaphoneOff'
+            | 'Meh'
+            | 'MemoryStick'
+            | 'Menu'
+            | 'MenuSquare'
+            | 'Merge'
+            | 'MessageCircle'
+            | 'MessageCircleAlert'
+            | 'MessageCircleCheck'
+            | 'MessageCircleCode'
+            | 'MessageCircleDashed'
+            | 'MessageCircleDashedCheck'
+            | 'MessageCircleExclamationPoint'
+            | 'MessageCircleHeart'
+            | 'MessageCircleMore'
+            | 'MessageCircleOff'
+            | 'MessageCirclePlus'
+            | 'MessageCircleQuestion'
+            | 'MessageCircleQuestionMark'
+            | 'MessageCircleReply'
+            | 'MessageCircleText'
+            | 'MessageCircleWarning'
+            | 'MessageCircleX'
+            | 'MessagesCircle'
+            | 'MessageSquare'
+            | 'MessageSquareAlert'
+            | 'MessageSquareCheck'
+            | 'MessageSquareCode'
+            | 'MessageSquareDashed'
+            | 'MessageSquareDiff'
+            | 'MessageSquareDot'
+            | 'MessageSquareExclamationPoint'
+            | 'MessageSquareHeart'
+            | 'MessageSquareLock'
+            | 'MessageSquareMore'
+            | 'MessageSquareOff'
+            | 'MessageSquarePlus'
+            | 'MessageSquareQuote'
+            | 'MessageSquareReply'
+            | 'MessageSquareShare'
+            | 'MessageSquareText'
+            | 'MessageSquareWarning'
+            | 'MessageSquareX'
+            | 'MessagesSquare'
+            | 'Metronome'
+            | 'Mic'
+            | 'Mic2'
+            | 'MicAudioLines'
+            | 'MicOff'
+            | 'Microchip'
+            | 'Microscope'
+            | 'Microwave'
+            | 'MicSignal'
+            | 'MicVocal'
+            | 'MidiPort'
+            | 'Milestone'
+            | 'Milk'
+            | 'MilkOff'
+            | 'Minimize'
+            | 'Minimize2'
+            | 'Minus'
+            | 'MinusCircle'
+            | 'MinusSquare'
+            | 'MirrorRectangular'
+            | 'MirrorRound'
+            | 'Monitor'
+            | 'MonitorActivity'
+            | 'MonitorCheck'
+            | 'MonitorCloud'
+            | 'MonitorCog'
+            | 'MonitorDot'
+            | 'MonitorDown'
+            | 'MonitorOff'
+            | 'MonitorPause'
+            | 'MonitorPc'
+            | 'MonitorPlay'
+            | 'MonitorSmartphone'
+            | 'MonitorSpeaker'
+            | 'MonitorStop'
+            | 'MonitorUp'
+            | 'MonitorX'
+            | 'Moon'
+            | 'MoonStar'
+            | 'Mop'
+            | 'MopSparkles'
+            | 'MoreHorizontal'
+            | 'MoreVertical'
+            | 'Mosque'
+            | 'Motorbike'
+            | 'Mountain'
+            | 'MountainSnow'
+            | 'Mouse'
+            | 'MouseLeft'
+            | 'MouseOff'
+            | 'MousePointer'
+            | 'MousePointer2'
+            | 'MousePointer2Off'
+            | 'MousePointerBan'
+            | 'MousePointerClick'
+            | 'MousePointerSquareDashed'
+            | 'MouseRight'
+            | 'Mouth'
+            | 'MouthOff'
+            | 'Move'
+            | 'Move3d'
+            | 'Move3D'
+            | 'MoveDiagonal'
+            | 'MoveDiagonal2'
+            | 'MoveDown'
+            | 'MoveDownLeft'
+            | 'MoveDownRight'
+            | 'MoveHorizontal'
+            | 'MoveLeft'
+            | 'MoveRight'
+            | 'MoveUp'
+            | 'MoveUpLeft'
+            | 'MoveUpRight'
+            | 'MoveVertical'
+            | 'MSquare'
+            | 'Music'
+            | 'Music2'
+            | 'Music3'
+            | 'Music4'
+            | 'Navigation'
+            | 'Navigation2'
+            | 'Navigation2Off'
+            | 'NavigationOff'
+            | 'NepaliRupee'
+            | 'Network'
+            | 'Newspaper'
+            | 'Nfc'
+            | 'NonBinary'
+            | 'Notebook'
+            | 'NotebookDot'
+            | 'NotebookPen'
+            | 'NotebookTabs'
+            | 'NotebookText'
+            | 'NotepadText'
+            | 'NotepadTextDashed'
+            | 'Numbers'
+            | 'Nut'
+            | 'NutOff'
+            | 'Octagon'
+            | 'OctagonAlert'
+            | 'OctagonExclamationPoint'
+            | 'OctagonMinus'
+            | 'OctagonPause'
+            | 'OctagonX'
+            | 'Omega'
+            | 'Option'
+            | 'Orbit'
+            | 'Origami'
+            | 'Outdent'
+            | 'Package'
+            | 'Package2'
+            | 'PackageCheck'
+            | 'PackageMinus'
+            | 'PackageOpen'
+            | 'PackagePlus'
+            | 'PackageSearch'
+            | 'PackageX'
+            | 'Paintbrush'
+            | 'Paintbrush2'
+            | 'PaintbrushVertical'
+            | 'PaintBucket'
+            | 'PaintRoller'
+            | 'Palette'
+            | 'Palmtree'
+            | 'Panda'
+            | 'PanelBottom'
+            | 'PanelBottomClose'
+            | 'PanelBottomDashed'
+            | 'PanelBottomInactive'
+            | 'PanelBottomOpen'
+            | 'PanelLeft'
+            | 'PanelLeftClose'
+            | 'PanelLeftDashed'
+            | 'PanelLeftInactive'
+            | 'PanelLeftOpen'
+            | 'PanelLeftRightDashed'
+            | 'PanelRight'
+            | 'PanelRightClose'
+            | 'PanelRightDashed'
+            | 'PanelRightInactive'
+            | 'PanelRightOpen'
+            | 'PanelsLeftBottom'
+            | 'PanelsLeftRight'
+            | 'PanelsRightBottom'
+            | 'PanelsTopBottom'
+            | 'PanelsTopLeft'
+            | 'PanelTop'
+            | 'PanelTopBottomDashed'
+            | 'PanelTopClose'
+            | 'PanelTopDashed'
+            | 'PanelTopInactive'
+            | 'PanelTopOpen'
+            | 'PaperBag'
+            | 'Paperclip'
+            | 'Parasol'
+            | 'Parentheses'
+            | 'Park'
+            | 'ParkingCircle'
+            | 'ParkingCircleOff'
+            | 'ParkingMeter'
+            | 'ParkingSquare'
+            | 'ParkingSquareOff'
+            | 'PartyPopper'
+            | 'Pause'
+            | 'PauseCircle'
+            | 'PauseOctagon'
+            | 'PawPrint'
+            | 'PcCase'
+            | 'Pen'
+            | 'PenBox'
+            | 'Pencil'
+            | 'PencilLine'
+            | 'PencilOff'
+            | 'PencilRuler'
+            | 'PencilSparkles'
+            | 'PenLine'
+            | 'PenOff'
+            | 'PenSquare'
+            | 'Pentagon'
+            | 'PenTool'
+            | 'Percent'
+            | 'PercentCircle'
+            | 'PercentDiamond'
+            | 'PercentSquare'
+            | 'PerfumeBottle'
+            | 'PersonStanding'
+            | 'Phi'
+            | 'PhilippinePeso'
+            | 'Phone'
+            | 'PhoneCall'
+            | 'PhoneForwarded'
+            | 'PhoneIncoming'
+            | 'PhoneLog'
+            | 'PhoneMissed'
+            | 'PhoneOff'
+            | 'PhoneOutgoing'
+            | 'Pi'
+            | 'Piano'
+            | 'Pickaxe'
+            | 'PictureInPicture'
+            | 'PictureInPicture2'
+            | 'PieChart'
+            | 'PiggyBank'
+            | 'Pilcrow'
+            | 'PilcrowLeft'
+            | 'PilcrowRight'
+            | 'PilcrowSquare'
+            | 'Pill'
+            | 'PillBottle'
+            | 'Pin'
+            | 'PinOff'
+            | 'Pipette'
+            | 'PiSquare'
+            | 'Pizza'
+            | 'Plane'
+            | 'PlaneLanding'
+            | 'PlaneTakeoff'
+            | 'PlantPot'
+            | 'Play'
+            | 'PlayCircle'
+            | 'PlayingCard'
+            | 'PlayingCards'
+            | 'PlayingCardsFan'
+            | 'PlayOff'
+            | 'PlaySquare'
+            | 'Plug'
+            | 'Plug2'
+            | 'PlugZap'
+            | 'PlugZap2'
+            | 'Plus'
+            | 'PlusCircle'
+            | 'PlusSquare'
+            | 'PocketKnife'
+            | 'Podcast'
+            | 'Podium'
+            | 'Pointer'
+            | 'PointerOff'
+            | 'Popcorn'
+            | 'Popsicle'
+            | 'PoundSterling'
+            | 'Power'
+            | 'PowerCircle'
+            | 'PowerOff'
+            | 'PowerSquare'
+            | 'Presentation'
+            | 'Printer'
+            | 'Printer3d'
+            | 'PrinterCheck'
+            | 'PrinterX'
+            | 'Projector'
+            | 'Proportions'
+            | 'Puzzle'
+            | 'Pyramid'
+            | 'QrCode'
+            | 'Quote'
+            | 'Rabbit'
+            | 'Radar'
+            | 'Radiation'
+            | 'Radical'
+            | 'Radio'
+            | 'RadioOff'
+            | 'RadioReceiver'
+            | 'RadioTower'
+            | 'Radius'
+            | 'Rainbow'
+            | 'Rat'
+            | 'Ratio'
+            | 'Receipt'
+            | 'ReceiptCent'
+            | 'ReceiptEuro'
+            | 'ReceiptIndianRupee'
+            | 'ReceiptJapaneseYen'
+            | 'ReceiptPoundSterling'
+            | 'ReceiptRussianRuble'
+            | 'ReceiptSwissFranc'
+            | 'ReceiptText'
+            | 'ReceiptTurkishLira'
+            | 'RectangleCircle'
+            | 'RectangleEllipsis'
+            | 'RectangleGoggles'
+            | 'RectangleHorizontal'
+            | 'RectangleVertical'
+            | 'Recycle'
+            | 'Redo'
+            | 'Redo2'
+            | 'RedoDot'
+            | 'RefreshCcw'
+            | 'RefreshCcwDot'
+            | 'RefreshCw'
+            | 'RefreshCwOff'
+            | 'Refrigerator'
+            | 'Regex'
+            | 'RemoveFormatting'
+            | 'Repeat'
+            | 'Repeat1'
+            | 'Repeat2'
+            | 'RepeatOff'
+            | 'Replace'
+            | 'ReplaceAll'
+            | 'Reply'
+            | 'ReplyAll'
+            | 'Rewind'
+            | 'Ribbon'
+            | 'Road'
+            | 'RobotArm'
+            | 'RobotVacuum'
+            | 'Rocket'
+            | 'RockingChair'
+            | 'RollerCoaster'
+            | 'Rose'
+            | 'Rotate3d'
+            | 'Rotate3D'
+            | 'RotateCcw'
+            | 'RotateCcwClock'
+            | 'RotateCcwKey'
+            | 'RotateCcwSquare'
+            | 'RotateCw'
+            | 'RotateCwClock'
+            | 'RotateCwFadingClock'
+            | 'RotateCwSquare'
+            | 'Route'
+            | 'RouteOff'
+            | 'Router'
+            | 'Rows'
+            | 'Rows2'
+            | 'Rows3'
+            | 'Rows4'
+            | 'Rss'
+            | 'RugbyBall'
+            | 'Ruler'
+            | 'RulerDimensionLine'
+            | 'RussianRuble'
+            | 'Sailboat'
+            | 'Salad'
+            | 'Sandwich'
+            | 'Satellite'
+            | 'SatelliteDish'
+            | 'SaudiRiyal'
+            | 'Save'
+            | 'SaveAll'
+            | 'SaveCheck'
+            | 'SaveOff'
+            | 'SavePen'
+            | 'SavePlus'
+            | 'Scale'
+            | 'Scale3d'
+            | 'Scale3D'
+            | 'Scaling'
+            | 'Scan'
+            | 'ScanBarcode'
+            | 'ScanBox'
+            | 'ScanEye'
+            | 'ScanFace'
+            | 'ScanHeart'
+            | 'ScanLine'
+            | 'ScanQrCode'
+            | 'ScanSearch'
+            | 'ScanSquare'
+            | 'ScanText'
+            | 'ScatterChart'
+            | 'School'
+            | 'School2'
+            | 'Scissors'
+            | 'ScissorsLineDashed'
+            | 'ScissorsSquare'
+            | 'ScissorsSquareDashedBottom'
+            | 'Scooter'
+            | 'ScratchBlocks'
+            | 'ScreenShare'
+            | 'ScreenShareOff'
+            | 'Screw'
+            | 'Scroll'
+            | 'ScrollText'
+            | 'Search'
+            | 'SearchAlert'
+            | 'SearchCheck'
+            | 'SearchCode'
+            | 'SearchExclamationPoint'
+            | 'SearchSlash'
+            | 'SearchX'
+            | 'Section'
+            | 'Send'
+            | 'SendHorizonal'
+            | 'SendHorizontal'
+            | 'SendToBack'
+            | 'SeparatorHorizontal'
+            | 'SeparatorVertical'
+            | 'Server'
+            | 'ServerCog'
+            | 'ServerCrash'
+            | 'ServerNas'
+            | 'ServerOff'
+            | 'ServerPlus'
+            | 'Settings'
+            | 'Settings2'
+            | 'Shapes'
+            | 'Share'
+            | 'Share2'
+            | 'Sheet'
+            | 'Shell'
+            | 'ShelvingUnit'
+            | 'Shield'
+            | 'ShieldAlert'
+            | 'ShieldBan'
+            | 'ShieldCheck'
+            | 'ShieldClose'
+            | 'ShieldCog'
+            | 'ShieldCogCorner'
+            | 'ShieldEllipsis'
+            | 'ShieldExclamationPoint'
+            | 'ShieldHalf'
+            | 'ShieldHouse'
+            | 'ShieldKeyhole'
+            | 'ShieldLock'
+            | 'ShieldMinus'
+            | 'ShieldOff'
+            | 'ShieldPlus'
+            | 'ShieldQuestion'
+            | 'ShieldQuestionMark'
+            | 'ShieldUser'
+            | 'ShieldX'
+            | 'Ship'
+            | 'ShipCargo'
+            | 'ShipWheel'
+            | 'Shirt'
+            | 'ShoppingBag'
+            | 'ShoppingBasket'
+            | 'ShoppingCart'
+            | 'ShoppingCartMinus'
+            | 'ShoppingCartPlus'
+            | 'Shovel'
+            | 'ShowerHead'
+            | 'Shredder'
+            | 'Shrimp'
+            | 'ShrimpOff'
+            | 'Shrink'
+            | 'Shrub'
+            | 'Shuffle'
+            | 'Sidebar'
+            | 'SidebarClose'
+            | 'SidebarOpen'
+            | 'Sigma'
+            | 'SigmaSquare'
+            | 'Signal'
+            | 'SignalHigh'
+            | 'SignalLow'
+            | 'SignalMedium'
+            | 'SignalZero'
+            | 'Signature'
+            | 'Signpost'
+            | 'SignpostBig'
+            | 'Siren'
+            | 'SirenOff'
+            | 'SixteenthNotes'
+            | 'SkipBack'
+            | 'SkipForward'
+            | 'Skull'
+            | 'Slash'
+            | 'SlashSquare'
+            | 'Slice'
+            | 'Sliders'
+            | 'SlidersHorizontal'
+            | 'SlidersVertical'
+            | 'Smartphone'
+            | 'SmartphoneCharging'
+            | 'SmartphoneNfc'
+            | 'SmartphoneUserRound'
+            | 'Smile'
+            | 'SmilePlus'
+            | 'Snail'
+            | 'Snowflake'
+            | 'SoapDispenserDroplet'
+            | 'Sofa'
+            | 'SolarPanel'
+            | 'SortAsc'
+            | 'SortDesc'
+            | 'Soup'
+            | 'Space'
+            | 'Spade'
+            | 'Sparkle'
+            | 'Sparkles'
+            | 'Speaker'
+            | 'Speech'
+            | 'SpellCheck'
+            | 'SpellCheck2'
+            | 'Spline'
+            | 'SplinePointer'
+            | 'Split'
+            | 'SplitSquareHorizontal'
+            | 'SplitSquareVertical'
+            | 'Spool'
+            | 'SportShoe'
+            | 'Spotlight'
+            | 'SprayCan'
+            | 'Sprout'
+            | 'Square'
+            | 'SquareActivity'
+            | 'SquareArrowDown'
+            | 'SquareArrowDownLeft'
+            | 'SquareArrowDownRight'
+            | 'SquareArrowLeft'
+            | 'SquareArrowOutDownLeft'
+            | 'SquareArrowOutDownRight'
+            | 'SquareArrowOutUpLeft'
+            | 'SquareArrowOutUpRight'
+            | 'SquareArrowRight'
+            | 'SquareArrowRightEnter'
+            | 'SquareArrowRightExit'
+            | 'SquareArrowUp'
+            | 'SquareArrowUpLeft'
+            | 'SquareArrowUpRight'
+            | 'SquareAsterisk'
+            | 'SquareBookmark'
+            | 'SquareBottomDashedScissors'
+            | 'SquareCenterlineDashedHorizontal'
+            | 'SquareCenterlineDashedVertical'
+            | 'SquareChartGantt'
+            | 'SquareCheck'
+            | 'SquareCheckBig'
+            | 'SquareChevronDown'
+            | 'SquareChevronLeft'
+            | 'SquareChevronRight'
+            | 'SquareChevronsDown'
+            | 'SquareChevronsLeft'
+            | 'SquareChevronsRight'
+            | 'SquareChevronsUp'
+            | 'SquareChevronUp'
+            | 'SquareCode'
+            | 'SquareDashed'
+            | 'SquareDashedBottom'
+            | 'SquareDashedBottomCode'
+            | 'SquareDashedKanban'
+            | 'SquareDashedMousePointer'
+            | 'SquareDashedPlus'
+            | 'SquareDashedText'
+            | 'SquareDashedTopSolid'
+            | 'SquareDashedX'
+            | 'SquareDashedXCorner'
+            | 'SquareDimensions'
+            | 'SquareDivide'
+            | 'SquareDot'
+            | 'SquareEqual'
+            | 'SquareExclamationPoint'
+            | 'SquareFunction'
+            | 'SquareGanttChart'
+            | 'SquareKanban'
+            | 'SquareKanbanPlus'
+            | 'SquareLetterA'
+            | 'SquareLetterB'
+            | 'SquareLetterC'
+            | 'SquareLetterD'
+            | 'SquareLetterE'
+            | 'SquareLetterF'
+            | 'SquareLetterG'
+            | 'SquareLetterH'
+            | 'SquareLetterI'
+            | 'SquareLetterJ'
+            | 'SquareLetterK'
+            | 'SquareLetterL'
+            | 'SquareLetterM'
+            | 'SquareLetterN'
+            | 'SquareLetterO'
+            | 'SquareLetterP'
+            | 'SquareLetterPOff'
+            | 'SquareLetterQ'
+            | 'SquareLetterR'
+            | 'SquareLetterS'
+            | 'SquareLetterT'
+            | 'SquareLetterU'
+            | 'SquareLetterV'
+            | 'SquareLetterW'
+            | 'SquareLetterX'
+            | 'SquareLetterY'
+            | 'SquareLetterZ'
+            | 'SquareLibrary'
+            | 'SquareM'
+            | 'SquareMenu'
+            | 'SquareMinus'
+            | 'SquareMousePointer'
+            | 'SquareOff'
+            | 'SquarePadding'
+            | 'SquarePaddingBottom'
+            | 'SquarePaddingHorizontal'
+            | 'SquarePaddingLeft'
+            | 'SquarePaddingRight'
+            | 'SquarePaddingTop'
+            | 'SquarePaddingVertical'
+            | 'SquareParking'
+            | 'SquareParkingOff'
+            | 'SquarePause'
+            | 'SquarePen'
+            | 'SquarePercent'
+            | 'SquarePi'
+            | 'SquarePilcrow'
+            | 'SquarePlay'
+            | 'SquarePlus'
+            | 'SquarePower'
+            | 'SquareRadical'
+            | 'SquareRoundCorner'
+            | 'SquareScissors'
+            | 'SquaresExclude'
+            | 'SquareSigma'
+            | 'SquaresIntersect'
+            | 'SquareSlash'
+            | 'SquareSparkles'
+            | 'SquareSplitHorizontal'
+            | 'SquareSplitVertical'
+            | 'SquareSquare'
+            | 'SquaresSubtract'
+            | 'SquareStack'
+            | 'SquareStar'
+            | 'SquareStop'
+            | 'SquaresUnite'
+            | 'SquareTerminal'
+            | 'SquareText'
+            | 'SquareUser'
+            | 'SquareUserRound'
+            | 'SquareX'
+            | 'Squircle'
+            | 'SquircleDashed'
+            | 'Squirrel'
+            | 'Stamp'
+            | 'Star'
+            | 'StarCheck'
+            | 'StarHalf'
+            | 'StarMinus'
+            | 'StarOff'
+            | 'StarPlus'
+            | 'Stars'
+            | 'StarX'
+            | 'StepBack'
+            | 'StepForward'
+            | 'Stethoscope'
+            | 'Sticker'
+            | 'StickyNote'
+            | 'StickyNoteCheck'
+            | 'StickyNoteMinus'
+            | 'StickyNoteOff'
+            | 'StickyNotePlus'
+            | 'StickyNotes'
+            | 'StickyNoteX'
+            | 'Stone'
+            | 'StopCircle'
+            | 'Store'
+            | 'StretchHorizontal'
+            | 'StretchVertical'
+            | 'Strikethrough'
+            | 'Subscript'
+            | 'Subtitles'
+            | 'Summary'
+            | 'Sun'
+            | 'SunDim'
+            | 'SunMedium'
+            | 'SunMoon'
+            | 'Sunrise'
+            | 'Sunset'
+            | 'SunSnow'
+            | 'Superscript'
+            | 'SwatchBook'
+            | 'SwissFranc'
+            | 'SwitchCamera'
+            | 'Sword'
+            | 'Swords'
+            | 'Syringe'
+            | 'Table'
+            | 'Table2'
+            | 'TableCellsMerge'
+            | 'TableCellsSplit'
+            | 'TableColumnsSplit'
+            | 'TableConfig'
+            | 'TableOfContents'
+            | 'TableProperties'
+            | 'TableRowsSplit'
+            | 'Tablet'
+            | 'Tablets'
+            | 'TabletSmartphone'
+            | 'Tag'
+            | 'TagPlus'
+            | 'Tags'
+            | 'TagX'
+            | 'Tally1'
+            | 'Tally2'
+            | 'Tally3'
+            | 'Tally4'
+            | 'Tally5'
+            | 'Tangent'
+            | 'Target'
+            | 'Telescope'
+            | 'Tent'
+            | 'TentTree'
+            | 'Terminal'
+            | 'TerminalSquare'
+            | 'TestTube'
+            | 'TestTube2'
+            | 'TestTubeDiagonal'
+            | 'TestTubes'
+            | 'Text'
+            | 'TextAlignCenter'
+            | 'TextAlignEnd'
+            | 'TextAlignJustify'
+            | 'TextAlignJustifyCenter'
+            | 'TextAlignJustifyEnd'
+            | 'TextAlignJustifyStart'
+            | 'TextAlignStart'
+            | 'TextCursor'
+            | 'TextCursorInput'
+            | 'TextInitial'
+            | 'TextQuote'
+            | 'TextSearch'
+            | 'TextSelect'
+            | 'TextSelection'
+            | 'TextWrap'
+            | 'Theater'
+            | 'Thermometer'
+            | 'ThermometerSnowflake'
+            | 'ThermometerSun'
+            | 'ThumbsDown'
+            | 'ThumbsUp'
+            | 'Ticket'
+            | 'TicketCheck'
+            | 'TicketMinus'
+            | 'TicketPercent'
+            | 'TicketPlus'
+            | 'Tickets'
+            | 'TicketSlash'
+            | 'TicketsPlane'
+            | 'TicketX'
+            | 'TicTacToe'
+            | 'Timeline'
+            | 'Timer'
+            | 'TimerOff'
+            | 'TimerReset'
+            | 'ToggleLeft'
+            | 'ToggleRight'
+            | 'Toilet'
+            | 'Tombstone'
+            | 'Toolbox'
+            | 'ToolCase'
+            | 'Toothbrush'
+            | 'ToothbrushSparkles'
+            | 'Tornado'
+            | 'Torus'
+            | 'Touchpad'
+            | 'TouchpadOff'
+            | 'TowelRack'
+            | 'TowerControl'
+            | 'ToyBrick'
+            | 'Tractor'
+            | 'TrafficCone'
+            | 'Trailer'
+            | 'Train'
+            | 'TrainFront'
+            | 'TrainFrontTunnel'
+            | 'TrainTrack'
+            | 'TramFront'
+            | 'Transgender'
+            | 'Trash'
+            | 'Trash2'
+            | 'TrashOff'
+            | 'TreeDeciduous'
+            | 'TreePalm'
+            | 'TreePine'
+            | 'Trees'
+            | 'TrendingDown'
+            | 'TrendingUp'
+            | 'TrendingUpDown'
+            | 'Triangle'
+            | 'TriangleAlert'
+            | 'TriangleDashed'
+            | 'TriangleExclamationPoint'
+            | 'TriangleRight'
+            | 'TrianglesCenterlineDashedHorizontal'
+            | 'TrianglesCenterlineDashedVertical'
+            | 'Trophy'
+            | 'Truck'
+            | 'TruckElectric'
+            | 'TubeLotion'
+            | 'TurkishLira'
+            | 'Turntable'
+            | 'Turtle'
+            | 'Tv'
+            | 'Tv2'
+            | 'TvMinimal'
+            | 'TvMinimalPlay'
+            | 'Type'
+            | 'TypeOutline'
+            | 'Umbrella'
+            | 'UmbrellaOff'
+            | 'Underline'
+            | 'Undo'
+            | 'Undo2'
+            | 'UndoDot'
+            | 'UnfoldHorizontal'
+            | 'UnfoldVertical'
+            | 'Ungroup'
+            | 'University'
+            | 'Unlink'
+            | 'Unlink2'
+            | 'Unlock'
+            | 'UnlockKeyhole'
+            | 'Unplug'
+            | 'Upload'
+            | 'UploadCloud'
+            | 'Usb'
+            | 'UsbCPort'
+            | 'User'
+            | 'User2'
+            | 'UserCheck'
+            | 'UserCheck2'
+            | 'UserCircle'
+            | 'UserCircle2'
+            | 'UserCog'
+            | 'UserCog2'
+            | 'UserGroup'
+            | 'UserKey'
+            | 'UserLock'
+            | 'UserMinus'
+            | 'UserMinus2'
+            | 'UserPen'
+            | 'UserPlus'
+            | 'UserPlus2'
+            | 'UserRound'
+            | 'UserRoundArrowLeft'
+            | 'UserRoundCheck'
+            | 'UserRoundCog'
+            | 'UserRoundGroup'
+            | 'UserRoundKey'
+            | 'UserRoundMinus'
+            | 'UserRoundPen'
+            | 'UserRoundPlus'
+            | 'UserRoundSearch'
+            | 'UserRoundShield'
+            | 'UserRoundStar'
+            | 'UserRoundX'
+            | 'Users'
+            | 'Users2'
+            | 'UsersCollaboration'
+            | 'UserSearch'
+            | 'UserShield'
+            | 'UserSquare'
+            | 'UserSquare2'
+            | 'UsersRound'
+            | 'UsersRoundCollaboration'
+            | 'UserStar'
+            | 'UserX'
+            | 'UserX2'
+            | 'Utensils'
+            | 'UtensilsCrossed'
+            | 'UtilityPole'
+            | 'Van'
+            | 'Variable'
+            | 'Vault'
+            | 'VectorPolygon'
+            | 'VectorSquare'
+            | 'Vegan'
+            | 'VenetianMask'
+            | 'Venus'
+            | 'VenusAndMars'
+            | 'Verified'
+            | 'Vibrate'
+            | 'VibrateOff'
+            | 'Video'
+            | 'VideoOff'
+            | 'Videotape'
+            | 'View'
+            | 'Virus'
+            | 'VirusOff'
+            | 'Voicemail'
+            | 'Volleyball'
+            | 'Volume'
+            | 'Volume1'
+            | 'Volume2'
+            | 'VolumeOff'
+            | 'VolumeX'
+            | 'Vote'
+            | 'Wallet'
+            | 'Wallet2'
+            | 'WalletCards'
+            | 'WalletMinimal'
+            | 'Wallpaper'
+            | 'Wand'
+            | 'Wand2'
+            | 'WandSparkles'
+            | 'Warehouse'
+            | 'WashingMachine'
+            | 'Watch'
+            | 'Waves'
+            | 'WavesArrowDown'
+            | 'WavesArrowUp'
+            | 'WavesHorizontal'
+            | 'WavesLadder'
+            | 'WavesVertical'
+            | 'Waypoints'
+            | 'Webcam'
+            | 'WebcamOff'
+            | 'Webhook'
+            | 'WebhookOff'
+            | 'Weight'
+            | 'WeightTilde'
+            | 'Wheat'
+            | 'WheatOff'
+            | 'Whistle'
+            | 'WholeWord'
+            | 'Wifi'
+            | 'WifiCog'
+            | 'WifiHigh'
+            | 'WifiLock'
+            | 'WifiLow'
+            | 'WifiOff'
+            | 'WifiPen'
+            | 'WifiSync'
+            | 'WifiZero'
+            | 'Wind'
+            | 'WindArrowDown'
+            | 'WindArrowUp'
+            | 'Wine'
+            | 'WineOff'
+            | 'Workflow'
+            | 'Worm'
+            | 'WrapText'
+            | 'Wrench'
+            | 'WrenchOff'
+            | 'X'
+            | 'XCircle'
+            | 'XLineTop'
+            | 'XOctagon'
+            | 'XSquare'
+            | 'Zap'
+            | 'ZapOff'
+            | 'ZodiacAquarius'
+            | 'ZodiacAries'
+            | 'ZodiacCancer'
+            | 'ZodiacCapricorn'
+            | 'ZodiacGemini'
+            | 'ZodiacLeo'
+            | 'ZodiacLibra'
+            | 'ZodiacOphiuchus'
+            | 'ZodiacPisces'
+            | 'ZodiacSagittarius'
+            | 'ZodiacScorpio'
+            | 'ZodiacTaurus'
+            | 'ZodiacVirgo'
+            | 'ZoomIn'
+            | 'ZoomOut'
+            | null
+          image: {
+            asset?: SanityImageAssetReference
+            media?: unknown // Unable to locate the referenced type "serviceItem.image.media" in schema
+            hotspot?: SanityImageHotspot
+            crop?: SanityImageCrop
+            _type: 'image'
+            lqip: string | null
+          } | null
+          ctas: Array<{
+            _key: string
+            _type: 'cta'
+            link: {
+              _type: 'link'
+              label?: string
+              type?: 'external' | 'internal'
+              internal:
+                | {
+                    _type: 'blog.post'
+                    title: string | null
+                    metadata: Metadata | null
+                  }
+                | {
+                    _type: 'page'
+                    title: string | null
+                    metadata: Metadata | null
+                  }
+                | null
+              external?: string
+              params?: string
+            } | null
+            style: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary' | null
+          }> | null
+        }> | null
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'stat-list'
+        pretitle?: string
+        intro?: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }>
+        stats?: Array<{
+          prefix?: string
+          value?: string
+          suffix?: string
+          text?: string
+          _type: 'stat'
+          _key: string
+        }>
+        textAlign?: string
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'step-list'
+        pretitle?: string
+        intro?: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }>
+        steps?: Array<{
+          content?: Array<{
+            children?: Array<{
+              marks?: Array<string>
+              text?: string
+              _type: 'span'
+              _key: string
+            }>
+            style?:
+              | 'blockquote'
+              | 'display-hero'
+              | 'display-xl'
+              | 'display-xxl'
+              | 'h1'
+              | 'h2'
+              | 'h3'
+              | 'h4'
+              | 'h5'
+              | 'h6'
+              | 'normal'
+            listItem?: 'bullet' | 'number'
+            markDefs?: Array<{
+              href?: string
+              _type: 'link'
+              _key: string
+            }>
+            level?: number
+            _type: 'block'
+            _key: string
+          }>
+          _type: 'step'
+          _key: string
+        }>
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'tabbed-content'
+        pretitle?: string
+        intro?: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }>
+        tabs: Array<{
+          label?: string
+          pretitle?: string
+          content?: Array<{
+            children?: Array<{
+              marks?: Array<string>
+              text?: string
+              _type: 'span'
+              _key: string
+            }>
+            style?:
+              | 'blockquote'
+              | 'display-hero'
+              | 'display-xl'
+              | 'display-xxl'
+              | 'h1'
+              | 'h2'
+              | 'h3'
+              | 'h4'
+              | 'h5'
+              | 'h6'
+              | 'normal'
+            listItem?: 'bullet' | 'number'
+            markDefs?: Array<{
+              href?: string
+              _type: 'link'
+              _key: string
+            }>
+            level?: number
+            _type: 'block'
+            _key: string
+          }>
+          ctas: Array<{
+            _key: string
+            _type: 'cta'
+            link: {
+              _type: 'link'
+              label?: string
+              type?: 'external' | 'internal'
+              internal:
+                | {
+                    _type: 'blog.post'
+                    title: string | null
+                    metadata: Metadata | null
+                  }
+                | {
+                    _type: 'page'
+                    title: string | null
+                    metadata: Metadata | null
+                  }
+                | null
+              external?: string
+              params?: string
+            } | null
+            style: 'default' | 'destructive' | 'ghost' | 'link' | 'outline' | 'secondary' | null
+          }> | null
+          assets?: Array<
+            | ({
+                _key: string
+              } & Code)
+            | ({
+                _key: string
+              } & CustomHtml)
+            | ({
+                _key: string
+              } & Img)
+          >
+          assetOnRight?: boolean
+          assetBelowContent?: boolean
+          _type: 'tab'
+          _key: string
+        }> | null
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'team.placeholder'
+        options?: ModuleOptions
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'testimonial-list'
+        pretitle?: string
+        intro?: Array<{
+          children?: Array<{
+            marks?: Array<string>
+            text?: string
+            _type: 'span'
+            _key: string
+          }>
+          style?:
+            | 'blockquote'
+            | 'display-hero'
+            | 'display-xl'
+            | 'display-xxl'
+            | 'h1'
+            | 'h2'
+            | 'h3'
+            | 'h4'
+            | 'h5'
+            | 'h6'
+            | 'normal'
+          listItem?: 'bullet' | 'number'
+          markDefs?: Array<{
+            href?: string
+            _type: 'link'
+            _key: string
+          }>
+          level?: number
+          _type: 'block'
+          _key: string
+        }>
+        testimonials: Array<{
+          _id: string
+          _type: 'testimonial'
+          _createdAt: string
+          _updatedAt: string
+          _rev: string
+          content?: Array<{
+            children?: Array<{
+              marks?: Array<string>
+              text?: string
+              _type: 'span'
+              _key: string
+            }>
+            style?:
+              | 'blockquote'
+              | 'display-hero'
+              | 'display-xl'
+              | 'display-xxl'
+              | 'h1'
+              | 'h2'
+              | 'h3'
+              | 'h4'
+              | 'h5'
+              | 'h6'
+              | 'normal'
+            listItem?: 'bullet' | 'number'
+            markDefs?: Array<{
+              href?: string
+              _type: 'link'
+              _key: string
+            }>
+            level?: number
+            _type: 'block'
+            _key: string
+          }>
+          source?: string
+          author?: {
+            name?: string
+            title?: string
+            image?: {
+              asset?: SanityImageAssetReference
+              media?: unknown
+              hotspot?: SanityImageHotspot
+              crop?: SanityImageCrop
+              _type: 'image'
+            }
+          }
+          language?: string
+        }> | null
+        layout?: 'carousel' | 'grid'
+        layoutMobile?: 'carousel' | 'grid'
+        ctas: null
+      }
+    | {
+        _key: string
+        _type: 'testimonial.featured'
+        testimonial: {
+          _id: string
+          _type: 'testimonial'
+          _createdAt: string
+          _updatedAt: string
+          _rev: string
+          content?: Array<{
+            children?: Array<{
+              marks?: Array<string>
+              text?: string
+              _type: 'span'
+              _key: string
+            }>
+            style?:
+              | 'blockquote'
+              | 'display-hero'
+              | 'display-xl'
+              | 'display-xxl'
+              | 'h1'
+              | 'h2'
+              | 'h3'
+              | 'h4'
+              | 'h5'
+              | 'h6'
+              | 'normal'
+            listItem?: 'bullet' | 'number'
+            markDefs?: Array<{
+              href?: string
+              _type: 'link'
+              _key: string
+            }>
+            level?: number
+            _type: 'block'
+            _key: string
+          }>
+          source?: string
+          author?: {
+            name?: string
+            title?: string
+            image?: {
+              asset?: SanityImageAssetReference
+              media?: unknown
+              hotspot?: SanityImageHotspot
+              crop?: SanityImageCrop
+              _type: 'image'
+            }
+          }
+          language?: string
+        } | null
+        ctas: null
+      }
+    | null
+  >
+  isFallback: boolean
+  translations:
+    | Array<{
+        lang: string
+        slug: string | null
+      }>
+    | Array<{
+        lang: string | 'en'
+        slug: string | null
+      }>
+} | null
+
+// Source: src/sanity/queries/blog.groq.ts
+// Variable: BLOG_POST_SLUGS_QUERY
+// Query: array::unique(*[		_type == 'blog.post'		&& defined(metadata.slug.current)		&& coalesce(language, 'en') in [$lang, 'en']	].metadata.slug.current)
+export type BLOG_POST_SLUGS_QUERY_RESULT = Array<string | null>
+
 // Source: src/sanity/queries/feeds.groq.ts
 // Variable: BLOG_RSS_QUERY
 // Query: {	'blog': *[_type == 'page' && metadata.slug.current == 'blog' && (	coalesce(language, 'en') == $lang	|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->)))][0]{		_type,		title,		metadata,		'image': metadata.image.asset->url,	},	'posts': *[_type == 'blog.post' && (	coalesce(language, 'en') == $lang	|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->)))]{		_type,		title,		body,		publishDate,		authors[]->,		metadata,		'image': metadata.image.asset->url,	},	'copyright': pt::text(coalesce(*[_type == 'site' && _id == 'site-' + $lang][0], *[_type == 'site' && _id == 'site'][0]).copyright)}
@@ -8635,6 +21440,8 @@ declare global {
   interface SanityQueries {
     "\n\t*[\n\t\t_type == 'blog.post'\n\t\t&& (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)\n\t] | order(publishDate desc) { \n\t_type,\n\t_id,\n\t_createdAt,\n\t_updatedAt,\n\ttitle,\n\tfeatured,\n\tpublishDate,\n\tlanguage,\n\t'categories': (categories[]{ 'doc': coalesce(*[_type == 'translation.metadata' && references(^._ref)][0].translations[language == $lang || _key == $lang][0].value->, @->) }.doc)[_type == 'blog.category']{ _id, title, slug },\n\tauthors[]->,\n\tmetadata {\n\t\t...,\n\t\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n\t\t'ogimage': image.asset->url + '?w=1200'\n\t}\n }\n": BLOG_FRONTPAGE_QUERY_RESULT
     "\n\t*[\n\t\t_type == 'blog.post'\n\t\t&& (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)\n\t\t&& ($filteredCategory == '' || $filteredCategory in categories[]{ 'doc': coalesce(*[_type == 'translation.metadata' && references(^._ref)][0].translations[language == $lang || _key == $lang][0].value->, @->) }.doc._id)\n\t] | order(select($featuredFirst => featured, false) desc, publishDate desc)\n\t[0..$last] { \n\t_type,\n\t_id,\n\t_createdAt,\n\t_updatedAt,\n\ttitle,\n\tfeatured,\n\tpublishDate,\n\tlanguage,\n\t'categories': (categories[]{ 'doc': coalesce(*[_type == 'translation.metadata' && references(^._ref)][0].translations[language == $lang || _key == $lang][0].value->, @->) }.doc)[_type == 'blog.category']{ _id, title, slug },\n\tauthors[]->,\n\tmetadata {\n\t\t...,\n\t\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n\t\t'ogimage': image.asset->url + '?w=1200'\n\t}\n }\n": BLOG_LIST_QUERY_RESULT
+    "\n\t*[\n\t\t_type == 'blog.post'\n\t\t&& metadata.slug.current == $slug\n\t\t&& (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)\n\t] | order(select(coalesce(language, 'en') == $lang => 0, 1))[0]{\n\t\t...,\n\t\tbody[]{\n\t\t\t...,\n\t\t\t_type == 'image' => {\n\t\t\t\t\n\t...,\n\t'lqip': @.asset->metadata.lqip\n,\n\t\t\t\tasset->\n\t\t\t}\n\t\t},\n\t\t'readTime': length(string::split(pt::text(body), ' ')) / 200,\n\t\t'headings': body[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3']]{\n\t\t\tstyle,\n\t\t\t'text': pt::text(@)\n\t\t},\n\t\t'categories': (categories[]{ 'doc': coalesce(*[_type == 'translation.metadata' && references(^._ref)][0].translations[language == $lang || _key == $lang][0].value->, @->) }.doc)[_type == 'blog.category'],\n\t\tauthors[]->,\n\t\tmetadata {\n\t\t\t...,\n\t\t\t'ogimage': image.asset->url + '?w=1200'\n\t\t},\n\t\t'modules': (\n\t*[_type == 'global-module' && path == '*' && (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)].before[]{ \n\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t_type == 'section' => {\n\t\t...,\n\t\t\"module\": module[]{\n\t\t\t...select(\n\t\t\t\tdefined(_ref) => {\n\t\t\t\t\t\"_key\": coalesce(_key, _ref->_id),\n\t\t\t\t\t..._ref->{\n\t\t\t\t\t\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t\t\t\t\t}\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t\t\t\t}\n\t\t\t)\n\t\t}\n\t},\n }\n\t+ *[_type == 'global-module' && path == 'blog/' && (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)].before[]{ \n\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t_type == 'section' => {\n\t\t...,\n\t\t\"module\": module[]{\n\t\t\t...select(\n\t\t\t\tdefined(_ref) => {\n\t\t\t\t\t\"_key\": coalesce(_key, _ref->_id),\n\t\t\t\t\t..._ref->{\n\t\t\t\t\t\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t\t\t\t\t}\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t\t\t\t}\n\t\t\t)\n\t\t}\n\t},\n }\n\t+ *[_type == 'global-module' && path == 'blog/' && (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)].after[]{ \n\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t_type == 'section' => {\n\t\t...,\n\t\t\"module\": module[]{\n\t\t\t...select(\n\t\t\t\tdefined(_ref) => {\n\t\t\t\t\t\"_key\": coalesce(_key, _ref->_id),\n\t\t\t\t\t..._ref->{\n\t\t\t\t\t\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t\t\t\t\t}\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t\t\t\t}\n\t\t\t)\n\t\t}\n\t},\n }\n\t+ *[_type == 'global-module' && path == '*' && (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)].after[]{ \n\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t_type == 'section' => {\n\t\t...,\n\t\t\"module\": module[]{\n\t\t\t...select(\n\t\t\t\tdefined(_ref) => {\n\t\t\t\t\t\"_key\": coalesce(_key, _ref->_id),\n\t\t\t\t\t..._ref->{\n\t\t\t\t\t\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t\t\t\t\t}\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\n\t...,\n\tctas[]{\n\t\t...,\n\t\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n }\n\t},\n\t_type == 'blog-list' => { 'filteredCategory': coalesce(*[_type == 'translation.metadata' && references(^.filteredCategory._ref)][0].translations[language == $lang || _key == $lang][0].value->, filteredCategory->) },\n\t_type == 'breadcrumbs' => { crumbs[]{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n } },\n\t_type == 'callout' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t}\n\t},\n\t_type == 'card-list' => {\n\t\tcards[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'creative-module' => {\n\t\tmodules[]{\n\t\t\t...,\n\t\t\tsubModules[]{\n\t\t\t\t...,\n\t\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.saas' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'hero.split' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t\n\t_type == 'reputation-block' => { reputation-> }\n\n\t\t},\n\t\tassets[]{\n\t\t\t...,\n\t\t\t_type == 'img' => { \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n },\n\t\t\t_type == 'video' => {\n\t\t\t\t'url': file.asset->url,\n\t\t\t\t'mimeType': file.asset->mimeType,\n\t\t\t\tautoplay,\n\t\t\t\tloop,\n\t\t\t\tmuted,\n\t\t\t\tposter{ \n\t...,\n\timage { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n }\n\t\t\t}\n\t\t}\n\t},\n\t_type == 'image-gallery' => {\n\t\trows[]{\n\t\t\t...,\n\t\t\timages[]{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'logo-list' => { logos[]-> },\n\t_type == 'project-list' => {\n\t\tprojects[]{\n\t\t\t...,\n\t\t\tcta{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n\t\t\tasset{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'person-list' => { people[]-> },\n\t_type == 'pricing-list' => {\n\t\ttiers[]->{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'richtext-module' => {\n\t\tcontent[]{\n\t\t\t...,\n\t\t\t_type == 'image' => { \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t},\n\t\t'headings': select(\n\t\t\ttableOfContents => content[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']]{\n\t\t\t\tstyle,\n\t\t\t\t'text': pt::text(@)\n\t\t\t}\n\t\t),\n\t},\n\t_type == 'service-details' => {\n\t\tfeatures[]{\n\t\t\t...,\n\t\t\timg{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n }\n\t\t}\n\t},\n\t_type == 'tabbed-content' => {\n\t\ttabs[]{\n\t\t\t...,\n\t\t\tctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n }\n\t\t}\n\t},\n\t_type == 'testimonial.featured' => { testimonial-> },\n\t_type == 'testimonial-list' => { testimonials[]-> },\n\t_type == 'faq' => {\n\t\tpretitle,\n\t\ttitle,\n\t\tdescription,\n\t\titems[]{\n\t\t  _key,\n\t\t  question,\n\t\t  answer\n\t\t},\n\t\taccessibleAccordion,\n\t\tgenerateSchema\n\t  },\n  _type == 'service-list' => {\n\t  services[]{\n\t\t  _key,\n\t\t  title,\n\t\t  description,\n\t\t  layout,\n      keywords,\n      icon,\n      image{ \n\t...,\n\t'lqip': @.asset->metadata.lqip\n },\n      ctas[]{ \n\t...,\n\tlink{ \n\t...,\n\tinternal->{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata\n\t}\n },\n\tstyle\n },\n    }\n  },\n\n\t\t\t\t}\n\t\t\t)\n\t\t}\n\t},\n }\n),\n\t\t\n\t'isFallback': coalesce(language, 'en') != $lang,\n\t'translations': coalesce(\n\t\t*[_type == 'translation.metadata' && references(^._id)][0].translations[defined(value->)]{\n\t\t\t'lang': coalesce(language, _key),\n\t\t\t'slug': value->metadata.slug.current\n\t\t},\n\t\t[{ 'lang': coalesce(language, 'en'), 'slug': metadata.slug.current }]\n\t)\n\n\t}\n": BLOG_POST_QUERY_RESULT
+    "\n\tarray::unique(*[\n\t\t_type == 'blog.post'\n\t\t&& defined(metadata.slug.current)\n\t\t&& coalesce(language, 'en') in [$lang, 'en']\n\t].metadata.slug.current)\n": BLOG_POST_SLUGS_QUERY_RESULT
     "{\n\t'blog': *[_type == 'page' && metadata.slug.current == 'blog' && (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)][0]{\n\t\t_type,\n\t\ttitle,\n\t\tmetadata,\n\t\t'image': metadata.image.asset->url,\n\t},\n\t'posts': *[_type == 'blog.post' && (\n\tcoalesce(language, 'en') == $lang\n\t|| (coalesce(language, 'en') == 'en' && !defined(*[_type == 'translation.metadata' && references(^._id)][0].translations[language == $lang || _key == $lang][0].value->))\n)]{\n\t\t_type,\n\t\ttitle,\n\t\tbody,\n\t\tpublishDate,\n\t\tauthors[]->,\n\t\tmetadata,\n\t\t'image': metadata.image.asset->url,\n\t},\n\t'copyright': pt::text(coalesce(*[_type == 'site' && _id == 'site-' + $lang][0], *[_type == 'site' && _id == 'site'][0]).copyright)\n}": BLOG_RSS_QUERY_RESULT
     "{\n\t'siteTitle': coalesce(*[_type == 'site' && _id == 'site-' + $lang][0], *[_type == 'site' && _id == 'site'][0]).title,\n\t'siteDesc': *[_type == 'page' && metadata.slug.current == 'index' && coalesce(language, 'en') == $lang][0].metadata.description,\n\t'pages': *[\n\t\t_type == 'page' &&\n\t\tcoalesce(language, 'en') == $lang &&\n\t\tmetadata.noIndex != true &&\n\t\t!(metadata.slug.current in ['404', 'index'])\n\t]|order(metadata.slug.current){\n\t\t'title': coalesce(metadata.title, title),\n\t\t'slug': metadata.slug.current,\n\t\t'desc': metadata.description,\n\t},\n\t'posts': *[_type == 'blog.post' && coalesce(language, 'en') == $lang && metadata.noIndex != true]|order(publishDate desc){\n\t\t'title': coalesce(title, metadata.title),\n\t\t'slug': metadata.slug.current,\n\t\t'desc': metadata.description,\n\t}\n}": AGENT_INDEX_QUERY_RESULT
     "*[\n\t_type in ['page', 'blog.post']\n\t&& defined(metadata.slug.current)\n\t&& !(metadata.slug.current in ['404'])\n\t&& metadata.noIndex != true\n\t&& coalesce(language, 'en') in $languages\n]|order(_type desc, metadata.slug.current){\n\t_type,\n\t_updatedAt,\n\tlanguage,\n\tmetadata { slug },\n\t\n\t'isFallback': coalesce(language, 'en') != $lang,\n\t'translations': coalesce(\n\t\t*[_type == 'translation.metadata' && references(^._id)][0].translations[defined(value->)]{\n\t\t\t'lang': coalesce(language, _key),\n\t\t\t'slug': value->metadata.slug.current\n\t\t},\n\t\t[{ 'lang': coalesce(language, 'en'), 'slug': metadata.slug.current }]\n\t)\n\n}": SITEMAP_QUERY_RESULT

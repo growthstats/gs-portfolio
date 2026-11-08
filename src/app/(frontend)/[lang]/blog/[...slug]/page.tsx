@@ -7,17 +7,10 @@ import { client } from '@/sanity/lib/client'
 import { fetchSanityLive } from '@/sanity/lib/fetch'
 import { groq } from 'next-sanity'
 import { BLOG_DIR } from '@/lib/env'
-import { IMAGE_QUERY, withGlobalModules } from '@/sanity/lib/queries'
-import {
-  IN_LANGUAGE,
-  LANGUAGE,
-  LOCALIZED_FIELDS,
-  PREFER_LANGUAGE,
-  localizedRefs,
-  withTranslationLinks,
-  type LocalizedResult,
-} from '@/sanity/lib/localized'
-import { DEFAULT_LANG, isEnabledLanguage, type Lang } from '@/lib/i18n'
+import { BLOG_POST_QUERY, BLOG_POST_SLUGS_QUERY } from '@/sanity/queries/blog.groq'
+import type { BLOG_POST_QUERY_RESULT, BLOG_POST_SLUGS_QUERY_RESULT } from '@/sanity/sanity.types'
+import { withTranslationLinks } from '@/sanity/lib/localized'
+import { isEnabledLanguage, type Lang } from '@/lib/i18n'
 import { cache } from 'react'
 import errors from '@/lib/errors'
 
@@ -44,16 +37,9 @@ export async function generateMetadata({ params }: Props) {
 
 export async function generateStaticParams({ params: { lang } }: { params: { lang: string } }) {
   // Each language's own documents, plus the English ones it renders as fallbacks.
-  const slugs = await client.fetch<string[]>(
-    groq`array::unique(*[
-			_type == 'blog.post'
-			&& defined(metadata.slug.current)
-			&& ${LANGUAGE} in [$lang, '${DEFAULT_LANG}']
-		].metadata.slug.current)`,
-    { lang },
-  )
+  const slugs = await client.fetch<BLOG_POST_SLUGS_QUERY_RESULT>(BLOG_POST_SLUGS_QUERY, { lang })
 
-  return slugs.map((slug) => ({ slug: slug.split('/') }))
+  return slugs.filter((slug) => slug !== null).map((slug) => ({ slug: slug.split('/') }))
 }
 
 function getPost({ lang, slug }: Params) {
@@ -69,36 +55,8 @@ const fetchPost = cache(async (lang: Lang, slug: string) => {
 
   if (!blogTemplateExists) throw new Error(errors.missingBlogTemplate)
 
-  const post = await fetchSanityLive<
-    LocalizedResult<Sanity.BlogPost & { modules: Sanity.Module[] }>
-  >({
-    query: groq`*[
-			_type == 'blog.post'
-			&& metadata.slug.current == $slug
-			&& ${IN_LANGUAGE}
-		] | ${PREFER_LANGUAGE}[0]{
-			...,
-			body[]{
-				...,
-				_type == 'image' => {
-					${IMAGE_QUERY},
-					asset->
-				}
-			},
-			'readTime': length(string::split(pt::text(body), ' ')) / 200,
-			'headings': body[style in ['display-hero', 'display-xxl', 'display-xl', 'h1', 'h2', 'h3']]{
-				style,
-				'text': pt::text(@)
-			},
-			'categories': ${localizedRefs('categories')},
-			authors[]->,
-			metadata {
-				...,
-				'ogimage': image.asset->url + '?w=1200'
-			},
-			'modules': ${withGlobalModules('[]', `path == '${BLOG_DIR}/'`)},
-			${LOCALIZED_FIELDS}
-		}`,
+  const post = await fetchSanityLive<BLOG_POST_QUERY_RESULT>({
+    query: BLOG_POST_QUERY,
     params: { lang, slug },
   })
 
