@@ -3,7 +3,7 @@ import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
 import CTA from '../CTA'
 import { getDictionary, type Dictionary } from '@/i18n'
-import type { Lang } from '@/lib/i18n'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 type Service = keyof Dictionary['brandHero']['services']
 
@@ -15,7 +15,7 @@ const SERVICE_COLUMNS: Service[][] = [
 export default function BrandHeroPlaceholder({
   lang,
   ...props
-}: Readonly<Sanity.Module & { lang: Lang }>) {
+}: ModuleProps<'brand-hero.placeholder'>) {
   const { brandHero } = getDictionary(lang)
   const { services } = brandHero
 
@@ -36,10 +36,7 @@ export default function BrandHeroPlaceholder({
               _type: 'link',
               label: brandHero.cta,
               type: 'internal',
-              internal: {
-                _type: 'page',
-                metadata: { slug: { current: 'contact' } },
-              } as unknown as Sanity.Page,
+              internal: { _type: 'page', metadata: { slug: { current: 'contact' } } },
             }}
           />
         </div>
@@ -50,7 +47,7 @@ export default function BrandHeroPlaceholder({
               key={index}
               className={
                 index === 0
-                  ? 'animate-float-updown-slow mt-5 space-y-2.5'
+                  ? 'mt-5 animate-float-updown-slow space-y-2.5'
                   : 'animate-float-updown-slow-delayed space-y-2.5'
               }
             >

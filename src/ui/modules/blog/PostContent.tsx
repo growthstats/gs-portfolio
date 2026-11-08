@@ -12,17 +12,9 @@ import Social from '@/ui/Social'
 import { BASE_URL } from '@/lib/env'
 import resolveUrl from '@/lib/resolveUrl'
 import Faq from '@/ui/modules/Faq'
-import type { ComponentProps } from 'react'
-import type { Lang } from '@/lib/i18n'
-import type { BlogPost } from '@/sanity/queries/blog.groq'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
-// TypeGen types Portable Text `children` as optional, so `body` and `faq` are cast where they reach
-// components typed with `PortableTextBlock`.
-export default function PostContent({
-  lang,
-  post,
-  ...props
-}: { lang: Lang; post?: BlogPost } & Sanity.Module) {
+export default function PostContent({ lang, post, ...props }: ModuleProps<'blog-post-content'>) {
   if (!post) return null
 
   const showTOC = !post.hideTableOfContents || !!post.headings?.length
@@ -77,14 +69,11 @@ export default function PostContent({
         )}
 
         <div className="space-y-12">
-          <Content
-            value={(post.body ?? []) as Sanity.PortableText}
-            className={cn(css.body, 'ml-0 grid max-w-[780px]')}
-          >
+          <Content value={post.body ?? []} className={cn(css.body, 'ml-0 grid max-w-[780px]')}>
             <hr />
           </Content>
 
-          {post.faq && <Faq {...(post.faq as ComponentProps<typeof Faq>)} />}
+          {post.faq && <Faq {...post.faq} />}
         </div>
       </div>
     </article>

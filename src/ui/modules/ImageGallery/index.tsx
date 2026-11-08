@@ -7,7 +7,7 @@ import Pretitle from '@/ui/Pretitle'
 import css from './ImageGallery.module.css'
 import { galleryRows, type GalleryImage } from './rows'
 import { getDictionary } from '@/i18n'
-import type { Lang } from '@/lib/i18n'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 function Figure({ image, copy }: { image: GalleryImage; copy?: boolean }) {
   return (
@@ -37,7 +37,7 @@ export default function ImageGallery({
   alternateScrollDirection,
   lang,
   ...props
-}: Sanity.ImageGalleryModule & { lang: Lang }) {
+}: ModuleProps<'image-gallery'>) {
   const label = stegaClean(pretitle) || getDictionary(lang).imageGallery.label
 
   return (

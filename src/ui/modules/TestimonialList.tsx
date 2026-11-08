@@ -7,7 +7,7 @@ import PortableText from '@/ui/PortableText'
 import Pretitle from '@/ui/Pretitle'
 import { getDictionary } from '@/i18n'
 import { format } from '@/i18n/format'
-import type { Lang } from '@/lib/i18n'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default function TestimonialList({
   lang,
@@ -17,14 +17,7 @@ export default function TestimonialList({
   layout: l,
   layoutMobile: lm,
   ...props
-}: { lang: Lang } & Partial<{
-  pretitle: string
-  intro: Sanity.PortableText
-  testimonials: Sanity.Testimonial[]
-  layout: 'grid' | 'carousel'
-  layoutMobile: 'grid' | 'carousel'
-}> &
-  Sanity.Module) {
+}: ModuleProps<'testimonial-list'>) {
   const t = getDictionary(lang).testimonial
   const layout = stegaClean(l)
   const layoutMobile = stegaClean(lm)
@@ -32,7 +25,7 @@ export default function TestimonialList({
   return (
     <div className="section space-y-10" {...moduleProps(props)}>
       {(pretitle || intro) && (
-        <header className="richtext mx-auto max-w-4xl text-center">
+        <header className="mx-auto max-w-4xl richtext text-center">
           <Pretitle>{pretitle}</Pretitle>
           {intro && <PortableText value={intro ?? []} />}
         </header>
@@ -42,9 +35,9 @@ export default function TestimonialList({
         className={cn(
           'gap-6',
           layout === 'carousel'
-            ? 'carousel max-md:full-bleed md:overflow-fade-r p-4 [--size:340px] md:-mx-4'
+            ? 'carousel p-4 [--size:340px] max-md:full-bleed md:-mx-4 md:overflow-fade-r'
             : 'grid sm:grid-cols-2 lg:grid-cols-3',
-          layoutMobile === 'carousel' && 'max-md:carousel max-md:full-bleed max-md:p-4',
+          layoutMobile === 'carousel' && 'max-md:full-bleed max-md:carousel max-md:p-4',
         )}
       >
         {testimonials?.map(
@@ -54,9 +47,9 @@ export default function TestimonialList({
                 className="flex h-full flex-col gap-5 rounded-3xl px-6 py-8 shadow-(--shadow-card)"
                 key={key}
               >
-                <VscQuote aria-hidden className="text-accent/60 shrink-0 text-2xl" />
+                <VscQuote aria-hidden className="shrink-0 text-2xl text-accent/60" />
 
-                <blockquote className="richtext text-ink/80 text-body-sm grow text-balance">
+                <blockquote className="grow richtext text-body-sm text-balance text-ink/80">
                   {testimonial.content && <PortableText value={testimonial.content ?? []} />}
                 </blockquote>
 
@@ -77,7 +70,7 @@ export default function TestimonialList({
                       testimonial.author.name && (
                         <span
                           aria-hidden
-                          className="bg-ink/5 text-ink/70 flex size-10 shrink-0 items-center justify-center rounded-full font-medium"
+                          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-ink/5 font-medium text-ink/70"
                         >
                           {stegaClean(testimonial.author.name).trim().charAt(0).toUpperCase()}
                         </span>
@@ -97,7 +90,7 @@ export default function TestimonialList({
                               rel="noopener noreferrer"
                               title={t.source}
                               aria-label={format(t.sourceLabelBy, {
-                                name: testimonial.author.name,
+                                name: testimonial.author.name ?? '',
                               })}
                             >
                               <VscSurroundWith aria-hidden />
@@ -107,7 +100,7 @@ export default function TestimonialList({
                       </dt>
 
                       {testimonial.author.title && (
-                        <dd className="text-ink/60 text-body-xs text-balance">
+                        <dd className="text-body-xs text-balance text-ink/60">
                           {testimonial.author.title}
                         </dd>
                       )}

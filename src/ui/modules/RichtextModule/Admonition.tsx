@@ -1,13 +1,14 @@
 import { cn } from '@/lib/utils'
 import { VscInfo, VscLightbulb, VscReport, VscWarning } from 'react-icons/vsc'
 import PortableText from '@/ui/PortableText'
+import type { PortableTextValue } from '@/ui/PortableText'
 
 export default function Admonition({
   value,
 }: Readonly<{
   value: Partial<{
     title: string
-    content: Sanity.PortableText
+    content: PortableTextValue
     tone: 'note' | 'important' | 'tip' | 'warning' | 'caution'
   }>
 }>) {

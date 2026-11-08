@@ -3,27 +3,18 @@ import { stegaClean } from 'next-sanity'
 import Icon, { getPixels } from '@/ui/Icon'
 import { cn } from '@/lib/utils'
 import PortableText from '@/ui/PortableText'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default function FlagList({
   pretitle,
   intro,
   items,
   iconPosition,
-}: Readonly<
-  Partial<{
-    pretitle: string
-    intro: Sanity.PortableText
-    items: {
-      icon: Sanity.Icon
-      content: Sanity.PortableText
-    }[]
-    iconPosition: 'top' | 'left'
-  }>
->) {
+}: ModuleProps<'flag-list'>) {
   return (
     <section className="section space-y-8">
       {(pretitle || intro) && (
-        <header className="richtext mx-auto max-w-xl text-center text-balance">
+        <header className="mx-auto max-w-xl richtext text-center text-balance">
           <Pretitle>{pretitle}</Pretitle>
           {intro && <PortableText value={intro ?? []} />}
         </header>

@@ -3,13 +3,13 @@ import Heading from '@/ui/Heading'
 import Text from '@/ui/Text'
 import { Img } from '@/ui/Img'
 import { getDictionary } from '@/i18n'
-import type { Lang } from '@/lib/i18n'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default function ServiceDetails({
   lang,
   features,
   ...props
-}: { lang: Lang } & Partial<Omit<Sanity.ServiceDetailsModule, '_type'>> & Sanity.Module) {
+}: ModuleProps<'service-details'>) {
   if (!features?.length) return null
 
   const { services } = getDictionary(lang)
@@ -36,7 +36,10 @@ export default function ServiceDetails({
 function FeatureCard({
   feature,
   fallbackAlt,
-}: Readonly<{ feature?: Sanity.ServiceFeature; fallbackAlt: string }>) {
+}: Readonly<{
+  feature?: NonNullable<ModuleProps<'service-details'>['features']>[number]
+  fallbackAlt: string
+}>) {
   if (!feature) return null
 
   const { name, description, img } = feature
@@ -67,14 +70,14 @@ function FeatureCard({
 
       {description && (
         <div className="mt-4 max-w-[36rem]">
-          <Text muted className="text-ink/80 whitespace-pre-line">
+          <Text muted className="whitespace-pre-line text-ink/80">
             {description}
           </Text>
         </div>
       )}
 
       {img?.caption && (
-        <Text variant="technical" className="text-canvas mt-4 block w-full px-3 text-sm">
+        <Text variant="technical" className="mt-4 block w-full px-3 text-sm text-canvas">
           {img.caption}
         </Text>
       )}

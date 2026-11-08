@@ -2,12 +2,12 @@ import moduleProps from '@/lib/moduleProps'
 import Heading from '@/ui/Heading'
 import ContactForm from './contactPlaceholderForm'
 import { getDictionary } from '@/i18n'
-import type { Lang } from '@/lib/i18n'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default function LetsTalkPlaceholder({
   lang,
   ...props
-}: Readonly<Sanity.Module & { lang: Lang }>) {
+}: ModuleProps<'lets-talk-placeholder'>) {
   const { letsTalk } = getDictionary(lang)
 
   return (

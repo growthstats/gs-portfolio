@@ -5,6 +5,7 @@ import Code from './RichtextModule/Code'
 import CustomHTML from './CustomHTML'
 import { cn } from '@/lib/utils'
 import PortableText from '@/ui/PortableText'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default function AccordionList({
   pretitle,
@@ -14,19 +15,7 @@ export default function AccordionList({
   connect,
   generateSchema,
   ...props
-}: Partial<{
-  pretitle: string
-  intro: Sanity.PortableText
-  items: {
-    summary: string
-    content: Sanity.PortableText
-    open?: boolean
-  }[]
-  layout: 'vertical' | 'horizontal'
-  connect: boolean
-  generateSchema: boolean
-}> &
-  Sanity.Module) {
+}: ModuleProps<'accordion-list'>) {
   return (
     <section
       className={cn('section', layout === 'horizontal' ? 'grid gap-8 md:grid-cols-2' : 'space-y-8')}
@@ -40,7 +29,7 @@ export default function AccordionList({
         className={cn(
           'richtext',
           layout === 'horizontal'
-            ? 'md:sticky-below-header self-start [--offset:1rem]'
+            ? 'self-start [--offset:1rem] md:sticky-below-header'
             : 'text-center',
         )}
       >
@@ -51,7 +40,7 @@ export default function AccordionList({
       <div className="mx-auto w-full max-w-screen-md">
         {items?.map(({ summary, content, open }, key) => (
           <details
-            className="accordion border-ink/10 border-b"
+            className="accordion border-b border-ink/10"
             name={connect ? props._key : undefined}
             open={open}
             {...(generateSchema && {

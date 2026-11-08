@@ -1,15 +1,11 @@
 import CTAList from '@/ui/CTAList'
-
-export type CTAsSubModuleType = Sanity.Module<'ctas'> &
-	Partial<{
-		ctas: Sanity.CTA[]
-	}>
+import type { CreativeSubModule } from '.'
 
 export default function CTAsSubModule({
-	module,
-	...props
+  module,
+  ...props
 }: {
-	module: CTAsSubModuleType
+  module: CreativeSubModule<'ctas'>
 } & React.ComponentProps<typeof CTAList>) {
-	return <CTAList ctas={module.ctas} {...props} />
+  return <CTAList ctas={module.ctas} {...props} />
 }

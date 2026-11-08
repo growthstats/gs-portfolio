@@ -6,8 +6,10 @@ vi.mock('@/ui/ClickToCopy', () => ({ default: () => null }))
 
 import Code from './Code'
 
-const render = async (value: Partial<Sanity.Code>, theme?: Parameters<typeof Code>[0]['theme']) =>
-  renderToStaticMarkup((await Code({ value: value as Sanity.Code, theme }))!)
+const render = async (
+  value: Parameters<typeof Code>[0]['value'],
+  theme?: Parameters<typeof Code>[0]['theme'],
+) => renderToStaticMarkup((await Code({ value, theme }))!)
 
 describe('Code', () => {
   it('highlights with the dark-plus theme by default', async () => {

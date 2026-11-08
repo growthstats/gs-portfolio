@@ -9,26 +9,13 @@ import CTA from '@/ui/CTA'
 import { Button } from '@/components/ui/button'
 import PortableText from '@/ui/PortableText'
 import { useDictionary } from '@/i18n/DictionaryProvider'
-
-type ProjectCard = {
-  _key?: string
-  name?: string
-  description?: Sanity.PortableText
-  asset?: Sanity.Image
-  cta?: Sanity.CTA
-  ctaEnabled?: boolean
-  ctas?: Sanity.CTA[]
-}
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default function ProjectList({
   projects,
   initialProjects = 3,
   ...props
-}: Partial<{
-  projects: ProjectCard[]
-  initialProjects: number
-}> &
-  Sanity.Module) {
+}: ModuleProps<'project-list'>) {
   const visibleByDefault = useMemo(() => {
     const cleaned = stegaClean(initialProjects)
     const parsed = typeof cleaned === 'number' ? cleaned : Number(cleaned)
@@ -54,7 +41,7 @@ export default function ProjectList({
               key={key}
             >
               {project.asset && (
-                <figure className="border-ink/5 w-full overflow-hidden rounded-2xl border">
+                <figure className="w-full overflow-hidden rounded-2xl border border-ink/5">
                   <Img
                     className="aspect-video w-full object-cover"
                     image={project.asset}
@@ -78,7 +65,7 @@ export default function ProjectList({
                   </Heading>
                 )}
                 {project.description && (
-                  <div className="richtext text-ink/80 grow text-sm">
+                  <div className="grow richtext text-sm text-ink/80">
                     <PortableText value={project.description ?? []} />
                   </div>
                 )}

@@ -4,16 +4,13 @@ import { Img } from '@/ui/Img'
 import PortableText from '@/ui/PortableText'
 import { getDictionary } from '@/i18n'
 import { format } from '@/i18n/format'
-import type { Lang } from '@/lib/i18n'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default function TestimonialFeatured({
   lang,
   testimonial,
   ...props
-}: { lang: Lang } & Partial<{
-  testimonial: Sanity.Testimonial
-}> &
-  Sanity.Module) {
+}: ModuleProps<'testimonial.featured'>) {
   if (!testimonial) return null
 
   const t = getDictionary(lang).testimonial
@@ -32,9 +29,9 @@ export default function TestimonialFeatured({
         )}
 
         <div className="flex flex-col gap-4">
-          <VscQuote aria-hidden className="text-accent/60 shrink-0 text-2xl max-sm:mx-auto" />
+          <VscQuote aria-hidden className="shrink-0 text-2xl text-accent/60 max-sm:mx-auto" />
 
-          <blockquote className="richtext text-ink/80 text-balance">
+          <blockquote className="richtext text-balance text-ink/80">
             {testimonial.content && <PortableText value={testimonial.content ?? []} />}
           </blockquote>
 
@@ -64,7 +61,7 @@ export default function TestimonialFeatured({
               </dt>
 
               {author?.title && (
-                <dd className="text-ink/60 text-body-sm text-balance">{author.title}</dd>
+                <dd className="text-body-sm text-balance text-ink/60">{author.title}</dd>
               )}
             </dl>
           </figcaption>

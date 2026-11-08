@@ -2,10 +2,10 @@
 
 import React from 'react'
 import Heading from '@/ui/Heading'
-import type { PortableTextBlock } from 'next-sanity'
 import CTA from '@/ui/CTA'
 import Text from '@/ui/Text'
 import PortableText from '@/ui/PortableText'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 function CustomIcon() {
   return (
@@ -57,13 +57,7 @@ function CustomIcon() {
   )
 }
 
-interface ContactSimpleProps {
-  title?: string
-  excerpt?: PortableTextBlock[]
-  ctas?: Sanity.CTA[]
-}
-
-export default function ContactSimple({ title, excerpt, ctas = [] }: Readonly<ContactSimpleProps>) {
+export default function ContactSimple({ title, excerpt, ctas }: ModuleProps<'contact.simple'>) {
   return (
     <div className="relative py-8">
       <span className="absolute top-0 left-1/2 block h-[2px] w-[90%] -translate-x-1/2 bg-gradient-to-r from-transparent via-gray-500 to-transparent" />
@@ -79,13 +73,13 @@ export default function ContactSimple({ title, excerpt, ctas = [] }: Readonly<Co
           <Text
             as="div"
             variant="body"
-            className="text-ink/80 mx-auto mt-1 mb-2 max-w-xl [&_p]:mb-2"
+            className="mx-auto mt-1 mb-2 max-w-xl text-ink/80 [&_p]:mb-2"
           >
             <PortableText value={excerpt ?? []} />
           </Text>
         )}
 
-        {ctas?.length > 0 && (
+        {!!ctas?.length && (
           <div className="my-3 flex flex-wrap items-center justify-center gap-4">
             {ctas.map((cta) => (
               <CTA

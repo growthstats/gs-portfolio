@@ -69,7 +69,7 @@ defineField({
 
 ### Typed GROQ queries (TypeGen)
 
-Query result types are generated from the schema and the queries, not written by hand. The blog list queries are the first ones moved; [Sanity.d.ts](mdc:src/types/Sanity.d.ts) still covers the rest until they follow.
+Query result types are generated from the schema and the queries, not written by hand. [Sanity.d.ts](mdc:src/types/Sanity.d.ts) only covers the few queries that haven't moved yet.
 
 - Put the query in a module-level constant wrapped in `defineQuery`, in `src/sanity/queries/<area>.groq.ts`. See [blog.groq.ts](mdc:src/sanity/queries/blog.groq.ts). TypeGen only finds queries assigned to top-level variables, not ones written inline in a `fetchSanityLive({ query })` call.
 - The query must be static: no `${condition ? … : ''}`. Use params for what varies, e.g. `($filteredCategory == '' || …)`, `select($featuredFirst => featured, false)`, and `[0..$last]` with `-1` for no limit.
@@ -88,8 +88,8 @@ When asked to create a new module, follow these steps:
 
 1. If not included in the prompt, ask what data inputs and customization options the module would need.
 2. Define the Sanity schema markup under [index.ts](mdc:src/sanity/schemaTypes/index.ts).
-3. Define the interface type in [Sanity.d.ts](mdc:src/types/Sanity.d.ts) under the `// modules` section and in the correct alphabetical order.
+3. Add the module's projection to `MODULES_QUERY` in [queries.ts](mdc:src/sanity/lib/queries.ts) if it needs one (references, image `lqip`, CTA links), then run `npm run typegen`. Don't write the module's type by hand.
 4. Create the frontend component under `src/ui/modules`.
    1. If the module might include interactivity that requires `use client`, create the file as an `ModuleName/index.tsx` and move any reactive components in another file.
    2. Otherwise, create the file directly under the `modules` folder; e.g. `ModuleName.tsx`
-5. Assign the new frontend component in the `MODULE_MAP` in [index.tsx](mdc:src/ui/modules/index.tsx), adding it in the correct alphabetical order.
+5. Assign the new frontend component in the `MODULE_MAP` in [index.tsx](mdc:src/ui/modules/index.tsx), adding it in the correct alphabetical order. Type its props as `ModuleProps<'module-name'>` from [page.groq.ts](mdc:src/sanity/queries/page.groq.ts): `MODULE_MAP` checks every component against its generated type.

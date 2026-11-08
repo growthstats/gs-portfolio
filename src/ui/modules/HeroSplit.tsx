@@ -5,6 +5,7 @@ import CustomHTML from './CustomHTML'
 import Reputation from '@/ui/Reputation'
 import { cn } from '@/lib/utils'
 import PortableText from '@/ui/PortableText'
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default function HeroSplit({
   pretitle,
@@ -13,16 +14,7 @@ export default function HeroSplit({
   assets,
   assetOnRight,
   assetBelowContent,
-}: Readonly<
-  Partial<{
-    pretitle: string
-    content: Sanity.PortableText
-    ctas: Sanity.CTA[]
-    assets: Array<Sanity.Img | Sanity.HeroVideo | Sanity.Code | Sanity.CustomHTML>
-    assetOnRight: boolean
-    assetBelowContent: boolean
-  }>
->) {
+}: ModuleProps<'hero.split'>) {
   const asset = assets?.[0]
 
   return (
@@ -37,7 +29,7 @@ export default function HeroSplit({
         <Asset asset={asset} />
       </figure>
 
-      <div className="richtext headings:text-balance mx-auto w-full max-w-lg">
+      <div className="mx-auto w-full max-w-lg richtext headings:text-balance">
         <Pretitle>{pretitle}</Pretitle>
         {content && (
           <PortableText

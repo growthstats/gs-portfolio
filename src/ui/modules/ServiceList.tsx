@@ -5,35 +5,16 @@ import Heading from '@/ui/Heading'
 import { Img } from '@/ui/Img'
 import { loadIcon, sanitizeString } from '@/ui/modules/Section'
 
-import type { PortableTextBlock } from 'sanity'
-
 import type { LucideIcon } from 'lucide-react'
 import PortableText from '@/ui/PortableText'
 import { getDictionary } from '@/i18n'
-import type { Lang } from '@/lib/i18n'
-
-interface ServiceItem {
-  _key: string
-  title?: string
-  description?: PortableTextBlock[]
-  keywords?: string[]
-  image?: Sanity.Image
-  icon?: string | null
-  ctas?: Sanity.CTA[]
-  layout?: 'text-left' | 'text-right'
-}
-
-interface Props {
-  lang: Lang
-  layout?: 'text-left' | 'text-right'
-  services?: ServiceItem[]
-}
+import type { ModuleProps } from '@/sanity/queries/page.groq'
 
 export default async function ServiceList({
   lang,
-  layout = 'text-left',
-  services = [],
-}: Readonly<Props>) {
+  services: serviceList,
+}: ModuleProps<'service-list'>) {
+  const services = serviceList ?? []
   const dictionary = getDictionary(lang)
   // Properly typed icon map
   const iconMap: Record<string, LucideIcon | null> = {}
@@ -51,7 +32,7 @@ export default async function ServiceList({
   return (
     <div className="mx-auto w-full max-w-5xl space-y-12 px-4 py-10">
       {services.map((s) => {
-        const effectiveLayout = s.layout ?? layout
+        const effectiveLayout = s.layout ?? 'text-left'
         const isTextRight = effectiveLayout === 'text-right'
 
         const IconComponent = iconMap[s._key]
