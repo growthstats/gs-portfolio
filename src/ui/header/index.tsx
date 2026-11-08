@@ -1,4 +1,4 @@
-import { getSite } from '@/sanity/lib/queries'
+import { getSite } from '@/sanity/lib/site'
 import Wrapper from './Wrapper'
 import Link from 'next/link'
 import { Img } from '@/ui/Img'
@@ -18,7 +18,7 @@ export default async function Header({ lang }: { lang: Lang }) {
 
   return (
     <Wrapper
-      className="glass-panel bg-canvas/20 max-md:header-open:shadow-lg sticky top-0 z-10 border-b-2 border-white/30 md:py-2"
+      className="glass-panel sticky top-0 z-10 border-b-2 border-white/30 bg-canvas/20 md:py-2 max-md:header-open:shadow-lg"
       style={{
         backdropFilter: 'blur(6px) saturate(140%)',
         WebkitBackdropFilter: 'blur(6px) saturate(140%)',
@@ -34,7 +34,7 @@ export default async function Header({ lang }: { lang: Lang }) {
       >
         <div className="[grid-area:logo]">
           <Link
-            className={cn('h4 md:h3 grid', logo?.image && 'max-w-3xs')}
+            className={cn('grid h4 md:h3', logo?.image && 'max-w-3xs')}
             href={localizePath('/', lang)}
           >
             {logoImage ? (
@@ -53,11 +53,11 @@ export default async function Header({ lang }: { lang: Lang }) {
 
         <CTAList
           ctas={ctas}
-          className="max-md:header-closed:hidden [grid-area:ctas] max-md:*:w-full md:ms-auto"
+          className="[grid-area:ctas] max-md:*:w-full md:ms-auto max-md:header-closed:hidden"
         />
 
         {hasSwitcher && (
-          <LanguageSwitcher className="max-md:header-closed:hidden [grid-area:lang] max-md:my-4 max-md:justify-center" />
+          <LanguageSwitcher className="[grid-area:lang] max-md:my-4 max-md:justify-center max-md:header-closed:hidden" />
         )}
 
         <Toggle />

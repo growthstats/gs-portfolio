@@ -1,11 +1,11 @@
-import CTA from './CTA'
+import CTA, { type CTAValue } from './CTA'
 import { cn } from '@/lib/utils'
 
 export default function CTAList({
   ctas,
   className,
 }: {
-  ctas?: Sanity.CTA[]
+  ctas?: CTAValue[] | null
 } & React.ComponentProps<'div'>) {
   if (!ctas?.length) return null
 

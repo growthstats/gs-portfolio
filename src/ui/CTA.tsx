@@ -1,5 +1,5 @@
 import LocalizedLink from '@/ui/LocalizedLink'
-import resolveUrl from '@/lib/resolveUrl'
+import resolveUrl, { type UrlSource } from '@/lib/resolveUrl'
 import { stegaClean } from 'next-sanity'
 import { cn } from '@/lib/utils'
 import { Button, buttonVariants } from '@/components/ui/button'
@@ -30,13 +30,31 @@ const GENERIC_LINK_TEXT = new Set([
   'this link',
 ])
 
+/** The link fields a CTA reads: `Sanity.Link`, or a link from a TypeGen query result. */
+export type LinkValue = {
+  _type?: 'link'
+  _key?: string
+  label?: string
+  type?: 'internal' | 'external'
+  internal?: (UrlSource & { title?: string | null }) | null
+  external?: string
+  params?: string
+}
+
+/** The CTA fields read here: `Sanity.CTA`, or a CTA from a TypeGen query result. */
+export type CTAValue = {
+  _key?: string
+  link?: LinkValue | null
+  style?: Sanity.CTA['style'] | null
+}
+
 export default function CTA({
   link,
   style: ctaStyle,
   className,
   children,
   ...rest
-}: Sanity.CTA & Omit<ComponentProps<'a'>, 'style'>) {
+}: CTAValue & Omit<ComponentProps<'a'>, 'style'>) {
   const cleanedStyle =
     typeof ctaStyle === 'string' ? (stegaClean(ctaStyle) ?? undefined) : undefined
   const variant =
