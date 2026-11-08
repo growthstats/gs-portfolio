@@ -173,7 +173,8 @@ const MODULES_BASE_PROJECTION = `
 		items[]{
 		  _key,
 		  question,
-		  answer
+		  answer,
+		  open
 		},
 		accessibleAccordion,
 		generateSchema
