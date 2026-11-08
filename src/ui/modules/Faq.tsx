@@ -58,7 +58,7 @@ type FaqItemValue = {
   _key: string
   question?: string | null
   answer?: PortableTextValue | null
-  open?: boolean
+  open?: boolean | null
 }
 
 /** What the FAQ reads: the `faq` module, or a blog post's `faq` field. */
