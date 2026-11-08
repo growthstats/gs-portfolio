@@ -68,3 +68,18 @@ export function markdownUrl(url: string, { isHome = false } = {}) {
   const trimmed = url.replace(/\/$/, '')
   return isHome ? `${trimmed}/index.md` : `${trimmed}.md`
 }
+
+type SocialLink = { external?: string | null }
+type SocialItem = SocialLink & { _type: string; links?: SocialLink[] | null }
+
+/**
+ * The http(s) profile URLs in a social menu, for the Organization's `sameAs`.
+ * The menu projection gives plain `link` items `links: null`, so the item's
+ * `_type` (not the presence of `links`) says whether it is a `link.list`.
+ */
+export function socialProfileUrls(items: SocialItem[] | null | undefined): string[] {
+  return (items ?? [])
+    .flatMap((item) => (item._type === 'link.list' ? (item.links ?? []) : [item]))
+    .map((link) => stegaClean(link.external))
+    .filter((url): url is string => !!url && /^https?:\/\//.test(url))
+}
