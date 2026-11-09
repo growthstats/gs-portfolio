@@ -20,6 +20,7 @@ The project already had a `staging` dataset, created in 2024 and unused since 20
 
 - The `develop` Studio edits `staging`, not live content. Editors who want to change the live site use the production Studio.
 - The release rehearsal of epics #118 and #61 was run this way on 2026-11-08 (comments on both issues).
-- Content published on `staging` doesn't refresh the `develop` site on its own. Both Sanity webhooks fire for every dataset but target other deployments, and `develop` is behind Vercel Authentication, so a webhook would need a protection bypass. Until that's set up, redeploy `develop` after changing `staging` content.
+- Content published on `staging` refreshes the `develop` site through the `[STAGING] Revalidate develop` Sanity webhook, without a redeploy. It fires on `staging` only and passes Vercel Authentication with a Protection Bypass for Automation secret in its URL. `[PROD] Revalidate page` fires on `production` only. Tested on 2026-11-09.
+- The Sanity plan allows two webhooks, so `[STAGING]` is the old `[DEV] Revalidate page`, repurposed. `[DEV]` targeted `gs-portfolio-blond.vercel.app`, which redirects to the live site, so it only duplicated `[PROD]`.
 - `scripts/agent/smoke-prod.sh <develop URL>` still can't get past Vercel Authentication; check `develop` in a signed-in browser.
 - Item 7 of ADR 0004 and item 6 of ADR 0005 still apply to the `production` dataset, but `develop` no longer reads it.
