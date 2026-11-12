@@ -1,8 +1,8 @@
 'use client'
 
 import { defineLocations, presentationTool } from 'sanity/presentation'
-import { groq } from 'next-sanity'
 import { BLOG_DIR } from '@/lib/env'
+import { documentHref, mainDocuments } from './presentationResolve'
 
 export const presentation = presentationTool({
   name: 'editor',
@@ -13,41 +13,30 @@ export const presentation = presentationTool({
     },
   },
   resolve: {
-    mainDocuments: [
-      {
-        route: '/',
-        filter: groq`_type == 'page' && metadata.slug.current == 'index'`,
-      },
-      {
-        route: '/:slug',
-        filter: groq`_type == 'page' && metadata.slug.current == $slug`,
-      },
-      {
-        route: `/${BLOG_DIR}/:slug`,
-        filter: groq`_type == 'blog.post' && metadata.slug.current == $slug`,
-      },
-    ],
+    mainDocuments,
     locations: {
       site: defineLocations({
-        message: 'This document is used on all pages',
-        locations: [
-          {
-            title: 'Home',
-            href: '/',
-          },
-        ],
+        select: { language: 'language' },
+        resolve: (doc) => ({
+          message: 'This document is used on all pages',
+          locations: [{ title: 'Home', href: documentHref('/', doc?.language) }],
+        }),
       }),
       page: defineLocations({
         select: {
           title: 'title',
           metaTitle: 'metadata.title',
           slug: 'metadata.slug.current',
+          language: 'language',
         },
         resolve: (doc) => ({
           locations: [
             {
               title: doc?.title || doc?.metaTitle || 'Untitled',
-              href: doc?.slug ? (doc.slug === 'index' ? '/' : `/${doc.slug}`) : '/',
+              href: documentHref(
+                doc?.slug && doc.slug !== 'index' ? `/${doc.slug}` : '/',
+                doc?.language,
+              ),
             },
           ],
         }),
@@ -57,12 +46,16 @@ export const presentation = presentationTool({
           title: 'title',
           metaTitle: 'metadata.title',
           slug: 'metadata.slug.current',
+          language: 'language',
         },
         resolve: (doc) => ({
           locations: [
             {
               title: doc?.title || doc?.metaTitle || 'Untitled',
-              href: doc?.slug ? `/${BLOG_DIR}/${doc.slug}` : `/${BLOG_DIR}`,
+              href: documentHref(
+                doc?.slug ? `/${BLOG_DIR}/${doc.slug}` : `/${BLOG_DIR}`,
+                doc?.language,
+              ),
             },
           ],
         }),
@@ -71,12 +64,15 @@ export const presentation = presentationTool({
         select: {
           title: 'title',
           slug: 'slug.current',
+          language: 'language',
         },
         resolve: (doc) => ({
           locations: [
             {
               title: doc?.title || 'Untitled',
-              href: doc?.slug ? `/${BLOG_DIR}?category=${doc.slug}` : `/${BLOG_DIR}`,
+              href:
+                documentHref(`/${BLOG_DIR}`, doc?.language) +
+                (doc?.slug ? `?category=${doc.slug}` : ''),
             },
           ],
         }),

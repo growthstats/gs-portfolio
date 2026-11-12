@@ -71,7 +71,10 @@ export default defineConfig({
 
     productionUrl: async (prev, { document }) => {
       if (['page', 'blog.post'].includes(document?._type)) {
-        return resolveUrl(document as UrlSource, { base: true })
+        return resolveUrl(document as UrlSource, {
+          base: true,
+          language: document.language as string | undefined,
+        })
       }
       return prev
     },
