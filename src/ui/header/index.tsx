@@ -57,7 +57,10 @@ export default async function Header({ lang }: { lang: Lang }) {
         />
 
         {hasSwitcher && (
-          <LanguageSwitcher className="[grid-area:lang] max-md:my-4 max-md:justify-center max-md:header-closed:hidden" />
+          <LanguageSwitcher
+            className="[grid-area:lang] max-md:mx-auto max-md:my-4 max-md:header-closed:hidden"
+            menuClassName="md:right-0 md:left-auto"
+          />
         )}
 
         <Toggle />
