@@ -59,7 +59,9 @@ export default async function Header({ lang }: { lang: Lang }) {
         {hasSwitcher && (
           <LanguageSwitcher
             className="[grid-area:lang] max-md:mx-auto max-md:my-4 max-md:header-closed:hidden"
-            menuClassName="md:right-0 md:left-auto"
+            // Centred under the trigger on mobile: the menu is w-28 (7rem), so it starts 3.5rem left of centre.
+            // Not a translate, which the menu's fade-in animation overrides.
+            menuClassName="max-md:left-[calc(50%-3.5rem)] max-md:w-28 md:right-0 md:left-auto"
           />
         )}
 
