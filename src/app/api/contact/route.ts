@@ -38,20 +38,24 @@ export async function POST(request: Request) {
   const lead = parsed.data
   const sourcePath = getSourcePath(request)
 
-  const [logged, notified] = await Promise.all([
-    logToSheet(lead, sourcePath),
-    notifyTeam(lead, sourcePath),
-  ])
+  // The Apps Script logs the lead and emails the team from Google Workspace, which Gmail trusts.
+  // Resend mail from send.growthstats.io landed in spam, so Resend is only the fallback now.
+  const sheet = await logToSheet(lead, sourcePath)
+  const notified = sheet.emailed || (await notifyTeam(lead, sourcePath))
 
   // The lead is safe as long as one channel captured it.
-  if (!logged && !notified) {
+  if (!sheet.logged && !notified) {
     return NextResponse.json({ error: 'Unable to submit form.' }, { status: 502 })
   }
 
   return NextResponse.json({ ok: true }, { status: 200 })
 }
 
-/** Appends the lead to the Google Sheet via the Apps Script web app (see docs/contact-form.md). */
+/**
+ * Sends the lead to the sheet's Apps Script web app (see docs/contact-form.md), which appends a row
+ * and emails the team. `emailed` is false when the script could not send mail, or is an older
+ * version that only logs, so the caller falls back to Resend.
+ */
 async function logToSheet(lead: ContactFormValues, sourcePath: string | null) {
   try {
     const response = await fetch(CONTACT_APPS_SCRIPT_URL!, {
@@ -60,16 +64,22 @@ async function logToSheet(lead: ContactFormValues, sourcePath: string | null) {
       body: JSON.stringify({ ...lead, sourcePath }),
     })
 
-    // Apps Script answers 200 even when the script throws, so trust only its `ok` flag.
+    // Apps Script answers 200 even when the script throws, so trust only the flags in its body.
     const result = await response.json().catch(() => null)
-    if (!response.ok || result?.ok !== true) {
-      throw new Error(`Apps Script responded ${response.status}: ${JSON.stringify(result)}`)
+    const logged = response.ok && result?.ok === true
+    const emailed = response.ok && result?.emailed === true
+
+    if (!logged || !emailed) {
+      console.error(
+        `Contact: Apps Script responded ${response.status} (logged: ${logged}, emailed: ${emailed})`,
+        JSON.stringify(result),
+      )
     }
 
-    return true
+    return { logged, emailed }
   } catch (error) {
-    console.error('Contact: failed to log lead to Google Sheet', error)
-    return false
+    console.error('Contact: failed to reach the Apps Script', error)
+    return { logged: false, emailed: false }
   }
 }
 
@@ -81,7 +91,7 @@ async function notifyTeam(lead: ContactFormValues, sourcePath: string | null) {
       from: CONTACT_FROM_EMAIL!,
       to: CONTACT_TO_EMAIL!.split(',').map((address) => address.trim()),
       replyTo: lead.email,
-      subject: `New enquiry from ${lead.name}`,
+      subject: `[Website lead] ${lead.name}`,
       text: [
         `Name: ${lead.name}`,
         `Email: ${lead.email}`,
@@ -104,7 +114,7 @@ async function notifyTeam(lead: ContactFormValues, sourcePath: string | null) {
     })
 
     if (error) throw error
-    console.info('Contact: notification sent', data?.id)
+    console.info('Contact: fallback notification sent via Resend', data?.id)
     return true
   } catch (error) {
     console.error('Contact: failed to send notification via Resend', error)
